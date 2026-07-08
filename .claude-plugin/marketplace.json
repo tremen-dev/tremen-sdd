@@ -1,0 +1,11 @@
+{
+  "name": "tremen-sdd",
+  "owner": { "name": "Alberto Fojo" },
+  "plugins": [
+    {
+      "name": "tremen-sdd",
+      "source": "./",
+      "description": "Estándar SDD unificado de tremen.dev (roles, hooks, scaffolding, plantillas)."
+    }
+  ]
+}
