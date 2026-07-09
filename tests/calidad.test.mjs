@@ -56,3 +56,16 @@ test('fail-open sin .sdd.json -> exit 0', () => {
   fs.writeFileSync(f, 'x=1\n');
   assert.equal(corre(dir, f).code, 0);
 });
+
+test('ruta de proyecto con espacio + artefacto coherente -> exit 0 (regresión spawnSync shell win32)', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'sdd con espacio-'));
+  fs.writeFileSync(path.join(dir, '.sdd.json'), JSON.stringify({
+    idioma: 'es', rutasVigiladas: ['src/'], linter: 'none',
+    gates: { requireSpec: true, protegeVerdad: true, calidad: true },
+  }));
+  const ep = path.join(dir, 'docs', 'epicas', 'EPIC-001-con espacio');
+  fs.mkdirSync(ep, { recursive: true });
+  const f = path.join(ep, 'SPEC-001-bien.md');
+  fs.writeFileSync(f, '---\nid: SPEC-001\ntipo: spec\nepica: EPIC-001\nestado: borrador\nhistorial:\n  - {estado: borrador, fecha: 2026-07-01, por: x}\n---\n');
+  assert.equal(corre(dir, f).code, 0);
+});

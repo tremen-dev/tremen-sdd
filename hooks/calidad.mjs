@@ -31,7 +31,9 @@ try {
   const linter = cfg.linter === 'auto' || !cfg.linter ? autodetecta(ext) : cfg.linter;
   const cmd = comando(linter, fichero);
   if (!cmd) process.exit(0);
-  const r = spawnSync(cmd[0], cmd.slice(1), { cwd, encoding: 'utf8', shell: process.platform === 'win32' });
+  const usaShell = process.platform === 'win32';
+  const args = usaShell ? cmd.slice(1).map((a) => /\s/.test(a) ? `"${a}"` : a) : cmd.slice(1);
+  const r = spawnSync(cmd[0], args, { cwd, encoding: 'utf8', shell: usaShell });
   if (r.error || r.status === null) process.exit(0); // linter no instalado: fail-open
   if (r.status !== 0) {
     console.error(`[sdd-calidad] ${linter} encontró problemas:\n${r.stdout}${r.stderr}`);
