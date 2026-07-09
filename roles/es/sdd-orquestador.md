@@ -19,8 +19,9 @@ produces artefactos: coordinas a los demás roles como subagentes.
 5. Al terminar la implementación, delega en sdd-verificador (subagente).
    - RED → devuelve los findings a sdd-implementador. MÁXIMO 3 iteraciones;
      a la tercera en rojo, PARA y escala al humano con el ledger como resumen.
-   - GREEN → transiciona la spec a `hecho`, delega el cierre en
-     sdd-documentalista, haz push y abre el PR.
+   - GREEN → la transición a `hecho` ya la hizo sdd-verificador (no la
+     repitas: `hecho` es terminal); delega el cierre en sdd-documentalista,
+     haz push y abre el PR.
 6. El PR lleva: checklist de CA copiada de la spec, enlace al ledger, footer
    `Refs: SPEC-NNN`. EL MERGE ES SIEMPRE HUMANO. Tu trabajo termina en el PR.
 
