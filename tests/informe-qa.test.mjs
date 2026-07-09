@@ -36,3 +36,16 @@ test('falla claro si no existe carpeta _qa', () => {
   fs.writeFileSync(ledger, '---\nid: SPEC-002\ntipo: ledger\n---\n# L\n');
   assert.throws(() => renderReport(ledger), /_qa/);
 });
+
+test('despacha .WEBM en mayúsculas como <video>, no como <img>', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'sdd-'));
+  const ledger = path.join(dir, 'SPEC-003-clip.ledger.md');
+  fs.writeFileSync(ledger, '---\nid: SPEC-003\ntipo: ledger\n---\n# L\n');
+  const qa = path.join(dir, '_qa', 'SPEC-003');
+  fs.mkdirSync(qa, { recursive: true });
+  fs.writeFileSync(path.join(qa, 'demo.WEBM'), Buffer.from('dummy-video-bytes'));
+  const { html } = renderReport(ledger);
+  assert.match(html, /<video/);
+  assert.match(html, /data:video\/webm;base64,/);
+  assert.doesNotMatch(html, /<img[^>]*demo\.WEBM/);
+});

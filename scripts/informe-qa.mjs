@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { parseFrontmatter } from '../lib/frontmatter.mjs';
 
-const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 export function renderReport(ledgerPath) {
   const raw = fs.readFileSync(ledgerPath, 'utf8');
@@ -14,7 +14,7 @@ export function renderReport(ledgerPath) {
   if (!fs.existsSync(qaDir)) throw new Error(`No existe ${qaDir} (_qa/${data.id}). Ejecuta primero la verificación con capturas.`);
   const medios = fs.readdirSync(qaDir).filter((n) => /\.(png|webm)$/i.test(n)).sort().map((n) => {
     const b64 = fs.readFileSync(path.join(qaDir, n)).toString('base64');
-    return n.endsWith('.webm')
+    return /\.webm$/i.test(n)
       ? `<figure><video controls src="data:video/webm;base64,${b64}"></video><figcaption>${esc(n)}</figcaption></figure>`
       : `<figure><img src="data:image/png;base64,${b64}" alt="${esc(n)}"><figcaption>${esc(n)}</figcaption></figure>`;
   });
