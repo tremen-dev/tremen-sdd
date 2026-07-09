@@ -99,10 +99,10 @@
     border-top: 9px solid var(--accent);
   }
   .step.gate {
-    border: 1px dashed var(--accent);
-    background: color-mix(in srgb, var(--accent) 6%, var(--bg-elev));
+    border: 1px dashed var(--live);
+    background: color-mix(in srgb, var(--live) 6%, var(--bg-elev));
   }
-  .step.gate .who { color: var(--accent); text-transform: uppercase; }
+  .step.gate .who { color: var(--live); text-transform: uppercase; }
   /* bifurcación: carril punteado que continúa el conector */
   .flow .fork {
     margin-left: 96px;
@@ -137,7 +137,7 @@
     background: var(--bg-elev);
     color: var(--fg-muted);
   }
-  .machine .st.gated { border-color: var(--accent); color: var(--accent); }
+  .machine .st.gated { border-color: var(--live); color: var(--live); border-style: dashed; }
   .machine .st.done { border-color: var(--live); color: var(--live); }
   .machine .arr2 { color: var(--fg-dim); }
   .machine-notes {
@@ -173,9 +173,11 @@
     </h1>
     <p class="lede" style="margin-top: 32px;">
       Cinco escenarios de trabajo, paso a paso: qué rol interviene, qué artefacto
-      produce y dónde decides tú. Los pasos en
-      <span style="color: var(--live); font-weight: 600;">verde</span> son tuyos;
-      los recuadros punteados en ember son gates.
+      produce y dónde decides tú. Todo lo
+      <span style="color: var(--live); font-weight: 600;">verde</span> es tuyo:
+      los pasos que inicias y los gates (recuadros punteados) donde apruebas.
+      El flujo corre en <span style="color: var(--accent); font-weight: 600;">ember</span>;
+      se detiene en verde.
     </p>
   </section>
 
