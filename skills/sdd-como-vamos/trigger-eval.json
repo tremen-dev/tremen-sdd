@@ -1,0 +1,7 @@
+{ "cases": [
+  { "query": "¿cómo vamos?", "should_trigger": true },
+  { "query": "¿qué queda pendiente del proyecto?", "should_trigger": true },
+  { "query": "what's the project status?", "should_trigger": true },
+  { "query": "constrúyeme el alta de facturas", "should_trigger": false },
+  { "query": "regenera el tablero", "should_trigger": false }
+] }

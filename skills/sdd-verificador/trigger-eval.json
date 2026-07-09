@@ -1,0 +1,7 @@
+{ "cases": [
+  { "query": "verifica SPEC-012", "should_trigger": true },
+  { "query": "¿cumple los criterios de aceptación?", "should_trigger": true },
+  { "query": "QA the invoice flow against its spec", "should_trigger": true },
+  { "query": "arregla el test que falla", "should_trigger": false },
+  { "query": "escribe la spec", "should_trigger": false }
+] }
