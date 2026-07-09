@@ -15,8 +15,13 @@ try {
   const cfg = readConfig(cwd);
   if (!cfg || cfg.gates?.requireSpec === false) allow();
   const fichero = payload.tool_input?.file_path ?? '';
-  const rel = path.relative(cwd, fichero).replaceAll('\\', '/');
-  if (rel.startsWith('..') || !(cfg.rutasVigiladas ?? []).some((r) => rel.startsWith(r))) allow();
+  if (!fichero) allow();
+  const rel = path.relative(cwd, path.resolve(cwd, fichero)).replaceAll('\\', '/');
+  const vigiladas = (cfg.rutasVigiladas ?? []).map((r) => {
+    r = r.replaceAll('\\', '/');
+    return r.endsWith('/') ? r : r + '/';
+  });
+  if (rel.startsWith('..') || !vigiladas.some((r) => rel.startsWith(r) || rel + '/' === r)) allow();
   const rama = execSync('git rev-parse --abbrev-ref HEAD', { cwd, stdio: ['pipe', 'pipe', 'ignore'] }).toString().trim();
   const m = rama.match(/^ft\/(SPEC-\d{3})-/);
   if (!m) deny(`La rama '${rama}' no es una rama de spec (ft/SPEC-NNN-slug). Crea o aprueba la spec con /sdd-arquitecto y trabaja en su rama.`);

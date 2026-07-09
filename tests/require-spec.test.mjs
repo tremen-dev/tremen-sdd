@@ -7,14 +7,15 @@ import { spawnSync, execSync } from 'node:child_process';
 
 const HOOK = path.resolve('hooks/require-spec.mjs');
 
-function proyecto({ rama, estadoSpec } = {}) {
+function proyecto({ rama, estadoSpec, rutasVigiladas = ['src/'] } = {}) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'sdd-'));
   execSync('git init -b main', { cwd: dir });
   fs.writeFileSync(path.join(dir, '.sdd.json'), JSON.stringify({
-    idioma: 'es', rutasVigiladas: ['src/'], linter: 'none',
+    idioma: 'es', rutasVigiladas, linter: 'none',
     gates: { requireSpec: true, protegeVerdad: true, calidad: true },
   }));
   fs.mkdirSync(path.join(dir, 'src'), { recursive: true });
+  fs.mkdirSync(path.join(dir, 'src-legacy'), { recursive: true });
   if (estadoSpec) {
     const ep = path.join(dir, 'docs', 'epicas', 'EPIC-001-x');
     fs.mkdirSync(ep, { recursive: true });
@@ -64,4 +65,19 @@ test('fail-open: sin .sdd.json permite', () => {
 test('la válvula SDD_SKIP_GATE=1 permite', () => {
   const dir = proyecto();
   assert.equal(corre(dir, path.join(dir, 'src', 'app.ts'), { SDD_SKIP_GATE: '1' }).out, '');
+});
+
+test('rutasVigiladas con backslash (Windows) deniega igual que con barra', () => {
+  const dir = proyecto({ rutasVigiladas: ['src\\'] });
+  const { out } = corre(dir, path.join(dir, 'src', 'app.ts'));
+  const j = JSON.parse(out);
+  assert.equal(j.hookSpecificOutput.permissionDecision, 'deny');
+});
+
+test('rutasVigiladas sin barra final no vigila directorios con el mismo prefijo', () => {
+  const dir = proyecto({ rutasVigiladas: ['src'] });
+  assert.equal(corre(dir, path.join(dir, 'src-legacy', 'x.ts')).out, '');
+  const { out } = corre(dir, path.join(dir, 'src', 'x.ts'));
+  const j = JSON.parse(out);
+  assert.equal(j.hookSpecificOutput.permissionDecision, 'deny');
 });
