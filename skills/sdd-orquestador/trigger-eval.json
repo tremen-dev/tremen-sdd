@@ -1,0 +1,7 @@
+{ "cases": [
+  { "query": "constrúyeme el alta de facturas", "should_trigger": true },
+  { "query": "haz la épica entera de analytics", "should_trigger": true },
+  { "query": "fix the login bug", "should_trigger": true },
+  { "query": "¿cómo vamos con el proyecto?", "should_trigger": false },
+  { "query": "¿qué es un ADR?", "should_trigger": false }
+] }

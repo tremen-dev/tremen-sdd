@@ -1,0 +1,7 @@
+{ "cases": [
+  { "query": "regenera el tablero y los índices", "should_trigger": true },
+  { "query": "la spec ya está hecha, cierra y archiva", "should_trigger": true },
+  { "query": "los docs están desincronizados con el código, revísalo", "should_trigger": true },
+  { "query": "¿cómo vamos?", "should_trigger": false },
+  { "query": "implementa SPEC-004", "should_trigger": false }
+] }

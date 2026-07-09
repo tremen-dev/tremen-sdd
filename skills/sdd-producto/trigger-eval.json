@@ -1,0 +1,7 @@
+{ "cases": [
+  { "query": "quiero que los usuarios puedan compartir informes", "should_trigger": true },
+  { "query": "prioriza el roadmap del trimestre", "should_trigger": true },
+  { "query": "define la épica de onboarding", "should_trigger": true },
+  { "query": "escribe la spec del alta de facturas", "should_trigger": false },
+  { "query": "implementa SPEC-003", "should_trigger": false }
+] }
