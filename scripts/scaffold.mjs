@@ -20,7 +20,7 @@ const TIPOS = {
 export const EPICAS_BUCKET = ['EPIC-FIX', 'EPIC-INFRA', 'EPIC-MANT', 'EPIC-MEJORA'];
 
 export function slugify(titulo) {
-  return titulo.normalize('NFD').replace(/[̀-ͯ]/g, '')
+  return titulo.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
     .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
 
