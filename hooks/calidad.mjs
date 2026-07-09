@@ -16,10 +16,12 @@ try {
   const cfg = readConfig(cwd);
   if (!cfg || cfg.gates?.calidad === false) process.exit(0);
   const fichero = payload.tool_input?.file_path ?? '';
-  if (!fichero || !fs.existsSync(fichero)) process.exit(0);
+  if (!fichero) process.exit(0);
+  const ruta = path.resolve(cwd, fichero);
+  if (!fs.existsSync(ruta)) process.exit(0);
 
-  if (ES_ARTEFACTO.test(fichero) && !fichero.endsWith('.ledger.md')) {
-    const errores = validateFile(fichero, path.join(cwd, 'docs'));
+  if (ES_ARTEFACTO.test(ruta) && !ruta.endsWith('.ledger.md')) {
+    const errores = validateFile(ruta, path.join(cwd, 'docs'));
     if (errores.length) {
       console.error(`[sdd-calidad] Artefacto inconsistente:\n` + errores.map((e) => ` - ${e}`).join('\n'));
       process.exit(2);
@@ -27,9 +29,9 @@ try {
     process.exit(0);
   }
 
-  const ext = path.extname(fichero);
+  const ext = path.extname(ruta);
   const linter = cfg.linter === 'auto' || !cfg.linter ? autodetecta(ext) : cfg.linter;
-  const cmd = comando(linter, fichero);
+  const cmd = comando(linter, ruta);
   if (!cmd) process.exit(0);
   const usaShell = process.platform === 'win32';
   const args = usaShell ? cmd.slice(1).map((a) => /\s/.test(a) ? `"${a}"` : a) : cmd.slice(1);
