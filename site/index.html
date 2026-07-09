@@ -55,20 +55,21 @@
     </div>
 
     <h1 class="headline">
-      Nada se codea
-      <span class="line2"><span class="br">{</span> <em>sin spec</em> <span class="br">}</span></span>
-      <span class="line3">aprobada <span style="color: var(--accent)">por ti.</span></span>
+      Spec-driven
+      <span class="line2"><span class="br">{</span> <em>ejecutable</em> <span class="br">}</span></span>
+      <span class="line3">para <span style="color: var(--accent)">Claude Code.</span></span>
     </h1>
 
     <p class="lede" style="margin-top: 32px;">
-      <strong>tremen-sdd</strong> empaqueta una forma de construir software con IA:
-      un equipo de roles con poderes separados, gates humanos donde importa,
-      y hooks que convierten el método en regla — no en buena intención.
+      <strong>tremen-sdd</strong> es un plugin de Claude Code: 7 skills de rol,
+      3 hooks y 5 scripts que implementan el flujo épica → spec → código
+      verificado, con dos gates humanos (aprobación de spec y merge) y estados
+      auditados en el frontmatter de cada artefacto.
     </p>
 
     <div style="display:flex; gap:12px; margin-top: 28px; flex-wrap: wrap;">
-      <a class="btn primary" href="equipo.html">conoce al equipo <span class="arr">→</span></a>
-      <a class="btn" href="flujos.html">ver los flujos</a>
+      <a class="btn primary" href="equipo.html">los roles <span class="arr">→</span></a>
+      <a class="btn" href="flujos.html">los flujos</a>
     </div>
   </section>
 
@@ -83,10 +84,12 @@
           La estructura se <em>scriptea</em>,<br/>el juicio se escribe.
         </h2>
         <p class="lede" style="margin-top: 20px; font-size: 16px;">
-          Todo lo mecánico — numerar specs, transicionar estados, regenerar el
-          tablero — lo hacen <strong>scripts deterministas</strong>. La IA solo pone
-          lo que solo ella puede poner: criterio. Y cada transición de estado queda
-          auditada: quién, cuándo, desde dónde.
+          Lo mecánico lo hacen <strong>scripts sin dependencias</strong>:
+          <code>scaffold.mjs</code> numera y crea artefactos desde plantilla,
+          <code>estado.mjs</code> valida cada transición contra la máquina de
+          estados y firma el <code>historial</code>, <code>tablero.mjs</code>
+          regenera el board desde los frontmatters. El LLM nunca asigna IDs ni
+          edita estados a mano — solo redacta contenido.
         </p>
       </div>
 
@@ -124,33 +127,40 @@
     <div class="cards" style="margin-top: 32px;">
       <div class="card">
         <span class="num">01 / proceso</span>
-        <h3>Un pipeline con <em>gates humanos</em>.</h3>
+        <h3>Pipeline de roles como <em>subagentes</em>.</h3>
         <p>
-          Producto → arquitecto → implementador → verificador. Tú apruebas la
-          spec, los ADRs y el merge. Todo lo demás corre solo — y para cuando
-          debe parar: tres rojos seguidos y escala a ti.
+          Producto → arquitecto → implementador → verificador, cada uno con
+          contexto aislado y comunicándose solo por artefactos. Gates humanos
+          en aprobación de spec/ADR y en el merge. Si el verificador da RED,
+          los findings vuelven al implementador — máximo 3 iteraciones, luego
+          escala al humano.
         </p>
         <a class="link" href="flujos.html">ver los flujos</a>
       </div>
       <div class="card">
         <span class="num">02 / enforcement</span>
-        <h3>Hooks que <em>no negocian</em>.</h3>
+        <h3>Tres hooks <em>PreToolUse / PostToolUse</em>.</h3>
         <p>
-          Editar código sin spec aprobada: denegado. Tocar un documento de
-          verdad sin ser su dueño: denegado. El linter en rojo vuelve como
-          feedback. Fail-open: si algo raro pasa, nunca te dejan tirado.
+          <code>require-spec</code> deniega Edit/Write en rutas vigiladas sin
+          rama <code>ft/SPEC-NNN</code> y spec en aprobada/en-progreso.
+          <code>protege-verdad</code> restringe FOUNDATION.md y
+          <code>docs/fundacion/</code> a sus dueños. <code>calidad</code>
+          devuelve linter y coherencia de frontmatter con exit 2. Todos
+          fail-open: sin <code>.sdd.json</code>, no intervienen.
         </p>
-        <a class="link" href="flujos.html#hook">¿por qué me bloqueó?</a>
+        <a class="link" href="flujos.html#hook">qué comprueba cada uno</a>
       </div>
       <div class="card">
         <span class="num">03 / evidencia</span>
-        <h3>Cada CA con su <em>prueba</em>.</h3>
+        <h3>Ledger: CA → código → test → <em>verificación</em>.</h3>
         <p>
-          El ledger mapea cada criterio a su código, su test y su verificación.
-          El verificador captura pantalla y vídeo, y ensambla un acta HTML
-          autocontenida que puedes enseñar a quien haga falta.
+          Cada spec lleva un ledger con la matriz criterio → fichero → test →
+          veredicto, con escritores separados (el implementador rellena su
+          mitad; el verificador la suya). La evidencia visual va a
+          <code>_qa/SPEC-NNN/</code> y <code>informe-qa.mjs</code> ensambla un
+          acta HTML autocontenida (capturas y vídeo en base64).
         </p>
-        <a class="link" href="equipo.html">quién hace qué</a>
+        <a class="link" href="equipo.html">quién escribe qué</a>
       </div>
     </div>
   </section>
@@ -161,7 +171,7 @@
       <span class="ln"></span>
     </div>
     <h2 class="section" style="margin-top: 20px;">
-      Tres líneas y un <em>proyecto que nace recto</em>.
+      Instalación y <em>arranque</em>.
     </h2>
     <pre><span class="c"># una vez, en tu máquina</span>
 claude plugin marketplace add tremen-dev/tremen-sdd
@@ -172,8 +182,9 @@ claude plugin install <span class="k">tremen-sdd</span>@tremen-sdd
 
     <div class="cap-foot" style="margin-top: 28px;">
       <span><span class="br">{</span> ¿empezando de cero? <span class="br">}</span></span>
-      <span>mejor todavía: los hooks están activos desde el minuto uno —
-      la primera línea de código del proyecto ya exigirá su spec.</span>
+      <span>los hooks se activan cuando <code>/sdd-init</code> crea
+      <code>.sdd.json</code> — desde el primer commit, el código en rutas
+      vigiladas exige su spec aprobada.</span>
       <a href="flujos.html" style="margin-left:auto; color: var(--accent); font: 600 13px/1 var(--font-sans); text-decoration: none;">tengo una idea →</a>
     </div>
   </section>

@@ -136,15 +136,16 @@
       <span class="line2"><span class="br">{</span> <em>hago…</em> <span class="br">}</span></span>
     </h1>
     <p class="lede" style="margin-top: 32px;">
-      Cinco situaciones cubren el 95% del día a día. En todas, la mecánica es la
-      misma: <strong>tú decides en los gates, el equipo hace el resto</strong>.
-      Los pasos en <span style="color: var(--live); font-weight: 600;">verde</span> son tuyos.
+      Cinco escenarios de trabajo, paso a paso: qué rol interviene, qué artefacto
+      produce y dónde decides tú. Los pasos en
+      <span style="color: var(--live); font-weight: 600;">verde</span> son tuyos;
+      los recuadros punteados en ember son gates.
     </p>
   </section>
 
   <section class="flow-section" id="idea">
     <div class="section-eyebrow"><span class="num">/ 01 — "tengo una idea"</span><span class="ln"></span></div>
-    <h2 class="section" style="margin-top: 20px;">De cero a pipeline <em>sin saltarse nada</em>.</h2>
+    <h2 class="section" style="margin-top: 20px;">Proyecto nuevo: de la idea al primer <em>PR</em>.</h2>
     <div class="flow">
       <div class="step"><span class="who you">tú</span><span class="what"><code>git init</code> + <code>/sdd-init</code> — nombre, dominio, rutas a vigilar. Estampa FOUNDATION, docs/ y activa los hooks.</span></div>
       <div class="down">↓</div>
@@ -166,8 +167,8 @@
 
   <section class="flow-section" id="bug">
     <div class="section-eyebrow"><span class="num">/ 02 — "tengo un bug"</span><span class="ln"></span></div>
-    <h2 class="section" style="margin-top: 20px;">Los bugs también tienen <em>casa</em>.</h2>
-    <p class="lede">Nada de parches sueltos en main: el trabajo que no encaja en una épica de producto va a las épicas bucket permanentes — <code style="font-family: var(--font-mono); color: var(--accent);">EPIC-FIX</code>, <code style="font-family: var(--font-mono); color: var(--accent);">EPIC-INFRA</code>, <code style="font-family: var(--font-mono); color: var(--accent);">EPIC-MANT</code>, <code style="font-family: var(--font-mono); color: var(--accent);">EPIC-MEJORA</code>.</p>
+    <h2 class="section" style="margin-top: 20px;">Bug → <em>EPIC-FIX</em> → spec mínima.</h2>
+    <p class="lede">El trabajo que no encaja en una épica de producto va a las épicas bucket permanentes — <code style="font-family: var(--font-mono); color: var(--accent);">EPIC-FIX</code>, <code style="font-family: var(--font-mono); color: var(--accent);">EPIC-INFRA</code>, <code style="font-family: var(--font-mono); color: var(--accent);">EPIC-MANT</code>, <code style="font-family: var(--font-mono); color: var(--accent);">EPIC-MEJORA</code>.</p>
     <div class="flow">
       <div class="step"><span class="who you">tú</span><span class="what">"El webhook no actualiza el plan" — se lo cuentas al orquestador tal cual.</span></div>
       <div class="down">↓</div>
@@ -181,7 +182,7 @@
 
   <section class="flow-section" id="feature">
     <div class="section-eyebrow"><span class="num">/ 03 — "quiero una feature"</span><span class="ln"></span></div>
-    <h2 class="section" style="margin-top: 20px;">La pregunta clave: ¿qué spec la <em>gobierna</em>?</h2>
+    <h2 class="section" style="margin-top: 20px;">Localizar la spec que la <em>gobierna</em>.</h2>
     <div class="flow">
       <div class="step"><span class="who you">tú</span><span class="what">"Quiero que las facturas se envíen por email."</span></div>
       <div class="down">↓</div>
@@ -193,7 +194,7 @@
 
   <section class="flow-section" id="estado">
     <div class="section-eyebrow"><span class="num">/ 04 — "¿cómo vamos?"</span><span class="ln"></span></div>
-    <h2 class="section" style="margin-top: 20px;">Un tablero que <em>no miente</em>.</h2>
+    <h2 class="section" style="margin-top: 20px;">Estado real desde el <em>filesystem</em>.</h2>
     <div class="flow">
       <div class="step"><span class="who you">tú</span><span class="what">"¿Cómo vamos?" / "¿qué queda?" — en cualquier momento, sin ceremonia.</span></div>
       <div class="down">↓</div>
@@ -205,7 +206,7 @@
 
   <section class="flow-section" id="hook">
     <div class="section-eyebrow"><span class="num">/ 05 — "un hook me ha bloqueado"</span><span class="ln"></span></div>
-    <h2 class="section" style="margin-top: 20px;">No es un castigo: es el método <em>defendiéndose</em>.</h2>
+    <h2 class="section" style="margin-top: 20px;">Qué comprueba cada hook y <em>cómo seguir</em>.</h2>
     <div class="flow">
       <div class="step"><span class="who">require-spec</span><span class="what"><strong>"La rama 'main' no es una rama de spec"</strong> → estás editando código vigilado sin spec aprobada. Salida: pide la spec a /sdd-arquitecto, apruébala y trabaja en su rama <code>ft/SPEC-NNN-…</code>.</span></div>
       <div class="down">↓</div>

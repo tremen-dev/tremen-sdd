@@ -74,13 +74,15 @@
       <div class="card">
         <img class="avatar" src="assets/roles/sdd-orquestador.svg" alt="Avatar de sdd-orquestador" />
         <span class="num">01 / sdd-orquestador</span>
-        <h3>El director de <em>orquesta</em>.</h3>
-        <div class="role-file">entra todo trabajo por él · corre inline</div>
+        <h3>Router y <em>driver</em> del pipeline.</h3>
+        <div class="role-file">entrada de todo trabajo · corre inline</div>
         <p>
-          No produce nada él mismo — y por eso todo sale. Clasifica tu petición,
-          encuentra (o encarga) la spec que la gobierna, y conduce el pipeline
-          haciendo cumplir los gates. Al tercer rojo del verificador, para y te
-          llama: sabe cuándo el problema ya no es suyo.
+          Clasifica la petición (feature, bug → EPIC-FIX, infra, mejora),
+          localiza la spec que la gobierna o la encarga, crea la rama
+          <code>ft/SPEC-NNN-slug</code> y lanza cada rol como subagente.
+          Presenta la spec al gate humano, hace push y abre el PR con la
+          checklist de CA y <code>Refs: SPEC-NNN</code>. Tras 3 RED
+          consecutivos del verificador, para y escala con el ledger como resumen.
         </p>
         <div class="no-hace"><b>se niega a:</b> escribir código, editar specs, mergear. El merge es tuyo, siempre.</div>
       </div>
@@ -88,13 +90,15 @@
       <div class="card">
         <img class="avatar" src="assets/roles/sdd-producto.svg" alt="Avatar de sdd-producto" />
         <span class="num">02 / sdd-producto</span>
-        <h3>El que pregunta <em>por qué</em>.</h3>
-        <div class="role-file">product owner · guardián del roadmap</div>
+        <h3>Épicas con <em>criterios medibles</em>.</h3>
+        <div class="role-file">product owner · docs/roadmap.md</div>
         <p>
-          Le cuentas una idea difusa y te devuelve preguntas incómodas: ¿qué
-          problema?, ¿para quién?, ¿cómo sabremos que funcionó? De ahí salen
-          épicas con criterios de éxito medibles y un roadmap con intención.
-          Escribe "fuera de alcance" en todo — aparcado a propósito, no por descuido.
+          Convierte una petición difusa en una épica: pregunta (problema, para
+          quién, métrica de éxito) hasta poder escribir objetivo, criterios de
+          éxito, alcance dentro/fuera y riesgos. Crea el artefacto con
+          <code>scaffold.mjs</code> y coloca la épica en el roadmap
+          (Ahora / Después / Más adelante) justificando la posición.
+          "Fuera de alcance" es sección obligatoria en todo lo que escribe.
         </p>
         <div class="no-hace"><b>se niega a:</b> decidir stack o datos (eso es un ADR del arquitecto) e inventar cifras de negocio.</div>
       </div>
@@ -102,13 +106,16 @@
       <div class="card">
         <img class="avatar" src="assets/roles/sdd-arquitecto.svg" alt="Avatar de sdd-arquitecto" />
         <span class="num">03 / sdd-arquitecto</span>
-        <h3>La que lo deja todo <em>por escrito</em>.</h3>
+        <h3>Specs testables y <em>ADRs inmutables</em>.</h3>
         <div class="role-file">única autora de specs y ADRs</div>
         <p>
-          Convierte épicas en specs testables — cada criterio en Given/When/Then,
-          verificable con un test. Cada decisión técnica que condiciona el futuro
-          queda como ADR inmutable, con quién lo propuso y quién lo aprobó.
-          ¿Cambiar una decisión? Se escribe otra que la supersede. Nunca se borra.
+          Desglosa la épica en specs: cada criterio de aceptación en
+          Given/When/Then y verificable con un test. Toda decisión técnica que
+          condicione trabajo futuro (stack, datos, fronteras) se registra como
+          ADR con contexto, alternativas rechazadas y campo <code>Deciders</code>
+          (quién propuso, quién aprobó). Un ADR aceptado no se edita: se
+          supersede con otro. Las specs referencian las fuentes de verdad
+          (<code>dominio.md</code>, <code>reglas.md</code>), no las duplican.
         </p>
         <div class="no-hace"><b>se niega a:</b> implementar, aprobar sus propias specs, y duplicar lo que ya es fuente de verdad.</div>
       </div>
@@ -116,13 +123,16 @@
       <div class="card">
         <img class="avatar" src="assets/roles/sdd-implementador.svg" alt="Avatar de sdd-implementador" />
         <span class="num">04 / sdd-implementador</span>
-        <h3>El artesano <em>disciplinado</em>.</h3>
-        <div class="role-file">código contra spec · TDD por criterio</div>
+        <h3>TDD <em>criterio a criterio</em>.</h3>
+        <div class="role-file">código contra spec aprobada</div>
         <p>
-          Trabaja CA a CA: test que falla, mínimo código, verde, commit. Rellena
-          su mitad del ledger (qué fichero, qué test) y ni mira la otra mitad.
-          Si descubre trabajo no especificado, lo anota como follow-up y sigue —
-          nada fuera de los criterios, por tentador que sea.
+          Por cada CA: test que falla → mínimo código → verde → commit
+          (Conventional Commits con footer <code>Refs: SPEC-NNN</code>).
+          Rellena las columnas Implementado/Test del ledger; las de
+          verificación no las toca. El trabajo necesario no especificado se
+          anota como follow-up (<code>F-SPEC-NNN-x</code>) en el ledger y se
+          sigue — nada fuera de los CA. Al terminar transiciona la spec a
+          <code>en-revision</code> y deja el handoff escrito.
         </p>
         <div class="no-hace"><b>se niega a:</b> marcar nada como hecho, hacer push o PR, y tocar el veredicto del verificador.</div>
       </div>
@@ -130,14 +140,16 @@
       <div class="card">
         <img class="avatar" src="assets/roles/sdd-verificador.svg" alt="Avatar de sdd-verificador" />
         <span class="num">05 / sdd-verificador</span>
-        <h3>El escéptico <em>profesional</em>.</h3>
-        <div class="role-file">gate adversarial · solo lectura de código</div>
+        <h3>Veredicto <em>GREEN / RED</em> con evidencia.</h3>
+        <div class="role-file">gate adversarial · sin escritura de código</div>
         <p>
-          Su punto de partida: <em>nada funciona hasta que la evidencia diga lo
-          contrario</em>. No lee el razonamiento del implementador — solo artefactos.
-          Ejecuta los tests, recorre la UI real con Playwright, captura pantalla y
-          vídeo en <code>_qa/</code>, y firma GREEN o RED. Si duda, devuelve.
-          Con <code>--informe</code> te ensambla el acta HTML para enseñar a cliente.
+          Parte de que ningún CA está cumplido y busca la evidencia que lo
+          refute: suite completa (vigila regresiones), lint, typecheck, y por
+          cada CA el test que lo demuestra — comprobando que no es un test
+          vacío. La UI se verifica sobre la app real con Playwright, con
+          capturas en <code>_qa/SPEC-NNN/</code>. GREEN transiciona la spec a
+          <code>hecho</code>; RED devuelve findings accionables. Si duda,
+          devuelve. <code>--informe</code> genera el acta HTML autocontenida.
         </p>
         <div class="no-hace"><b>se niega a:</b> arreglar nada. El que juzga no repara — por eso su juicio vale.</div>
       </div>
@@ -145,13 +157,15 @@
       <div class="card">
         <img class="avatar" src="assets/roles/sdd-documentalista.svg" alt="Avatar de sdd-documentalista" />
         <span class="num">06 / sdd-documentalista</span>
-        <h3>El silencioso que <em>ordena la casa</em>.</h3>
+        <h3>Tablero, índices y <em>drift</em>.</h3>
         <div class="role-file">cierre mecánico · tier barato (haiku)</div>
         <p>
-          Cuando una spec llega a hecho, él pasa detrás: regenera el tablero,
-          valida frontmatters e IDs, detecta enlaces rotos y drift entre docs y
-          código. Trabajo mecánico con scripts deterministas — el juicio es de
-          otros, la escoba es suya.
+          Cuando una spec llega a <code>hecho</code>: regenera
+          <code>docs/tablero.md</code> con <code>tablero.mjs</code>, pasa
+          <code>valida.mjs</code> (frontmatters, IDs, estados vs. historial,
+          referencias a épicas) y revisa drift docs↔código a su alcance
+          (enlaces rotos, rutas movidas, <code>contexto.md</code> desfasado).
+          Si la épica tiene todas sus specs en hecho, propone cerrarla.
         </p>
         <div class="no-hace"><b>se niega a:</b> escribir en documentos de verdad. Lo que encuentra, lo propone; no lo toca.</div>
       </div>
@@ -159,14 +173,16 @@
       <div class="card">
         <img class="avatar" src="assets/roles/sdd-como-vamos.svg" alt="Avatar de sdd-como-vamos" />
         <span class="num">07 / sdd-como-vamos</span>
-        <h3>El que responde <em>sin tocar nada</em>.</h3>
-        <div class="role-file">informe de estado · read-only absoluto</div>
+        <h3>Estado del proyecto, <em>read-only</em>.</h3>
+        <div class="role-file">informe desde el filesystem · no escribe</div>
         <p>
-          "¿Cómo vamos?" Lee el filesystem y te lo cuenta agrupado por
-          accionabilidad: qué espera tu aprobación, qué está en curso, qué se
-          bloqueó — y su especialidad: las <em>cerradas con residual</em>, ese
-          "hecho (…)" que esconde trabajo pendiente. También te avisa si alguien
-          dejó la válvula de escape abierta.
+          Lee frontmatters, historiales y ledgers — nunca memoria de sesión —
+          y agrupa por accionabilidad: specs en <code>borrador</code> esperando
+          gate, en curso (con días desde el último cambio, calculados del
+          historial), bloqueadas, y <em>cerradas con residual</em>: en
+          <code>hecho</code> pero con ⚠️ o follow-ups <code>F-*</code> abiertos
+          en su ledger. Reporta también si <code>SDD_SKIP_GATE=1</code> está
+          activo o hay gates desactivados en <code>.sdd.json</code>.
         </p>
         <div class="no-hace"><b>se niega a:</b> corregir lo que encuentra. Reporta; arreglar es de otros flujos.</div>
       </div>
