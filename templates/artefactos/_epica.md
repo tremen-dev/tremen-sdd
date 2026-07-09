@@ -18,8 +18,6 @@ historial:
 - Fuera (aparcado a propósito, no por descuido):
 
 ## Specs
-<!-- Tabla DERIVADA de los frontmatters; la regenera /sdd-tablero. No editar a mano. -->
-| Spec | Título | Estado |
-|---|---|---|
+<!-- El estado por spec vive en el frontmatter de cada spec; el tablero agregado se regenera con /sdd-tablero (docs/tablero.md). No mantengas listas de specs a mano aquí. -->
 
 ## Riesgos
