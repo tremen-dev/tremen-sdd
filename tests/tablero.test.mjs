@@ -34,3 +34,14 @@ test('resume el recuento por estado', () => {
   assert.match(md, /hecho: 1/);
   assert.match(md, /en-progreso: 1/);
 });
+
+test('épica bucket sin slug (EPIC-FIX) no duplica el título', () => {
+  const docs = fs.mkdtempSync(path.join(os.tmpdir(), 'sdd-'));
+  const ep = path.join(docs, 'epicas', 'EPIC-FIX');
+  fs.mkdirSync(ep, { recursive: true });
+  fs.writeFileSync(path.join(ep, '_epica.md'),
+    '---\nid: EPIC-FIX\ntipo: epica\nestado: borrador\nhistorial:\n  - {estado: borrador, fecha: 2026-07-02, por: Alberto}\n---\n# EPIC-FIX\n');
+  const md = renderBoard(docs, '2026-07-09');
+  assert.match(md, /## EPIC-FIX \(/);
+  assert.doesNotMatch(md, /## EPIC-FIX — EPIC-FIX/);
+});

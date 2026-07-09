@@ -21,7 +21,9 @@ export function renderBoard(docsDir, fecha) {
     const dir = path.join(base, epDir);
     if (!fs.statSync(dir).isDirectory()) continue;
     const epica = fs.existsSync(path.join(dir, '_epica.md')) ? leer(path.join(dir, '_epica.md')) : { id: epDir, estado: '?' };
-    lineas.push(`## ${epica.id} — ${epDir.replace(/^EPIC-[^-]+-?/, '') || epica.id} (${epica.estado})`, '');
+    const slugDir = epDir.replace(/^EPIC-[^-]+-?/, '');
+    const titulo = slugDir ? `${epica.id} — ${slugDir}` : epica.id;
+    lineas.push(`## ${titulo} (${epica.estado})`, '');
     lineas.push('| Spec | Estado | Último cambio |', '|---|---|---|');
     for (const f of fs.readdirSync(dir).filter((n) => /^SPEC-.*\.md$/.test(n) && !n.endsWith('.ledger.md')).sort()) {
       const d = leer(path.join(dir, f));

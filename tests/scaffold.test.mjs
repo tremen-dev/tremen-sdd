@@ -60,3 +60,16 @@ test('createArtifact adr crea en docs/adr', () => {
   const ruta = createArtifact({ tipo: 'adr', titulo: 'Usar Turso', docsDir: docs, fecha: '2026-07-09' });
   assert.ok(ruta.endsWith('ADR-001-usar-turso.md'));
 });
+
+test('createArtifact epica con --id EPIC-FIX crea la carpeta bucket sin slug', () => {
+  const docs = tmpDocs();
+  const ruta = createArtifact({ tipo: 'epica', titulo: 'Fixes varios', docsDir: docs, fecha: '2026-07-09', id: 'EPIC-FIX' });
+  assert.ok(ruta.endsWith(path.join('EPIC-FIX', '_epica.md')));
+  const { data } = parseFrontmatter(fs.readFileSync(ruta, 'utf8'));
+  assert.equal(data.id, 'EPIC-FIX');
+});
+
+test('createArtifact epica con --id inválido lanza error', () => {
+  const docs = tmpDocs();
+  assert.throws(() => createArtifact({ tipo: 'epica', titulo: 'x', docsDir: docs, fecha: '2026-07-09', id: 'EPIC-999' }), /EPIC-999/);
+});

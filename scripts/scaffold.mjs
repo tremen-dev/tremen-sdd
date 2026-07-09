@@ -14,6 +14,11 @@ const TIPOS = {
   adr: { prefijo: 'ADR', plantilla: 'ADR.md' },
 };
 
+// Épicas "bucket": no nacen de una idea de producto sino que agrupan trabajo
+// transversal (fixes, infra, mantenimiento, mejoras). Vía de creación
+// sancionada: --id, restringido a este set cerrado.
+export const EPICAS_BUCKET = ['EPIC-FIX', 'EPIC-INFRA', 'EPIC-MANT', 'EPIC-MEJORA'];
+
 export function slugify(titulo) {
   return titulo.normalize('NFD').replace(/[̀-ͯ]/g, '')
     .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -41,29 +46,35 @@ function findEpicaDir(docsDir, epicaId) {
     .find((p) => path.basename(p) === epicaId || path.basename(p).startsWith(epicaId + '-')) ?? null;
 }
 
-export function createArtifact({ tipo, titulo, epica, docsDir, fecha }) {
+export function createArtifact({ tipo, titulo, epica, docsDir, fecha, id }) {
   const cfg = TIPOS[tipo];
   if (!cfg) throw new Error(`Tipo desconocido: ${tipo}. Usa epica|spec|task|adr.`);
   fecha ??= new Date().toISOString().slice(0, 10);
-  const id = nextId(docsDir, cfg.prefijo);
+  if (id !== undefined) {
+    if (tipo !== 'epica') throw new Error('--id solo es válido para tipo epica (épicas bucket).');
+    if (!EPICAS_BUCKET.includes(id)) {
+      throw new Error(`--id inválido: ${id}. Debe ser una de las épicas bucket sancionadas: ${EPICAS_BUCKET.join(', ')}.`);
+    }
+  }
+  const idFinal = id ?? nextId(docsDir, cfg.prefijo);
   const slug = slugify(titulo);
   const rellena = (tpl) => tpl
-    .replaceAll('{{ID}}', id).replaceAll('{{SLUG}}', slug)
+    .replaceAll('{{ID}}', idFinal).replaceAll('{{SLUG}}', slug)
     .replaceAll('{{TITULO}}', titulo).replaceAll('{{FECHA}}', fecha)
     .replaceAll('{{EPICA}}', epica ?? '');
   let destino;
   if (tipo === 'epica') {
-    const dir = path.join(docsDir, 'epicas', `${id}-${slug}`);
+    const dir = path.join(docsDir, 'epicas', id ? idFinal : `${idFinal}-${slug}`);
     fs.mkdirSync(dir, { recursive: true });
     destino = path.join(dir, '_epica.md');
   } else if (tipo === 'adr') {
     fs.mkdirSync(path.join(docsDir, 'adr'), { recursive: true });
-    destino = path.join(docsDir, 'adr', `${id}-${slug}.md`);
+    destino = path.join(docsDir, 'adr', `${idFinal}-${slug}.md`);
   } else {
     if (!epica) throw new Error(`Un ${tipo} necesita --epica EPIC-NNN.`);
     const epicaDir = findEpicaDir(docsDir, epica);
     if (!epicaDir) throw new Error(`No existe la épica ${epica} bajo ${docsDir}/epicas.`);
-    destino = path.join(epicaDir, `${id}-${slug}.md`);
+    destino = path.join(epicaDir, `${idFinal}-${slug}.md`);
   }
   fs.writeFileSync(destino, rellena(fs.readFileSync(TPL(cfg.plantilla), 'utf8')));
   if (tipo === 'spec') {
@@ -77,9 +88,10 @@ export function createArtifact({ tipo, titulo, epica, docsDir, fecha }) {
 if (process.argv[1] && import.meta.url === new URL(`file:///${process.argv[1].replaceAll('\\', '/')}`).href) {
   const [tipo, titulo] = process.argv.slice(2);
   const epica = process.argv.includes('--epica') ? process.argv[process.argv.indexOf('--epica') + 1] : undefined;
+  const id = process.argv.includes('--id') ? process.argv[process.argv.indexOf('--id') + 1] : undefined;
   const dir = process.argv.includes('--dir') ? process.argv[process.argv.indexOf('--dir') + 1] : 'docs';
   try {
-    console.log(createArtifact({ tipo, titulo, epica, docsDir: path.resolve(dir) }));
+    console.log(createArtifact({ tipo, titulo, epica, docsDir: path.resolve(dir), id }));
   } catch (e) {
     console.error(`[scaffold] ${e.message}`);
     process.exit(1);
