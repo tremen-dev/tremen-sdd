@@ -13,6 +13,11 @@
   .roster .cards { grid-template-columns: repeat(3, 1fr); }
   @media (max-width: 980px) { .roster .cards { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 720px) { .roster .cards { grid-template-columns: 1fr; } }
+  .card .avatar {
+    width: 76px; height: 76px;
+    display: block;
+    margin-bottom: 18px;
+  }
   .card .role-file {
     font: 500 11px/1 var(--font-mono);
     color: var(--fg-dim);
@@ -67,6 +72,7 @@
     <div class="cards">
 
       <div class="card">
+        <img class="avatar" src="assets/roles/sdd-orquestador.svg" alt="Avatar de sdd-orquestador" />
         <span class="num">01 / sdd-orquestador</span>
         <h3>El director de <em>orquesta</em>.</h3>
         <div class="role-file">entra todo trabajo por él · corre inline</div>
@@ -80,6 +86,7 @@
       </div>
 
       <div class="card">
+        <img class="avatar" src="assets/roles/sdd-producto.svg" alt="Avatar de sdd-producto" />
         <span class="num">02 / sdd-producto</span>
         <h3>El que pregunta <em>por qué</em>.</h3>
         <div class="role-file">product owner · guardián del roadmap</div>
@@ -93,6 +100,7 @@
       </div>
 
       <div class="card">
+        <img class="avatar" src="assets/roles/sdd-arquitecto.svg" alt="Avatar de sdd-arquitecto" />
         <span class="num">03 / sdd-arquitecto</span>
         <h3>La que lo deja todo <em>por escrito</em>.</h3>
         <div class="role-file">única autora de specs y ADRs</div>
@@ -106,6 +114,7 @@
       </div>
 
       <div class="card">
+        <img class="avatar" src="assets/roles/sdd-implementador.svg" alt="Avatar de sdd-implementador" />
         <span class="num">04 / sdd-implementador</span>
         <h3>El artesano <em>disciplinado</em>.</h3>
         <div class="role-file">código contra spec · TDD por criterio</div>
@@ -119,6 +128,7 @@
       </div>
 
       <div class="card">
+        <img class="avatar" src="assets/roles/sdd-verificador.svg" alt="Avatar de sdd-verificador" />
         <span class="num">05 / sdd-verificador</span>
         <h3>El escéptico <em>profesional</em>.</h3>
         <div class="role-file">gate adversarial · solo lectura de código</div>
@@ -133,6 +143,7 @@
       </div>
 
       <div class="card">
+        <img class="avatar" src="assets/roles/sdd-documentalista.svg" alt="Avatar de sdd-documentalista" />
         <span class="num">06 / sdd-documentalista</span>
         <h3>El silencioso que <em>ordena la casa</em>.</h3>
         <div class="role-file">cierre mecánico · tier barato (haiku)</div>
@@ -146,6 +157,7 @@
       </div>
 
       <div class="card">
+        <img class="avatar" src="assets/roles/sdd-como-vamos.svg" alt="Avatar de sdd-como-vamos" />
         <span class="num">07 / sdd-como-vamos</span>
         <h3>El que responde <em>sin tocar nada</em>.</h3>
         <div class="role-file">informe de estado · read-only absoluto</div>

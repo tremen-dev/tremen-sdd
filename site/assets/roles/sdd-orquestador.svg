@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-label="sdd-orquestador">
+  <rect x="4" y="4" width="88" height="88" rx="20" fill="#111110" stroke="#2A2620" stroke-width="2"/>
+  <g fill="none" stroke="#F5F1EA" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="46" cy="46" r="17"/>
+    <path d="M26 84 Q29 68 42 65"/>
+    <path d="M66 84 Q63 68 50 65"/>
+    <path d="M40 53 Q46 57 52 53"/>
+  </g>
+  <circle cx="40" cy="44" r="2.2" fill="#F5F1EA"/>
+  <circle cx="52" cy="44" r="2.2" fill="#F5F1EA"/>
+  <!-- pajarita -->
+  <path d="M46 70 L36 65 L36 75 Z" fill="#FF6B00"/>
+  <path d="M46 70 L56 65 L56 75 Z" fill="#FF6B00"/>
+  <!-- batuta -->
+  <g stroke="#FF6B00" stroke-width="2.5" stroke-linecap="round">
+    <path d="M66 30 L84 14"/>
+  </g>
+  <circle cx="85" cy="13" r="2.5" fill="#FF6B00"/>
+  <g stroke="#6B655C" stroke-width="1.5" stroke-linecap="round" fill="none">
+    <path d="M72 38 Q78 34 80 28"/>
+    <path d="M60 26 Q62 20 68 17"/>
+  </g>
+</svg>

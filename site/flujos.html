@@ -41,26 +41,48 @@
     border-radius: 5px;
     padding: 2px 6px;
   }
+  /* conector vertical: barra ember con punta de flecha */
   .flow .down {
-    align-self: flex-start;
-    margin: 2px 0 2px 28px;
-    color: var(--fg-dim);
-    font: 500 13px/1 var(--font-mono);
+    font-size: 0;                 /* oculta el glifo ↓ del markup */
+    margin-left: 110px;
+    width: 3px;
+    height: 30px;
+    background: var(--accent);
+    border-radius: 2px;
+    position: relative;
+    opacity: 0.9;
+  }
+  .flow .down::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -1px;
+    transform: translateX(-50%);
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-top: 9px solid var(--accent);
   }
   .step.gate {
     border: 1px dashed var(--accent);
     background: color-mix(in srgb, var(--accent) 6%, var(--bg-elev));
   }
   .step.gate .who { color: var(--accent); text-transform: uppercase; }
+  /* bifurcación: carril punteado que continúa el conector */
   .flow .fork {
-    margin: 2px 0 2px 28px;
-    color: var(--fg-dim);
-    font: 500 12px/1.5 var(--font-mono);
+    margin-left: 96px;
+    padding: 12px 16px;
+    border-left: 3px dashed var(--accent);
+    background: color-mix(in srgb, var(--accent) 4%, transparent);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    color: var(--fg-muted);
+    font: 500 12.5px/1.7 var(--font-mono);
   }
   .flow .fork b { color: var(--accent); font-weight: 600; }
   .flow .fork .ok { color: var(--live); }
   @media (max-width: 720px) {
     .step { grid-template-columns: 1fr; gap: 6px; }
+    .flow .down { margin-left: 32px; }
+    .flow .fork { margin-left: 18px; }
   }
 
   /* ---- máquina de estados ---- */

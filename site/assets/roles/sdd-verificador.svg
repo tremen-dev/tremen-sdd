@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-label="sdd-verificador">
+  <rect x="4" y="4" width="88" height="88" rx="20" fill="#111110" stroke="#2A2620" stroke-width="2"/>
+  <g fill="none" stroke="#F5F1EA" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="48" cy="48" r="17"/>
+    <path d="M28 86 Q31 70 44 67"/>
+    <path d="M68 86 Q65 70 52 67"/>
+    <!-- boca recta: sin concesiones -->
+    <path d="M42 56 L54 56"/>
+    <!-- ceja escéptica levantada -->
+    <path d="M37 40 Q41 37 45 40"/>
+  </g>
+  <circle cx="42" cy="46" r="2.2" fill="#F5F1EA"/>
+  <circle cx="55" cy="47" r="2.2" fill="#F5F1EA"/>
+  <!-- monóculo -->
+  <g fill="none" stroke="#FF6B00" stroke-width="2.5" stroke-linecap="round">
+    <circle cx="55" cy="47" r="7"/>
+    <path d="M55 54 L55 63"/>
+  </g>
+  <!-- veredicto -->
+  <g fill="none" stroke="#7CFFB2" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M72 22 L76 27 L84 16"/>
+  </g>
+</svg>

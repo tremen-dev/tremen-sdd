@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-label="sdd-implementador">
+  <rect x="4" y="4" width="88" height="88" rx="20" fill="#111110" stroke="#2A2620" stroke-width="2"/>
+  <g fill="none" stroke="#F5F1EA" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="48" cy="48" r="17"/>
+    <path d="M28 86 Q31 70 44 67"/>
+    <path d="M68 86 Q65 70 52 67"/>
+    <path d="M42 55 Q48 58 54 55"/>
+    <!-- auriculares -->
+    <path d="M31 44 Q31 24 48 24 Q65 24 65 44"/>
+  </g>
+  <circle cx="42" cy="47" r="2.2" fill="#F5F1EA"/>
+  <circle cx="54" cy="47" r="2.2" fill="#F5F1EA"/>
+  <rect x="27" y="42" width="7" height="12" rx="3" fill="#FF6B00"/>
+  <rect x="62" y="42" width="7" height="12" rx="3" fill="#FF6B00"/>
+  <!-- brackets de código -->
+  <g fill="none" stroke="#FF6B00" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M74 64 L70 70 L74 76"/>
+    <path d="M82 64 L86 70 L82 76"/>
+  </g>
+</svg>
