@@ -50,3 +50,12 @@ test('fail-open sin .sdd.json', () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'sdd-'));
   assert.equal(corre(dir, path.join(dir, 'docs', 'tablero.md'), 'main'), '');
 });
+
+// Regresión: file_path RELATIVO no debe resolverse contra el cwd del proceso
+// del hook (que hereda el del runner, no el del proyecto en payload.cwd).
+// Sin path.resolve(cwd, fichero) esto bypasea el gate por completo.
+test('deniega file_path relativo a un documento de verdad (bypass crítico)', () => {
+  const dir = proyecto();
+  assert.match(corre(dir, 'FOUNDATION.md', 'sdd-implementador'), /deny/);
+  assert.match(corre(dir, 'docs/fundacion/x.md', 'sdd-verificador'), /deny/);
+});

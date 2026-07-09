@@ -12,7 +12,9 @@ try {
   const cwd = payload.cwd || process.cwd();
   const cfg = readConfig(cwd);
   if (!cfg || cfg.gates?.protegeVerdad === false) allow();
-  const rel = path.relative(cwd, payload.tool_input?.file_path ?? '').replaceAll('\\', '/');
+  const fichero = payload.tool_input?.file_path ?? '';
+  if (!fichero) allow();
+  const rel = path.relative(cwd, path.resolve(cwd, fichero)).replaceAll('\\', '/');
   const rol = payload.agent_type ?? payload.agent_name ?? 'main';
   if (rel === 'docs/tablero.md') {
     deny('docs/tablero.md es GENERADO: regenéralo con /sdd-tablero (scripts/tablero.mjs); no se edita a mano.');
