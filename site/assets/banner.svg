@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="300" viewBox="0 0 1200 300" role="img" aria-label="tremen-sdd — nada se codea sin spec aprobada">
+  <defs>
+    <style>
+      .mono { font-family: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace; }
+      .sans { font-family: 'Geist', ui-sans-serif, system-ui, -apple-system, 'Helvetica Neue', sans-serif; }
+    </style>
+  </defs>
+
+  <!-- fondo dark cálido -->
+  <rect width="1200" height="300" fill="#111110"/>
+  <rect x="1" y="1" width="1198" height="298" fill="none" stroke="#2A2620" stroke-width="2" rx="14"/>
+
+  <!-- eyebrow -->
+  <text x="80" y="78" class="mono" font-size="15" letter-spacing="2" fill="#FF6B00">/ ESTÁNDAR SDD · PLUGIN DE CLAUDE CODE · v0.1.0</text>
+  <line x1="560" y1="73" x2="1120" y2="73" stroke="#2A2620" stroke-width="1" stroke-dasharray="2 6"/>
+
+  <!-- lockup -->
+  <text x="76" y="178" class="sans" font-size="84" font-weight="800" letter-spacing="-3" fill="#F5F1EA"><tspan fill="#FF6B00">{</tspan> tremen-sdd <tspan fill="#FF6B00">}</tspan></text>
+
+  <!-- tagline -->
+  <text x="80" y="232" class="sans" font-size="26" font-weight="500" fill="#A8A29A">Nada se codea <tspan fill="#FF6B00" font-style="italic">sin spec aprobada</tspan> por ti.</text>
+
+  <!-- sello -->
+  <g transform="translate(1040 210) rotate(-6)">
+    <rect x="-8" y="-26" width="140" height="52" rx="8" fill="none" stroke="#FF6B00" stroke-width="1.5" opacity="0.85"/>
+    <text x="62" y="-4" text-anchor="middle" class="mono" font-size="14" font-weight="600" fill="#FF6B00">ed. 2026</text>
+    <text x="62" y="16" text-anchor="middle" class="mono" font-size="9" letter-spacing="1" fill="#A8A29A">SPEC · GATE · GREEN</text>
+  </g>
+
+  <!-- pie -->
+  <text x="80" y="272" class="mono" font-size="13" fill="#6B655C">la estructura se scriptea · el juicio se escribe</text>
+</svg>

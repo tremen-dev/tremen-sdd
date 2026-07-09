@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="site/assets/banner.svg" alt="tremen-sdd — nada se codea sin spec aprobada" width="100%" />
+</p>
+
 # tremen-sdd
 
 Plugin de Claude Code que empaqueta el estándar SDD (spec-driven development)
@@ -6,6 +10,14 @@ aprobada", ADRs inmutables y un pipeline de roles producto → arquitecto →
 implementador → verificador — con hooks que lo hacen cumplir y scripts que
 lo automatizan, en vez de dejarlo en prosa que cada proyecto reimplementa a
 su manera.
+
+**Documentación visual** (`site/`, con el design system de tremen.dev):
+
+| Página | Qué cuenta |
+|---|---|
+| [`site/index.html`](site/index.html) | Qué es tremen-sdd, la filosofía y la instalación |
+| [`site/equipo.html`](site/equipo.html) | **Este es tu equipo**: los 7 roles, como personas — qué hacen y a qué se niegan |
+| [`site/flujos.html`](site/flujos.html) | **¿Cómo hago…?**: idea nueva, bug, feature, estado, "un hook me bloqueó", y la vida de una spec |
 
 ## Instalación
 

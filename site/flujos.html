@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>tremen-sdd · ¿cómo hago…?</title>
+<meta name="description" content="Los flujos de tremen-sdd, escenario a escenario: tengo una idea, tengo un bug, quiero una feature, ¿cómo vamos?, un hook me bloqueó." />
+<link rel="stylesheet" href="../design/tremen-ds/components/index.css" />
+<link rel="stylesheet" href="../design/tremen-ds/responsive.css" />
+<style>
+  .hero { padding: 64px 0 48px; }
+  .flow-section { padding: 56px 0 64px; border-top: 1px solid var(--line); }
+  .flow-section > .lede { font-size: 16px; max-width: 720px; margin-top: 16px; }
+
+  /* ---- flow component (sobre tokens del DS) ---- */
+  .flow { margin-top: 32px; display: flex; flex-direction: column; max-width: 760px; }
+  .step {
+    display: grid;
+    grid-template-columns: 190px 1fr;
+    gap: 20px;
+    padding: 16px 20px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--bg-elev);
+    align-items: baseline;
+  }
+  .step .who {
+    font: 600 12px/1.5 var(--font-mono);
+    color: var(--accent);
+    letter-spacing: 0.06em;
+  }
+  .step .who.you { color: var(--live); }
+  .step .who.script { color: var(--fg-dim); }
+  .step .what { font: 400 14.5px/1.55 var(--font-sans); color: var(--fg-muted); }
+  .step .what strong { color: var(--fg); font-weight: 600; }
+  .step .what code {
+    font: 500 12.5px/1 var(--font-mono);
+    color: var(--fg);
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    padding: 2px 6px;
+  }
+  .flow .down {
+    align-self: flex-start;
+    margin: 2px 0 2px 28px;
+    color: var(--fg-dim);
+    font: 500 13px/1 var(--font-mono);
+  }
+  .step.gate {
+    border: 1px dashed var(--accent);
+    background: color-mix(in srgb, var(--accent) 6%, var(--bg-elev));
+  }
+  .step.gate .who { color: var(--accent); text-transform: uppercase; }
+  .flow .fork {
+    margin: 2px 0 2px 28px;
+    color: var(--fg-dim);
+    font: 500 12px/1.5 var(--font-mono);
+  }
+  .flow .fork b { color: var(--accent); font-weight: 600; }
+  .flow .fork .ok { color: var(--live); }
+  @media (max-width: 720px) {
+    .step { grid-template-columns: 1fr; gap: 6px; }
+  }
+
+  /* ---- máquina de estados ---- */
+  .machine {
+    margin-top: 32px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    font: 600 13px/1 var(--font-mono);
+  }
+  .machine .st {
+    padding: 10px 16px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--bg-elev);
+    color: var(--fg-muted);
+  }
+  .machine .st.gated { border-color: var(--accent); color: var(--accent); }
+  .machine .st.done { border-color: var(--live); color: var(--live); }
+  .machine .arr2 { color: var(--fg-dim); }
+  .machine-notes {
+    margin-top: 18px;
+    font: 500 12.5px/1.8 var(--font-mono);
+    color: var(--fg-dim);
+    max-width: 720px;
+  }
+  .machine-notes b { color: var(--accent); font-weight: 600; }
+</style>
+</head>
+<body class="v-tremendo">
+<div class="frame">
+
+  <nav class="nav">
+    <span class="lockup"><span class="br">{</span>tremen<span class="dev">-sdd</span><span class="br">}</span></span>
+    <div class="nav-links">
+      <a href="index.html">inicio</a>
+      <a href="equipo.html">el equipo</a>
+      <a href="flujos.html" class="active">los flujos</a>
+    </div>
+    <a class="nav-cta" href="../README.md">README →</a>
+  </nav>
+
+  <section class="hero">
+    <div class="eyebrow-row">
+      <span class="eyebrow">/ escenario a escenario · quién hace qué · dónde paras tú</span>
+      <span class="dot-row"></span>
+    </div>
+    <h1 class="headline">
+      ¿Cómo
+      <span class="line2"><span class="br">{</span> <em>hago…</em> <span class="br">}</span></span>
+    </h1>
+    <p class="lede" style="margin-top: 32px;">
+      Cinco situaciones cubren el 95% del día a día. En todas, la mecánica es la
+      misma: <strong>tú decides en los gates, el equipo hace el resto</strong>.
+      Los pasos en <span style="color: var(--live); font-weight: 600;">verde</span> son tuyos.
+    </p>
+  </section>
+
+  <section class="flow-section" id="idea">
+    <div class="section-eyebrow"><span class="num">/ 01 — "tengo una idea"</span><span class="ln"></span></div>
+    <h2 class="section" style="margin-top: 20px;">De cero a pipeline <em>sin saltarse nada</em>.</h2>
+    <div class="flow">
+      <div class="step"><span class="who you">tú</span><span class="what"><code>git init</code> + <code>/sdd-init</code> — nombre, dominio, rutas a vigilar. Estampa FOUNDATION, docs/ y activa los hooks.</span></div>
+      <div class="down">↓</div>
+      <div class="step"><span class="who">/sdd-producto</span><span class="what">Te interroga (problema, para quién, éxito medible) → escribe la <strong>visión</strong> y la primera <strong>épica</strong>, y la coloca en el roadmap.</span></div>
+      <div class="down">↓</div>
+      <div class="step"><span class="who">/sdd-arquitecto</span><span class="what">Convierte la épica en <strong>SPEC-001</strong> con criterios Given/When/Then, y registra el stack como <strong>ADRs</strong> — los primeros son los que más valen.</span></div>
+      <div class="down">↓</div>
+      <div class="step gate"><span class="who">gate · tú</span><span class="what">Lees la spec y la apruebas. Queda registrado en el historial: quién y cuándo. <strong>Sin esto, los hooks no dejan escribir ni una línea.</strong></span></div>
+      <div class="down">↓</div>
+      <div class="step"><span class="who">sdd-implementador</span><span class="what">En la rama <code>ft/SPEC-001-…</code>, TDD criterio a criterio. Va rellenando su mitad del <strong>ledger</strong>.</span></div>
+      <div class="down">↓</div>
+      <div class="step"><span class="who">sdd-verificador</span><span class="what">Con ojos frescos: tests, UI real con Playwright, capturas en <code>_qa/</code>. Firma <strong>GREEN o RED</strong>.</span></div>
+      <div class="fork"><b>RED</b> → vuelve al implementador con findings (máx. 3 rondas, luego escala a ti) · <span class="ok">GREEN</span> → sigue ↓</div>
+      <div class="step"><span class="who">/sdd-orquestador</span><span class="what">Push + <strong>PR</strong> con la checklist de criterios y el enlace al ledger.</span></div>
+      <div class="down">↓</div>
+      <div class="step gate"><span class="who">gate · tú</span><span class="what">Revisas el PR con su evidencia y <strong>mergeas tú</strong>. Siempre.</span></div>
+    </div>
+  </section>
+
+  <section class="flow-section" id="bug">
+    <div class="section-eyebrow"><span class="num">/ 02 — "tengo un bug"</span><span class="ln"></span></div>
+    <h2 class="section" style="margin-top: 20px;">Los bugs también tienen <em>casa</em>.</h2>
+    <p class="lede">Nada de parches sueltos en main: el trabajo que no encaja en una épica de producto va a las épicas bucket permanentes — <code style="font-family: var(--font-mono); color: var(--accent);">EPIC-FIX</code>, <code style="font-family: var(--font-mono); color: var(--accent);">EPIC-INFRA</code>, <code style="font-family: var(--font-mono); color: var(--accent);">EPIC-MANT</code>, <code style="font-family: var(--font-mono); color: var(--accent);">EPIC-MEJORA</code>.</p>
+    <div class="flow">
+      <div class="step"><span class="who you">tú</span><span class="what">"El webhook no actualiza el plan" — se lo cuentas al orquestador tal cual.</span></div>
+      <div class="down">↓</div>
+      <div class="step"><span class="who">/sdd-orquestador</span><span class="what">Clasifica: es un bug → <strong>EPIC-FIX</strong>. Encarga al arquitecto una spec pequeña: síntoma, causa esperada, criterio de "arreglado" verificable.</span></div>
+      <div class="down">↓</div>
+      <div class="step gate"><span class="who">gate · tú</span><span class="what">Apruebas la spec del fix (suele ser un minuto — pero deja rastro de qué se consideró "arreglado" y por qué).</span></div>
+      <div class="down">↓</div>
+      <div class="step"><span class="who">pipeline</span><span class="what">Implementador (con test de regresión que reproduce el bug) → verificador → PR → merge tuyo. El mismo camino de siempre, en pequeño.</span></div>
+    </div>
+  </section>
+
+  <section class="flow-section" id="feature">
+    <div class="section-eyebrow"><span class="num">/ 03 — "quiero una feature"</span><span class="ln"></span></div>
+    <h2 class="section" style="margin-top: 20px;">La pregunta clave: ¿qué spec la <em>gobierna</em>?</h2>
+    <div class="flow">
+      <div class="step"><span class="who you">tú</span><span class="what">"Quiero que las facturas se envíen por email."</span></div>
+      <div class="down">↓</div>
+      <div class="step"><span class="who">/sdd-orquestador</span><span class="what">Busca en <code>docs/epicas/</code>: ¿existe ya una spec o épica que cubra esto?</span></div>
+      <div class="fork"><b>encaja en una épica existente</b> → el arquitecto le añade una spec · <b>es territorio nuevo</b> → primero /sdd-producto define la épica · <b>ya está especificado</b> → directo al gate</div>
+      <div class="step gate"><span class="who">gate · tú</span><span class="what">Apruebas la spec — y desde aquí, pipeline estándar hasta tu merge.</span></div>
+    </div>
+  </section>
+
+  <section class="flow-section" id="estado">
+    <div class="section-eyebrow"><span class="num">/ 04 — "¿cómo vamos?"</span><span class="ln"></span></div>
+    <h2 class="section" style="margin-top: 20px;">Un tablero que <em>no miente</em>.</h2>
+    <div class="flow">
+      <div class="step"><span class="who you">tú</span><span class="what">"¿Cómo vamos?" / "¿qué queda?" — en cualquier momento, sin ceremonia.</span></div>
+      <div class="down">↓</div>
+      <div class="step"><span class="who">/sdd-como-vamos</span><span class="what">Lee frontmatters, historiales y ledgers (nunca cachés ni memoria) y agrupa por accionabilidad: <strong>esperando tu aprobación</strong> · en curso (con días desde el último cambio) · bloqueadas · <strong>cerradas con residual</strong> — el "hecho (…)" que esconde trabajo. Y avisa si la válvula de escape quedó abierta.</span></div>
+      <div class="down">↓</div>
+      <div class="step"><span class="who script">script</span><span class="what"><code>/sdd-tablero</code> regenera <code>docs/tablero.md</code> desde los frontmatters. Editarlo a mano está bloqueado por hook — un índice manual siempre acaba mintiendo.</span></div>
+    </div>
+  </section>
+
+  <section class="flow-section" id="hook">
+    <div class="section-eyebrow"><span class="num">/ 05 — "un hook me ha bloqueado"</span><span class="ln"></span></div>
+    <h2 class="section" style="margin-top: 20px;">No es un castigo: es el método <em>defendiéndose</em>.</h2>
+    <div class="flow">
+      <div class="step"><span class="who">require-spec</span><span class="what"><strong>"La rama 'main' no es una rama de spec"</strong> → estás editando código vigilado sin spec aprobada. Salida: pide la spec a /sdd-arquitecto, apruébala y trabaja en su rama <code>ft/SPEC-NNN-…</code>.</span></div>
+      <div class="down">↓</div>
+      <div class="step"><span class="who">protege-verdad</span><span class="what"><strong>"…es un documento de verdad"</strong> → FOUNDATION.md y <code>docs/fundacion/</code> solo los escriben sus dueños (arquitecto, producto — y tú). Los demás roles proponen el cambio en su informe.</span></div>
+      <div class="down">↓</div>
+      <div class="step"><span class="who">calidad</span><span class="what">No bloquea: te <strong>devuelve</strong> el fallo del linter o la incoherencia del artefacto como feedback accionable, para arreglarlo en el momento.</span></div>
+    </div>
+    <div class="cap-foot" style="margin-top: 28px; max-width: 760px;">
+      <span><span class="br">{</span> la válvula <span class="br">}</span></span>
+      <span><code style="font-family: var(--font-mono);">SDD_SKIP_GATE=1</code> desactiva los gates para una emergencia real.
+      Úsala sabiendo que <strong>/sdd-como-vamos la delatará</strong> en el siguiente informe — está diseñada para no volverse permanente.</span>
+    </div>
+  </section>
+
+  <section class="flow-section" id="estados">
+    <div class="section-eyebrow"><span class="num">/ el mapa — la vida de una spec</span><span class="ln"></span></div>
+    <h2 class="section" style="margin-top: 20px;">Seis estados, dos <em>firmas</em>.</h2>
+    <div class="machine">
+      <span class="st">borrador</span><span class="arr2">→</span>
+      <span class="st gated">aprobada</span><span class="arr2">→</span>
+      <span class="st">en-progreso</span><span class="arr2">→</span>
+      <span class="st">en-revision</span><span class="arr2">→</span>
+      <span class="st done">hecho</span>
+      <span class="arr2" style="margin-left: 8px;">·</span>
+      <span class="st" style="border-style: dashed;">bloqueada ⇄</span>
+    </div>
+    <p class="machine-notes">
+      <b>borrador → aprobada</b>: solo la cruza un humano (tu firma queda en el historial).<br/>
+      <b>en-revision → hecho</b>: solo la cruza el veredicto GREEN del verificador.<br/>
+      <b>hecho</b> es terminal — nadie lo reabre; lo nuevo es otra spec.<br/>
+      <b>bloqueada</b> es lateral: cualquier estado no terminal entra y sale de ella.<br/>
+      Toda transición pasa por <b>scripts/estado.mjs</b>: valida el salto y firma el historial. A mano, no.
+    </p>
+  </section>
+
+  <footer>
+    <div class="meta">© 2026 — <a href="https://tremen.dev">Alberto Fojo</a> · tremen-sdd v0.1.0</div>
+    <span class="stamp-foot"><span class="br">{</span> tú decides en los gates · el equipo hace el resto <span class="br">}</span></span>
+  </footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>tremen-sdd · nada se codea sin spec aprobada</title>
+<meta name="description" content="tremen-sdd: el estándar SDD de tremen.dev empaquetado como plugin de Claude Code. Roles, hooks de enforcement, scaffolding determinista." />
+<link rel="stylesheet" href="../design/tremen-ds/components/index.css" />
+<link rel="stylesheet" href="../design/tremen-ds/responsive.css" />
+<style>
+  .hero { padding: 64px 0 72px; }
+  .install {
+    padding: 72px 0 80px;
+    border-top: 1px solid var(--line);
+  }
+  .install pre {
+    margin: 28px 0 0;
+    padding: 24px 28px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-card);
+    background: var(--bg-elev);
+    font: 500 var(--t-mono)/1.9 var(--font-mono);
+    color: var(--fg-muted);
+    overflow-x: auto;
+  }
+  .install pre .c { color: var(--fg-dim); }
+  .install pre .k { color: var(--accent); }
+  .section-pad { padding: 72px 0 80px; border-top: 1px solid var(--line); }
+  .two-col {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    gap: 56px;
+    align-items: center;
+  }
+  @media (max-width: 720px) { .two-col { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body class="v-tremendo">
+<div class="frame">
+
+  <nav class="nav">
+    <span class="lockup"><span class="br">{</span>tremen<span class="dev">-sdd</span><span class="br">}</span></span>
+    <div class="nav-links">
+      <a href="index.html" class="active">inicio</a>
+      <a href="equipo.html">el equipo</a>
+      <a href="flujos.html">los flujos</a>
+    </div>
+    <a class="nav-cta" href="../README.md">README →</a>
+  </nav>
+
+  <section class="hero">
+    <div class="eyebrow-row">
+      <span class="eyebrow">/ estándar SDD · plugin de Claude Code · v0.1.0</span>
+      <span class="dot-row"></span>
+    </div>
+
+    <h1 class="headline">
+      Nada se codea
+      <span class="line2"><span class="br">{</span> <em>sin spec</em> <span class="br">}</span></span>
+      <span class="line3">aprobada <span style="color: var(--accent)">por ti.</span></span>
+    </h1>
+
+    <p class="lede" style="margin-top: 32px;">
+      <strong>tremen-sdd</strong> empaqueta una forma de construir software con IA:
+      un equipo de roles con poderes separados, gates humanos donde importa,
+      y hooks que convierten el método en regla — no en buena intención.
+    </p>
+
+    <div style="display:flex; gap:12px; margin-top: 28px; flex-wrap: wrap;">
+      <a class="btn primary" href="equipo.html">conoce al equipo <span class="arr">→</span></a>
+      <a class="btn" href="flujos.html">ver los flujos</a>
+    </div>
+  </section>
+
+  <section class="section-pad">
+    <div class="two-col">
+      <div>
+        <div class="section-eyebrow">
+          <span class="num">/ 01 — la idea</span>
+          <span class="ln"></span>
+        </div>
+        <h2 class="section" style="margin-top: 20px;">
+          La estructura se <em>scriptea</em>,<br/>el juicio se escribe.
+        </h2>
+        <p class="lede" style="margin-top: 20px; font-size: 16px;">
+          Todo lo mecánico — numerar specs, transicionar estados, regenerar el
+          tablero — lo hacen <strong>scripts deterministas</strong>. La IA solo pone
+          lo que solo ella puede poner: criterio. Y cada transición de estado queda
+          auditada: quién, cuándo, desde dónde.
+        </p>
+      </div>
+
+      <div class="artifact">
+        <div class="artifact-head">
+          <span class="dot"></span>
+          <span class="file">SPEC-001-alta-factura.md</span>
+          <span class="right">frontmatter canónico</span>
+        </div>
+        <pre><span class="k">id:</span> <span class="s">SPEC-001</span>
+<span class="k">epica:</span> <span class="s">EPIC-001</span>
+<span class="k">estado:</span> <span class="s">en-revision</span>
+<span class="k">historial:</span>
+  - <span class="br">{</span><span class="k">estado:</span> <span class="s">borrador</span>,  <span class="k">por:</span> <span class="s">sdd-arquitecto</span><span class="br">}</span>
+  - <span class="br">{</span><span class="k">estado:</span> <span class="s">aprobada</span>,  <span class="k">por:</span> <span class="s">Alberto</span><span class="br">}</span>   <span class="c">← gate humano</span>
+  - <span class="br">{</span><span class="k">estado:</span> <span class="s">en-progreso</span>, <span class="k">por:</span> <span class="s">sdd-implementador</span><span class="br">}</span>
+  - <span class="br">{</span><span class="k">estado:</span> <span class="s">en-revision</span>, <span class="k">por:</span> <span class="s">sdd-implementador</span><span class="br">}</span>
+<span class="c">## Criterios de aceptación</span>
+<span class="ok">✓</span> <span class="s">CA-1 · factura.ts:42 · factura.test.ts</span>
+<span class="c">— CA-2 · en verificación…</span></pre>
+        <div class="artifact-foot">
+          <span class="pill">· en-revision</span>
+          <span>el verificador decide GREEN o RED · el merge siempre es tuyo</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-pad">
+    <div class="section-eyebrow">
+      <span class="num">/ 02 — las tres patas</span>
+      <span class="ln"></span>
+    </div>
+
+    <div class="cards" style="margin-top: 32px;">
+      <div class="card">
+        <span class="num">01 / proceso</span>
+        <h3>Un pipeline con <em>gates humanos</em>.</h3>
+        <p>
+          Producto → arquitecto → implementador → verificador. Tú apruebas la
+          spec, los ADRs y el merge. Todo lo demás corre solo — y para cuando
+          debe parar: tres rojos seguidos y escala a ti.
+        </p>
+        <a class="link" href="flujos.html">ver los flujos</a>
+      </div>
+      <div class="card">
+        <span class="num">02 / enforcement</span>
+        <h3>Hooks que <em>no negocian</em>.</h3>
+        <p>
+          Editar código sin spec aprobada: denegado. Tocar un documento de
+          verdad sin ser su dueño: denegado. El linter en rojo vuelve como
+          feedback. Fail-open: si algo raro pasa, nunca te dejan tirado.
+        </p>
+        <a class="link" href="flujos.html#hook">¿por qué me bloqueó?</a>
+      </div>
+      <div class="card">
+        <span class="num">03 / evidencia</span>
+        <h3>Cada CA con su <em>prueba</em>.</h3>
+        <p>
+          El ledger mapea cada criterio a su código, su test y su verificación.
+          El verificador captura pantalla y vídeo, y ensambla un acta HTML
+          autocontenida que puedes enseñar a quien haga falta.
+        </p>
+        <a class="link" href="equipo.html">quién hace qué</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="install">
+    <div class="section-eyebrow">
+      <span class="num">/ 03 — instalar</span>
+      <span class="ln"></span>
+    </div>
+    <h2 class="section" style="margin-top: 20px;">
+      Tres líneas y un <em>proyecto que nace recto</em>.
+    </h2>
+    <pre><span class="c"># una vez, en tu máquina</span>
+claude plugin marketplace add tremen-dev/tremen-sdd
+claude plugin install <span class="k">tremen-sdd</span>@tremen-sdd
+
+<span class="c"># en cada proyecto (nuevo o migración)</span>
+<span class="k">/sdd-init</span></pre>
+
+    <div class="cap-foot" style="margin-top: 28px;">
+      <span><span class="br">{</span> ¿empezando de cero? <span class="br">}</span></span>
+      <span>mejor todavía: los hooks están activos desde el minuto uno —
+      la primera línea de código del proyecto ya exigirá su spec.</span>
+      <a href="flujos.html" style="margin-left:auto; color: var(--accent); font: 600 13px/1 var(--font-sans); text-decoration: none;">tengo una idea →</a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="meta">© 2026 — <a href="https://tremen.dev">Alberto Fojo</a> · tremen-sdd v0.1.0</div>
+    <span class="stamp-foot"><span class="br">{</span> la estructura se scriptea · el juicio se escribe <span class="br">}</span></span>
+  </footer>
+
+</div>
+</body>
+</html>

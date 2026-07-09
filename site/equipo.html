@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>tremen-sdd · este es tu equipo</title>
+<meta name="description" content="Los 7 roles de tremen-sdd, presentados como lo que son: un equipo con poderes separados." />
+<link rel="stylesheet" href="../design/tremen-ds/components/index.css" />
+<link rel="stylesheet" href="../design/tremen-ds/responsive.css" />
+<style>
+  .hero { padding: 64px 0 56px; }
+  .roster { padding: 8px 0 72px; }
+  .roster .cards { grid-template-columns: repeat(3, 1fr); }
+  @media (max-width: 980px) { .roster .cards { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 720px) { .roster .cards { grid-template-columns: 1fr; } }
+  .card .role-file {
+    font: 500 11px/1 var(--font-mono);
+    color: var(--fg-dim);
+    letter-spacing: 0.04em;
+    margin-top: 8px;
+  }
+  .card .no-hace {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--line);
+    font: 500 12.5px/1.6 var(--font-mono);
+    color: var(--fg-dim);
+  }
+  .card .no-hace b { color: var(--accent); font-weight: 600; }
+  .section-pad { padding: 64px 0 72px; border-top: 1px solid var(--line); }
+</style>
+</head>
+<body class="v-tremendo">
+<div class="frame">
+
+  <nav class="nav">
+    <span class="lockup"><span class="br">{</span>tremen<span class="dev">-sdd</span><span class="br">}</span></span>
+    <div class="nav-links">
+      <a href="index.html">inicio</a>
+      <a href="equipo.html" class="active">el equipo</a>
+      <a href="flujos.html">los flujos</a>
+    </div>
+    <a class="nav-cta" href="../README.md">README →</a>
+  </nav>
+
+  <section class="hero">
+    <div class="eyebrow-row">
+      <span class="eyebrow">/ 7 roles · poderes separados · comunicación por artefactos</span>
+      <span class="dot-row"></span>
+    </div>
+
+    <h1 class="headline">
+      Este es
+      <span class="line2"><span class="br">{</span> <em>tu equipo</em> <span class="br">}</span></span>
+    </h1>
+
+    <p class="lede" style="margin-top: 32px;">
+      Siete roles con una regla de oro: <strong>el que juzga no repara, el que
+      construye no se aprueba a sí mismo</strong>. No comparten contexto — se
+      hablan solo por artefactos (specs, ledgers, informes), así cada uno llega
+      con ojos frescos. Y todos leen tu <strong>FOUNDATION.md</strong> antes de actuar:
+      el motor es genérico, el criterio es de tu proyecto.
+    </p>
+  </section>
+
+  <section class="roster">
+    <div class="cards">
+
+      <div class="card">
+        <span class="num">01 / sdd-orquestador</span>
+        <h3>El director de <em>orquesta</em>.</h3>
+        <div class="role-file">entra todo trabajo por él · corre inline</div>
+        <p>
+          No produce nada él mismo — y por eso todo sale. Clasifica tu petición,
+          encuentra (o encarga) la spec que la gobierna, y conduce el pipeline
+          haciendo cumplir los gates. Al tercer rojo del verificador, para y te
+          llama: sabe cuándo el problema ya no es suyo.
+        </p>
+        <div class="no-hace"><b>se niega a:</b> escribir código, editar specs, mergear. El merge es tuyo, siempre.</div>
+      </div>
+
+      <div class="card">
+        <span class="num">02 / sdd-producto</span>
+        <h3>El que pregunta <em>por qué</em>.</h3>
+        <div class="role-file">product owner · guardián del roadmap</div>
+        <p>
+          Le cuentas una idea difusa y te devuelve preguntas incómodas: ¿qué
+          problema?, ¿para quién?, ¿cómo sabremos que funcionó? De ahí salen
+          épicas con criterios de éxito medibles y un roadmap con intención.
+          Escribe "fuera de alcance" en todo — aparcado a propósito, no por descuido.
+        </p>
+        <div class="no-hace"><b>se niega a:</b> decidir stack o datos (eso es un ADR del arquitecto) e inventar cifras de negocio.</div>
+      </div>
+
+      <div class="card">
+        <span class="num">03 / sdd-arquitecto</span>
+        <h3>La que lo deja todo <em>por escrito</em>.</h3>
+        <div class="role-file">única autora de specs y ADRs</div>
+        <p>
+          Convierte épicas en specs testables — cada criterio en Given/When/Then,
+          verificable con un test. Cada decisión técnica que condiciona el futuro
+          queda como ADR inmutable, con quién lo propuso y quién lo aprobó.
+          ¿Cambiar una decisión? Se escribe otra que la supersede. Nunca se borra.
+        </p>
+        <div class="no-hace"><b>se niega a:</b> implementar, aprobar sus propias specs, y duplicar lo que ya es fuente de verdad.</div>
+      </div>
+
+      <div class="card">
+        <span class="num">04 / sdd-implementador</span>
+        <h3>El artesano <em>disciplinado</em>.</h3>
+        <div class="role-file">código contra spec · TDD por criterio</div>
+        <p>
+          Trabaja CA a CA: test que falla, mínimo código, verde, commit. Rellena
+          su mitad del ledger (qué fichero, qué test) y ni mira la otra mitad.
+          Si descubre trabajo no especificado, lo anota como follow-up y sigue —
+          nada fuera de los criterios, por tentador que sea.
+        </p>
+        <div class="no-hace"><b>se niega a:</b> marcar nada como hecho, hacer push o PR, y tocar el veredicto del verificador.</div>
+      </div>
+
+      <div class="card">
+        <span class="num">05 / sdd-verificador</span>
+        <h3>El escéptico <em>profesional</em>.</h3>
+        <div class="role-file">gate adversarial · solo lectura de código</div>
+        <p>
+          Su punto de partida: <em>nada funciona hasta que la evidencia diga lo
+          contrario</em>. No lee el razonamiento del implementador — solo artefactos.
+          Ejecuta los tests, recorre la UI real con Playwright, captura pantalla y
+          vídeo en <code>_qa/</code>, y firma GREEN o RED. Si duda, devuelve.
+          Con <code>--informe</code> te ensambla el acta HTML para enseñar a cliente.
+        </p>
+        <div class="no-hace"><b>se niega a:</b> arreglar nada. El que juzga no repara — por eso su juicio vale.</div>
+      </div>
+
+      <div class="card">
+        <span class="num">06 / sdd-documentalista</span>
+        <h3>El silencioso que <em>ordena la casa</em>.</h3>
+        <div class="role-file">cierre mecánico · tier barato (haiku)</div>
+        <p>
+          Cuando una spec llega a hecho, él pasa detrás: regenera el tablero,
+          valida frontmatters e IDs, detecta enlaces rotos y drift entre docs y
+          código. Trabajo mecánico con scripts deterministas — el juicio es de
+          otros, la escoba es suya.
+        </p>
+        <div class="no-hace"><b>se niega a:</b> escribir en documentos de verdad. Lo que encuentra, lo propone; no lo toca.</div>
+      </div>
+
+      <div class="card">
+        <span class="num">07 / sdd-como-vamos</span>
+        <h3>El que responde <em>sin tocar nada</em>.</h3>
+        <div class="role-file">informe de estado · read-only absoluto</div>
+        <p>
+          "¿Cómo vamos?" Lee el filesystem y te lo cuenta agrupado por
+          accionabilidad: qué espera tu aprobación, qué está en curso, qué se
+          bloqueó — y su especialidad: las <em>cerradas con residual</em>, ese
+          "hecho (…)" que esconde trabajo pendiente. También te avisa si alguien
+          dejó la válvula de escape abierta.
+        </p>
+        <div class="no-hace"><b>se niega a:</b> corregir lo que encuentra. Reporta; arreglar es de otros flujos.</div>
+      </div>
+
+    </div>
+
+    <div class="cap-foot" style="margin-top: 28px;">
+      <span><span class="br">{</span> ¿falta alguien? <span class="br">}</span></span>
+      <span>los especialistas de dominio — <strong>fiscal</strong>, <strong>legal</strong>,
+      lo que tu proyecto pida — no vienen en el plugin: <code>/sdd-init</code> los genera
+      a medida y viven en tu repo, citando siempre sus fuentes.</span>
+    </div>
+  </section>
+
+  <section class="section-pad">
+    <div class="section-eyebrow">
+      <span class="num">/ cómo se hablan</span>
+      <span class="ln"></span>
+    </div>
+    <h2 class="section" style="margin-top: 20px;">
+      El filesystem es el <em>bus de mensajes</em>.
+    </h2>
+    <p class="lede" style="margin-top: 20px; font-size: 16px; max-width: 720px;">
+      Ningún rol hereda el contexto de otro. La spec dice qué construir; el ledger
+      dice cómo va; los informes dicen qué se encontró. Eso compra tres cosas:
+      el ruido de implementación no contamina, <strong>el verificador juzga sin
+      saber qué quiso hacer el implementador</strong> (por eso es de verdad
+      adversarial), y cualquier sesión futura puede retomar el trabajo leyendo
+      los artefactos — incluida la sección "cómo retomar" de cada ledger.
+    </p>
+    <div style="display:flex; gap:12px; margin-top: 28px;">
+      <a class="btn primary" href="flujos.html">verlos trabajar juntos <span class="arr">→</span></a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="meta">© 2026 — <a href="https://tremen.dev">Alberto Fojo</a> · tremen-sdd v0.1.0</div>
+    <span class="stamp-foot"><span class="br">{</span> el que juzga no repara <span class="br">}</span></span>
+  </footer>
+
+</div>
+</body>
+</html>
