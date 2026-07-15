@@ -6,12 +6,17 @@ description: >
   "regenera índices", "tidy up the docs". Dispara cuando una spec llega a
   hecho o los índices huelen a desactualizados. Tier barato (haiku).
 ---
-Primero lee `.sdd.json` en la raíz del proyecto y toma el campo `idioma`
-(si el fichero o el campo no existen, usa `es`).
-Después lee `${CLAUDE_PLUGIN_ROOT}/roles/<idioma>/sdd-documentalista.md` con la
-herramienta Read y sigue sus instrucciones al pie de la letra.
+Esta skill NO ordena nada: **despacha al subagente**, que corre en tier barato
+(haiku) con contexto aislado.
 
-La raíz del plugin tremen-sdd en esta máquina es: ${CLAUDE_PLUGIN_ROOT} — cuando
-el fichero de rol invoque scripts del plugin (scripts/estado.mjs,
-scripts/scaffold.mjs, scripts/tablero.mjs, scripts/valida.mjs,
-scripts/informe-qa.mjs), construye la ruta absoluta con esa raíz.
+Lanza el rol y no hagas nada más:
+
+    Agent(subagent_type: "tremen-sdd:sdd-documentalista",
+          description: "Cierra SPEC-NNN",
+          prompt: "<qué spec/épica se cierra, o simplemente que regenere y
+                    valide — el subagente no ve esta conversación>")
+
+(Si el harness lista el agente sin el prefijo `tremen-sdd:`, usa `sdd-documentalista`.)
+
+Su informe trae propuestas, no cambios: el documentalista no escribe en specs ni
+en documentos de verdad. Lo que proponga se lo llevas a su dueño.
