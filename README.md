@@ -111,6 +111,36 @@ bloquear.
 p. ej. depuración— nunca como hábito; `sdd-como-vamos` la reporta si la
 detecta activa.
 
+## Enforcement en capas (git + CI)
+
+Los hooks del harness (L1) son *feedback* fail-open. La **garantía** dura vive en
+dos capas fail-closed, independientes del harness (ADR-002):
+
+- **L2 — git pre-commit** (`tools/githooks/pre-commit`): bloquea el commit
+  (exit ≠ 0) si el conjunto *staged* viola `require-spec` (código vigilado sin
+  rama `ft/SPEC-NNN` + spec aprobada/en-progreso, RN-01) o la coherencia de
+  artefactos (`valida`, RN-07). Reutiliza la misma lógica de `core/` que L1
+  (fuente única en `core/lib/require-spec.mjs`). Dos válvulas auditables:
+  `git commit --no-verify` (nativa de git) y `SDD_SKIP_GATE=1` (coherente con L1).
+- **L3 — GitHub Actions** (`.github/workflows/ci.yml`): en cada push/PR corre
+  `npm test` (build + núcleo + tools + adaptador) y `npm run check` (los seis
+  checks de invariantes contra el árbol real —incluido `nucleo-aislado`— y
+  `valida` sobre `docs/`). No es evitable en local.
+
+**Instalar el pre-commit (un paso por clon):**
+
+```bash
+npm run hooks:install     # git config core.hooksPath tools/githooks
+```
+
+Sin husky, sin symlinks, sin dependencias nuevas. Un clon fresco no tiene el
+pre-commit activo hasta correr este comando (no hay `postinstall` porque el repo
+es cero-deps). El runner agregado es reproducible en local:
+
+```bash
+npm run check             # build → 6 checks → valida (lo mismo que corre CI)
+```
+
 ## Estructura que estampa `/sdd-init` en un proyecto
 
 ```

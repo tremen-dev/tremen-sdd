@@ -66,6 +66,8 @@ copia versionada del método — nunca se comitea una copia del núcleo fuera de
 | `npm run test:tools` | build + tests de `tools/` (build y checks) |
 | `npm run test:adapter` | build + tests del adaptador contra `dist/` |
 | `npm test` | build + las tres capas de una vez |
+| `npm run check` | runner agregado: build → los 6 checks → `valida` (lo que corre CI) |
+| `npm run hooks:install` | activa el pre-commit L2 (`git config core.hooksPath tools/githooks`) |
 
 Los tests del adaptador corren **contra el artefacto construido** (`dist/`),
 porque es ahí donde el núcleo vive por ruta interna. Los del núcleo corren
@@ -84,6 +86,14 @@ El repo **se autogestiona con su propio estándar**. Todo cambio de código bajo
 las rutas vigiladas (`core/scripts/`, `core/lib/`, `adapters/claude-code/hooks/`)
 entra por el método: rama `ft/SPEC-NNN-slug`, con su spec `aprobada`, y el hook
 `require-spec` deniega editar fuera de ese carril.
+
+Ese carril no depende solo del harness (ADR-002): además del hook L1 (fail-open),
+git **pre-commit** (L2, fail-closed, `tools/githooks/`) y **GitHub Actions** (L3,
+fail-closed, `.github/workflows/ci.yml`) guardan las mismas reglas reutilizando la
+lógica de `core/` (la decisión require-spec vive una sola vez en
+`core/lib/require-spec.mjs`; la comparten L1 y L2). El pre-commit se activa por
+clon con `npm run hooks:install`; las válvulas auditables son `git commit
+--no-verify` y `SDD_SKIP_GATE=1` (CI no respeta ninguna).
 
 Para validar el runtime real tras un cambio (dogfooding):
 
