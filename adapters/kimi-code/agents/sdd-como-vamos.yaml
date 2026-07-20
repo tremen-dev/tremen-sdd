@@ -1,0 +1,11 @@
+# Subagente sdd-como-vamos. extend: default + system prompt referenciado (RN-06).
+version: 1
+extend: default
+agent:
+  name: sdd-como-vamos
+system_prompt_path: ./prompts/sdd-como-vamos.md
+# Read-only (CA-11c): solo informa; lee frontmatters, ledgers y roadmap. No escribe.
+allowed_tools:
+  - Read
+  - Grep
+  - Glob

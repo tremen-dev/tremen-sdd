@@ -11,6 +11,7 @@ const REPO = path.dirname(path.dirname(path.dirname(fileURLToPath(import.meta.ur
 
 const MODULO = path.join(REPO, 'core', 'lib', 'require-spec.mjs');
 const HOOK_L1 = path.join(REPO, 'adapters', 'claude-code', 'hooks', 'require-spec.mjs');
+const HOOK_L1_KIMI = path.join(REPO, 'adapters', 'kimi-code', 'hooks', 'require-spec.mjs');
 const PRECOMMIT_L2 = path.join(REPO, 'tools', 'githooks', 'pre-commit.mjs');
 
 // Regex del parseo de rama: debe aparecer SOLO en el módulo compartido.
@@ -25,6 +26,16 @@ test('CA-5a: el módulo compartido existe en core/ y exporta evaluarRequireSpec'
 test('CA-5b: el hook L1 importa el módulo compartido', () => {
   const src = fs.readFileSync(HOOK_L1, 'utf8');
   assert.match(src, /import\s*\{[^}]*evaluarRequireSpec[^}]*\}\s*from\s*['"][^'"]*core\/lib\/require-spec\.mjs['"]/);
+});
+
+test('CA-5b: el hook L1 de Kimi importa el módulo compartido (shim, no copia)', () => {
+  const src = fs.readFileSync(HOOK_L1_KIMI, 'utf8');
+  assert.match(src, /import\s*\{[^}]*evaluarRequireSpec[^}]*\}\s*from\s*['"][^'"]*core\/lib\/require-spec\.mjs['"]/);
+});
+
+test('CA-5b: el hook L1 de Kimi NO reimplementa el parseo de rama ft/SPEC-NNN', () => {
+  const src = fs.readFileSync(HOOK_L1_KIMI, 'utf8');
+  assert.ok(!RE_RAMA.test(src), 'el hook L1 de Kimi contiene su propio parseo de rama (duplicación)');
 });
 
 test('CA-5b: el pre-commit L2 importa el módulo compartido', () => {

@@ -49,7 +49,60 @@ export function checkReferencias(distDir) {
     }
   }
 
+  // 3) Adaptador tipo Kimi (agentes YAML, sin variable de plugin-root): la
+  //    resolución del núcleo es por ruta INTERNA relativa al fichero (CA-4).
+  if (esKimi(distDir)) errores.push(...referenciasKimi(distDir));
+
   return { ok: errores.length === 0, errores };
+}
+
+// ¿el artefacto declara agentes YAML (Kimi) en agents/?
+function esKimi(distDir) {
+  const ag = path.join(distDir, 'agents');
+  return fs.existsSync(ag) && walk(ag, (n) => n.endsWith('.yaml')).length > 0;
+}
+
+const RE_SPP = /^\s*system_prompt_path:\s*(.+?)\s*$/m;
+const RE_CORE_REL = /(?:\.\.?\/)+core\/[^\s"'`)\]]+/g;
+const RE_PLUGIN_TOKEN = /\$\{[A-Z_]*PLUGIN_ROOT[A-Z_]*\}/;
+
+// El núcleo se copia verbatim bajo core/; su prosa es responsabilidad del núcleo
+// (la vigilan nucleo-aislado/roles-fuente-unica) y puede contener ejemplos con el
+// token de otro harness. Esta comprobación mira las referencias DEL ADAPTADOR al
+// núcleo (agents/, hooks/, skills/…), no la prosa interna del núcleo copiado.
+function referenciasKimi(distDir) {
+  const errores = [];
+  const enAdaptador = (f) => !path.relative(distDir, f).replaceAll('\\', '/').startsWith('core/');
+
+  // (a) system_prompt_path de cada YAML: relativo al YAML, interno y existente.
+  for (const f of walk(distDir, (n) => n.endsWith('.yaml')).filter(enAdaptador)) {
+    const rel = path.relative(distDir, f);
+    const m = RE_SPP.exec(fs.readFileSync(f, 'utf8'));
+    if (!m) continue;
+    const valor = m[1].replace(/^["']|["']$/g, '');
+    const resuelto = path.resolve(path.dirname(f), valor);
+    if (!dentroDe(distDir, resuelto)) { errores.push(`${rel}: system_prompt_path escapa del artefacto: ${valor}`); continue; }
+    if (!fs.existsSync(resuelto)) errores.push(`${rel}: system_prompt_path no existe en el artefacto: ${valor}`);
+  }
+
+  // (b) referencias relativas al núcleo en YAML/prompts: internas y existentes;
+  //     y ninguna usa una variable de plugin-root (que Kimi no ofrece).
+  for (const f of walk(distDir, (n) => /\.(md|yaml)$/.test(n)).filter(enAdaptador)) {
+    const rel = path.relative(distDir, f);
+    const s = fs.readFileSync(f, 'utf8');
+    if (RE_PLUGIN_TOKEN.test(s)) errores.push(`${rel}: usa una variable de plugin-root inexistente en Kimi`);
+    let m;
+    RE_CORE_REL.lastIndex = 0;
+    while ((m = RE_CORE_REL.exec(s))) {
+      const concreta = m[0].replace(/[.,]$/, '').replaceAll('<idioma>', 'es');
+      if (TIENE_PLACEHOLDER.test(concreta)) continue; // plantilla genérica
+      const resuelto = path.resolve(path.dirname(f), concreta);
+      if (!dentroDe(distDir, resuelto)) { errores.push(`${rel}: ref a core escapa del artefacto: ${m[0]}`); continue; }
+      if (!fs.existsSync(resuelto)) errores.push(`${rel}: ref a core no existe en el artefacto: ${m[0]}`);
+    }
+  }
+
+  return errores;
 }
 
 if (esEntrypoint(import.meta.url, process.argv[1])) {

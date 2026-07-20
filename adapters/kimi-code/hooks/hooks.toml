@@ -1,0 +1,18 @@
+# Fragmento [[hooks]] para la config de Kimi (~/.kimi/config.toml).
+# Kimi NO tiene variable de plugin-root: la ruta al artefacto se fija en la
+# INSTALACIÓN (ADR-003, punto 6). Tras construir el adaptador, sustituye
+# <ARTIFACT_ROOT> por la ruta ABSOLUTA a dist/kimi-code/ y pega estos bloques.
+# El command recibe el payload por stdin (JSON) y devuelve exit 0 +
+# hookSpecificOutput{permissionDecision} o exit 2 = block, como en Claude Code.
+
+[[hooks]]
+event = "PreToolUse"
+matcher = "Edit|Write|MultiEdit"
+command = "node \"<ARTIFACT_ROOT>/hooks/require-spec.mjs\""
+timeout = 10
+
+[[hooks]]
+event = "PreToolUse"
+matcher = "Edit|Write|MultiEdit"
+command = "node \"<ARTIFACT_ROOT>/hooks/protege-verdad.mjs\""
+timeout = 10

@@ -12,12 +12,16 @@ const REPO = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 
 export const PASOS = [
   { nombre: 'build', cmd: ['node', 'tools/build-adapter.mjs', 'claude-code'] },
+  { nombre: 'build-kimi', cmd: ['node', 'tools/build-adapter.mjs', 'kimi-code'] },
   { nombre: 'layout', cmd: ['node', 'tools/checks/layout.mjs'] },
   { nombre: 'nucleo-aislado', cmd: ['node', 'tools/checks/nucleo-aislado.mjs'] },
   { nombre: 'fuente-unica', cmd: ['node', 'tools/checks/fuente-unica.mjs'] },
   { nombre: 'referencias', cmd: ['node', 'tools/checks/referencias.mjs'] },
+  { nombre: 'referencias-kimi', cmd: ['node', 'tools/checks/referencias.mjs', 'kimi-code'] },
+  // roles-fuente-unica itera sobre TODOS los adaptadores (claude-code y kimi-code).
   { nombre: 'roles-fuente-unica', cmd: ['node', 'tools/checks/roles-fuente-unica.mjs'] },
   { nombre: 'manifiestos', cmd: ['node', 'tools/checks/manifiestos.mjs'] },
+  { nombre: 'manifiestos-kimi', cmd: ['node', 'tools/checks/manifiestos.mjs', 'kimi-code'] },
   { nombre: 'valida', cmd: ['node', 'core/scripts/valida.mjs', '--dir', 'docs'] },
 ];
 
@@ -30,7 +34,7 @@ export function ejecuta(pasos = PASOS, { cwd = REPO } = {}) {
       return code;
     }
   }
-  console.log('[check] OK: build + 6 checks + valida en verde.');
+  console.log('[check] OK: build (claude+kimi) + checks (ambos adaptadores) + valida en verde.');
   return 0;
 }
 
