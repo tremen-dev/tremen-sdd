@@ -26,8 +26,9 @@
   (nada sin spec, coherencia frontmatter/estado, calidad) deben sostenerse aunque
   el harness no tenga hooks: se cumplen vía git pre-commit + CI, no solo vía los
   hooks de Claude Code. Verificable: el check corre en CI y en pre-commit sin
-  ningún harness instalado. Estado: es CE-4 de EPIC-001; hoy vive como hooks del
-  adaptador y su salida a git+CI está pendiente (ver contexto.md).
+  ningún harness instalado; ambas capas reutilizan la lógica compartida de
+  `core/lib/require-spec.mjs`. Implementado en SPEC-002 (CE-4): pre-commit en
+  `tools/githooks/` (L2) y CI en `.github/workflows/ci.yml` (L3).
 
 - **RN-04 — Un ADR aceptado es inmutable.** Una decisión registrada como ADR en
   estado `aprobada` no se edita: para cambiarla se escribe otro ADR que la

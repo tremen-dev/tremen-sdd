@@ -7,6 +7,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { REPO_ROOT } from './_util.mjs';
+import { esEntrypoint } from '../../core/lib/entrypoint.mjs';
 
 const leeJson = (p) => JSON.parse(fs.readFileSync(p, 'utf8'));
 
@@ -51,7 +52,7 @@ export function checkManifiestos(repoRoot = REPO_ROOT, harness = 'claude-code') 
   return { ok: errores.length === 0, errores };
 }
 
-if (process.argv[1] && import.meta.url === new URL(`file:///${process.argv[1].replaceAll('\\', '/')}`).href) {
+if (esEntrypoint(import.meta.url, process.argv[1])) {
   const { ok, errores } = checkManifiestos(REPO_ROOT, process.argv[2] || 'claude-code');
   if (!ok) { console.error('[manifiestos] FALLA:\n' + errores.map((e) => ' - ' + e).join('\n')); process.exit(1); }
   console.log('[manifiestos] OK: manifiestos válidos y artefacto descubrible.');

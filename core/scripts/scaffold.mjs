@@ -4,6 +4,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { esEntrypoint } from '../lib/entrypoint.mjs';
 
 const PLUGIN_ROOT = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const TPL = (name) => path.join(PLUGIN_ROOT, 'templates', 'artefactos', name);
@@ -85,7 +86,7 @@ export function createArtifact({ tipo, titulo, epica, docsDir, fecha, id }) {
 }
 
 // CLI: node scaffold.mjs <tipo> "<titulo>" [--epica EPIC-NNN] [--dir docs]
-if (process.argv[1] && import.meta.url === new URL(`file:///${process.argv[1].replaceAll('\\', '/')}`).href) {
+if (esEntrypoint(import.meta.url, process.argv[1])) {
   const [tipo, titulo] = process.argv.slice(2);
   const epica = process.argv.includes('--epica') ? process.argv[process.argv.indexOf('--epica') + 1] : undefined;
   const id = process.argv.includes('--id') ? process.argv[process.argv.indexOf('--id') + 1] : undefined;

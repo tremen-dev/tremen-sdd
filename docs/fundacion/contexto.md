@@ -19,10 +19,14 @@ autogestiona con él, RN-10). El trabajo vivo es **EPIC-001 — multi-harness**
 Su primera spec, **SPEC-001 — Refactor a núcleo + adaptadores**, está **hecha**:
 ya separó el método (`core/`) del empaque de Claude Code
 (`adapters/claude-code/`) e introdujo el paso de build. Quedan por delante las
-specs candidatas de la épica (fuente única de roles → agents, enforcement en
-git+CI, adaptador Kimi Code, guía "añadir un harness"); ninguna es aún una spec
-aprobada. Existe un **único adaptador** (Claude Code); el multi-harness real es
-promesa, no hecho.
+specs candidatas de la épica (fuente única de roles → agents, adaptador Kimi
+Code, guía "añadir un harness"); ninguna es aún una spec aprobada. Existe un
+**único adaptador** (Claude Code); el multi-harness real es promesa, no hecho.
+
+También **SPEC-002 — Enforcement a git + CI** está **hecha**: las garantías
+duras (nada sin spec, coherencia de artefactos, invariantes) viven ahora en git
+pre-commit (L2) + GitHub Actions (L3), independientes del harness, sobre la
+lógica compartida de `core/lib/require-spec.mjs` (RN-03).
 
 ## Stack y arquitectura (resumen as-built)
 
@@ -86,13 +90,7 @@ promesa, no hecho.
   diseñados para un segundo harness (Kimi Code), pero el recetario "añadir un
   harness" (CE-5) se escribirá CON el primer adaptador no-Claude, no antes:
   la forma real se validará contra un caso, no se teoriza.
-- **[ABIERTO] Enforcement aún atado al harness.** Los gates duros viven hoy como
-  hooks de Claude Code; RN-03/CE-4 (git pre-commit + CI) está pendiente. Mientras,
-  un harness sin hooks no tiene enforcement automático.
-- **[ABIERTO / falso positivo de identidad] `protege-verdad` bloquea al dueño
-  legítimo cuando corre como subagente de plugin.** El hook compara
-  `payload.agent_type` contra `['main','sdd-arquitecto','sdd-producto']`, pero el
-  agent_type llega con prefijo de plugin (`tremen-sdd:sdd-arquitecto`) y no casa,
-  de modo que el propio sdd-arquitecto/sdd-producto ve denegada la escritura de
-  documentos de verdad. Candidato a spec (normalizar el prefijo del rol en el
-  hook). Detectado al redactar esta fundación.
+
+> Resueltos en SPEC-002 (2026-07-21): «enforcement atado al harness» (ahora en
+> git+CI, RN-03) y el falso positivo de `protege-verdad` con el prefijo de rol
+> (F-SPEC-001-3, arreglado en `_comun.mjs`).

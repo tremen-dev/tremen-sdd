@@ -51,6 +51,27 @@ test('fail-open sin .sdd.json', () => {
   assert.equal(corre(dir, path.join(dir, 'docs', 'tablero.md'), 'main'), '');
 });
 
+// CA-8 (F-SPEC-001-3): el subagente de plugin llega como '<plugin>:<rol>'. El
+// dueño legítimo debe reconocerse tras normalizar el prefijo, sin perder la
+// compatibilidad con el rol sin prefijo.
+test('CA-8: permite docs/fundacion/* al arquitecto con prefijo de plugin', () => {
+  const dir = proyecto();
+  const f = path.join(dir, 'docs', 'fundacion', 'reglas.md');
+  assert.equal(corre(dir, f, 'tremen-sdd:sdd-arquitecto'), '');
+});
+
+test('CA-8: deniega docs/fundacion/* a un no-dueño con prefijo de plugin', () => {
+  const dir = proyecto();
+  const f = path.join(dir, 'docs', 'fundacion', 'reglas.md');
+  assert.match(corre(dir, f, 'tremen-sdd:sdd-implementador'), /deny/);
+});
+
+test('CA-8: sigue permitiendo al dueño sin prefijo (compatibilidad)', () => {
+  const dir = proyecto();
+  const f = path.join(dir, 'docs', 'fundacion', 'reglas.md');
+  assert.equal(corre(dir, f, 'sdd-producto'), '');
+});
+
 // Regresión: file_path RELATIVO no debe resolverse contra el cwd del proceso
 // del hook (que hereda el del runner, no el del proyecto en payload.cwd).
 // Sin path.resolve(cwd, fichero) esto bypasea el gate por completo.

@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { parseFrontmatter } from '../lib/frontmatter.mjs';
 import { TRANSITIONS } from './estado.mjs';
+import { esEntrypoint } from '../lib/entrypoint.mjs';
 
 const ID_RE = /^(EPIC|SPEC|TASK|ADR)-(\d{3}|FIX|INFRA|MANT|MEJORA)/;
 const ESTADOS = Object.keys(TRANSITIONS);
@@ -53,7 +54,7 @@ export function validate(docsDir) {
   return errores;
 }
 
-if (process.argv[1] && import.meta.url === new URL(`file:///${process.argv[1].replaceAll('\\', '/')}`).href) {
+if (esEntrypoint(import.meta.url, process.argv[1])) {
   const dir = process.argv.includes('--dir') ? process.argv[process.argv.indexOf('--dir') + 1] : 'docs';
   const errores = validate(path.resolve(dir));
   if (errores.length) {

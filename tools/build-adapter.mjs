@@ -8,6 +8,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { esEntrypoint } from '../core/lib/entrypoint.mjs';
 
 const REPO_ROOT = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 
@@ -41,7 +42,7 @@ export function buildAdapter(harness, { repoRoot = REPO_ROOT, outDir } = {}) {
   return outDir;
 }
 
-if (process.argv[1] && import.meta.url === new URL(`file:///${process.argv[1].replaceAll('\\', '/')}`).href) {
+if (esEntrypoint(import.meta.url, process.argv[1])) {
   const harness = process.argv[2] || 'claude-code';
   try {
     const out = buildAdapter(harness);

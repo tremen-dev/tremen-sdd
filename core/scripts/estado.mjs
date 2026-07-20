@@ -3,6 +3,7 @@
 // transición y añade la entrada de historial de forma atómica.
 import fs from 'node:fs';
 import { parseFrontmatter, stringifyFrontmatter } from '../lib/frontmatter.mjs';
+import { esEntrypoint } from '../lib/entrypoint.mjs';
 
 export const TRANSITIONS = {
   borrador: ['aprobada', 'bloqueada'],
@@ -66,7 +67,7 @@ export function transition(ruta, nuevoEstado, por, fecha) {
   fs.writeFileSync(ruta, stringifyFrontmatter(data, body));
 }
 
-if (process.argv[1] && import.meta.url === new URL(`file:///${process.argv[1].replaceAll('\\', '/')}`).href) {
+if (esEntrypoint(import.meta.url, process.argv[1])) {
   const [ruta, nuevoEstado] = process.argv.slice(2);
   const por = process.argv.includes('--por') ? process.argv[process.argv.indexOf('--por') + 1] : 'desconocido';
   try {

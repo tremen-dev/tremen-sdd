@@ -2,7 +2,7 @@
 // Los documentos de verdad tienen dueño único. Los demás roles PROPONEN el
 // cambio en su informe; no lo escriben. El tablero solo lo escribe su script.
 import path from 'node:path';
-import { readPayload, readConfig, deny, allow } from './_comun.mjs';
+import { readPayload, readConfig, deny, allow, normalizaRol } from './_comun.mjs';
 
 const DUENOS_FUNDACION = ['main', 'sdd-arquitecto', 'sdd-producto'];
 
@@ -15,7 +15,7 @@ try {
   const fichero = payload.tool_input?.file_path ?? '';
   if (!fichero) allow();
   const rel = path.relative(cwd, path.resolve(cwd, fichero)).replaceAll('\\', '/');
-  const rol = payload.agent_type ?? payload.agent_name ?? 'main';
+  const rol = normalizaRol(payload.agent_type ?? payload.agent_name ?? 'main');
   if (rel === 'docs/tablero.md') {
     deny('docs/tablero.md es GENERADO: regenéralo con /sdd-tablero (scripts/tablero.mjs); no se edita a mano.');
   }

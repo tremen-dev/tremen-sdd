@@ -7,6 +7,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { REPO_ROOT } from './_util.mjs';
+import { esEntrypoint } from '../../core/lib/entrypoint.mjs';
 
 const DIRS_METODO = ['lib', 'scripts', 'templates', 'roles', 'tests'];
 const DIRS_ADAPTADOR = ['agents', 'skills', 'commands', 'hooks'];
@@ -55,7 +56,7 @@ export function checkLayout(repoRoot = REPO_ROOT) {
   return { ok: errores.length === 0, errores };
 }
 
-if (process.argv[1] && import.meta.url === new URL(`file:///${process.argv[1].replaceAll('\\', '/')}`).href) {
+if (esEntrypoint(import.meta.url, process.argv[1])) {
   const { ok, errores } = checkLayout();
   if (!ok) { console.error('[layout] FALLA:\n' + errores.map((e) => ' - ' + e).join('\n')); process.exit(1); }
   console.log('[layout] OK: frontera núcleo/adaptador materializada.');
