@@ -2,7 +2,7 @@
 id: SPEC-002
 tipo: spec
 epica: EPIC-001
-estado: en-progreso
+estado: hecho
 aprobada-por:
 historial:
   - {estado: borrador, fecha: 2026-07-20, por: sdd-arquitecto}
@@ -10,6 +10,8 @@ historial:
   - {estado: en-progreso, fecha: 2026-07-20, por: Alberto Fojo}
   - {estado: en-revision, fecha: 2026-07-20, por: Alberto Fojo}
   - {estado: en-progreso, fecha: 2026-07-20, por: sdd-verificador}
+  - {estado: en-revision, fecha: 2026-07-20, por: sdd-implementador}
+  - {estado: hecho, fecha: 2026-07-20, por: Alberto Fojo}
 ---
 # SPEC-002 — Enforcement a git + CI
 
