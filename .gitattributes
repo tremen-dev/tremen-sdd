@@ -2,3 +2,6 @@
 *.mjs text eol=lf
 *.md text eol=lf
 *.json text eol=lf
+# El shim del pre-commit lo ejecuta `sh`: debe conservar LF aunque se clone en
+# Windows con autocrlf, o `sh` fallaría al leer el shebang (#!/bin/sh\r).
+tools/githooks/pre-commit text eol=lf

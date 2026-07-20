@@ -1,0 +1,28 @@
+name: CI
+
+# Enforcement autoritativo (ADR-002, L3): fail-closed, no evitable en local.
+# Corre en cada push y PR. Sin `npm ci` significativo: el repo es cero-deps.
+on:
+  push:
+  pull_request:
+
+jobs:
+  guardias:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # (1) Suite completa: build + núcleo + tools + adaptador.
+      - name: npm test
+        run: npm test
+
+      # (2) Los seis checks de invariantes contra el árbol real + (3) valida
+      # sobre docs. Runner agregado reproducible (mismo que en local).
+      - name: npm run check
+        run: npm run check

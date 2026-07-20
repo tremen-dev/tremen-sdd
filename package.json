@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "build": "node tools/build-adapter.mjs claude-code",
+    "hooks:install": "node tools/install-hooks.mjs",
+    "check": "node tools/check.mjs",
     "test:core": "node --test \"core/tests/*.test.mjs\"",
     "test:tools": "npm run build && node --test \"tools/tests/*.test.mjs\"",
     "test:adapter": "npm run build && node --test \"adapters/claude-code/tests/*.test.mjs\"",

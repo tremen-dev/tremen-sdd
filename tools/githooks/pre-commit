@@ -1,0 +1,5 @@
+#!/bin/sh
+# Git pre-commit (L2, fail-closed) — ADR-002 / SPEC-002.
+# Shim fino sh -> node, cross-platform (Git para Windows trae sh). Toda la
+# lógica vive en pre-commit.mjs; aquí solo se invoca node sobre él.
+exec node "$(dirname "$0")/pre-commit.mjs" "$@"
