@@ -19,7 +19,7 @@ epica: EPIC-001
 | CA-2 | `tools/githooks/pre-commit.mjs` (capa require-spec, fail-closed, válvula `SDD_SKIP_GATE`) | `tools/tests/pre-commit.test.mjs` (CA-2a main aborta; SPEC-999 aborta; borrador aborta; CA-2b aprobada/en-progreso pasan; CA-2c SDD_SKIP_GATE pasa) | | 🚧 |
 | CA-3 | `tools/githooks/pre-commit.mjs` (capa coherencia vía `validateFile` de `core/scripts/valida.mjs`) | `tools/tests/pre-commit.test.mjs` (CA-3 incoherente aborta; CA-3 bis coherente pasa) | | 🚧 |
 | CA-4 | `tools/githooks/pre-commit.mjs` (ruta feliz) | `tools/tests/pre-commit.test.mjs` (CA-4 ruta no vigilada → exit 0) | | 🚧 |
-| CA-5 | `core/lib/require-spec.mjs` (fuente única: `parseSpecId`/`buscarSpec`/`evaluarRequireSpec`); `adapters/claude-code/hooks/require-spec.mjs` y `tools/githooks/pre-commit.mjs` la **importan** | `core/tests/require-spec.test.mjs` (unitario del módulo); `tools/tests/require-spec-una-logica.test.mjs` (ambas capas importan; ninguna reimplementa el parseo); `nucleo-aislado` en verde (módulo no escapa de core/) | | 🚧 |
+| CA-5 | `core/lib/require-spec.mjs` (fuente única: `parseSpecId`/`buscarSpec`/`evaluarRequireSpec`); `adapters/claude-code/hooks/require-spec.mjs` y `tools/githooks/pre-commit.mjs` la **importan** | `core/tests/require-spec-decision.test.mjs` (unitario del módulo); `tools/tests/require-spec-una-logica.test.mjs` (ambas capas importan; ninguna reimplementa el parseo); `nucleo-aislado` en verde (módulo no escapa de core/) | | 🚧 |
 | CA-6 | `.github/workflows/ci.yml` (npm test + npm run check); `tools/check.mjs` (build→6 checks→valida) | `tools/tests/workflow.test.mjs` (estructura y pasos); `tools/tests/check.test.mjs` (PASOS; propagación exit≠0; valida sobre árbol limpio→0 y árbol que viola RN-07→≠0) | | 🚧 |
 | CA-7 | `tools/check.mjs` (incluye `nucleo-aislado` como paso requerido); `.github/workflows/ci.yml` | `tools/tests/check.test.mjs` (nucleo-aislado en PASOS; propaga exit≠0); test adversarial preexistente `tools/tests/nucleo-aislado.test.mjs` | | 🚧 |
 | CA-8 | `adapters/claude-code/hooks/_comun.mjs` (`normalizaRol`, una sola vez); `adapters/claude-code/hooks/protege-verdad.mjs` (usa `normalizaRol`) | `adapters/claude-code/tests/protege-verdad.test.mjs` (CA-8: permite `tremen-sdd:sdd-arquitecto`; deniega `tremen-sdd:sdd-implementador`; permite `sdd-producto` sin prefijo) | | 🚧 |
@@ -60,7 +60,7 @@ toco. Comandos de verificación:
 
 - `npm test` — suite completa (build + núcleo + tools + adaptador).
 - `npm run check` — build → 6 checks → valida (lo mismo que CI).
-- Tests nuevos por CA: `core/tests/require-spec.test.mjs`,
+- Tests nuevos por CA: `core/tests/require-spec-decision.test.mjs`,
   `tools/tests/{pre-commit,hooks-install,check,workflow,require-spec-una-logica}.test.mjs`,
   y los casos CA-8 en `adapters/claude-code/tests/protege-verdad.test.mjs`.
 
@@ -75,7 +75,7 @@ el comportamiento correcto —la implementación está congelada para revisión�
 el verificador devuelve RED, el pipeline reabre a `en-progreso`. Válvulas
 auditables si hiciera falta: `git commit --no-verify` o `SDD_SKIP_GATE=1`.
 
-Ficheros nuevos: `core/lib/require-spec.mjs`, `core/tests/require-spec.test.mjs`,
+Ficheros nuevos: `core/lib/require-spec.mjs`, `core/tests/require-spec-decision.test.mjs`,
 `tools/githooks/{pre-commit,pre-commit.mjs}`, `tools/install-hooks.mjs`,
 `tools/check.mjs`, `tools/tests/{pre-commit,hooks-install,check,workflow,require-spec-una-logica}.test.mjs`,
 `.github/workflows/ci.yml`.
