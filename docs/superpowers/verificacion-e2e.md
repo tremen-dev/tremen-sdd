@@ -24,14 +24,21 @@ claude plugin install tremen-sdd@tremen-sdd
 
 `/sdd-init` no se pudo invocar como slash-command headless (no hay sesión
 interactiva), así que se simuló a mano: `git init -b main`, copia de
-`templates/sdd.json` → `.sdd.json` con `rutasVigiladas: ["src/"]`, y `mkdir docs`.
+`core/templates/sdd.json` → `.sdd.json` con `rutasVigiladas: ["src/"]`, y `mkdir docs`.
+
+> **Nota (SPEC-001)**: esta verificación E2E se corrió en v0.2.0, cuando el
+> método vivía plano en la raíz (`scripts/`, `hooks/`, `templates/`, `lib/`).
+> Tras el refactor a núcleo + adaptadores, esas rutas son `core/scripts/`,
+> `core/templates/`, `core/lib/` y `adapters/claude-code/hooks/`. Los comandos
+> de abajo están re-apuntados al layout actual; las **salidas capturadas** se
+> conservan tal cual se grabaron entonces.
 
 ```
-node scripts/scaffold.mjs epica "Facturación"
-node scripts/scaffold.mjs spec "Alta de factura" --epica EPIC-001
-node scripts/estado.mjs docs/epicas/EPIC-001-facturacion/SPEC-001-alta-de-factura.md aprobada --por Alberto
-node scripts/tablero.mjs
-node scripts/valida.mjs
+node core/scripts/scaffold.mjs epica "Facturación"
+node core/scripts/scaffold.mjs spec "Alta de factura" --epica EPIC-001
+node core/scripts/estado.mjs docs/epicas/EPIC-001-facturacion/SPEC-001-alta-de-factura.md aprobada --por Alberto
+node core/scripts/tablero.mjs
+node core/scripts/valida.mjs
 ```
 
 **PASA.**
@@ -61,7 +68,7 @@ sin abrir una sesión interactiva (headless).
 ### 3a. `require-spec.mjs` en rama `main` (código vigilado) → esperado: deny
 
 ```
-echo '{"cwd":"<sandbox>","tool_name":"Edit","tool_input":{"file_path":"<sandbox>/src/app.ts"}}' | node hooks/require-spec.mjs
+echo '{"cwd":"<sandbox>","tool_name":"Edit","tool_input":{"file_path":"<sandbox>/src/app.ts"}}' | node adapters/claude-code/hooks/require-spec.mjs
 ```
 
 **PASA.**

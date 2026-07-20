@@ -4,12 +4,18 @@
 
 # tremen-sdd
 
-Plugin de Claude Code que empaqueta el estándar SDD (spec-driven development)
-de tremen.dev: jerarquía épica → spec → tarea, "nada se codea sin spec
-aprobada", ADRs inmutables y un pipeline de roles producto → arquitecto →
-implementador → verificador — con hooks que lo hacen cumplir y scripts que
-lo automatizan, en vez de dejarlo en prosa que cada proyecto reimplementa a
-su manera.
+El estándar SDD (spec-driven development) de tremen.dev: jerarquía épica →
+spec → tarea, "nada se codea sin spec aprobada", ADRs inmutables y un pipeline
+de roles producto → arquitecto → implementador → verificador — con hooks que lo
+hacen cumplir y scripts que lo automatizan, en vez de dejarlo en prosa que cada
+proyecto reimplementa a su manera.
+
+Está organizado como un **núcleo agnóstico** (`core/`: scripts, plantillas,
+máquina de estados, prosa de roles) y **adaptadores por harness** de agentes
+(`adapters/<harness>/`). Hoy existe el adaptador de **Claude Code**; el soporte
+multi-harness (Kimi Code y otros) está en curso — ver `EPIC-001` y
+[`docs/arquitectura.md`](docs/arquitectura.md) para el mapa del repo, el paso de
+build y cómo se ejerce el dogfooding.
 
 **Documentación visual** (`site/`, con el design system de tremen.dev):
 
@@ -21,12 +27,21 @@ su manera.
 
 ## Instalación
 
+El adaptador instalable se **construye** desde el núcleo (el artefacto vive en
+`dist/`, gitignored), así que hoy la instalación pasa por un build local:
+
 ```bash
-claude plugin marketplace add tremen-dev/tremen-sdd
+npm install
+npm run build          # ensambla dist/claude-code/ con el núcleo empaquetado dentro
+claude plugin marketplace add D:\ruta\a\tremen-sdd
 claude plugin install tremen-sdd@tremen-sdd
 ```
 
-(Verificado también con un marketplace local: `claude plugin marketplace add D:\ruta\a\tremen-sdd`.)
+El `marketplace.json` de la raíz apunta a `./dist/claude-code`, por eso el build
+es previo a instalar. La **distribución para usuarios finales** (publicar el
+artefacto construido o un registro remoto) aún no está resuelta: es trabajo de
+`EPIC-001`. Detalles del build y del dogfooding en
+[`docs/arquitectura.md`](docs/arquitectura.md).
 
 ## Inicio rápido
 
@@ -61,7 +76,7 @@ raíz del proyecto (lo crea `/sdd-init`).
 
 ## Máquina de estados
 
-Definida en `scripts/estado.mjs` (`TRANSITIONS`) y es la única vía sancionada
+Definida en `core/scripts/estado.mjs` (`TRANSITIONS`) y es la única vía sancionada
 para cambiar el estado de un artefacto (spec, épica, task):
 
 ```
@@ -76,7 +91,7 @@ hecho es terminal (sin transiciones salientes).
 ```
 
 Cada transición añade una entrada a `historial` en el frontmatter
-(`{estado, fecha, por}`); `scripts/valida.mjs` comprueba que la última
+(`{estado, fecha, por}`); `core/scripts/valida.mjs` comprueba que la última
 entrada del historial coincide con el `estado` declarado.
 
 ## Hooks
@@ -104,7 +119,7 @@ FOUNDATION.md              # documento de verdad de alto nivel
 CLAUDE.md                  # bloque tremen-sdd (no pisa un CLAUDE.md existente)
 docs/
   roadmap.md
-  tablero.md                # GENERADO — solo por scripts/tablero.mjs
+  tablero.md                # GENERADO — solo por core/scripts/tablero.mjs
   fundacion/
     vision.md
     dominio.md
@@ -119,7 +134,7 @@ docs/
     ADR-NNN-slug.md
 ```
 
-Las plantillas de origen viven en `templates/` (`FOUNDATION.md`, `CLAUDE.md`,
+Las plantillas de origen viven en `core/templates/` (`FOUNDATION.md`, `CLAUDE.md`,
 `sdd.json`, `roadmap.md`, `fundacion/*`, `artefactos/{_epica,SPEC,SPEC.ledger,TASK,ADR}.md`)
 y `templates/rol-dominio.md` para generar roles de dominio a demanda.
 
