@@ -4,6 +4,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { parseFrontmatter } from '../lib/frontmatter.mjs';
+import { esEntrypoint } from '../lib/entrypoint.mjs';
 
 function leer(ruta) {
   return parseFrontmatter(fs.readFileSync(ruta, 'utf8')).data;
@@ -37,7 +38,7 @@ export function renderBoard(docsDir, fecha) {
   return lineas.join('\n');
 }
 
-if (process.argv[1] && import.meta.url === new URL(`file:///${process.argv[1].replaceAll('\\', '/')}`).href) {
+if (esEntrypoint(import.meta.url, process.argv[1])) {
   const dir = path.resolve(process.argv.includes('--dir') ? process.argv[process.argv.indexOf('--dir') + 1] : 'docs');
   fs.writeFileSync(path.join(dir, 'tablero.md'), renderBoard(dir));
   console.log(`[tablero] regenerado ${path.join(dir, 'tablero.md')}`);

@@ -6,6 +6,7 @@
 import { spawnSync } from 'node:child_process';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { esEntrypoint } from '../core/lib/entrypoint.mjs';
 
 const REPO = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 
@@ -33,6 +34,6 @@ export function ejecuta(pasos = PASOS, { cwd = REPO } = {}) {
   return 0;
 }
 
-if (process.argv[1] && import.meta.url === new URL(`file:///${process.argv[1].replaceAll('\\', '/')}`).href) {
+if (esEntrypoint(import.meta.url, process.argv[1])) {
   process.exit(ejecuta());
 }

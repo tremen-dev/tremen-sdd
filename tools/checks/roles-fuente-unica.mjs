@@ -5,6 +5,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { REPO_ROOT, walk } from './_util.mjs';
+import { esEntrypoint } from '../../core/lib/entrypoint.mjs';
 
 const SECCIONES_CUERPO = [/^##\s+Misión/m, /^##\s+Flujo/m, /^##\s+Reglas duras/m];
 
@@ -20,7 +21,7 @@ export function checkAgentsProsa(agentsDir = path.join(REPO_ROOT, 'adapters', 'c
   return { ok: infractores.length === 0, infractores };
 }
 
-if (process.argv[1] && import.meta.url === new URL(`file:///${process.argv[1].replaceAll('\\', '/')}`).href) {
+if (esEntrypoint(import.meta.url, process.argv[1])) {
   const { ok, infractores } = checkAgentsProsa();
   if (!ok) {
     console.error('[roles-fuente-unica] FALLA:\n' + infractores.map((i) => ` - ${i.fichero}: ${i.motivo}`).join('\n'));

@@ -9,6 +9,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { REPO_ROOT, walk, importSpecifiers, dentroDe } from './_util.mjs';
+import { esEntrypoint } from '../../core/lib/entrypoint.mjs';
 
 const RE_PLUGIN_ROOT = /\$\{CLAUDE_PLUGIN_ROOT\}(\/[^\s"'`)\]\\]*)/g;
 const TIENE_PLACEHOLDER = /<[^>]+>/; // p.ej. <idioma>, <rol>: refs genéricas de plantilla
@@ -51,7 +52,7 @@ export function checkReferencias(distDir) {
   return { ok: errores.length === 0, errores };
 }
 
-if (process.argv[1] && import.meta.url === new URL(`file:///${process.argv[1].replaceAll('\\', '/')}`).href) {
+if (esEntrypoint(import.meta.url, process.argv[1])) {
   const distDir = path.join(REPO_ROOT, 'dist', process.argv[2] || 'claude-code');
   if (!fs.existsSync(distDir)) { console.error(`[referencias] No existe ${path.relative(REPO_ROOT, distDir)}. Ejecuta el build antes.`); process.exit(1); }
   const { ok, errores } = checkReferencias(distDir);

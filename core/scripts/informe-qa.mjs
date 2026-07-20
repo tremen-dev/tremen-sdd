@@ -4,6 +4,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { parseFrontmatter } from '../lib/frontmatter.mjs';
+import { esEntrypoint } from '../lib/entrypoint.mjs';
 
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
@@ -32,7 +33,7 @@ pre{background:#f6f6f6;padding:1rem;overflow-x:auto;white-space:pre-wrap}</style
   return { html, out };
 }
 
-if (process.argv[1] && import.meta.url === new URL(`file:///${process.argv[1].replaceAll('\\', '/')}`).href) {
+if (esEntrypoint(import.meta.url, process.argv[1])) {
   try {
     const { html, out } = renderReport(path.resolve(process.argv[2]));
     fs.writeFileSync(out, html);

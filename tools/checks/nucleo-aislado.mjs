@@ -5,6 +5,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { REPO_ROOT, walk, importSpecifiers, dentroDe } from './_util.mjs';
+import { esEntrypoint } from '../../core/lib/entrypoint.mjs';
 
 export function analizaNucleo(coreDir = path.join(REPO_ROOT, 'core')) {
   const violaciones = [];
@@ -26,7 +27,7 @@ export function analizaNucleo(coreDir = path.join(REPO_ROOT, 'core')) {
   return { ok: violaciones.length === 0, violaciones };
 }
 
-if (process.argv[1] && import.meta.url === new URL(`file:///${process.argv[1].replaceAll('\\', '/')}`).href) {
+if (esEntrypoint(import.meta.url, process.argv[1])) {
   const { ok, violaciones } = analizaNucleo();
   if (!ok) {
     console.error('[nucleo-aislado] FALLA:\n' + violaciones.map((v) => ` - ${v.fichero}: '${v.spec}' (${v.motivo})`).join('\n'));

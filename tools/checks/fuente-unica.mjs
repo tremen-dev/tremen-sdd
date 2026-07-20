@@ -4,6 +4,7 @@
 // dist/ no tiene ficheros trackeados. Protege CE-1/CE-3.
 import { execSync } from 'node:child_process';
 import { REPO_ROOT } from './_util.mjs';
+import { esEntrypoint } from '../../core/lib/entrypoint.mjs';
 
 const norm = (p) => p.replaceAll('\\', '/');
 
@@ -36,7 +37,7 @@ export function checkFuenteUnica(files, coreRel = coreRelPaths(files)) {
   return { ok: infractores.length === 0, infractores };
 }
 
-if (process.argv[1] && import.meta.url === new URL(`file:///${process.argv[1].replaceAll('\\', '/')}`).href) {
+if (esEntrypoint(import.meta.url, process.argv[1])) {
   const { ok, infractores } = checkFuenteUnica(trackedFiles());
   if (!ok) {
     console.error('[fuente-unica] FALLA:\n' + infractores.map((i) => ` - ${i.fichero}: ${i.motivo}`).join('\n'));

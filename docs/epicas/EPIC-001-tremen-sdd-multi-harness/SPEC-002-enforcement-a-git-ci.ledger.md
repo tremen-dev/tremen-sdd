@@ -6,7 +6,8 @@ epica: EPIC-001
 # Ledger — SPEC-002 Enforcement a git + CI
 
 ## Resumen
-- Fase: en-revision (implementación completa, a la espera del verificador)
+- Fase: en-progreso (REABIERTA tras RED de verificación en CI real; guard CLI
+  cross-platform arreglado, a la espera de re-verificación)
 - Rama: `ft/SPEC-002-enforcement-a-git-ci`
 
 ## Matriz de criterios de aceptación
@@ -20,7 +21,7 @@ epica: EPIC-001
 | CA-3 | `tools/githooks/pre-commit.mjs` (capa coherencia vía `validateFile` de `core/scripts/valida.mjs`) | `tools/tests/pre-commit.test.mjs` (CA-3 incoherente aborta; CA-3 bis coherente pasa) | Ejercido en repos temporales: artefacto con `estado: aprobada` e historial acabado en `borrador`→commit **aborta** (exit 1, cita RN-07 vía `validateFile`); artefacto coherente→exit 0. | ✅ |
 | CA-4 | `tools/githooks/pre-commit.mjs` (ruta feliz) | `tools/tests/pre-commit.test.mjs` (CA-4 ruta no vigilada → exit 0) | Ejercido: `README.md` (no vigilada) en `main`→commit **exit 0** sin fricción. (También ruta feliz vigilada+spec válida en CA-2b.) | ✅ |
 | CA-5 | `core/lib/require-spec.mjs` (fuente única: `parseSpecId`/`buscarSpec`/`evaluarRequireSpec`); `adapters/claude-code/hooks/require-spec.mjs` y `tools/githooks/pre-commit.mjs` la **importan** | `core/tests/require-spec-decision.test.mjs` (unitario del módulo); `tools/tests/require-spec-una-logica.test.mjs` (ambas capas importan; ninguna reimplementa el parseo); `nucleo-aislado` en verde (módulo no escapa de core/) | Inspección adversarial (grep source): `RAMA_SPEC_RE`/`ESTADOS_CODEABLES` viven **solo** en `core/lib/require-spec.mjs`. L1 y L2 **importan** `evaluarRequireSpec` y solo obtienen la rama (`git rev-parse --abbrev-ref`); ninguno reparsea `ft/SPEC` ni el estado. `nucleo-aislado` en verde en `npm run check`. | ✅ |
-| CA-6 | `.github/workflows/ci.yml` (npm test + npm run check); `tools/check.mjs` (build→6 checks→valida) | `tools/tests/workflow.test.mjs` (estructura y pasos); `tools/tests/check.test.mjs` (PASOS; propagación exit≠0; valida sobre árbol limpio→0 y árbol que viola RN-07→≠0) | `ci.yml` YAML válido (`yaml.safe_load` OK, sin tabs); pasos `npm test` + `npm run check` con checkout+setup-node. `npm run check` real→**exit 0** sobre el árbol; `valida --dir` sobre árbol que viola RN-07→**exit 1**; runner propaga exit≠0 (test real). | ✅ |
+| CA-6 | `.github/workflows/ci.yml` (npm test + npm run check); `tools/check.mjs` (build→6 checks→valida). **FIX cross-platform (reapertura):** guard de entrypoint CLI extraído a fuente única `core/lib/entrypoint.mjs` (`esEntrypoint` con `pathToFileURL`) y aplicado a los 13 `.mjs` con CLI (5 `core/scripts/`, `tools/{build-adapter,check}`, 6 `tools/checks/`). El idiom viejo `file:///${argv1}` era no-op en Linux (4 barras) → `npm run build` no ensamblaba `dist/` en CI Ubuntu → caían los tests de hooks | `tools/tests/workflow.test.mjs` (estructura y pasos); `tools/tests/check.test.mjs` (PASOS; propagación exit≠0; valida sobre árbol limpio→0 y árbol que viola RN-07→≠0); **`core/tests/entrypoint.test.mjs` (regresión cross-platform del helper: reconoce ruta POSIX y Windows como entrypoint, rechaza fichero distinto; falla con el idiom viejo en cualquier SO)** | `ci.yml` YAML válido (`yaml.safe_load` OK, sin tabs); pasos `npm test` + `npm run check` con checkout+setup-node. `npm run check` real→**exit 0** sobre el árbol; `valida --dir` sobre árbol que viola RN-07→**exit 1**; runner propaga exit≠0 (test real). | ✅ |
 | CA-7 | `tools/check.mjs` (incluye `nucleo-aislado` como paso requerido); `.github/workflows/ci.yml` | `tools/tests/check.test.mjs` (nucleo-aislado en PASOS; propaga exit≠0); test adversarial preexistente `tools/tests/nucleo-aislado.test.mjs` | `PASOS` de `tools/check.mjs` incluye `nucleo-aislado` (`node tools/checks/nucleo-aislado.mjs`) como paso requerido; `npm run check` lo ejecuta (`[nucleo-aislado] OK`) y propaga exit≠0. Test adversarial `nucleo-aislado.test.mjs` verde en la suite. | ✅ |
 | CA-8 | `adapters/claude-code/hooks/_comun.mjs` (`normalizaRol`, una sola vez); `adapters/claude-code/hooks/protege-verdad.mjs` (usa `normalizaRol`) | `adapters/claude-code/tests/protege-verdad.test.mjs` (CA-8: permite `tremen-sdd:sdd-arquitecto`; deniega `tremen-sdd:sdd-implementador`; permite `sdd-producto` sin prefijo) | Ejercido contra el hook **construido en `dist/claude-code/hooks/protege-verdad.mjs`** editando `docs/fundacion/reglas.md`: `tremen-sdd:sdd-arquitecto`→**permite** (sin deny, exit 0); `tremen-sdd:sdd-implementador`→**deniega** (JSON deny); `sdd-producto` sin prefijo→**permite**; control `sdd-implementador` sin prefijo→deniega (compat). `normalizaRol` definido una vez en `_comun.mjs`. | ✅ |
 | CA-9 | Sin cambios en `core/scripts/estado.mjs` ni en sus asserts | `core/tests/estado.test.mjs` intacto y verde; suite completa `npm test` verde (127 tests, baseline 84 + 43 nuevos) | `git diff main...HEAD` de `core/scripts/estado.mjs` y `core/tests/estado.test.mjs` **vacío** (sin cambios). Suite completa `npm test` = **127 tests, 0 fallos**. Regresión de specs migradas no agravada. | ✅ |
@@ -78,9 +79,50 @@ Nota: la aprobación de la spec (gate humano) NO la ejecuta el verificador.
 
 ## Cómo retomar (handoff)
 
+### Reapertura 2026-07-21 — bug cross-platform del guard CLI (RED en CI real)
+
+La verificación previa (GREEN) solo se ejerció en **Windows**. El GitHub Actions
+real (Ubuntu) destapó un bug que rompía el build en Linux: los 13 `.mjs` con
+entrypoint CLI usaban el idiom
+`import.meta.url === new URL(\`file:///${argv1.replaceAll('\\\\','/')}\`).href`,
+correcto **solo** en Windows. En Linux `argv1` empieza por `/`, así que
+`file:///` + `/home/…` = `file:////home/…` (CUATRO barras) y **nunca** casa con
+el `import.meta.url` de tres barras → el bloque CLI **no se ejecutaba**.
+Consecuencia: `node tools/build-adapter.mjs` era no-op → `npm run build` no
+ensamblaba `dist/` → los tests de hooks del adaptador fallaban
+(`Cannot find module dist/claude-code/hooks/*.mjs`).
+
+**Arreglo (TDD):** extraída la decisión a **fuente única** `core/lib/entrypoint.mjs`
+(`export function esEntrypoint(importMetaUrl, argv1)` con `pathToFileURL` de
+`node:url`, que normaliza igual en todo SO). Las **13** ocurrencias reemplazadas
+por `if (esEntrypoint(import.meta.url, process.argv[1])) {`:
+`core/scripts/{valida,estado,scaffold,tablero,informe-qa}.mjs`,
+`tools/{build-adapter,check}.mjs`,
+`tools/checks/{layout,nucleo-aislado,fuente-unica,referencias,roles-fuente-unica,manifiestos}.mjs`.
+Dirección de dependencia respetada (tools/checks → core/lib; el núcleo no importa
+adaptadores) → `nucleo-aislado` sigue verde.
+
+**Test de regresión** `core/tests/entrypoint.test.mjs`: unitario del helper,
+**independiente de la plataforma** — reconoce como entrypoint una ruta POSIX
+(`pathToFileURL('/tmp/foo.mjs').href` + argv1 `/tmp/foo.mjs`) y una Windows,
+rechaza un fichero distinto y el caso "sólo importado" (sin argv1). Falla con el
+idiom viejo en **cualquier** SO (el POSIX daba cuatro barras). Primero en RED
+(módulo inexistente), luego GREEN con el helper.
+
+**Verificación local (Windows):** `npm test` = **131 tests, 0 fallos** (127
+previos + 4 del helper). `npm run build` ensambla `dist/claude-code/` con la
+superficie de hooks (`protege-verdad`, `require-spec`, `calidad`, `_comun`,
+`hooks.json`) y copia `core/lib/entrypoint.mjs` a `dist/…/core/lib/`.
+`npm run check` = **exit 0** (build + 6 checks + valida). CLI vivos, no no-op:
+`node core/scripts/valida.mjs --dir docs` → `[valida] OK`; los 6 checks imprimen
+su `[…] OK` como subprocesos. **Pendiente: re-verificación en CI real (Ubuntu)**
+por sdd-verificador — es justo lo que este arreglo pretende poner en verde.
+
+### Estado de la implementación (previo, sigue vigente)
+
 Implementación **completa**; los 9 CA tienen código + test en verde. Suite
-`npm test` = **127 tests, 0 fallos** (baseline previo 84 + 43 nuevos). El runner
-real `npm run check` sale **exit 0** sobre el árbol actual.
+`npm test` = **131 tests, 0 fallos** (127 previos + 4 del helper de entrypoint).
+El runner real `npm run check` sale **exit 0** sobre el árbol actual.
 
 Verificación pendiente (sdd-verificador): las columnas **Verif.** y **Estado**
 del ledger están en 🚧 a la espera de su veredicto; yo (implementador) no las
@@ -107,6 +149,12 @@ Ficheros nuevos: `core/lib/require-spec.mjs`, `core/tests/require-spec-decision.
 `tools/githooks/{pre-commit,pre-commit.mjs}`, `tools/install-hooks.mjs`,
 `tools/check.mjs`, `tools/tests/{pre-commit,hooks-install,check,workflow,require-spec-una-logica}.test.mjs`,
 `.github/workflows/ci.yml`.
+Nuevos por la reapertura (fix cross-platform): `core/lib/entrypoint.mjs`,
+`core/tests/entrypoint.test.mjs`.
 Editados: `adapters/claude-code/hooks/{require-spec,protege-verdad,_comun}.mjs`,
 `adapters/claude-code/tests/protege-verdad.test.mjs`, `package.json`,
 `.gitattributes`, `README.md`, `docs/arquitectura.md`.
+Editados por la reapertura (guard CLI → `esEntrypoint`):
+`core/scripts/{valida,estado,scaffold,tablero,informe-qa}.mjs`,
+`tools/{build-adapter,check}.mjs`,
+`tools/checks/{layout,nucleo-aislado,fuente-unica,referencias,roles-fuente-unica,manifiestos}.mjs`.
