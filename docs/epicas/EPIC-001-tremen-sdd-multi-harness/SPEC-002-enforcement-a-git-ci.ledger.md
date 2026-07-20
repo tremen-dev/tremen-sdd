@@ -6,8 +6,9 @@ epica: EPIC-001
 # Ledger — SPEC-002 Enforcement a git + CI
 
 ## Resumen
-- Fase: en-progreso (REABIERTA tras RED de verificación en CI real; guard CLI
-  cross-platform arreglado, a la espera de re-verificación)
+- Fase: en-progreso (REABIERTA tras RED de verificación en CI real; dos fixes
+  cross-platform aplicados —guard CLI de entrypoint y bit +x del shim del
+  pre-commit—, a la espera de re-verificación)
 - Rama: `ft/SPEC-002-enforcement-a-git-ci`
 
 ## Matriz de criterios de aceptación
@@ -16,7 +17,7 @@ epica: EPIC-001
 <!-- Un CA está ✅ solo cuando Implementado + Test + Verif. aplicables están en verde. Una salvedad se marca ⚠️, nunca ✅. -->
 | CA | Implementado (fichero) | Test (fichero/caso) | Verif. | Estado |
 |---|---|---|---|---|
-| CA-1 | `tools/install-hooks.mjs`; `tools/githooks/pre-commit` (shim sh→node); `.gitattributes` (eol=lf del shim); `package.json` (script `hooks:install`) | `tools/tests/hooks-install.test.mjs` (core.hooksPath=tools/githooks; commit ejercita el hook; cero `dependencies`; script expuesto) | Ejercido en vivo (Win/Git Bash): clon fresco sin `core.hooksPath` → `node tools/install-hooks.mjs` fija `core.hooksPath=tools/githooks` → commit vigilado en `main` **bloqueado** con RN-01 (shim sh→node OK). `package.json` **sin** clave `dependencies` (verificado). Repo real: `core.hooksPath=tools/githooks`. | ✅ |
+| CA-1 | `tools/install-hooks.mjs` (fija core.hooksPath **+ `chmodSync(shim, 0o755)`**); `tools/githooks/pre-commit` (shim sh→node, **modo git 100755 vía `git update-index --chmod=+x`**); `.gitattributes` (eol=lf del shim); `package.json` (script `hooks:install`). **FIX cross-platform (2ª reapertura):** en Linux git no ejecuta un hook sin bit +x → el pre-commit se saltaba y el commit procedía (exit 0) | `tools/tests/hooks-install.test.mjs` (core.hooksPath=tools/githooks; commit ejercita el hook; cero `dependencies`; script expuesto; **regresión cross-platform: `git ls-files -s` del shim empieza por `100755`, determinista en cualquier SO**) | Ejercido en vivo (Win/Git Bash): clon fresco sin `core.hooksPath` → `node tools/install-hooks.mjs` fija `core.hooksPath=tools/githooks` → commit vigilado en `main` **bloqueado** con RN-01 (shim sh→node OK). `package.json` **sin** clave `dependencies` (verificado). Repo real: `core.hooksPath=tools/githooks`. | ✅ |
 | CA-2 | `tools/githooks/pre-commit.mjs` (capa require-spec, fail-closed, válvula `SDD_SKIP_GATE`) | `tools/tests/pre-commit.test.mjs` (CA-2a main aborta; SPEC-999 aborta; borrador aborta; CA-2b aprobada/en-progreso pasan; CA-2c SDD_SKIP_GATE pasa) | Ejercido en 7 repos git temporales con el hook real: `main`+vigilada→exit 1; `ft/SPEC-999` inexistente+vigilada→exit 1; spec `borrador`+vigilada→exit 1; `ft/SPEC-002` `aprobada`+vigilada→exit 0; `en-progreso`+vigilada→exit 0; `SDD_SKIP_GATE=1`→exit 0; `--no-verify`→exit 0. Mensaje de aborto cita RN-01 y ambas válvulas. | ✅ |
 | CA-3 | `tools/githooks/pre-commit.mjs` (capa coherencia vía `validateFile` de `core/scripts/valida.mjs`) | `tools/tests/pre-commit.test.mjs` (CA-3 incoherente aborta; CA-3 bis coherente pasa) | Ejercido en repos temporales: artefacto con `estado: aprobada` e historial acabado en `borrador`→commit **aborta** (exit 1, cita RN-07 vía `validateFile`); artefacto coherente→exit 0. | ✅ |
 | CA-4 | `tools/githooks/pre-commit.mjs` (ruta feliz) | `tools/tests/pre-commit.test.mjs` (CA-4 ruta no vigilada → exit 0) | Ejercido: `README.md` (no vigilada) en `main`→commit **exit 0** sin fricción. (También ruta feliz vigilada+spec válida en CA-2b.) | ✅ |
@@ -118,6 +119,34 @@ superficie de hooks (`protege-verdad`, `require-spec`, `calidad`, `_comun`,
 su `[…] OK` como subprocesos. **Pendiente: re-verificación en CI real (Ubuntu)**
 por sdd-verificador — es justo lo que este arreglo pretende poner en verde.
 
+### Reapertura 2026-07-21 (2) — bit +x del shim del pre-commit (RED en CI real)
+
+Con el build ya verde en Linux, el CI real dejó **5 RED**, todos del pre-commit
+(CA-1b, CA-2a y variantes, CA-3): los tests esperaban que el commit **abortara**
+(exit≠0) y en Linux obtenían exit 0 → el pre-commit **no bloqueaba**.
+
+**Causa raíz:** el shim `tools/githooks/pre-commit` estaba committeado con modo
+git **100644 (no ejecutable)**. En POSIX git **no ejecuta** un hook sin bit +x →
+el hook se salta → el commit procede. En Windows pasaba porque git no rastrea el
+bit de ejecución. Además `install-hooks.mjs` no hacía `chmod` y el test copia el
+dir con `fs.cpSync` (preserva 644) antes de instalar.
+
+**Arreglo:**
+1. `git update-index --chmod=+x tools/githooks/pre-commit` → shim committeado como
+   **100755** (verificado con `git ls-files -s`; el blob no cambia, LF intacto).
+2. `tools/install-hooks.mjs` ahora hace `fs.chmodSync('tools/githooks/pre-commit',
+   0o755)` tras fijar `core.hooksPath` → el setup garantiza el +x aunque el fichero
+   llegue sin él (esto arregla también el test, que instala tras el `cpSync`).
+3. Test de regresión **platform-independent** en `tools/tests/hooks-install.test.mjs`:
+   asserta que `git ls-files -s tools/githooks/pre-commit` empieza por `100755`
+   (el modo del índice git es determinista en cualquier SO; el bit del filesystem
+   no es fiable en Windows).
+
+**Verificación local (Windows):** `npm test` = **132 tests, 0 fallos** (131 + 1
+del modo git). Los 5 tests que fallaban en Linux dependen de que install-hooks
+deje el shim ejecutable en el repo temporal; con (2) deberían pasar también en
+Linux. **Pendiente: re-vigilar el CI real (Ubuntu)** por el coordinador.
+
 ### Estado de la implementación (previo, sigue vigente)
 
 Implementación **completa**; los 9 CA tienen código + test en verde. Suite
@@ -154,7 +183,10 @@ Nuevos por la reapertura (fix cross-platform): `core/lib/entrypoint.mjs`,
 Editados: `adapters/claude-code/hooks/{require-spec,protege-verdad,_comun}.mjs`,
 `adapters/claude-code/tests/protege-verdad.test.mjs`, `package.json`,
 `.gitattributes`, `README.md`, `docs/arquitectura.md`.
-Editados por la reapertura (guard CLI → `esEntrypoint`):
+Editados por la reapertura 1 (guard CLI → `esEntrypoint`):
 `core/scripts/{valida,estado,scaffold,tablero,informe-qa}.mjs`,
 `tools/{build-adapter,check}.mjs`,
 `tools/checks/{layout,nucleo-aislado,fuente-unica,referencias,roles-fuente-unica,manifiestos}.mjs`.
+Editados por la reapertura 2 (bit +x del shim): `tools/install-hooks.mjs`
+(añade `chmodSync`), `tools/tests/hooks-install.test.mjs` (test de modo git),
+y modo git de `tools/githooks/pre-commit` (100644 → 100755, sin cambio de contenido).

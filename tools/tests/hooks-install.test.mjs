@@ -53,6 +53,14 @@ test('CA-1b: tras instalar, un commit ejercita el pre-commit (bloquea vigilado s
   assert.match((r.stdout || '') + (r.stderr || ''), /RN-01/);
 });
 
+test('CA-1b (regresión cross-platform): el shim versionado tiene modo git 100755 (+x)', () => {
+  // En POSIX git NO ejecuta un hook sin bit +x -> el pre-commit se saltaría y el
+  // commit procedería (exit 0). El bit del filesystem no es fiable en Windows,
+  // pero el MODO DEL ÍNDICE git es determinista en cualquier SO: debe ser 100755.
+  const linea = execSync('git ls-files -s tools/githooks/pre-commit', { cwd: REPO, encoding: 'utf8' }).trim();
+  assert.match(linea, /^100755\b/, `el shim debe estar committeado como ejecutable (100755), no ${linea.split(/\s/)[0]}`);
+});
+
 test('CA-1c: package.json sigue sin dependencies de terceros (cero deps)', () => {
   const pkg = JSON.parse(fs.readFileSync(path.join(REPO, 'package.json'), 'utf8'));
   const deps = Object.keys(pkg.dependencies ?? {});
