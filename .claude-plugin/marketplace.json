@@ -4,7 +4,7 @@
   "plugins": [
     {
       "name": "tremen-sdd",
-      "source": "./",
+      "source": "./dist/claude-code",
       "description": "Estándar SDD unificado de tremen.dev (roles, hooks, scaffolding, plantillas)."
     }
   ]

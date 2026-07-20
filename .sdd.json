@@ -1,0 +1,6 @@
+{
+  "idioma": "es",
+  "rutasVigiladas": ["core/scripts/", "core/lib/", "adapters/claude-code/hooks/"],
+  "linter": "auto",
+  "gates": { "requireSpec": true, "protegeVerdad": true, "calidad": true }
+}
