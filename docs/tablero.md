@@ -8,9 +8,8 @@ Actualizado: 2026-07-20
 | Spec | Estado | Último cambio |
 |---|---|---|
 | SPEC-001 — refactor-a-nucleo-adaptadores | hecho | 2026-07-20 (Alberto Fojo) |
-| SPEC-002 — enforcement-a-git-ci | aprobada | 2026-07-20 (Alberto Fojo) |
+| SPEC-002 — enforcement-a-git-ci | hecho | 2026-07-20 (Alberto Fojo) |
 
 ## Resumen
 
-- hecho: 1
-- aprobada: 1
+- hecho: 2

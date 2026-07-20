@@ -15,18 +15,46 @@ epica: EPIC-001
 <!-- Un CA está ✅ solo cuando Implementado + Test + Verif. aplicables están en verde. Una salvedad se marca ⚠️, nunca ✅. -->
 | CA | Implementado (fichero) | Test (fichero/caso) | Verif. | Estado |
 |---|---|---|---|---|
-| CA-1 | `tools/install-hooks.mjs`; `tools/githooks/pre-commit` (shim sh→node); `.gitattributes` (eol=lf del shim); `package.json` (script `hooks:install`) | `tools/tests/hooks-install.test.mjs` (core.hooksPath=tools/githooks; commit ejercita el hook; cero `dependencies`; script expuesto) | | 🚧 |
-| CA-2 | `tools/githooks/pre-commit.mjs` (capa require-spec, fail-closed, válvula `SDD_SKIP_GATE`) | `tools/tests/pre-commit.test.mjs` (CA-2a main aborta; SPEC-999 aborta; borrador aborta; CA-2b aprobada/en-progreso pasan; CA-2c SDD_SKIP_GATE pasa) | | 🚧 |
-| CA-3 | `tools/githooks/pre-commit.mjs` (capa coherencia vía `validateFile` de `core/scripts/valida.mjs`) | `tools/tests/pre-commit.test.mjs` (CA-3 incoherente aborta; CA-3 bis coherente pasa) | | 🚧 |
-| CA-4 | `tools/githooks/pre-commit.mjs` (ruta feliz) | `tools/tests/pre-commit.test.mjs` (CA-4 ruta no vigilada → exit 0) | | 🚧 |
-| CA-5 | `core/lib/require-spec.mjs` (fuente única: `parseSpecId`/`buscarSpec`/`evaluarRequireSpec`); `adapters/claude-code/hooks/require-spec.mjs` y `tools/githooks/pre-commit.mjs` la **importan** | `core/tests/require-spec-decision.test.mjs` (unitario del módulo); `tools/tests/require-spec-una-logica.test.mjs` (ambas capas importan; ninguna reimplementa el parseo); `nucleo-aislado` en verde (módulo no escapa de core/) | | 🚧 |
-| CA-6 | `.github/workflows/ci.yml` (npm test + npm run check); `tools/check.mjs` (build→6 checks→valida) | `tools/tests/workflow.test.mjs` (estructura y pasos); `tools/tests/check.test.mjs` (PASOS; propagación exit≠0; valida sobre árbol limpio→0 y árbol que viola RN-07→≠0) | | 🚧 |
-| CA-7 | `tools/check.mjs` (incluye `nucleo-aislado` como paso requerido); `.github/workflows/ci.yml` | `tools/tests/check.test.mjs` (nucleo-aislado en PASOS; propaga exit≠0); test adversarial preexistente `tools/tests/nucleo-aislado.test.mjs` | | 🚧 |
-| CA-8 | `adapters/claude-code/hooks/_comun.mjs` (`normalizaRol`, una sola vez); `adapters/claude-code/hooks/protege-verdad.mjs` (usa `normalizaRol`) | `adapters/claude-code/tests/protege-verdad.test.mjs` (CA-8: permite `tremen-sdd:sdd-arquitecto`; deniega `tremen-sdd:sdd-implementador`; permite `sdd-producto` sin prefijo) | | 🚧 |
-| CA-9 | Sin cambios en `core/scripts/estado.mjs` ni en sus asserts | `core/tests/estado.test.mjs` intacto y verde; suite completa `npm test` verde (127 tests, baseline 84 + 43 nuevos) | | 🚧 |
+| CA-1 | `tools/install-hooks.mjs`; `tools/githooks/pre-commit` (shim sh→node); `.gitattributes` (eol=lf del shim); `package.json` (script `hooks:install`) | `tools/tests/hooks-install.test.mjs` (core.hooksPath=tools/githooks; commit ejercita el hook; cero `dependencies`; script expuesto) | Ejercido en vivo (Win/Git Bash): clon fresco sin `core.hooksPath` → `node tools/install-hooks.mjs` fija `core.hooksPath=tools/githooks` → commit vigilado en `main` **bloqueado** con RN-01 (shim sh→node OK). `package.json` **sin** clave `dependencies` (verificado). Repo real: `core.hooksPath=tools/githooks`. | ✅ |
+| CA-2 | `tools/githooks/pre-commit.mjs` (capa require-spec, fail-closed, válvula `SDD_SKIP_GATE`) | `tools/tests/pre-commit.test.mjs` (CA-2a main aborta; SPEC-999 aborta; borrador aborta; CA-2b aprobada/en-progreso pasan; CA-2c SDD_SKIP_GATE pasa) | Ejercido en 7 repos git temporales con el hook real: `main`+vigilada→exit 1; `ft/SPEC-999` inexistente+vigilada→exit 1; spec `borrador`+vigilada→exit 1; `ft/SPEC-002` `aprobada`+vigilada→exit 0; `en-progreso`+vigilada→exit 0; `SDD_SKIP_GATE=1`→exit 0; `--no-verify`→exit 0. Mensaje de aborto cita RN-01 y ambas válvulas. | ✅ |
+| CA-3 | `tools/githooks/pre-commit.mjs` (capa coherencia vía `validateFile` de `core/scripts/valida.mjs`) | `tools/tests/pre-commit.test.mjs` (CA-3 incoherente aborta; CA-3 bis coherente pasa) | Ejercido en repos temporales: artefacto con `estado: aprobada` e historial acabado en `borrador`→commit **aborta** (exit 1, cita RN-07 vía `validateFile`); artefacto coherente→exit 0. | ✅ |
+| CA-4 | `tools/githooks/pre-commit.mjs` (ruta feliz) | `tools/tests/pre-commit.test.mjs` (CA-4 ruta no vigilada → exit 0) | Ejercido: `README.md` (no vigilada) en `main`→commit **exit 0** sin fricción. (También ruta feliz vigilada+spec válida en CA-2b.) | ✅ |
+| CA-5 | `core/lib/require-spec.mjs` (fuente única: `parseSpecId`/`buscarSpec`/`evaluarRequireSpec`); `adapters/claude-code/hooks/require-spec.mjs` y `tools/githooks/pre-commit.mjs` la **importan** | `core/tests/require-spec-decision.test.mjs` (unitario del módulo); `tools/tests/require-spec-una-logica.test.mjs` (ambas capas importan; ninguna reimplementa el parseo); `nucleo-aislado` en verde (módulo no escapa de core/) | Inspección adversarial (grep source): `RAMA_SPEC_RE`/`ESTADOS_CODEABLES` viven **solo** en `core/lib/require-spec.mjs`. L1 y L2 **importan** `evaluarRequireSpec` y solo obtienen la rama (`git rev-parse --abbrev-ref`); ninguno reparsea `ft/SPEC` ni el estado. `nucleo-aislado` en verde en `npm run check`. | ✅ |
+| CA-6 | `.github/workflows/ci.yml` (npm test + npm run check); `tools/check.mjs` (build→6 checks→valida) | `tools/tests/workflow.test.mjs` (estructura y pasos); `tools/tests/check.test.mjs` (PASOS; propagación exit≠0; valida sobre árbol limpio→0 y árbol que viola RN-07→≠0) | `ci.yml` YAML válido (`yaml.safe_load` OK, sin tabs); pasos `npm test` + `npm run check` con checkout+setup-node. `npm run check` real→**exit 0** sobre el árbol; `valida --dir` sobre árbol que viola RN-07→**exit 1**; runner propaga exit≠0 (test real). | ✅ |
+| CA-7 | `tools/check.mjs` (incluye `nucleo-aislado` como paso requerido); `.github/workflows/ci.yml` | `tools/tests/check.test.mjs` (nucleo-aislado en PASOS; propaga exit≠0); test adversarial preexistente `tools/tests/nucleo-aislado.test.mjs` | `PASOS` de `tools/check.mjs` incluye `nucleo-aislado` (`node tools/checks/nucleo-aislado.mjs`) como paso requerido; `npm run check` lo ejecuta (`[nucleo-aislado] OK`) y propaga exit≠0. Test adversarial `nucleo-aislado.test.mjs` verde en la suite. | ✅ |
+| CA-8 | `adapters/claude-code/hooks/_comun.mjs` (`normalizaRol`, una sola vez); `adapters/claude-code/hooks/protege-verdad.mjs` (usa `normalizaRol`) | `adapters/claude-code/tests/protege-verdad.test.mjs` (CA-8: permite `tremen-sdd:sdd-arquitecto`; deniega `tremen-sdd:sdd-implementador`; permite `sdd-producto` sin prefijo) | Ejercido contra el hook **construido en `dist/claude-code/hooks/protege-verdad.mjs`** editando `docs/fundacion/reglas.md`: `tremen-sdd:sdd-arquitecto`→**permite** (sin deny, exit 0); `tremen-sdd:sdd-implementador`→**deniega** (JSON deny); `sdd-producto` sin prefijo→**permite**; control `sdd-implementador` sin prefijo→deniega (compat). `normalizaRol` definido una vez en `_comun.mjs`. | ✅ |
+| CA-9 | Sin cambios en `core/scripts/estado.mjs` ni en sus asserts | `core/tests/estado.test.mjs` intacto y verde; suite completa `npm test` verde (127 tests, baseline 84 + 43 nuevos) | `git diff main...HEAD` de `core/scripts/estado.mjs` y `core/tests/estado.test.mjs` **vacío** (sin cambios). Suite completa `npm test` = **127 tests, 0 fallos**. Regresión de specs migradas no agravada. | ✅ |
 
 ## Veredicto del verificador
 <!-- GREEN/RED + fecha + resumen. Lo escribe SOLO sdd-verificador. -->
+
+**GREEN — 2026-07-20 (sdd-verificador).** Los 9 CA cumplidos con evidencia
+ejercida, no solo tests existentes. Verificado adversarialmente:
+
+- **Suite real**: `npm test` = 127 tests, 0 fallos. `npm run check` = exit 0.
+- **Pre-commit L2 (CA-2/3/4) ejercido en repos git temporales** con el hook
+  real (`core.hooksPath`→`tools/githooks`): fail-closed real ante rama no-spec /
+  spec inexistente / spec en `borrador` / artefacto incoherente; permite en rama
+  de spec `aprobada`/`en-progreso`, artefacto coherente y ruta no vigilada. Las
+  **dos válvulas** (`SDD_SKIP_GATE=1` y `--no-verify`) permiten el commit que de
+  otro modo abortaría. Mensaje de aborto cita RN-01/RN-07 y las válvulas.
+- **Una sola lógica (CA-5)**: la decisión require-spec vive solo en
+  `core/lib/require-spec.mjs`; L1 y L2 la **importan** y no reparsean rama/estado
+  (confirmado por grep del source, no solo por test). `nucleo-aislado` en verde.
+- **CI (CA-6/7)**: `ci.yml` YAML válido; invoca `npm test` + `npm run check`;
+  el runner incluye `nucleo-aislado` como paso requerido y propaga exit≠0
+  (exit 0 en árbol real, exit 1 en árbol que viola RN-07).
+- **CA-8**: `protege-verdad` en `dist/` reconoce al dueño con prefijo de plugin
+  (permite `tremen-sdd:sdd-arquitecto`, deniega `tremen-sdd:sdd-implementador`,
+  permite `sdd-producto` sin prefijo).
+- **CA-1/CA-9**: install-hooks reproducible end-to-end; `estado.mjs`/
+  `estado.test.mjs` sin cambios; cero `dependencies` de terceros.
+
+Salvedad **F-SPEC-002-1** (coherencia sobre árbol de trabajo, no blob staged en
+staging parcial) aceptada como follow-up a EPIC-MEJORA; usa `validateFile` tal
+como pide CA-3, no bloquea. No es CA en RED.
+
+Nota: la aprobación de la spec (gate humano) NO la ejecuta el verificador.
 
 ## Evidencia visual
 <!-- Tabla CA → captura en _qa/SPEC-002/. Informe HTML opcional: _qa/SPEC-002/informe.html -->
