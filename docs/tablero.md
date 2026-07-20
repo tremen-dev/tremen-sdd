@@ -7,8 +7,8 @@ Actualizado: 2026-07-20
 
 | Spec | Estado | Último cambio |
 |---|---|---|
-| SPEC-001 — refactor-a-nucleo-adaptadores | aprobada | 2026-07-20 (Alberto Fojo) |
+| SPEC-001 — refactor-a-nucleo-adaptadores | hecho | 2026-07-20 (Alberto Fojo) |
 
 ## Resumen
 
-- aprobada: 1
+- hecho: 1

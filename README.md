@@ -61,7 +61,7 @@ raíz del proyecto (lo crea `/sdd-init`).
 
 ## Máquina de estados
 
-Definida en `scripts/estado.mjs` (`TRANSITIONS`) y es la única vía sancionada
+Definida en `core/scripts/estado.mjs` (`TRANSITIONS`) y es la única vía sancionada
 para cambiar el estado de un artefacto (spec, épica, task):
 
 ```
@@ -76,7 +76,7 @@ hecho es terminal (sin transiciones salientes).
 ```
 
 Cada transición añade una entrada a `historial` en el frontmatter
-(`{estado, fecha, por}`); `scripts/valida.mjs` comprueba que la última
+(`{estado, fecha, por}`); `core/scripts/valida.mjs` comprueba que la última
 entrada del historial coincide con el `estado` declarado.
 
 ## Hooks
@@ -104,7 +104,7 @@ FOUNDATION.md              # documento de verdad de alto nivel
 CLAUDE.md                  # bloque tremen-sdd (no pisa un CLAUDE.md existente)
 docs/
   roadmap.md
-  tablero.md                # GENERADO — solo por scripts/tablero.mjs
+  tablero.md                # GENERADO — solo por core/scripts/tablero.mjs
   fundacion/
     vision.md
     dominio.md
