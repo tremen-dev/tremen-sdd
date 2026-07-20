@@ -64,12 +64,16 @@ toco. Comandos de verificación:
   `tools/tests/{pre-commit,hooks-install,check,workflow,require-spec-una-logica}.test.mjs`,
   y los casos CA-8 en `adapters/claude-code/tests/protege-verdad.test.mjs`.
 
-**Dogfooding / válvulas usadas durante la iteración:** no se instaló el
-pre-commit L2 en el repo real mientras se iteraba (core.hooksPath quedó sin
-configurar), por lo que ningún commit de esta sesión necesitó válvula. Para
-activarlo: `npm run hooks:install`. La rama es `ft/SPEC-002-*` con la spec en
-`en-progreso`/`en-revision`, así que el pre-commit **permite** los commits de
-código vigilado de esta spec.
+**Dogfooding / válvulas:** durante la iteración el pre-commit L2 NO estuvo
+instalado (core.hooksPath sin configurar), así que ningún commit de código
+necesitó válvula. Al cerrar se ejecutó `npm run hooks:install` (core.hooksPath =
+`tools/githooks`), dejando el pre-commit **activo en el repo real**: este propio
+commit del ledger lo atraviesa (cambio docs-only, coherente → permitido), prueba
+viva de CA-4. Nota: con la spec ya en `en-revision`, el pre-commit **bloquearía**
+nuevos commits de código *vigilado* (require-spec exige aprobada/en-progreso); es
+el comportamiento correcto —la implementación está congelada para revisión—; si
+el verificador devuelve RED, el pipeline reabre a `en-progreso`. Válvulas
+auditables si hiciera falta: `git commit --no-verify` o `SDD_SKIP_GATE=1`.
 
 Ficheros nuevos: `core/lib/require-spec.mjs`, `core/tests/require-spec.test.mjs`,
 `tools/githooks/{pre-commit,pre-commit.mjs}`, `tools/install-hooks.mjs`,
