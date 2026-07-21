@@ -19,9 +19,12 @@ autogestiona con él, RN-10). El trabajo vivo es **EPIC-001 — multi-harness**
 Su primera spec, **SPEC-001 — Refactor a núcleo + adaptadores**, está **hecha**:
 ya separó el método (`core/`) del empaque de Claude Code
 (`adapters/claude-code/`) e introdujo el paso de build. Quedan por delante las
-specs candidatas de la épica (fuente única de roles → agents, adaptador Kimi
-Code, guía "añadir un harness"); ninguna es aún una spec aprobada. Existe un
-**único adaptador** (Claude Code); el multi-harness real es promesa, no hecho.
+specs candidatas de la épica; sigue pendiente la **fuente única de roles →
+agents** (F-SPEC-001-1). Y **SPEC-003 — Adaptador Kimi Code** está **hecha**:
+existen **dos adaptadores** (`adapters/claude-code/` y `adapters/kimi-code/`)
+sobre el mismo núcleo, así que el multi-harness es **hecho** en estructura;
+falta ejercerlo end-to-end multi-rol contra el CLI real de Kimi (F-SPEC-003-1,
+CE-2 completo).
 
 También **SPEC-002 — Enforcement a git + CI** está **hecha**: las garantías
 duras (nada sin spec, coherencia de artefactos, invariantes) viven ahora en git
@@ -85,11 +88,12 @@ lógica compartida de `core/lib/require-spec.mjs` (RN-03).
   Defecto abierto a propósito: `estado.mjs` atasca cualquier spec que venga de un
   sistema previo. No agravarlo — cualquier trabajo sobre la máquina de estados
   debe mantener los tests de `estado` igual de verdes (SPEC-001 CA-2).
-- **[ABIERTO] Multi-harness es promesa, no hecho.** Solo existe el adaptador de
-  Claude Code. La simetría de `adapters/` y el mecanismo de build están
-  diseñados para un segundo harness (Kimi Code), pero el recetario "añadir un
-  harness" (CE-5) se escribirá CON el primer adaptador no-Claude, no antes:
-  la forma real se validará contra un caso, no se teoriza.
+- **[PARCIAL] Multi-harness: estructura hecha, ejecución real pendiente.**
+  Existen dos adaptadores (`adapters/claude-code/` y `adapters/kimi-code/`,
+  SPEC-003) sobre el mismo núcleo, con la guía "añadir un harness" as-built
+  (CE-5). Queda abierto: la **operación end-to-end multi-rol contra el CLI real
+  de Kimi** (F-SPEC-003-1, CE-2 completo) — hoy validado a nivel de
+  formato/build/resolución (smoke test), no ejecutado contra el CLI real.
 
 > Resueltos en SPEC-002 (2026-07-21): «enforcement atado al harness» (ahora en
 > git+CI, RN-03) y el falso positivo de `protege-verdad` con el prefijo de rol
