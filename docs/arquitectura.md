@@ -75,7 +75,8 @@ porque es ahí donde el núcleo vive por ruta interna. Los del núcleo corren
 directos y deben pasar **con `adapters/` y `dist/` ausentes** (aislamiento, CE-1).
 
 Checks de invariantes en `tools/checks/` (cada uno con su test): `layout`
-(estructura del repo), `nucleo-aislado` (regla de dependencia), `referencias`
+(estructura del repo), `nucleo-aislado` (regla de dependencia), `nucleo-agnostico`
+(ningún token de harness bajo `core/`; solo `${SDD_*}` permitido), `referencias`
 (ninguna ruta escapa el artefacto; nada de `${CLAUDE_PLUGIN_ROOT}/../../` ni, en
 Kimi, `../` que escape), `roles-fuente-unica` (ningún agent/bootstrap embebe el
 cuerpo del rol; solo lo referencia), `manifiestos` (Claude: plugin.json /

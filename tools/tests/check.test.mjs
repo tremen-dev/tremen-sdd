@@ -28,6 +28,12 @@ test('CA-7: nucleo-aislado es un paso requerido del runner (guarda RN-02 en CI)'
   assert.deepEqual(paso.cmd, ['node', 'tools/checks/nucleo-aislado.mjs']);
 });
 
+test('SPEC-004 CA-3d: nucleo-agnostico está cableado en el runner (cierra la fuga de token en CI)', () => {
+  const paso = PASOS.find((p) => p.nombre === 'nucleo-agnostico');
+  assert.ok(paso, "falta el paso 'nucleo-agnostico' en el runner");
+  assert.deepEqual(paso.cmd, ['node', 'tools/checks/nucleo-agnostico.mjs']);
+});
+
 test('CA-6: cada paso invoca un script real de tools/checks o core/scripts (no reimplementa)', () => {
   for (const p of PASOS) {
     assert.equal(p.cmd[0], 'node');

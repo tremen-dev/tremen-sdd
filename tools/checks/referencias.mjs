@@ -66,16 +66,17 @@ const RE_SPP = /^\s*system_prompt_path:\s*(.+?)\s*$/m;
 const RE_CORE_REL = /(?:\.\.?\/)+core\/[^\s"'`)\]]+/g;
 const RE_PLUGIN_TOKEN = /\$\{[A-Z_]*PLUGIN_ROOT[A-Z_]*\}/;
 
-// El núcleo se copia verbatim bajo core/; su prosa es responsabilidad del núcleo
-// (la vigilan nucleo-aislado/roles-fuente-unica) y puede contener ejemplos con el
-// token de otro harness. Esta comprobación mira las referencias DEL ADAPTADOR al
-// núcleo (agents/, hooks/, skills/…), no la prosa interna del núcleo copiado.
+// Comprueba, en un artefacto tipo Kimi, que ninguna referencia usa una variable
+// de plugin-root (que Kimi no ofrece) y que las refs relativas al núcleo son
+// internas y existentes. Cubre TAMBIÉN el subárbol core/ copiado en dist/ (segundo
+// guardián): desde SPEC-004 el núcleo es agnóstico al harness (${SDD_ROOT}, no un
+// token de un harness), así que una reintroducción de token de harness bajo core/
+// se caza aquí a nivel build, además del check nucleo-agnostico en origen.
 function referenciasKimi(distDir) {
   const errores = [];
-  const enAdaptador = (f) => !path.relative(distDir, f).replaceAll('\\', '/').startsWith('core/');
 
   // (a) system_prompt_path de cada YAML: relativo al YAML, interno y existente.
-  for (const f of walk(distDir, (n) => n.endsWith('.yaml')).filter(enAdaptador)) {
+  for (const f of walk(distDir, (n) => n.endsWith('.yaml'))) {
     const rel = path.relative(distDir, f);
     const m = RE_SPP.exec(fs.readFileSync(f, 'utf8'));
     if (!m) continue;
@@ -87,7 +88,7 @@ function referenciasKimi(distDir) {
 
   // (b) referencias relativas al núcleo en YAML/prompts: internas y existentes;
   //     y ninguna usa una variable de plugin-root (que Kimi no ofrece).
-  for (const f of walk(distDir, (n) => /\.(md|yaml)$/.test(n)).filter(enAdaptador)) {
+  for (const f of walk(distDir, (n) => /\.(md|yaml)$/.test(n))) {
     const rel = path.relative(distDir, f);
     const s = fs.readFileSync(f, 'utf8');
     if (RE_PLUGIN_TOKEN.test(s)) errores.push(`${rel}: usa una variable de plugin-root inexistente en Kimi`);

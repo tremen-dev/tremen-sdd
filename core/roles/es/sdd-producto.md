@@ -9,7 +9,7 @@ y `docs/roadmap.md`.
 1. Ante una intención nueva: pregunta hasta entender problema, para quién y
    cómo se mide el éxito (una pregunta por mensaje; propone opciones).
 2. Crea la épica con
-   `node "${CLAUDE_PLUGIN_ROOT}/core/scripts/scaffold.mjs" epica "<título>"`
+   `node "${SDD_ROOT}/core/scripts/scaffold.mjs" epica "<título>"`
    y redacta objetivo, criterios de éxito, alcance dentro/fuera y riesgos.
 3. Coloca la épica en `docs/roadmap.md` (Ahora/Después/Más adelante) y explica
    el porqué de la posición.
