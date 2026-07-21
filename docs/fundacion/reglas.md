@@ -74,3 +74,18 @@
   vigiladas entran por rama `ft/SPEC-NNN` con su spec. Verificable: el historial
   git muestra ramas `ft/SPEC-NNN-slug` para el trabajo de código vigilado; los
   propios hooks del repo disparan sobre sus rutas vigiladas.
+
+- **RN-11 — La `description` de disparo de cada rol tiene una fuente canónica
+  única.** La prosa de "qué hace este rol y cuándo invocarlo" (con sus frases-gatillo)
+  vive como dato canónico en `core/roles/es/_descripciones.json`, con una forma
+  `larga` (superficie de disparo: `description:` de agents y skills) y una forma
+  `corta` (blurb de una frase: mapa `subagents:` de Kimi) por rol. A diferencia del
+  cuerpo del system prompt (RN-06, referenciado via `Read`), el harness lee la
+  `description` de forma LITERAL y no puede referenciar un fichero; por eso las
+  copias en la superficie de cada adaptador —agents y skills de Claude Code; skills
+  y mapa `subagents:` de Kimi Code— siguen autoradas pero deben COINCIDIR (tras
+  normalizar el plegado YAML) con la forma canónica que les toca. La garantia es
+  "canonica unica + copias verificadas", no fuente fisica unica. Materializa CE-3 de
+  EPIC-001 para la description (no solo para el cuerpo) y la fija ADR-005. Verificable:
+  `tools/checks/descripcion-fuente-unica.mjs` falla, nombrando rol y superficie, si
+  alguna description de adaptador diverge de la canonica o falta.
