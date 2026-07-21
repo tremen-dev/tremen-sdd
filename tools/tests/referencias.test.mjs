@@ -59,6 +59,25 @@ test('CA-7: una ruta declarada que no existe en el artefacto hace fallar el chec
   assert.ok(errores.some((e) => /no existe en el artefacto/.test(e)));
 });
 
+test('SPEC-004 CA-4: el pase Kimi ya no excluye core/: un token de harness bajo dist/kimi/core/ hace fallar aunque la ruta resuelva', () => {
+  const dist = fs.mkdtempSync(path.join(os.tmpdir(), 'sdd-ref-kimi-core-'));
+  // Superficie mínima Kimi (un agente YAML) para que el pase kimi se active.
+  fs.mkdirSync(path.join(dist, 'agents'), { recursive: true });
+  fs.writeFileSync(path.join(dist, 'agents', 'sdd-x.yaml'), 'version: 1\nagent:\n  name: sdd-x\n');
+  // Núcleo copiado con un token de harness Y una ruta que SÍ resuelve dentro
+  // del artefacto: el pase 1 (existencia) no lo caza; solo el pase kimi sobre
+  // core/ (segundo guardián) lo detecta como token de plugin-root inexistente.
+  fs.mkdirSync(path.join(dist, 'core', 'scripts'), { recursive: true });
+  fs.writeFileSync(path.join(dist, 'core', 'scripts', 'estado.mjs'), '// script\n');
+  fs.mkdirSync(path.join(dist, 'core', 'roles', 'es'), { recursive: true });
+  fs.writeFileSync(path.join(dist, 'core', 'roles', 'es', 'sdd-x.md'),
+    'Invoca `${CLAUDE_PLUGIN_ROOT}/core/scripts/estado.mjs`.\n');
+  const { ok, errores } = checkReferencias(dist);
+  assert.equal(ok, false);
+  assert.ok(errores.some((e) => /core[\\/]/.test(e) && /plugin-root/.test(e)),
+    'el pase kimi debe cazar el token de plugin-root bajo core/: ' + JSON.stringify(errores));
+});
+
 test('CA-7: un import ESM que escapa del plugin root hace fallar el check', () => {
   const dist = fs.mkdtempSync(path.join(os.tmpdir(), 'sdd-ref-import-'));
   fs.mkdirSync(path.join(dist, 'hooks'), { recursive: true });
