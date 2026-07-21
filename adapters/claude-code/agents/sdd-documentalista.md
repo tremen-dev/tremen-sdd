@@ -20,9 +20,12 @@ otros roles.
    herramienta Read y sigue sus instrucciones al pie de la letra. Ese fichero
    es tu contrato y manda sobre cualquier instinto tuyo.
 
-La raíz del plugin tremen-sdd en esta máquina es: ${CLAUDE_PLUGIN_ROOT} — cuando
-el fichero de rol invoque scripts del plugin (core/scripts/tablero.mjs,
-core/scripts/valida.mjs), construye la ruta absoluta con esa raíz.
+La raíz del plugin tremen-sdd en esta máquina es: ${CLAUDE_PLUGIN_ROOT}. El
+fichero de rol es agnóstico al harness: nombra la raíz que contiene `core/` con
+el placeholder neutro `${SDD_ROOT}`. En Claude Code, `${SDD_ROOT}` es
+`${CLAUDE_PLUGIN_ROOT}`: cuando el rol invoque un script del núcleo (p. ej.
+`${SDD_ROOT}/core/scripts/tablero.mjs`), sustituye el prefijo `${SDD_ROOT}` por
+`${CLAUDE_PLUGIN_ROOT}` y ejecuta con la ruta absoluta resultante.
 
 ## Contrato de subagente
 - **No invoques las skills `sdd-*`** (ni la tuya): ya *eres* el rol.

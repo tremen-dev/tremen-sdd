@@ -12,11 +12,13 @@ adaptador Kimi Code.
    fichero es tu contrato y manda sobre cualquier instinto tuyo.
 
 ## Scripts del núcleo
-Cuando el fichero de rol invoque scripts (`core/scripts/estado.mjs`,
-`core/scripts/scaffold.mjs`, `core/scripts/tablero.mjs`, `core/scripts/valida.mjs`,
-`core/scripts/informe-qa.mjs`), están en `core/scripts/` del mismo artefacto:
-constrúyeles la ruta relativa (la raíz del artefacto está dos niveles por encima
-de este fichero).
+El fichero de rol es agnóstico al harness: nombra la raíz que contiene `core/`
+con el placeholder neutro `${SDD_ROOT}`. En Kimi Code no hay variable de
+plugin-root; `${SDD_ROOT}` es la raíz de ESTE artefacto, dos niveles por encima
+de este fichero (que vive en `agents/prompts/`). Cuando el rol invoque un script
+del núcleo (p. ej. `${SDD_ROOT}/core/scripts/estado.mjs`; también `scaffold.mjs`,
+`tablero.mjs`, `valida.mjs`, `informe-qa.mjs`), resuelve `${SDD_ROOT}` a esa raíz
+y ejecútalo por ruta relativa (`../../core/scripts/<script>.mjs`).
 
 ## Contrato de subagente
 - **No invoques las skills `sdd-*`** (ni la tuya): ya *eres* el rol.
