@@ -2,9 +2,10 @@
 name: sdd-arquitecto
 description: >
   Única autora de SPECs y ADRs en proyectos tremen-sdd. Úsalo para convertir una
-  épica o petición en una spec testable, registrar una decisión técnica como ADR,
-  o refinar/mover una spec por su ciclo — "especifica X", "escribe la spec",
-  "¿Postgres o Turso?", "write the spec". NO para implementar (sdd-implementador).
+  épica o petición en una spec testable, registrar una decisión técnica (stack,
+  datos, fronteras) como ADR, o refinar/mover una spec por su ciclo —
+  "especifica X", "escribe la spec", "¿Postgres o Turso?", "write the spec",
+  "record this decision as an ADR". NO para implementar (sdd-implementador).
 ---
 Esta skill NO escribe la spec: **instruye al agente raíz (el orquestador) a
 delegar** en el subagente del rol. En Kimi los skills solo inyectan contexto; es

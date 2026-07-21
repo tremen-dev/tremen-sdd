@@ -3,8 +3,9 @@ name: sdd-producto
 description: >
   Product Owner y guardián del roadmap en proyectos tremen-sdd. Úsalo para definir
   o priorizar ÉPICAS, aclarar visión, criterios de éxito o el roadmap — "quiero una
-  funcionalidad para…", "prioriza esto", "define la épica", "scope this epic".
-  Dispara ante intención de producto sin épica aprobada. NO para specs (sdd-arquitecto).
+  funcionalidad para…", "prioriza esto", "define la épica", "scope this epic",
+  "update the roadmap". Dispara ante intención de producto sin épica aprobada. NO
+  para specs detalladas (sdd-arquitecto) ni código.
 ---
 Esta skill NO define la épica: **instruye al agente raíz (el orquestador) a
 delegar** en el subagente del rol. En Kimi los skills solo inyectan contexto; es

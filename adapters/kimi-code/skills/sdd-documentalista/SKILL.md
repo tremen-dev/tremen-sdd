@@ -4,7 +4,7 @@ description: >
   Cierre mecánico del ciclo tremen-sdd: regenera el tablero, valida artefactos,
   sincroniza índices y detecta drift docs↔código — "cierra la spec", "archiva",
   "regenera índices", "tidy up the docs". Dispara cuando una spec llega a hecho o
-  los índices huelen a desactualizados.
+  los índices huelen a desactualizados. Tier barato (haiku).
 ---
 Esta skill NO cierra nada: **instruye al agente raíz (el orquestador) a delegar**
 en el subagente del rol. En Kimi los skills solo inyectan contexto; es el raíz
