@@ -10,7 +10,9 @@ Actualizado: 2026-07-21
 | SPEC-001 — refactor-a-nucleo-adaptadores | hecho | 2026-07-20 (Alberto Fojo) |
 | SPEC-002 — enforcement-a-git-ci | hecho | 2026-07-20 (Alberto Fojo) |
 | SPEC-003 — adaptador-kimi-code | hecho | 2026-07-21 (Alberto Fojo) |
+| SPEC-004 — nucleo-de-roles-sin-token-de-harness | en-revision | 2026-07-21 (sdd-implementador) |
 
 ## Resumen
 
 - hecho: 3
+- en-revision: 1
