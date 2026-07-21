@@ -23,6 +23,8 @@ export const PASOS = [
   { nombre: 'roles-fuente-unica', cmd: ['node', 'tools/checks/roles-fuente-unica.mjs'] },
   { nombre: 'manifiestos', cmd: ['node', 'tools/checks/manifiestos.mjs'] },
   { nombre: 'manifiestos-kimi', cmd: ['node', 'tools/checks/manifiestos.mjs', 'kimi-code'] },
+  // descripcion-fuente-unica itera sobre AMBOS adaptadores (RN-11 / SPEC-005).
+  { nombre: 'descripcion-fuente-unica', cmd: ['node', 'tools/checks/descripcion-fuente-unica.mjs'] },
   { nombre: 'valida', cmd: ['node', 'core/scripts/valida.mjs', '--dir', 'docs'] },
 ];
 
