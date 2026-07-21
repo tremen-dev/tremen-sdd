@@ -1,0 +1,14 @@
+# Subagente sdd-implementador. extend: default + system prompt referenciado (RN-06).
+version: 1
+extend: default
+agent:
+  name: sdd-implementador
+system_prompt_path: ./prompts/sdd-implementador.md
+# Escritura (CA-11c): codea la spec e edita el ledger; corre tests por Bash.
+allowed_tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
+  - Bash

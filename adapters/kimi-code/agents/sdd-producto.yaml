@@ -1,0 +1,14 @@
+# Subagente sdd-producto. extend: default + system prompt referenciado (RN-06).
+version: 1
+extend: default
+agent:
+  name: sdd-producto
+system_prompt_path: ./prompts/sdd-producto.md
+# Escritura: define/prioriza épicas y roadmap (documentos de verdad de producto).
+allowed_tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
+  - Bash

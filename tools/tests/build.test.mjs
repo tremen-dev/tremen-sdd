@@ -29,3 +29,18 @@ test('CA-9(c)/CA-3: el build produce un artefacto autocontenido con el núcleo d
   assert.ok(fs.existsSync(path.join(dist, 'core', 'roles', 'es', 'sdd-implementador.md')), 'núcleo bajo core/');
   assert.ok(fs.existsSync(path.join(dist, 'hooks', 'require-spec.mjs')), 'hooks presentes');
 });
+
+test('CA-3: el build de kimi-code es idempotente — dos ejecuciones dan árbol idéntico', () => {
+  const out = fs.mkdtempSync(path.join(os.tmpdir(), 'sdd-build-kimi-idem-'));
+  const snap1 = snapshot(buildAdapter('kimi-code', { outDir: out }));
+  const snap2 = snapshot(buildAdapter('kimi-code', { outDir: out }));
+  assert.deepEqual(snap2, snap1);
+});
+
+test('CA-3: el build de kimi-code es autocontenido con el núcleo dentro y sin tests', () => {
+  const dist = buildAdapter('kimi-code', { outDir: fs.mkdtempSync(path.join(os.tmpdir(), 'sdd-build-kimi-sc-')) });
+  assert.ok(fs.existsSync(path.join(dist, 'agents', 'sdd-orquestador.yaml')), 'agente raíz presente');
+  assert.ok(fs.existsSync(path.join(dist, 'core', 'roles', 'es', 'sdd-implementador.md')), 'núcleo bajo core/');
+  assert.ok(fs.existsSync(path.join(dist, 'hooks', 'require-spec.mjs')), 'hooks presentes');
+  assert.ok(!fs.existsSync(path.join(dist, 'tests')), 'los tests de desarrollo no viajan en el artefacto');
+});

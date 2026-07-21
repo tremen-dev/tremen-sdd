@@ -11,6 +11,34 @@ test('CA-7: el adaptador construido resuelve todas sus referencias dentro del pl
   assert.equal(checkReferencias(dist).ok, true);
 });
 
+test('CA-4: el adaptador Kimi construido resuelve system_prompt_path y refs a core internas', () => {
+  const dist = buildAdapter('kimi-code', { outDir: fs.mkdtempSync(path.join(os.tmpdir(), 'sdd-ref-kimi-ok-')) });
+  assert.equal(checkReferencias(dist).ok, true);
+});
+
+test('CA-4: un system_prompt_path de Kimi que no existe en el artefacto hace fallar', () => {
+  const dist = fs.mkdtempSync(path.join(os.tmpdir(), 'sdd-ref-kimi-spp-'));
+  fs.mkdirSync(path.join(dist, 'agents'), { recursive: true });
+  fs.writeFileSync(path.join(dist, 'agents', 'x.yaml'),
+    'version: 1\nagent:\n  name: sdd-x\nsystem_prompt_path: ./prompts/fantasma.md\n');
+  const { ok, errores } = checkReferencias(dist);
+  assert.equal(ok, false);
+  assert.ok(errores.some((e) => /system_prompt_path/.test(e) && /no existe/.test(e)));
+});
+
+test('CA-4: un bootstrap de Kimi con ../ que escapa del artefacto hace fallar', () => {
+  const dist = fs.mkdtempSync(path.join(os.tmpdir(), 'sdd-ref-kimi-esc-'));
+  fs.mkdirSync(path.join(dist, 'agents', 'prompts'), { recursive: true });
+  fs.writeFileSync(path.join(dist, 'agents', 'sdd-x.yaml'),
+    'version: 1\nsystem_prompt_path: ./prompts/sdd-x.md\n');
+  fs.mkdirSync(path.join(dist, 'core', 'roles', 'es'), { recursive: true });
+  fs.writeFileSync(path.join(dist, 'agents', 'prompts', 'sdd-x.md'),
+    'Lee `../../../core/roles/es/sdd-x.md` (escapa el artefacto).\n');
+  const { ok, errores } = checkReferencias(dist);
+  assert.equal(ok, false);
+  assert.ok(errores.some((e) => /escapa/.test(e)));
+});
+
 test('CA-7: la forma refutada ${CLAUDE_PLUGIN_ROOT}/../../ hace fallar el check', () => {
   const dist = fs.mkdtempSync(path.join(os.tmpdir(), 'sdd-ref-mal-'));
   fs.mkdirSync(path.join(dist, 'agents'), { recursive: true });

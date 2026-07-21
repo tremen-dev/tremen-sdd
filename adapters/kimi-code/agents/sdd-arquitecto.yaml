@@ -1,0 +1,14 @@
+# Subagente sdd-arquitecto. extend: default + system prompt referenciado (RN-06).
+version: 1
+extend: default
+agent:
+  name: sdd-arquitecto
+system_prompt_path: ./prompts/sdd-arquitecto.md
+# Escritura: única autora de SPECs y ADRs.
+allowed_tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
+  - Bash

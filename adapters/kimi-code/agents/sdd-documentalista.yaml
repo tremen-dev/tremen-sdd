@@ -1,0 +1,14 @@
+# Subagente sdd-documentalista. extend: default + system prompt referenciado (RN-06).
+version: 1
+extend: default
+agent:
+  name: sdd-documentalista
+system_prompt_path: ./prompts/sdd-documentalista.md
+# Escritura acotada: regenera el tablero (por script), valida y sincroniza índices.
+allowed_tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
+  - Bash

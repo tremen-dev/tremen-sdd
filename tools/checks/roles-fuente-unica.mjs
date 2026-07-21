@@ -21,11 +21,29 @@ export function checkAgentsProsa(agentsDir = path.join(REPO_ROOT, 'adapters', 'c
   return { ok: infractores.length === 0, infractores };
 }
 
+// Generalización a TODOS los adaptadores (CA-2/CA-6): itera sobre adapters/*/agents/
+// —recursivo, así cubre tanto los agents .md de Claude como los bootstrap .md de
+// Kimi bajo agents/prompts/—. No reimplementa la regla: reutiliza checkAgentsProsa.
+export function checkTodosAdaptadores(repoRoot = REPO_ROOT) {
+  const adaptersDir = path.join(repoRoot, 'adapters');
+  const infractores = [];
+  const adaptadores = [];
+  if (fs.existsSync(adaptersDir)) {
+    for (const h of fs.readdirSync(adaptersDir).sort()) {
+      const agentsDir = path.join(adaptersDir, h, 'agents');
+      if (!fs.existsSync(agentsDir)) continue;
+      adaptadores.push(h);
+      for (const i of checkAgentsProsa(agentsDir).infractores) infractores.push({ ...i, adaptador: h });
+    }
+  }
+  return { ok: infractores.length === 0, infractores, adaptadores };
+}
+
 if (esEntrypoint(import.meta.url, process.argv[1])) {
-  const { ok, infractores } = checkAgentsProsa();
+  const { ok, infractores, adaptadores } = checkTodosAdaptadores();
   if (!ok) {
-    console.error('[roles-fuente-unica] FALLA:\n' + infractores.map((i) => ` - ${i.fichero}: ${i.motivo}`).join('\n'));
+    console.error('[roles-fuente-unica] FALLA:\n' + infractores.map((i) => ` - [${i.adaptador}] ${i.fichero}: ${i.motivo}`).join('\n'));
     process.exit(1);
   }
-  console.log('[roles-fuente-unica] OK: los agents referencian el rol, no lo copian.');
+  console.log(`[roles-fuente-unica] OK: los agents referencian el rol, no lo copian (${adaptadores.join(', ')}).`);
 }

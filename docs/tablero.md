@@ -1,7 +1,7 @@
 <!-- GENERADO por tremen-sdd (scripts/tablero.mjs). NO EDITAR A MANO. -->
 # Tablero
 
-Actualizado: 2026-07-20
+Actualizado: 2026-07-21
 
 ## EPIC-001 — tremen-sdd-multi-harness (aprobada)
 
@@ -9,7 +9,8 @@ Actualizado: 2026-07-20
 |---|---|---|
 | SPEC-001 — refactor-a-nucleo-adaptadores | hecho | 2026-07-20 (Alberto Fojo) |
 | SPEC-002 — enforcement-a-git-ci | hecho | 2026-07-20 (Alberto Fojo) |
+| SPEC-003 — adaptador-kimi-code | hecho | 2026-07-21 (Alberto Fojo) |
 
 ## Resumen
 
-- hecho: 2
+- hecho: 3
