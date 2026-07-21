@@ -15,6 +15,7 @@ export const PASOS = [
   { nombre: 'build-kimi', cmd: ['node', 'tools/build-adapter.mjs', 'kimi-code'] },
   { nombre: 'layout', cmd: ['node', 'tools/checks/layout.mjs'] },
   { nombre: 'nucleo-aislado', cmd: ['node', 'tools/checks/nucleo-aislado.mjs'] },
+  { nombre: 'nucleo-agnostico', cmd: ['node', 'tools/checks/nucleo-agnostico.mjs'] },
   { nombre: 'fuente-unica', cmd: ['node', 'tools/checks/fuente-unica.mjs'] },
   { nombre: 'referencias', cmd: ['node', 'tools/checks/referencias.mjs'] },
   { nombre: 'referencias-kimi', cmd: ['node', 'tools/checks/referencias.mjs', 'kimi-code'] },
