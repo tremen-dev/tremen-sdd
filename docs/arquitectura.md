@@ -81,7 +81,10 @@ Checks de invariantes en `tools/checks/` (cada uno con su test): `layout`
 Kimi, `../` que escape), `roles-fuente-unica` (ningún agent/bootstrap embebe el
 cuerpo del rol; solo lo referencia), `manifiestos` (Claude: plugin.json /
 marketplace.json; Kimi: agentes YAML + mapa `subagents` + `allowed_tools` por rol),
-`fuente-unica` (sin copia de núcleo comiteada fuera de `core/`). Los checks
+`fuente-unica` (sin copia de núcleo comiteada fuera de `core/`),
+`descripcion-fuente-unica` (la description de disparo de cada rol coincide entre la
+canónica en `core/roles/es/_descripciones.json` y las superficies de los adaptadores).
+Los checks
 `referencias`, `roles-fuente-unica` y `manifiestos` están **generalizados a los dos
 adaptadores** (claude-code y kimi-code); `nucleo-aislado` y `layout` son
 independientes del harness. El YAML de los agentes Kimi se parsea con un loader

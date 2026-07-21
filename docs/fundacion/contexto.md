@@ -45,7 +45,8 @@ lógica compartida de `core/lib/require-spec.mjs` (RN-03).
     `commands/`, `hooks/`, `tests/`.
   - `tools/` — utillaje de repo (ni núcleo ni adaptador): `build-adapter.mjs` y
     `checks/` (invariantes: `nucleo-aislado`, `nucleo-agnostico`, `fuente-unica`,
-    `layout`, `referencias`, `roles-fuente-unica`, `manifiestos`).
+    `descripcion-fuente-unica`, `layout`, `referencias`, `roles-fuente-unica`,
+    `manifiestos`).
   - `dist/` — salida de build, **gitignored**; `.claude-plugin/marketplace.json`
     en la raíz apunta a `./dist/claude-code`.
 - **Paso de build**: `tools/build-adapter.mjs <harness>` ensambla un plugin
