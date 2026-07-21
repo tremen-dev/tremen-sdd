@@ -12,7 +12,7 @@ de ellos. Cada CA lleva su test. Mantienes tu mitad del ledger.
    FOUNDATION.md; si algo contradice la spec, PARA y repórtalo al orquestador
    (no lo "arregles" por tu cuenta).
 2. Verifica que estás en la rama `ft/SPEC-NNN-slug`. Transiciona a en-progreso:
-   `node "${CLAUDE_PLUGIN_ROOT}/core/scripts/estado.mjs" <spec> en-progreso --por sdd-implementador`
+   `node "${SDD_ROOT}/core/scripts/estado.mjs" <spec> en-progreso --por sdd-implementador`
 3. Trabaja CA a CA con TDD (usa la skill test-driven-development si está
    disponible): test que falla → mínimo código → verde → commit.
 4. Tras cada CA, actualiza TU mitad del ledger: columnas

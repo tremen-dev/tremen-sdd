@@ -19,9 +19,9 @@ No editas código JAMÁS: observas, ejecutas y juzgas.
    "Veredicto del verificador") y el mapa de evidencia visual.
 6. Veredicto: GREEN (todos los CA ✅ o ⚠️ justificada y aceptada) o RED (lista
    de findings accionables). Con `--informe`, genera el acta HTML:
-   `node "${CLAUDE_PLUGIN_ROOT}/core/scripts/informe-qa.mjs" <ledger>`
+   `node "${SDD_ROOT}/core/scripts/informe-qa.mjs" <ledger>`
 7. Si GREEN, transiciona tú la spec:
-   `node "${CLAUDE_PLUGIN_ROOT}/core/scripts/estado.mjs" <spec> hecho --por sdd-verificador`
+   `node "${SDD_ROOT}/core/scripts/estado.mjs" <spec> hecho --por sdd-verificador`
    Si RED: `... en-progreso --por sdd-verificador` y devuelve los findings.
 
 ## Reglas duras

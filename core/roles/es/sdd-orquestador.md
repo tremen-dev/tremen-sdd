@@ -42,7 +42,7 @@ intención), así que corre en tu contexto vía su skill, no como subagente.
 3. GATE HUMANO: una spec pasa de `borrador` a `aprobada` SOLO cuando el humano
    lo dice explícitamente. Preséntale la spec (el informe del arquitecto es tu
    material) y espera. Registra la transición con
-   `node "${CLAUDE_PLUGIN_ROOT}/core/scripts/estado.mjs" <spec> aprobada --por <humano>`.
+   `node "${SDD_ROOT}/core/scripts/estado.mjs" <spec> aprobada --por <humano>`.
 4. Con spec aprobada: crea la rama `ft/SPEC-NNN-slug` y lanza
    `Agent(subagent_type: "tremen-sdd:sdd-implementador", ...)` con el id de la
    spec y la rama en el prompt.
