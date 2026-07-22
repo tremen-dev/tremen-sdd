@@ -84,3 +84,74 @@ test('linter real via shell con ruta con espacio -> exit 0 (regresión quoting w
   });
   assert.equal(r.status, 0, 'esperaba exit 0; stderr: ' + r.stderr);
 });
+
+// --- CE-3 / SPEC-008: semántica de `auto` = extensión Y config presente ---
+
+// Stub de `ruff` que SIEMPRE sale con `code`, para probar si el hook lo invocó
+// o no (independiente de que ruff esté o no instalado en la máquina/CI).
+function stubRuff(code) {
+  const stubDir = fs.mkdtempSync(path.join(os.tmpdir(), 'sdd-stub-'));
+  if (process.platform === 'win32') {
+    fs.writeFileSync(path.join(stubDir, 'ruff.cmd'), `@echo off\r\nexit /b ${code}\r\n`);
+  } else {
+    const stub = path.join(stubDir, 'ruff');
+    fs.writeFileSync(stub, `#!/bin/sh\nexit ${code}\n`);
+    fs.chmodSync(stub, 0o755);
+  }
+  return stubDir;
+}
+
+function correConPath(cwd, filePath, stubDir) {
+  const payload = JSON.stringify({ cwd, tool_name: 'Edit', tool_input: { file_path: filePath } });
+  const r = spawnSync('node', [HOOK], {
+    input: payload, encoding: 'utf8',
+    env: { ...process.env, PATH: stubDir + path.delimiter + process.env.PATH },
+  });
+  return { code: r.status, err: r.stderr };
+}
+
+test('CA-1: auto SIN config del linter -> no invoca linter, exit 0, stderr vacío', () => {
+  const dir = proyecto('auto');
+  const f = path.join(dir, 'src', 'app.py'); // .py -> ruff por extensión
+  fs.mkdirSync(path.dirname(f), { recursive: true });
+  fs.writeFileSync(f, 'x=1\n');
+  // stub de ruff que saldría 2 SI se invocara: prueba que NO se invoca (no hay ruff.toml).
+  const { code, err } = correConPath(dir, f, stubRuff(2));
+  assert.equal(code, 0, 'auto sin config no debe lintear; stderr: ' + err);
+  assert.equal(err, '', 'no debe escribir nada en stderr');
+});
+
+test('CA-1: linter ausente (== auto) SIN config -> exit 0, stderr vacío', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'sdd-'));
+  fs.writeFileSync(path.join(dir, '.sdd.json'), JSON.stringify({
+    idioma: 'es', rutasVigiladas: ['src/'],
+    gates: { requireSpec: true, protegeVerdad: true, calidad: true },
+  })); // sin clave `linter` -> se trata como auto
+  const f = path.join(dir, 'src', 'app.py');
+  fs.mkdirSync(path.dirname(f), { recursive: true });
+  fs.writeFileSync(f, 'x=1\n');
+  const { code, err } = correConPath(dir, f, stubRuff(2));
+  assert.equal(code, 0, 'linter ausente sin config no debe lintear; stderr: ' + err);
+  assert.equal(err, '');
+});
+
+test('CA-2: auto CON config presente (ruff.toml) y stub OK -> exit 0', () => {
+  const dir = proyecto('auto');
+  fs.writeFileSync(path.join(dir, 'ruff.toml'), '[lint]\n');
+  const f = path.join(dir, 'src', 'app.py');
+  fs.mkdirSync(path.dirname(f), { recursive: true });
+  fs.writeFileSync(f, 'x=1\n');
+  const { code } = correConPath(dir, f, stubRuff(0));
+  assert.equal(code, 0);
+});
+
+test('CA-2: auto CON config presente (ruff.toml) y stub con hallazgos -> exit 2', () => {
+  const dir = proyecto('auto');
+  fs.writeFileSync(path.join(dir, 'ruff.toml'), '[lint]\n');
+  const f = path.join(dir, 'src', 'app.py');
+  fs.mkdirSync(path.dirname(f), { recursive: true });
+  fs.writeFileSync(f, 'x=1\n');
+  const { code, err } = correConPath(dir, f, stubRuff(2));
+  assert.equal(code, 2, 'auto con config debe lintear y propagar el fallo');
+  assert.match(err, /ruff/);
+});

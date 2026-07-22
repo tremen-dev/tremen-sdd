@@ -30,7 +30,12 @@ try {
   }
 
   const ext = path.extname(ruta);
-  const linter = cfg.linter === 'auto' || !cfg.linter ? autodetecta(ext) : cfg.linter;
+  const esAuto = cfg.linter === 'auto' || !cfg.linter;
+  let linter = esAuto ? autodetecta(ext) : cfg.linter;
+  // `auto` no basta con acertar por extensión: exige que el linter esté
+  // realmente CONFIGURADO en la raíz del proyecto. Sin su config, tratar como
+  // `none` (no lint, exit 0, sin ruido). Un `linter` explícito NO exige config.
+  if (esAuto && linter !== 'none' && !tieneConfig(linter, cwd)) linter = 'none';
   const cmd = comando(linter, ruta);
   if (!cmd) process.exit(0);
   const usaShell = process.platform === 'win32';
@@ -49,6 +54,32 @@ function autodetecta(ext) {
   if (['.js', '.jsx', '.ts', '.tsx', '.mjs'].includes(ext)) return 'eslint';
   if (ext === '.dart') return 'dart';
   return 'none';
+}
+
+// ¿El linter autodetectado está CONFIGURADO en la raíz del proyecto? Solo
+// gobierna la rama `auto`: si no hay config, `auto` degrada a `none` (silencio,
+// no ruido). Ficheros de config convencionales de cada linter soportado.
+function tieneConfig(linter, cwd) {
+  if (linter === 'eslint') {
+    const flat = ['eslint.config.js', 'eslint.config.mjs', 'eslint.config.cjs', 'eslint.config.ts'];
+    let entradas = [];
+    try { entradas = fs.readdirSync(cwd); } catch { /* raíz ilegible: sin config */ }
+    if (entradas.some((e) => flat.includes(e) || e.startsWith('.eslintrc'))) return true;
+    try {
+      const pkg = JSON.parse(fs.readFileSync(path.join(cwd, 'package.json'), 'utf8'));
+      if (pkg.eslintConfig) return true;
+    } catch { /* sin package.json o sin la clave */ }
+    return false;
+  }
+  if (linter === 'ruff') {
+    if (fs.existsSync(path.join(cwd, 'ruff.toml')) || fs.existsSync(path.join(cwd, '.ruff.toml'))) return true;
+    try {
+      if (/^\s*\[tool\.ruff/m.test(fs.readFileSync(path.join(cwd, 'pyproject.toml'), 'utf8'))) return true;
+    } catch { /* sin pyproject.toml o sin la sección */ }
+    return false;
+  }
+  if (linter === 'dart') return fs.existsSync(path.join(cwd, 'analysis_options.yaml'));
+  return false;
 }
 
 function comando(linter, fichero) {
