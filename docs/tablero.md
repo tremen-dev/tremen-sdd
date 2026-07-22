@@ -18,7 +18,8 @@ Actualizado: 2026-07-22
 | Spec | Estado | Último cambio |
 |---|---|---|
 | SPEC-006 — barrera-anti-invasion-de-gates | hecho | 2026-07-22 (sdd-verificador) |
-| SPEC-007 — el-tablero-indexa-los-adrs | en-revision | 2026-07-22 (sdd-implementador) |
+| SPEC-007 — el-tablero-indexa-los-adrs | hecho | 2026-07-22 (sdd-verificador) |
+| SPEC-008 — limpieza-de-tooling-y-ci | en-revision | 2026-07-22 (sdd-implementador) |
 
 ## ADRs
 
@@ -33,5 +34,5 @@ Actualizado: 2026-07-22
 
 ## Resumen
 
-- hecho: 6
+- hecho: 7
 - en-revision: 1
