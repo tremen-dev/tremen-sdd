@@ -102,3 +102,45 @@ test('hecho solo lo firma sdd-verificador', () => {
   const { data } = parseFrontmatter(fs.readFileSync(f, 'utf8'));
   assert.equal(data.estado, 'hecho');
 });
+
+// --- SPEC-006: la firma de 'hecho' depende de data.tipo ---
+// Una épica en 'en-revision' con aprobación humana previa en su historial. El
+// cierre de una épica es un milestone del humano: ningún rol sdd-* lo firma.
+function epicaTmp() {
+  const f = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'sdd-')), 'EPIC-001-x.md');
+  const historial = [
+    '  - {estado: borrador, fecha: 2026-07-01, por: sdd-producto}',
+    '  - {estado: aprobada, fecha: 2026-07-02, por: Alberto}',
+    '  - {estado: en-progreso, fecha: 2026-07-03, por: sdd-orquestador}',
+    '  - {estado: en-revision, fecha: 2026-07-04, por: sdd-orquestador}',
+  ];
+  fs.writeFileSync(f, `---\nid: EPIC-001\ntipo: epica\nestado: en-revision\nhistorial:\n${historial.join('\n')}\n---\n# X\n`);
+  return f;
+}
+
+// CA-2: cierre de EPICA = persona, nunca un rol. Cierra la invasión del
+// documentalista (proponer/cerrar la épica) que motivó CE-1.
+test('epica -> hecho: cualquier rol sdd-* la RECHAZA (cierre de épica = gate humano)', () => {
+  const f = epicaTmp();
+  const antes = fs.readFileSync(f, 'utf8');
+  assert.throws(() => transition(f, 'hecho', 'sdd-documentalista'), /gate humano/);
+  assert.throws(() => transition(f, 'hecho', 'sdd-verificador'), /gate humano/);
+  assert.throws(() => transition(f, 'hecho', 'sdd-orquestador'), /gate humano/);
+  assert.equal(fs.readFileSync(f, 'utf8'), antes);
+});
+
+test('epica -> hecho: la firma de una persona la PERMITE', () => {
+  const f = epicaTmp();
+  transition(f, 'hecho', 'Alberto', '2026-07-20');
+  const { data } = parseFrontmatter(fs.readFileSync(f, 'utf8'));
+  assert.equal(data.estado, 'hecho');
+});
+
+// CA-2/CA-4: la rama por tipo NO contamina spec/task. Una spec sigue exigiendo
+// sdd-verificador (statu quo de 18ad848), una épica exige persona.
+test('la firma de hecho discrimina por tipo: spec exige verificador, epica exige persona', () => {
+  const spec = specTmp('en-revision');
+  assert.throws(() => transition(spec, 'hecho', 'Alberto'), /sdd-verificador/);
+  const epica = epicaTmp();
+  assert.throws(() => transition(epica, 'hecho', 'sdd-verificador'), /gate humano/);
+});

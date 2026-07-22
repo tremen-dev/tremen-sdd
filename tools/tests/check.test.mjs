@@ -34,6 +34,12 @@ test('SPEC-004 CA-3d: nucleo-agnostico está cableado en el runner (cierra la fu
   assert.deepEqual(paso.cmd, ['node', 'tools/checks/nucleo-agnostico.mjs']);
 });
 
+test('SPEC-006 CA-6: prosa-gates está cableado en el runner (guarda la barrera en prosa)', () => {
+  const paso = PASOS.find((p) => p.nombre === 'prosa-gates');
+  assert.ok(paso, "falta el paso 'prosa-gates' en el runner");
+  assert.deepEqual(paso.cmd, ['node', 'tools/checks/prosa-gates.mjs']);
+});
+
 test('CA-6: cada paso invoca un script real de tools/checks o core/scripts (no reimplementa)', () => {
   for (const p of PASOS) {
     assert.equal(p.cmd[0], 'node');
