@@ -45,3 +45,38 @@ test('épica bucket sin slug (EPIC-FIX) no duplica el título', () => {
   assert.match(md, /## EPIC-FIX \(/);
   assert.doesNotMatch(md, /## EPIC-FIX — EPIC-FIX/);
 });
+
+function docsConAdrs() {
+  const docs = docsTmp();
+  const adr = path.join(docs, 'adr');
+  fs.mkdirSync(adr, { recursive: true });
+  fs.writeFileSync(path.join(adr, 'ADR-002-modelo-en-capas.md'),
+    '---\nid: ADR-002\ntipo: adr\nestado: aprobada\nhistorial:\n  - {estado: borrador, fecha: 2026-07-03, por: sdd-arquitecto}\n  - {estado: aprobada, fecha: 2026-07-04, por: Alberto}\n---\n# ADR-002: Modelo en capas\n');
+  fs.writeFileSync(path.join(adr, 'ADR-001-estructura-del-repo.md'),
+    '---\nid: ADR-001\ntipo: adr\nestado: aprobada\nhistorial:\n  - {estado: aprobada, fecha: 2026-07-02, por: Alberto}\n---\n# ADR-001: Estructura del repo\n');
+  return docs;
+}
+
+test('el tablero emite la sección ## ADRs con su tabla (CA-1)', () => {
+  const md = renderBoard(docsConAdrs(), '2026-07-09');
+  assert.match(md, /## ADRs/);
+  assert.match(md, /\| ADR \| Estado \| Título \| Último cambio \|/);
+  assert.match(md, /\| ADR-001 — estructura-del-repo \| aprobada \|.*2026-07-02 \(Alberto\)/);
+  assert.match(md, /\| ADR-002 — modelo-en-capas \| aprobada \|.*2026-07-04 \(Alberto\)/);
+});
+
+test('los ADRs se ordenan por id ascendente (CA-1)', () => {
+  const md = renderBoard(docsConAdrs(), '2026-07-09');
+  assert.ok(md.indexOf('ADR-001') < md.indexOf('ADR-002'), 'ADR-001 antes que ADR-002');
+});
+
+test('la sección ## ADRs va después de las épicas y antes de ## Resumen (CA-1)', () => {
+  const md = renderBoard(docsConAdrs(), '2026-07-09');
+  assert.ok(md.indexOf('## EPIC-001') < md.indexOf('## ADRs'), 'épicas antes de ADRs');
+  assert.ok(md.indexOf('## ADRs') < md.indexOf('## Resumen'), 'ADRs antes del Resumen');
+});
+
+test('sin docs/adr/ no se emite la sección ## ADRs (corolario CA-3/CA-4)', () => {
+  const md = renderBoard(docsTmp(), '2026-07-09');
+  assert.doesNotMatch(md, /## ADRs/);
+});
