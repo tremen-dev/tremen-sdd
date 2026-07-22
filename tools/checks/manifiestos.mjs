@@ -17,10 +17,18 @@ const ROLES_KIMI = ['sdd-producto', 'sdd-arquitecto', 'sdd-implementador', 'sdd-
 const READONLY_KIMI = ['sdd-verificador', 'sdd-como-vamos'];
 const TOOLS_ESCRITURA = ['Write', 'Edit'];
 
+// opencode: el orquestador es un agente PRIMARY; los otros seis son SUBAGENTS
+// (ADR-007 §Decisión punto 4). El manifiesto es opencode.json (bloque `agent`).
+const SUBAGENTES_OPENCODE = ['sdd-producto', 'sdd-arquitecto', 'sdd-implementador', 'sdd-verificador', 'sdd-documentalista', 'sdd-como-vamos'];
+const READONLY_OPENCODE = ['sdd-verificador', 'sdd-como-vamos'];
+
 export function checkManifiestos(repoRoot = REPO_ROOT, harness = 'claude-code') {
   // Kimi no usa marketplace/plugin.json/hooks.json: su manifiesto son los agentes
   // YAML (raíz + subagentes) y el fragmento [[hooks]]. Ruta de validación propia.
   if (harness === 'kimi-code') return checkManifiestosKimi(path.join(repoRoot, 'dist', harness));
+  // opencode: su manifiesto es opencode.json (bloque `agent` con mode + permisos
+  // por agente + permission.task del orquestador). Ruta de validación propia.
+  if (harness === 'opencode') return checkManifiestosOpencode(path.join(repoRoot, 'dist', harness));
 
   const errores = [];
   const distDir = path.join(repoRoot, 'dist', harness);
@@ -113,6 +121,67 @@ export function checkManifiestosKimi(distDir) {
       const escritura = tools.filter((t) => TOOLS_ESCRITURA.includes(t));
       if (escritura.length) errores.push(`${rol}: debe ser read-only y declara herramientas de escritura (${escritura.join(', ')})`);
     }
+  }
+
+  return { ok: errores.length === 0, errores };
+}
+
+// CA-6 (SPEC-010): valida opencode.json — el bloque `agent` registra los SIETE
+// roles con su `mode` (orquestador primary; los seis sdd-* subagent) y sus
+// permisos por agente; el orquestador declara estáticamente qué subagentes puede
+// lanzar (permission.task) y los subagentes NO despachan (task deny); los roles
+// read-only no tienen permiso de escritura (edit deny). No registra el plugin de
+// enforcement (spec posterior). Se parsea con JSON.parse (loader mínimo, sin
+// dependencias: ADR-007 §Decisión punto 5). También exige que los ficheros de
+// agents/ (auto-discovery) y commands/ existan en el artefacto.
+export function checkManifiestosOpencode(distDir) {
+  const errores = [];
+  if (!fs.existsSync(distDir)) { errores.push('falta dist/opencode (¿falta el build?)'); return { ok: false, errores }; }
+
+  // Manifiesto opencode.json válido.
+  const manPath = path.join(distDir, 'opencode.json');
+  let man;
+  try { man = leeJson(manPath); } catch { errores.push('falta o es inválido opencode.json en el artefacto'); }
+  if (man) {
+    const agentes = man.agent ?? {};
+    // El orquestador es PRIMARY y declara permission.task con los seis subagentes.
+    const orq = agentes['sdd-orquestador'];
+    if (!orq) errores.push('opencode.json: el bloque agent no declara sdd-orquestador');
+    else {
+      if (orq.mode !== 'primary') errores.push(`opencode.json: sdd-orquestador debe ser mode 'primary' (es '${orq.mode ?? ''}')`);
+      const task = orq.permission?.task;
+      if (!task || typeof task !== 'object') errores.push('opencode.json: sdd-orquestador no declara permission.task (qué subagentes puede lanzar)');
+      else {
+        for (const rol of SUBAGENTES_OPENCODE) {
+          if (task[rol] !== 'allow') errores.push(`opencode.json: sdd-orquestador.permission.task no habilita ('allow') el subagente ${rol}`);
+        }
+      }
+    }
+    // Los seis roles son SUBAGENT, no despachan, y los read-only no editan.
+    for (const rol of SUBAGENTES_OPENCODE) {
+      const a = agentes[rol];
+      if (!a) { errores.push(`opencode.json: el bloque agent no declara ${rol}`); continue; }
+      if (a.mode !== 'subagent') errores.push(`opencode.json: ${rol} debe ser mode 'subagent' (es '${a.mode ?? ''}')`);
+      // subagent_depth=1 ya lo impide, pero el manifiesto lo fija: solo el
+      // orquestador despacha (task deny en los subagentes).
+      if (a.permission?.task !== 'deny') errores.push(`opencode.json: ${rol} debe declarar permission.task 'deny' (solo el orquestador despacha)`);
+      if (READONLY_OPENCODE.includes(rol) && a.permission?.edit !== 'deny') {
+        errores.push(`opencode.json: ${rol} debe ser read-only (permission.edit 'deny')`);
+      }
+    }
+    // NO registra el plugin de enforcement: es la spec siguiente de EPIC-003.
+    if (man.plugin !== undefined) errores.push('opencode.json NO debe registrar el plugin de enforcement (spec posterior)');
+  }
+
+  // Los agentes markdown (auto-discovery) y los comandos existen en el artefacto.
+  for (const rol of ['sdd-orquestador', ...SUBAGENTES_OPENCODE]) {
+    if (!fs.existsSync(path.join(distDir, 'agents', `${rol}.md`))) errores.push(`falta agents/${rol}.md en el artefacto (auto-discovery)`);
+  }
+  for (const cmd of ['sdd-init', 'sdd-tablero']) {
+    if (!fs.existsSync(path.join(distDir, 'commands', `${cmd}.md`))) errores.push(`falta commands/${cmd}.md en el artefacto`);
+  }
+  for (const d of ['skills', 'commands', 'agents']) {
+    if (!fs.existsSync(path.join(distDir, d))) errores.push(`falta ${d}/ en el artefacto (auto-discovery)`);
   }
 
   return { ok: errores.length === 0, errores };
