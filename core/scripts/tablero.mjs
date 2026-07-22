@@ -34,6 +34,23 @@ export function renderBoard(docsDir, fecha) {
     }
     lineas.push('');
   }
+  // Sección global de ADRs: entre las épicas y el Resumen. Se OMITE si no hay
+  // docs/adr/ (o está vacío), para no alterar la salida existente. Los ADRs NO
+  // se cuentan en el Resumen (semántica del recuento = specs por estado).
+  const adrDir = path.join(docsDir, 'adr');
+  const adrs = (fs.existsSync(adrDir) ? fs.readdirSync(adrDir) : [])
+    .filter((n) => /^ADR-.*\.md$/.test(n)).sort();
+  if (adrs.length) {
+    lineas.push('## ADRs', '');
+    lineas.push('| ADR | Estado | Título | Último cambio |', '|---|---|---|---|');
+    for (const f of adrs) {
+      const d = leer(path.join(adrDir, f));
+      const titulo = f.replace(/^ADR-\d{3}-/, '').replace(/\.md$/, '');
+      const ultimo = d.historial?.at(-1);
+      lineas.push(`| ${d.id} | ${d.estado} | ${titulo} | ${ultimo ? `${ultimo.fecha} (${ultimo.por})` : '—'} |`);
+    }
+    lineas.push('');
+  }
   lineas.push('## Resumen', '', ...Object.entries(recuento).map(([e, n]) => `- ${e}: ${n}`), '');
   return lineas.join('\n');
 }

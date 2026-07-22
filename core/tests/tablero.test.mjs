@@ -45,3 +45,67 @@ test('épica bucket sin slug (EPIC-FIX) no duplica el título', () => {
   assert.match(md, /## EPIC-FIX \(/);
   assert.doesNotMatch(md, /## EPIC-FIX — EPIC-FIX/);
 });
+
+function docsConAdrs() {
+  const docs = docsTmp();
+  const adr = path.join(docs, 'adr');
+  fs.mkdirSync(adr, { recursive: true });
+  fs.writeFileSync(path.join(adr, 'ADR-002-modelo-en-capas.md'),
+    '---\nid: ADR-002\ntipo: adr\nestado: aprobada\nhistorial:\n  - {estado: borrador, fecha: 2026-07-03, por: sdd-arquitecto}\n  - {estado: aprobada, fecha: 2026-07-04, por: Alberto}\n---\n# ADR-002: Modelo en capas\n');
+  fs.writeFileSync(path.join(adr, 'ADR-001-estructura-del-repo.md'),
+    '---\nid: ADR-001\ntipo: adr\nestado: aprobada\nhistorial:\n  - {estado: aprobada, fecha: 2026-07-02, por: Alberto}\n---\n# ADR-001: Estructura del repo\n');
+  return docs;
+}
+
+// Celdas de una fila markdown '| a | b | c |' -> ['a','b','c'] (sin los bordes).
+function celdas(fila) {
+  return fila.replace(/^\|/, '').replace(/\|$/, '').split('|').map((c) => c.trim());
+}
+// La fila de la tabla de ADRs cuyo primer celda es `id`.
+function filaAdr(md, id) {
+  return md.split('\n').find((l) => l.startsWith(`| ${id} |`));
+}
+
+test('el tablero emite la sección ## ADRs con su tabla (CA-1)', () => {
+  const md = renderBoard(docsConAdrs(), '2026-07-09');
+  assert.match(md, /## ADRs/);
+  assert.match(md, /\| ADR \| Estado \| Título \| Último cambio \|/);
+  // 4 celdas SEPARADAS, alineadas con la cabecera: id | estado | título | último.
+  assert.deepEqual(celdas(filaAdr(md, 'ADR-001')),
+    ['ADR-001', 'aprobada', 'estructura-del-repo', '2026-07-02 (Alberto)']);
+  assert.deepEqual(celdas(filaAdr(md, 'ADR-002')),
+    ['ADR-002', 'aprobada', 'modelo-en-capas', '2026-07-04 (Alberto)']);
+});
+
+test('la fila de ADR tiene el título en columna propia, distinto del id (CA-1)', () => {
+  const md = renderBoard(docsConAdrs(), '2026-07-09');
+  const c = celdas(filaAdr(md, 'ADR-001'));
+  assert.equal(c[0], 'ADR-001');           // id en su columna
+  assert.equal(c[2], 'estructura-del-repo'); // título en SU columna, no fusionado con el id
+  assert.notEqual(c[0], c[2]);
+});
+
+test('el nº de columnas de cada fila de ADR == nº de columnas de la cabecera (CA-1)', () => {
+  const md = renderBoard(docsConAdrs(), '2026-07-09');
+  const cabecera = celdas('| ADR | Estado | Título | Último cambio |');
+  for (const id of ['ADR-001', 'ADR-002']) {
+    assert.equal(celdas(filaAdr(md, id)).length, cabecera.length,
+      `la fila ${id} debe tener ${cabecera.length} celdas como la cabecera`);
+  }
+});
+
+test('los ADRs se ordenan por id ascendente (CA-1)', () => {
+  const md = renderBoard(docsConAdrs(), '2026-07-09');
+  assert.ok(md.indexOf('ADR-001') < md.indexOf('ADR-002'), 'ADR-001 antes que ADR-002');
+});
+
+test('la sección ## ADRs va después de las épicas y antes de ## Resumen (CA-1)', () => {
+  const md = renderBoard(docsConAdrs(), '2026-07-09');
+  assert.ok(md.indexOf('## EPIC-001') < md.indexOf('## ADRs'), 'épicas antes de ADRs');
+  assert.ok(md.indexOf('## ADRs') < md.indexOf('## Resumen'), 'ADRs antes del Resumen');
+});
+
+test('sin docs/adr/ no se emite la sección ## ADRs (corolario CA-3/CA-4)', () => {
+  const md = renderBoard(docsTmp(), '2026-07-09');
+  assert.doesNotMatch(md, /## ADRs/);
+});
