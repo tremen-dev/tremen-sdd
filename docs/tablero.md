@@ -17,9 +17,8 @@ Actualizado: 2026-07-22
 
 | Spec | Estado | Último cambio |
 |---|---|---|
-| SPEC-006 — barrera-anti-invasion-de-gates | aprobada | 2026-07-22 (Alberto Fojo) |
+| SPEC-006 — barrera-anti-invasion-de-gates | hecho | 2026-07-22 (sdd-verificador) |
 
 ## Resumen
 
-- hecho: 5
-- aprobada: 1
+- hecho: 6

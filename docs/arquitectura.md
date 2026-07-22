@@ -83,7 +83,8 @@ cuerpo del rol; solo lo referencia), `manifiestos` (Claude: plugin.json /
 marketplace.json; Kimi: agentes YAML + mapa `subagents` + `allowed_tools` por rol),
 `fuente-unica` (sin copia de núcleo comiteada fuera de `core/`),
 `descripcion-fuente-unica` (la description de disparo de cada rol coincide entre la
-canónica en `core/roles/es/_descripciones.json` y las superficies de los adaptadores).
+canónica en `core/roles/es/_descripciones.json` y las superficies de los adaptadores),
+`prosa-gates` (la prosa de `sdd-documentalista` prohíbe cerrar/proponer cerrar épicas — SPEC-006).
 Los checks
 `referencias`, `roles-fuente-unica` y `manifiestos` están **generalizados a los dos
 adaptadores** (claude-code y kimi-code); `nucleo-aislado` y `layout` son
