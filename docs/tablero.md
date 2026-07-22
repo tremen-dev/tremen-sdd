@@ -21,6 +21,12 @@ Actualizado: 2026-07-22
 | SPEC-007 — el-tablero-indexa-los-adrs | hecho | 2026-07-22 (sdd-verificador) |
 | SPEC-008 — limpieza-de-tooling-y-ci | hecho | 2026-07-22 (sdd-verificador) |
 
+## EPIC-003 — adaptador-opencode-con-paridad-completa (aprobada)
+
+| Spec | Estado | Último cambio |
+|---|---|---|
+| SPEC-009 — estudio-y-mapa-de-capacidades-de-opencode | hecho | 2026-07-22 (sdd-verificador) |
+
 ## ADRs
 
 | ADR | Estado | Título | Último cambio |
@@ -31,7 +37,8 @@ Actualizado: 2026-07-22
 | ADR-004 | aprobada | resolucion-del-nucleo-la-aporta-el-adaptador-el-nucleo-es-agnostico-al-harness | 2026-07-21 (Alberto Fojo) |
 | ADR-005 | aprobada | fuente-unica-de-la-description-de-disparo-de-rol-canonica-en-core-check-sin-generacion-en-build | 2026-07-21 (Alberto Fojo) |
 | ADR-006 | aprobada | anatomia-de-un-gate-atribucion-rol-vs-persona-y-politica-de-firma-por-tipo-y-estado | 2026-07-22 (Alberto Fojo) |
+| ADR-007 | aprobada | encaje-de-opencode-y-su-modelo-de-enforcement | 2026-07-22 (Alberto Fojo) |
 
 ## Resumen
 
-- hecho: 8
+- hecho: 9
