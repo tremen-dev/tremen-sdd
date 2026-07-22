@@ -25,6 +25,8 @@ export const PASOS = [
   { nombre: 'manifiestos-kimi', cmd: ['node', 'tools/checks/manifiestos.mjs', 'kimi-code'] },
   // descripcion-fuente-unica itera sobre AMBOS adaptadores (RN-11 / SPEC-005).
   { nombre: 'descripcion-fuente-unica', cmd: ['node', 'tools/checks/descripcion-fuente-unica.mjs'] },
+  // prosa-gates: la prosa del documentalista prohíbe cerrar épicas (SPEC-006 CA-6).
+  { nombre: 'prosa-gates', cmd: ['node', 'tools/checks/prosa-gates.mjs'] },
   { nombre: 'valida', cmd: ['node', 'core/scripts/valida.mjs', '--dir', 'docs'] },
 ];
 
