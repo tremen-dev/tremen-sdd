@@ -100,10 +100,10 @@ entrada del historial coincide con el `estado` declarado.
 |---|---|---|
 | `require-spec.mjs` | `PreToolUse` (Edit\|Write\|MultiEdit) | Deniega editar código bajo `rutasVigiladas` si la rama actual no es `ft/SPEC-NNN-slug` o la spec no está `aprobada`/`en-progreso`. |
 | `protege-verdad.mjs` | `PreToolUse` (Edit\|Write\|MultiEdit) | Deniega escribir a mano documentos generados (`docs/tablero.md`) o documentos de verdad (`FOUNDATION.md`, `docs/fundacion/`) fuera de sus dueños (`sdd-arquitecto`, `sdd-producto`, `main`). |
-| `calidad.mjs` | `PostToolUse` (Edit\|Write\|MultiEdit) | Valida coherencia frontmatter/estado/historial de artefactos SDD, o lanza el linter del proyecto sobre código; `exit 2` devuelve el problema como feedback accionable. |
+| `calidad.mjs` | `PostToolUse` (Edit\|Write\|MultiEdit) | Valida coherencia frontmatter/estado/historial de artefactos SDD, o lanza el linter del proyecto sobre código (con `linter:auto`, solo si el linter tiene config presente en el proyecto); `exit 2` devuelve el problema como feedback accionable. |
 
 Los tres son **fail-open**: ante cualquier duda (fichero no vigilado,
-`.sdd.json` ausente, linter no instalado...) permiten la operación en vez de
+`.sdd.json` ausente, linter no instalado o sin su config presente...) permiten la operación en vez de
 bloquear.
 
 **Válvula de escape**: `SDD_SKIP_GATE=1` desactiva `require-spec.mjs` y
