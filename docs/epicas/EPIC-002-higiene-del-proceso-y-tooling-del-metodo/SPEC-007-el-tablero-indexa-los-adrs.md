@@ -11,6 +11,8 @@ historial:
   - {estado: en-revision, fecha: 2026-07-22, por: sdd-implementador}
   - {estado: en-progreso, fecha: 2026-07-22, por: sdd-implementador}
   - {estado: en-revision, fecha: 2026-07-22, por: sdd-implementador}
+  - {estado: en-progreso, fecha: 2026-07-22, por: sdd-verificador}
+  - {estado: en-revision, fecha: 2026-07-22, por: sdd-implementador}
 ---
 # SPEC-007 — El tablero indexa los ADRs
 
