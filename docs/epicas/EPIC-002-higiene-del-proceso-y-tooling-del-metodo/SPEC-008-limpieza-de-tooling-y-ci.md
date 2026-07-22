@@ -2,13 +2,14 @@
 id: SPEC-008
 tipo: spec
 epica: EPIC-002
-estado: en-revision
+estado: hecho
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-07-22, por: sdd-arquitecto}
   - {estado: aprobada, fecha: 2026-07-22, por: Alberto Fojo}
   - {estado: en-progreso, fecha: 2026-07-22, por: sdd-implementador}
   - {estado: en-revision, fecha: 2026-07-22, por: sdd-implementador}
+  - {estado: hecho, fecha: 2026-07-22, por: sdd-verificador}
 ---
 # SPEC-008 — Limpieza de tooling y CI
 

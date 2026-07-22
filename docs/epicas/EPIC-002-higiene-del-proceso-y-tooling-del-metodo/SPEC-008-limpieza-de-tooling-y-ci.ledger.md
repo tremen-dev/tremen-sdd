@@ -15,16 +15,35 @@ epica: EPIC-002
 <!-- Un CA está ✅ solo cuando Implementado + Test + Verif. aplicables están en verde. Una salvedad se marca ⚠️, nunca ✅. -->
 | CA | Implementado (fichero) | Test (fichero/caso) | Verif. | Estado |
 |---|---|---|---|---|
-| CA-1 | `adapters/claude-code/hooks/calidad.mjs`: rama `auto` (`esAuto`) degrada a `none` si `!tieneConfig(linter, cwd)` antes de invocar (líneas ~32-37); refleja en `dist/claude-code/hooks/calidad.mjs` vía build | `adapters/claude-code/tests/calidad.test.mjs`: "CA-1: auto SIN config del linter -> no invoca linter, exit 0, stderr vacío" (stub ruff exit 2 en PATH, sin `ruff.toml` → `code===0`, `stderr===''`) y "CA-1: linter ausente (== auto) SIN config -> exit 0, stderr vacío" | | 🚧 |
-| CA-2 | `adapters/claude-code/hooks/calidad.mjs`: `tieneConfig()` (helper nuevo) detecta config de eslint/ruff/dart en raíz; con config presente `auto` sí invoca y el linter gobierna el exit | `adapters/claude-code/tests/calidad.test.mjs`: "CA-2: auto CON config presente (ruff.toml) y stub OK -> exit 0" (stub ruff exit 0 → `code===0`) y "CA-2: auto CON config presente (ruff.toml) y stub con hallazgos -> exit 2" (stub ruff exit 2 → `code===2` + `stderr` match `/ruff/`) | | 🚧 |
-| CA-3 | `adapters/claude-code/hooks/calidad.mjs`: la comprobación de config **solo** condiciona `esAuto`; `linter` explícito conserva su rama (fail-open `r.error \|\| r.status===null`) sin exigir config | Los **5 tests existentes** de `calidad.test.mjs` verbatim y verdes (artefacto incoherente→2, coherente→0, `linter none`→0, fail-open sin `.sdd.json`→0, ruff real vía stub con espacio→0) | | 🚧 |
-| CA-4 | Sin cambios en la rama `validateFile` (artefactos SDD); el fix vive solo en la rama de código | `calidad.test.mjs`: los 2 tests de artefacto existentes verbatim (desincronizado→2 con `/historial/`; coherente→0) | | 🚧 |
-| CA-5 | `.github/workflows/ci.yml`: `actions/checkout@v4`→`@v7`, `actions/setup-node@v4`→`@v7`; `node-version: '22'` del job intacto | Inspección YAML: `grep` de `actions/(checkout\|setup-node)@` devuelve solo `@v7`, ningún `@v4` (líneas 14 y 17) | | 🚧 |
-| CA-6 | `core/scripts/estado.mjs` **sin tocar** (0 diff) | `git diff --stat core/scripts/estado.mjs` vacío; `core/tests/estado.test.mjs` verbatim y verde dentro de los 222 | | 🚧 |
-| CA-7 | Conjunto completo del cambio; fix reflejado en `dist/` vía `tools/build-adapter.mjs` (copia verbatim; `diff` fuente↔dist idéntico) | `npm test` → **222 pass / 0 fail** (9 en `calidad.test.mjs`, incluidos los 4 nuevos de CA-1/CA-2); `npm run check` → OK. CI pendiente sobre la rama | | 🚧 |
+| CA-1 | `adapters/claude-code/hooks/calidad.mjs`: rama `auto` (`esAuto`) degrada a `none` si `!tieneConfig(linter, cwd)` antes de invocar (líneas ~32-37); refleja en `dist/claude-code/hooks/calidad.mjs` vía build | `adapters/claude-code/tests/calidad.test.mjs`: "CA-1: auto SIN config del linter -> no invoca linter, exit 0, stderr vacío" (stub ruff exit 2 en PATH, sin `ruff.toml` → `code===0`, `stderr===''`) y "CA-1: linter ausente (== auto) SIN config -> exit 0, stderr vacío" | Adversarial independiente contra `dist/…/calidad.mjs` en cwd temporal: `auto` + `.mjs` SIN `eslint.config.*`, stub eslint exit 2 en PATH → `code=0`, `stderr=''`; ídem con clave `linter` ausente. Es el caso que hoy daba exit 2. Suite: ambos tests verdes en los 222 | ✅ |
+| CA-2 | `adapters/claude-code/hooks/calidad.mjs`: `tieneConfig()` (helper nuevo) detecta config de eslint/ruff/dart en raíz; con config presente `auto` sí invoca y el linter gobierna el exit | `adapters/claude-code/tests/calidad.test.mjs`: "CA-2: auto CON config presente (ruff.toml) y stub OK -> exit 0" (stub ruff exit 0 → `code===0`) y "CA-2: auto CON config presente (ruff.toml) y stub con hallazgos -> exit 2" (stub ruff exit 2 → `code===2` + `stderr` match `/ruff/`) | Adversarial: cwd temporal con `ruff.toml` + stub ruff → exit 0 gobierna `code=0`, exit 2 gobierna `code=2` (`stderr` menciona `ruff`); y con `eslint.config.mjs` + stub `npx` exit 2 → `code=2` (config detectada dispara el lint). Suite: ambos tests verdes | ✅ |
+| CA-3 | `adapters/claude-code/hooks/calidad.mjs`: la comprobación de config **solo** condiciona `esAuto`; `linter` explícito conserva su rama (fail-open `r.error \|\| r.status===null`) sin exigir config | Los **5 tests existentes** de `calidad.test.mjs` verbatim y verdes (artefacto incoherente→2, coherente→0, `linter none`→0, fail-open sin `.sdd.json`→0, ruff real vía stub con espacio→0) | Fuente: la guarda es `if (esAuto && linter !== 'none' && !tieneConfig(...))` (l.38) — solo toca `auto`. Los 5 tests originales (l.25-86 del test) verbatim y verdes dentro de los 222 | ✅ |
+| CA-4 | Sin cambios en la rama `validateFile` (artefactos SDD); el fix vive solo en la rama de código | `calidad.test.mjs`: los 2 tests de artefacto existentes verbatim (desincronizado→2 con `/historial/`; coherente→0) | Rama `validateFile` (l.23-30) sin cambios; los 2 tests de artefacto verdes en la suite | ✅ |
+| CA-5 | `.github/workflows/ci.yml`: `actions/checkout@v4`→`@v7`, `actions/setup-node@v4`→`@v7`; `node-version: '22'` del job intacto | Inspección YAML: `grep` de `actions/(checkout\|setup-node)@` devuelve solo `@v7`, ningún `@v4` (líneas 14 y 17) | Inspección del YAML: `checkout@v7` (l.14), `setup-node@v7` (l.17), `node-version: '22'` (l.19); sin `@v4`. Observado en el run real `29933037942` (headSha ad85d49, ubuntu-latest): success y **annotations_count=0** → sin warning "Node.js 20 is deprecated" | ✅ |
+| CA-6 | `core/scripts/estado.mjs` **sin tocar** (0 diff) | `git diff --stat core/scripts/estado.mjs` vacío; `core/tests/estado.test.mjs` verbatim y verde dentro de los 222 | `git diff --stat main` de `core/scripts/estado.mjs` y `core/tests/estado.test.mjs` → ambos vacíos (0 diff); máquina de estados intacta, regresión de specs migradas no agravada | ✅ |
+| CA-7 | Conjunto completo del cambio; fix reflejado en `dist/` vía `tools/build-adapter.mjs` (copia verbatim; `diff` fuente↔dist idéntico) | `npm test` → **222 pass / 0 fail** (9 en `calidad.test.mjs`, incluidos los 4 nuevos de CA-1/CA-2); `npm run check` → OK. CI pendiente sobre la rama | `npm test` → 222 pass / 0 fail; `npm run check` → OK (exit 0). `diff` fuente↔`dist/claude-code/hooks/calidad.mjs` idénticos (build verbatim, RN-05). CI run `29933037942` success | ✅ |
 
 ## Veredicto del verificador
 <!-- GREEN/RED + fecha + resumen. Lo escribe SOLO sdd-verificador. -->
+
+**GREEN — 2026-07-22 (sdd-verificador).** Los 7 CA en verde con Implementado + Test + Verif.
+Evidencia ejercida sobre artefactos, no relato:
+- **CE-3 adversarial** contra `dist/claude-code/hooks/calidad.mjs` en cwd temporales: (a) `linter:"auto"`
+  con `.mjs` y SIN `eslint.config.*` → NO invoca el linter (stub eslint exit 2 en PATH ignorado): `exit 0`,
+  `stderr` vacío — el caso que hoy daba exit 2 queda corregido; ídem con clave `linter` ausente. (b) CON
+  config (`ruff.toml` / `eslint.config.mjs`) presente → sí lintea y el exit del linter gobierna (stub
+  exit 0 → `code 0`; stub exit 2 → `code 2` con mensaje). La guarda `if (esAuto && …)` (l.38) confina el
+  cambio a la rama `auto`; `linter` explícito y `validateFile` intactos.
+- **CE-4** observado en el run real `29933037942` (headSha ad85d49, ubuntu-latest): conclusion=success y
+  **0 anotaciones** → sin warning "Node.js 20 is deprecated". `ci.yml`: `checkout@v7`, `setup-node@v7`,
+  `node-version:'22'`; sin `@v4`.
+- **Suite/higiene**: `npm test` 222 pass / 0 fail; `npm run check` OK. `core/scripts/estado.mjs` y
+  `core/tests/estado.test.mjs` con 0 diff vs `main` (CA-6). Fuente↔`dist` del hook idénticos (RN-05).
+- **Nota**: el hook del plugin INSTALADO (cache v0.4.0) ladró con "eslint sin config" al escribir un
+  `.mjs` durante esta verificación — es el bug CE-3 reproducido en vivo desde la versión cacheada, ajeno
+  a los artefactos del repo (que ya están corregidos); se propagará al plugin en el próximo release.
+
+Spec transicionada a `hecho` por sdd-verificador.
 
 ## Evidencia visual
 <!-- Tabla CA → captura en _qa/SPEC-008/. Informe HTML opcional: _qa/SPEC-008/informe.html -->
