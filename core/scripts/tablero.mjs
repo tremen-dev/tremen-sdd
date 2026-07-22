@@ -45,8 +45,9 @@ export function renderBoard(docsDir, fecha) {
     lineas.push('| ADR | Estado | Título | Último cambio |', '|---|---|---|---|');
     for (const f of adrs) {
       const d = leer(path.join(adrDir, f));
+      const titulo = f.replace(/^ADR-\d{3}-/, '').replace(/\.md$/, '');
       const ultimo = d.historial?.at(-1);
-      lineas.push(`| ${d.id} — ${f.replace(/^ADR-\d{3}-/, '').replace(/\.md$/, '')} | ${d.estado} | ${ultimo ? `${ultimo.fecha} (${ultimo.por})` : '—'} |`);
+      lineas.push(`| ${d.id} | ${d.estado} | ${titulo} | ${ultimo ? `${ultimo.fecha} (${ultimo.por})` : '—'} |`);
     }
     lineas.push('');
   }

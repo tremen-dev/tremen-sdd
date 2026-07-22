@@ -57,12 +57,41 @@ function docsConAdrs() {
   return docs;
 }
 
+// Celdas de una fila markdown '| a | b | c |' -> ['a','b','c'] (sin los bordes).
+function celdas(fila) {
+  return fila.replace(/^\|/, '').replace(/\|$/, '').split('|').map((c) => c.trim());
+}
+// La fila de la tabla de ADRs cuyo primer celda es `id`.
+function filaAdr(md, id) {
+  return md.split('\n').find((l) => l.startsWith(`| ${id} |`));
+}
+
 test('el tablero emite la sección ## ADRs con su tabla (CA-1)', () => {
   const md = renderBoard(docsConAdrs(), '2026-07-09');
   assert.match(md, /## ADRs/);
   assert.match(md, /\| ADR \| Estado \| Título \| Último cambio \|/);
-  assert.match(md, /\| ADR-001 — estructura-del-repo \| aprobada \|.*2026-07-02 \(Alberto\)/);
-  assert.match(md, /\| ADR-002 — modelo-en-capas \| aprobada \|.*2026-07-04 \(Alberto\)/);
+  // 4 celdas SEPARADAS, alineadas con la cabecera: id | estado | título | último.
+  assert.deepEqual(celdas(filaAdr(md, 'ADR-001')),
+    ['ADR-001', 'aprobada', 'estructura-del-repo', '2026-07-02 (Alberto)']);
+  assert.deepEqual(celdas(filaAdr(md, 'ADR-002')),
+    ['ADR-002', 'aprobada', 'modelo-en-capas', '2026-07-04 (Alberto)']);
+});
+
+test('la fila de ADR tiene el título en columna propia, distinto del id (CA-1)', () => {
+  const md = renderBoard(docsConAdrs(), '2026-07-09');
+  const c = celdas(filaAdr(md, 'ADR-001'));
+  assert.equal(c[0], 'ADR-001');           // id en su columna
+  assert.equal(c[2], 'estructura-del-repo'); // título en SU columna, no fusionado con el id
+  assert.notEqual(c[0], c[2]);
+});
+
+test('el nº de columnas de cada fila de ADR == nº de columnas de la cabecera (CA-1)', () => {
+  const md = renderBoard(docsConAdrs(), '2026-07-09');
+  const cabecera = celdas('| ADR | Estado | Título | Último cambio |');
+  for (const id of ['ADR-001', 'ADR-002']) {
+    assert.equal(celdas(filaAdr(md, id)).length, cabecera.length,
+      `la fila ${id} debe tener ${cabecera.length} celdas como la cabecera`);
+  }
 });
 
 test('los ADRs se ordenan por id ascendente (CA-1)', () => {
