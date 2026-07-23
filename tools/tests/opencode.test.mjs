@@ -124,6 +124,8 @@ function crearOpencodeMinimo(repo, mut = (m) => m) {
   const subs = ['sdd-producto', 'sdd-arquitecto', 'sdd-implementador', 'sdd-verificador', 'sdd-documentalista', 'sdd-como-vamos'];
   const readonly = new Set(['sdd-verificador', 'sdd-como-vamos']);
   const man = {
+    // SPEC-011 CA-3: permission estático de los generados (RN-05), complementario al plugin.
+    permission: { edit: { 'docs/tablero.md': 'deny', 'dist/**': 'deny' } },
     agent: {
       'sdd-orquestador': {
         mode: 'primary',
@@ -136,6 +138,9 @@ function crearOpencodeMinimo(repo, mut = (m) => m) {
   fs.writeFileSync(path.join(dist, 'opencode.json'), JSON.stringify(man, null, 2));
   for (const r of ['sdd-orquestador', ...subs]) fs.writeFileSync(path.join(dist, 'agents', `${r}.md`), 'x ../core/roles/\n');
   for (const c of ['sdd-init', 'sdd-tablero']) fs.writeFileSync(path.join(dist, 'commands', `${c}.md`), 'x ../core/scripts/\n');
+  // SPEC-011 CA-4/CA-5: el plugin de enforcement L1 viaja EMPAQUETADO en plugins/.
+  fs.mkdirSync(path.join(dist, 'plugins'), { recursive: true });
+  fs.writeFileSync(path.join(dist, 'plugins', 'require-spec.mjs'), "import { evaluarRequireSpec } from '../core/lib/require-spec.mjs';\n");
   return repo;
 }
 
@@ -172,11 +177,56 @@ test('CA-6: el orquestador sin permission.task hace fallar', () => {
   assert.ok(errores.some((e) => /permission\.task/.test(e)));
 });
 
-test('CA-6: registrar el plugin de enforcement hace fallar (es la spec siguiente)', () => {
-  const repo = crearOpencodeMinimo(tmp('sdd-oc-man-plugin-'), (m) => { m.plugin = ['./plugins/require-spec.js']; });
+// SPEC-011 CA-5: la aserción de SPEC-010 "NO debe registrar el plugin" se ACTUALIZA:
+// con el enforcement, registrar el plugin (o no) ya no es un error; el estado con
+// enforcement es válido. El plugin viaja como fichero local auto-descubierto.
+test('SPEC-011 CA-5: registrar el plugin en opencode.json YA NO hace fallar el check', () => {
+  const repo = crearOpencodeMinimo(tmp('sdd-oc-man-plugin-'), (m) => { m.plugin = ['./plugins/require-spec.mjs']; });
+  const { ok, errores } = checkManifiestos(repo, 'opencode');
+  assert.equal(ok, true, JSON.stringify(errores));
+});
+
+// SPEC-011 CA-3: el check exige el permission estático de los GENERADOS (RN-05).
+test('SPEC-011 CA-3: falta el deny estático de un generado (dist/**) hace fallar', () => {
+  const repo = crearOpencodeMinimo(tmp('sdd-oc-man-gen-'), (m) => { delete m.permission.edit['dist/**']; });
   const { ok, errores } = checkManifiestos(repo, 'opencode');
   assert.equal(ok, false);
-  assert.ok(errores.some((e) => /enforcement/.test(e)));
+  assert.ok(errores.some((e) => /dist\/\*\*/.test(e) && /denegar/.test(e)));
+});
+
+test('SPEC-011 CA-3: sin bloque permission.edit estático hace fallar', () => {
+  const repo = crearOpencodeMinimo(tmp('sdd-oc-man-noperm-'), (m) => { delete m.permission; });
+  const { ok, errores } = checkManifiestos(repo, 'opencode');
+  assert.equal(ok, false);
+  assert.ok(errores.some((e) => /permission\.edit/.test(e)));
+});
+
+// SPEC-011 CA-4/CA-5: el check exige el plugin de enforcement EMPAQUETADO.
+test('SPEC-011 CA-5: falta plugins/require-spec.mjs en el artefacto hace fallar', () => {
+  const repo = crearOpencodeMinimo(tmp('sdd-oc-man-noplugin-'));
+  fs.rmSync(path.join(repo, 'dist', 'opencode', 'plugins'), { recursive: true, force: true });
+  const { ok, errores } = checkManifiestos(repo, 'opencode');
+  assert.equal(ok, false);
+  assert.ok(errores.some((e) => /plugins\/require-spec\.mjs/.test(e)));
+});
+
+// SPEC-011 CA-4: el build EMPAQUETA el plugin bajo dist/opencode/plugins/ (autocontenido).
+test('SPEC-011 CA-4: el build de opencode copia el plugin de enforcement a plugins/', () => {
+  const dist = buildAdapter('opencode', { outDir: tmp('sdd-oc-plugin-') });
+  const plugin = path.join(dist, 'plugins', 'require-spec.mjs');
+  assert.ok(fs.existsSync(plugin), 'plugins/require-spec.mjs presente en el artefacto');
+  // El import del plugin al núcleo resuelve por ruta INTERNA al artefacto (sin plugin-root).
+  const resuelto = path.resolve(path.dirname(plugin), '../core/lib/require-spec.mjs');
+  assert.ok(fs.existsSync(resuelto), 'el import ../core/lib/require-spec.mjs resuelve dentro del artefacto');
+  assert.ok(!/PLUGIN_ROOT/.test(fs.readFileSync(plugin, 'utf8')), 'el plugin no usa token de plugin-root');
+});
+
+test('SPEC-011 CA-4: el build de opencode con el plugin sigue siendo idempotente', () => {
+  const out = tmp('sdd-oc-plugin-idem-');
+  const s1 = snapshot(buildAdapter('opencode', { outDir: out }));
+  const s2 = snapshot(buildAdapter('opencode', { outDir: out }));
+  assert.deepEqual(s2, s1);
+  assert.ok(s1.some((e) => e.startsWith('plugins/require-spec.mjs:')), 'el plugin entra en la firma del árbol');
 });
 
 // --- CA-9: los pasos de opencode están cableados en el runner tools/check.mjs -
@@ -184,5 +234,22 @@ test('CA-6: registrar el plugin de enforcement hace fallar (es la spec siguiente
 test('CA-9: build/referencias/manifiestos de opencode están cableados en PASOS', () => {
   for (const nombre of ['build-opencode', 'referencias-opencode', 'manifiestos-opencode']) {
     assert.ok(PASOS.find((p) => p.nombre === nombre), `falta el paso '${nombre}' en el runner`);
+  }
+});
+
+// SPEC-011 CA-6: L2 (pre-commit) y L3 (CI) cubren opencode SIN ninguna rama de código
+// condicionada al harness: operan sobre contenido staged / árbol real. La garantía
+// "nada se codea sin spec aprobada" no depende de que opencode ejecute el plugin.
+test('SPEC-011 CA-6: el pre-commit L2 es harness-agnóstico (sin rama condicionada a opencode)', () => {
+  const src = fs.readFileSync(path.join(REPO_ROOT, 'tools', 'githooks', 'pre-commit.mjs'), 'utf8');
+  assert.ok(!/opencode/i.test(src), 'el pre-commit no debe tener ninguna rama que dependa de opencode');
+  // Reutiliza la MISMA lógica compartida del núcleo que consume el plugin L1.
+  assert.match(src, /evaluarRequireSpec/);
+});
+
+test('SPEC-011 CA-6: el runner agregado incluye los tres pasos de opencode', () => {
+  const n = PASOS.map((p) => p.nombre);
+  for (const paso of ['build-opencode', 'referencias-opencode', 'manifiestos-opencode']) {
+    assert.ok(n.includes(paso), `falta el paso '${paso}' en el runner agregado (L3/CI)`);
   }
 });

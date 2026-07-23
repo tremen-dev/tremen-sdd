@@ -130,10 +130,11 @@ export function checkManifiestosKimi(distDir) {
 // roles con su `mode` (orquestador primary; los seis sdd-* subagent) y sus
 // permisos por agente; el orquestador declara estáticamente qué subagentes puede
 // lanzar (permission.task) y los subagentes NO despachan (task deny); los roles
-// read-only no tienen permiso de escritura (edit deny). No registra el plugin de
-// enforcement (spec posterior). Se parsea con JSON.parse (loader mínimo, sin
-// dependencias: ADR-007 §Decisión punto 5). También exige que los ficheros de
-// agents/ (auto-discovery) y commands/ existan en el artefacto.
+// read-only no tienen permiso de escritura (edit deny). Valida además (SPEC-011) el
+// permission estático de los GENERADOS (docs/tablero.md, dist/**; RN-05) y que el
+// plugin de enforcement L1 viaja EMPAQUETADO en plugins/. Se parsea con JSON.parse
+// (loader mínimo, sin dependencias: ADR-007 §Decisión punto 5). También exige que
+// los ficheros de agents/ (auto-discovery), commands/ y plugins/ existan.
 export function checkManifiestosOpencode(distDir) {
   const errores = [];
   if (!fs.existsSync(distDir)) { errores.push('falta dist/opencode (¿falta el build?)'); return { ok: false, errores }; }
@@ -169,8 +170,27 @@ export function checkManifiestosOpencode(distDir) {
         errores.push(`opencode.json: ${rol} debe ser read-only (permission.edit 'deny')`);
       }
     }
-    // NO registra el plugin de enforcement: es la spec siguiente de EPIC-003.
-    if (man.plugin !== undefined) errores.push('opencode.json NO debe registrar el plugin de enforcement (spec posterior)');
+    // permission estático COMPLEMENTARIO (SPEC-011 CA-3, ADR-007 §Decisión punto 3):
+    // cierra la escritura sobre los artefactos GENERADOS expresables genéricamente
+    // (docs/tablero.md, dist/**; RN-05). La denegación dependiente del carril sobre
+    // rutasVigiladas la aporta el PLUGIN dinámico (permission es estática y
+    // bloquearía el carril legítimo del implementador), no se hornea aquí.
+    const permEdit = man.permission?.edit;
+    if (!permEdit || typeof permEdit !== 'object') {
+      errores.push('opencode.json: falta permission.edit estático que deniegue los generados (docs/tablero.md, dist/**; RN-05)');
+    } else {
+      for (const gen of ['docs/tablero.md', 'dist/**']) {
+        if (permEdit[gen] !== 'deny') errores.push(`opencode.json: permission.edit debe denegar el generado '${gen}' (RN-05)`);
+      }
+    }
+    // El plugin de enforcement (L1) viaja EMPAQUETADO como fichero local
+    // auto-descubierto (ADR-007 §Negativas: sin npm/Bun); ya NO se prohíbe su
+    // registro (era la aserción de SPEC-010, actualizada por SPEC-011 CA-5).
+  }
+
+  // El plugin de enforcement L1 viaja empaquetado en el artefacto (SPEC-011 CA-4/CA-5).
+  if (!fs.existsSync(path.join(distDir, 'plugins', 'require-spec.mjs'))) {
+    errores.push('falta plugins/require-spec.mjs en el artefacto (enforcement L1, SPEC-011)');
   }
 
   // Los agentes markdown (auto-discovery) y los comandos existen en el artefacto.
@@ -180,7 +200,7 @@ export function checkManifiestosOpencode(distDir) {
   for (const cmd of ['sdd-init', 'sdd-tablero']) {
     if (!fs.existsSync(path.join(distDir, 'commands', `${cmd}.md`))) errores.push(`falta commands/${cmd}.md en el artefacto`);
   }
-  for (const d of ['skills', 'commands', 'agents']) {
+  for (const d of ['skills', 'commands', 'agents', 'plugins']) {
     if (!fs.existsSync(path.join(distDir, d))) errores.push(`falta ${d}/ en el artefacto (auto-discovery)`);
   }
 
