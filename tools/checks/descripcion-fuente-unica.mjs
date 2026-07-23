@@ -59,13 +59,17 @@ export function enumeraSuperficies(repoRoot = REPO_ROOT) {
     sup.push({ ...meta, ubicacion: path.relative(repoRoot, fichero), descripcion: desc });
   };
 
-  // (1) Claude agents → larga
-  const agentsDir = path.join(repoRoot, 'adapters', 'claude-code', 'agents');
-  for (const f of listaDir(agentsDir, (e) => e.isFile() && e.name.endsWith('.md'))) {
-    leerMd(path.join(agentsDir, f), { adaptador: 'claude-code', tipo: 'agent', forma: 'larga', rol: f.replace(/\.md$/, '') });
+  // (1) agents markdown con description en frontmatter → larga. Claude y opencode
+  //     definen un agente por fichero .md (top-level) con description; Kimi no
+  //     (sus agentes son YAML y sus prompts no llevan frontmatter de disparo).
+  for (const adaptador of ['claude-code', 'opencode']) {
+    const agentsDir = path.join(repoRoot, 'adapters', adaptador, 'agents');
+    for (const f of listaDir(agentsDir, (e) => e.isFile() && e.name.endsWith('.md'))) {
+      leerMd(path.join(agentsDir, f), { adaptador, tipo: 'agent', forma: 'larga', rol: f.replace(/\.md$/, '') });
+    }
   }
-  // (2) Claude skills → larga   (3) Kimi skills → larga
-  for (const adaptador of ['claude-code', 'kimi-code']) {
+  // (2) Claude skills → larga   (3) Kimi skills → larga   (opencode skills → larga)
+  for (const adaptador of ['claude-code', 'kimi-code', 'opencode']) {
     const skillsDir = path.join(repoRoot, 'adapters', adaptador, 'skills');
     for (const rol of listaDir(skillsDir, (e) => e.isDirectory())) {
       const skill = path.join(skillsDir, rol, 'SKILL.md');

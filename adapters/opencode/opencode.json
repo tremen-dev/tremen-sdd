@@ -1,0 +1,44 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "agent": {
+    "sdd-orquestador": {
+      "mode": "primary",
+      "permission": {
+        "edit": "deny",
+        "task": {
+          "*": "deny",
+          "sdd-producto": "allow",
+          "sdd-arquitecto": "allow",
+          "sdd-implementador": "allow",
+          "sdd-verificador": "allow",
+          "sdd-documentalista": "allow",
+          "sdd-como-vamos": "allow"
+        }
+      }
+    },
+    "sdd-producto": {
+      "mode": "subagent",
+      "permission": { "edit": "allow", "task": "deny" }
+    },
+    "sdd-arquitecto": {
+      "mode": "subagent",
+      "permission": { "edit": "allow", "task": "deny" }
+    },
+    "sdd-implementador": {
+      "mode": "subagent",
+      "permission": { "edit": "allow", "task": "deny" }
+    },
+    "sdd-verificador": {
+      "mode": "subagent",
+      "permission": { "edit": "deny", "task": "deny" }
+    },
+    "sdd-documentalista": {
+      "mode": "subagent",
+      "permission": { "edit": "allow", "task": "deny" }
+    },
+    "sdd-como-vamos": {
+      "mode": "subagent",
+      "permission": { "edit": "deny", "task": "deny" }
+    }
+  }
+}

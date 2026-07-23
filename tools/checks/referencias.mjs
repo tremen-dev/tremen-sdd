@@ -49,9 +49,10 @@ export function checkReferencias(distDir) {
     }
   }
 
-  // 3) Adaptador tipo Kimi (agentes YAML, sin variable de plugin-root): la
-  //    resolución del núcleo es por ruta INTERNA relativa al fichero (CA-4).
+  // 3) Adaptadores SIN variable de plugin-root (Kimi, opencode): la resolución
+  //    del núcleo es por ruta INTERNA relativa al fichero (CA-4 / SPEC-010 CA-5).
   if (esKimi(distDir)) errores.push(...referenciasKimi(distDir));
+  else if (esOpencode(distDir)) errores.push(...referenciasOpencode(distDir));
 
   return { ok: errores.length === 0, errores };
 }
@@ -60,6 +61,11 @@ export function checkReferencias(distDir) {
 function esKimi(distDir) {
   const ag = path.join(distDir, 'agents');
   return fs.existsSync(ag) && walk(ag, (n) => n.endsWith('.yaml')).length > 0;
+}
+
+// ¿el artefacto es de opencode? (manifiesto opencode.json en la raíz).
+function esOpencode(distDir) {
+  return fs.existsSync(path.join(distDir, 'opencode.json'));
 }
 
 const RE_SPP = /^\s*system_prompt_path:\s*(.+?)\s*$/m;
@@ -88,10 +94,30 @@ function referenciasKimi(distDir) {
 
   // (b) referencias relativas al núcleo en YAML/prompts: internas y existentes;
   //     y ninguna usa una variable de plugin-root (que Kimi no ofrece).
-  for (const f of walk(distDir, (n) => /\.(md|yaml)$/.test(n))) {
+  errores.push(...referenciasInternas(distDir, (n) => /\.(md|yaml)$/.test(n), 'Kimi'));
+
+  return errores;
+}
+
+// Comprueba, en un artefacto de opencode (agents/commands markdown + opencode.json),
+// que ninguna referencia usa una variable de plugin-root (que opencode no ofrece,
+// SPEC-010 CA-5) y que las refs relativas al núcleo (`../core/...`) son internas y
+// existentes. Cubre .md (agents/commands/skills) y .json (opencode.json).
+function referenciasOpencode(distDir) {
+  return referenciasInternas(distDir, (n) => /\.(md|json)$/.test(n), 'opencode');
+}
+
+// Núcleo común a los adaptadores sin plugin-root (Kimi, opencode): sobre los
+// ficheros que casan `filtro`, ninguno usa una variable de plugin-root y cada
+// ref relativa `./|../ ... /core/...` resuelve INTERNA al artefacto y existe.
+// Cubre TAMBIÉN el subárbol core/ copiado en dist/ (segundo guardián): una
+// reintroducción de token de harness bajo core/ se caza aquí a nivel build.
+function referenciasInternas(distDir, filtro, harness) {
+  const errores = [];
+  for (const f of walk(distDir, filtro)) {
     const rel = path.relative(distDir, f);
     const s = fs.readFileSync(f, 'utf8');
-    if (RE_PLUGIN_TOKEN.test(s)) errores.push(`${rel}: usa una variable de plugin-root inexistente en Kimi`);
+    if (RE_PLUGIN_TOKEN.test(s)) errores.push(`${rel}: usa una variable de plugin-root inexistente en ${harness}`);
     let m;
     RE_CORE_REL.lastIndex = 0;
     while ((m = RE_CORE_REL.exec(s))) {
@@ -102,7 +128,6 @@ function referenciasKimi(distDir) {
       if (!fs.existsSync(resuelto)) errores.push(`${rel}: ref a core no existe en el artefacto: ${m[0]}`);
     }
   }
-
   return errores;
 }
 

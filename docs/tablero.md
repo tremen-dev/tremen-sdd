@@ -26,6 +26,7 @@ Actualizado: 2026-07-22
 | Spec | Estado | Último cambio |
 |---|---|---|
 | SPEC-009 — estudio-y-mapa-de-capacidades-de-opencode | hecho | 2026-07-22 (sdd-verificador) |
+| SPEC-010 — adaptador-opencode-roles-y-comandos | hecho | 2026-07-22 (sdd-verificador) |
 
 ## ADRs
 
@@ -41,4 +42,4 @@ Actualizado: 2026-07-22
 
 ## Resumen
 
-- hecho: 9
+- hecho: 10
