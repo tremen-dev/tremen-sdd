@@ -2,12 +2,14 @@
 id: SPEC-011
 tipo: spec
 epica: EPIC-003
-estado: en-progreso
+estado: hecho
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-07-23, por: sdd-arquitecto}
   - {estado: aprobada, fecha: 2026-07-23, por: Alberto Fojo}
   - {estado: en-progreso, fecha: 2026-07-23, por: sdd-implementador}
+  - {estado: en-revision, fecha: 2026-07-23, por: sdd-verificador}
+  - {estado: hecho, fecha: 2026-07-23, por: sdd-verificador}
 ---
 # SPEC-011 — Enforcement en-harness de opencode: plugin que deniega
 
