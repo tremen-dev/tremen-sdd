@@ -1,7 +1,7 @@
 <!-- GENERADO por tremen-sdd (scripts/tablero.mjs). NO EDITAR A MANO. -->
 # Tablero
 
-Actualizado: 2026-07-23
+Actualizado: 2026-07-25
 
 ## EPIC-001 — tremen-sdd-multi-harness (aprobada)
 
@@ -29,6 +29,12 @@ Actualizado: 2026-07-23
 | SPEC-010 — adaptador-opencode-roles-y-comandos | hecho | 2026-07-22 (sdd-verificador) |
 | SPEC-011 — enforcement-en-harness-de-opencode-plugin-que-deniega | hecho | 2026-07-23 (sdd-verificador) |
 
+## EPIC-FIX (aprobada)
+
+| Spec | Estado | Último cambio |
+|---|---|---|
+| SPEC-012 — protege-verdad-deniega-al-dueno-con-prefijo-de-plugin | hecho | 2026-07-25 (sdd-verificador) |
+
 ## ADRs
 
 | ADR | Estado | Título | Último cambio |
@@ -40,7 +46,8 @@ Actualizado: 2026-07-23
 | ADR-005 | aprobada | fuente-unica-de-la-description-de-disparo-de-rol-canonica-en-core-check-sin-generacion-en-build | 2026-07-21 (Alberto Fojo) |
 | ADR-006 | aprobada | anatomia-de-un-gate-atribucion-rol-vs-persona-y-politica-de-firma-por-tipo-y-estado | 2026-07-22 (Alberto Fojo) |
 | ADR-007 | aprobada | encaje-de-opencode-y-su-modelo-de-enforcement | 2026-07-22 (Alberto Fojo) |
+| ADR-008 | aprobada | politica-del-prefijo-de-plugin-en-la-identidad-de-rol-de-protege-verdad | 2026-07-25 (Alberto Fojo) |
 
 ## Resumen
 
-- hecho: 11
+- hecho: 12
