@@ -6,6 +6,12 @@ import { readPayload, readConfig, deny, allow } from './_comun.mjs';
 
 const DUENOS_FUNDACION = ['main', 'sdd-arquitecto', 'sdd-producto'];
 
+// Un subagente de plugin llega con la identidad de rol prefijada por el plugin
+// (p. ej. 'tremen-sdd:sdd-arquitecto'). Normalizamos quedándonos con el
+// segmento tras el ÚLTIMO ':' (ADR-008): no-op para nombres sin prefijo,
+// para 'main' y para undefined; plugin-agnóstico.
+const sinPrefijo = (r) => (r == null ? r : r.slice(r.lastIndexOf(':') + 1));
+
 try {
   if (process.env.SDD_SKIP_GATE === '1') allow();
   const payload = readPayload();
@@ -15,7 +21,7 @@ try {
   const fichero = payload.tool_input?.file_path ?? '';
   if (!fichero) allow();
   const rel = path.relative(cwd, path.resolve(cwd, fichero)).replaceAll('\\', '/');
-  const rol = payload.agent_type ?? payload.agent_name ?? 'main';
+  const rol = sinPrefijo(payload.agent_type ?? payload.agent_name ?? 'main');
   if (rel === 'docs/tablero.md') {
     deny('docs/tablero.md es GENERADO: regenéralo con /sdd-tablero (scripts/tablero.mjs); no se edita a mano.');
   }
