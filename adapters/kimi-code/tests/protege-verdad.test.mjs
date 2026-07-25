@@ -56,3 +56,27 @@ test('CA-5c: fichero normal permite', () => {
   const dir = proyecto();
   assert.equal(corre(dir, path.join(dir, 'src', 'app.ts')).out, '');
 });
+
+// CA-B2 (SPEC-012): el subagente de plugin llega como '<plugin>:<rol>'. En
+// paridad con los CA-8 de claude-code, el dueño legítimo debe reconocerse tras
+// quitar el prefijo, y el no-dueño prefijado debe seguir denegado. Kimi degrada
+// fail-open SOLO cuando NO hay identidad; con identidad prefijada aplica la regla
+// de dueño con normalización (sinPrefijo).
+test('CA-B2: documento de verdad con dueño prefijado (tremen-sdd:sdd-arquitecto) permite', () => {
+  const dir = proyecto();
+  assert.equal(corre(dir, path.join(dir, 'FOUNDATION.md'), { agent_type: 'tremen-sdd:sdd-arquitecto' }).out, '');
+});
+
+test('CA-B2: docs/fundacion/* con dueño prefijado (tremen-sdd:sdd-producto) permite', () => {
+  const dir = proyecto();
+  const f = path.join(dir, 'docs', 'fundacion', 'vision.md');
+  assert.equal(corre(dir, f, { agent_type: 'tremen-sdd:sdd-producto' }).out, '');
+});
+
+test('CA-B2: documento de verdad con no-dueño prefijado (tremen-sdd:sdd-implementador) deniega', () => {
+  const dir = proyecto();
+  const { out } = corre(dir, path.join(dir, 'FOUNDATION.md'), { agent_type: 'tremen-sdd:sdd-implementador' });
+  const j = JSON.parse(out);
+  assert.equal(j.hookSpecificOutput.permissionDecision, 'deny');
+  assert.match(j.hookSpecificOutput.permissionDecisionReason, /documento de verdad/);
+});
