@@ -59,3 +59,32 @@ test('deniega file_path relativo a un documento de verdad (bypass crítico)', ()
   assert.match(corre(dir, 'FOUNDATION.md', 'sdd-implementador'), /deny/);
   assert.match(corre(dir, 'docs/fundacion/x.md', 'sdd-verificador'), /deny/);
 });
+
+// CA-A2 (SPEC-012 / bug 0.3.1): el DUEÑO legítimo llega prefijado cuando corre
+// como subagente de plugin (agent_type === 'tremen-sdd:sdd-arquitecto'). Debe
+// PERMITIR tras normalizar el prefijo.
+test('permite documento de verdad al dueño con prefijo de plugin (arquitecto/PO)', () => {
+  const dir = proyecto();
+  assert.equal(corre(dir, path.join(dir, 'FOUNDATION.md'), 'tremen-sdd:sdd-arquitecto'), '');
+  assert.equal(corre(dir, path.join(dir, 'docs', 'fundacion', 'vision.md'), 'tremen-sdd:sdd-producto'), '');
+});
+
+// CA-A3: un subagente de plugin NO dueño sigue denegado tras normalizar.
+test('deniega documento de verdad a subagente de plugin no dueño (con prefijo)', () => {
+  const dir = proyecto();
+  assert.match(corre(dir, path.join(dir, 'FOUNDATION.md'), 'tremen-sdd:sdd-implementador'), /deny/);
+  assert.match(corre(dir, path.join(dir, 'docs', 'fundacion', 'x.md'), 'tremen-sdd:sdd-verificador'), /deny/);
+});
+
+// CA-A4 / CA-A1: la normalización es no-op para roles sin prefijo (retrocompat)
+// y es plugin-agnóstica: se queda con el segmento tras el ÚLTIMO ':' venga del
+// plugin que venga (ADR-008), no restringida a 'tremen-sdd:'.
+test('normalización de prefijo es no-op sin prefijo y plugin-agnóstica', () => {
+  const dir = proyecto();
+  // sin prefijo: dueño permitido, no-dueño denegado (retrocompat)
+  assert.equal(corre(dir, path.join(dir, 'FOUNDATION.md'), 'sdd-arquitecto'), '');
+  assert.match(corre(dir, path.join(dir, 'FOUNDATION.md'), 'sdd-implementador'), /deny/);
+  // prefijo de OTRO plugin también se normaliza
+  assert.equal(corre(dir, path.join(dir, 'FOUNDATION.md'), 'otro-plugin:sdd-arquitecto'), '');
+  assert.match(corre(dir, path.join(dir, 'FOUNDATION.md'), 'otro-plugin:sdd-implementador'), /deny/);
+});
