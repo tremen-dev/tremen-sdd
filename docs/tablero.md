@@ -1,7 +1,7 @@
 <!-- GENERADO por tremen-sdd (scripts/tablero.mjs). NO EDITAR A MANO. -->
 # Tablero
 
-Actualizado: 2026-07-22
+Actualizado: 2026-07-23
 
 ## EPIC-001 — tremen-sdd-multi-harness (aprobada)
 
@@ -27,6 +27,7 @@ Actualizado: 2026-07-22
 |---|---|---|
 | SPEC-009 — estudio-y-mapa-de-capacidades-de-opencode | hecho | 2026-07-22 (sdd-verificador) |
 | SPEC-010 — adaptador-opencode-roles-y-comandos | hecho | 2026-07-22 (sdd-verificador) |
+| SPEC-011 — enforcement-en-harness-de-opencode-plugin-que-deniega | hecho | 2026-07-23 (sdd-verificador) |
 
 ## ADRs
 
@@ -42,4 +43,4 @@ Actualizado: 2026-07-22
 
 ## Resumen
 
-- hecho: 10
+- hecho: 11
