@@ -2,13 +2,14 @@
 id: SPEC-012
 tipo: spec
 epica: EPIC-FIX
-estado: en-revision
+estado: hecho
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-07-25, por: sdd-arquitecto}
   - {estado: aprobada, fecha: 2026-07-25, por: Alberto Fojo}
   - {estado: en-progreso, fecha: 2026-07-25, por: sdd-implementador}
   - {estado: en-revision, fecha: 2026-07-25, por: sdd-implementador}
+  - {estado: hecho, fecha: 2026-07-25, por: sdd-verificador}
 ---
 # SPEC-012 — protege-verdad deniega al dueno con prefijo de plugin
 
