@@ -1,10 +1,13 @@
 ---
 id: EPIC-001
 tipo: epica
-estado: aprobada
+estado: hecho
 historial:
   - {estado: borrador, fecha: 2026-07-20, por: sdd-producto}
   - {estado: aprobada, fecha: 2026-07-20, por: Alberto Fojo}
+  - {estado: en-progreso, fecha: 2026-07-26, por: sdd-orquestador}
+  - {estado: en-revision, fecha: 2026-07-26, por: sdd-orquestador}
+  - {estado: hecho, fecha: 2026-07-26, por: Alberto Fojo}
 ---
 # EPIC-001 — tremen-sdd multi-harness
 
@@ -90,3 +93,13 @@ Desglose orientativo (lo autora sdd-arquitecto, no es vinculante):
   ramas ft/SPEC-NNN desde la primera spec.
 - **Meta-regresión conocida**: existe el defecto abierto de specs migradas en
   estado.mjs; vigilar que la refactor no lo agrave.
+
+## Cierre (con residual)
+Cerrada `hecho` el 2026-07-26 (Alberto Fojo, milestone humano) **con residual
+explícito en CE-2**. Cumplidos CE-1, CE-3, CE-4 y CE-5. **CE-2 NO verificado en
+runtime**: el adaptador Kimi está construido, aprobado y con smoke test de
+formato/build/rutas (SPEC-003), y la validación end-to-end contra el CLI real de
+Kimi está escrita y aprobada (SPEC-013 + ADR-009), pero **no se pudo ejecutar** por
+dependencia externa: sin cuenta de Kimi Code (el plan gratuito no da acceso). No se
+marca CE-2 como cumplido — es residual. Rastreado por **SPEC-013** (`bloqueada`);
+follow-up en el roadmap: ejecutarla el día que haya una cuenta de Kimi Code.

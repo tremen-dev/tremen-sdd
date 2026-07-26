@@ -1,9 +1,9 @@
 <!-- GENERADO por tremen-sdd (scripts/tablero.mjs). NO EDITAR A MANO. -->
 # Tablero
 
-Actualizado: 2026-07-25
+Actualizado: 2026-07-26
 
-## EPIC-001 — tremen-sdd-multi-harness (aprobada)
+## EPIC-001 — tremen-sdd-multi-harness (hecho)
 
 | Spec | Estado | Último cambio |
 |---|---|---|
@@ -12,6 +12,7 @@ Actualizado: 2026-07-25
 | SPEC-003 — adaptador-kimi-code | hecho | 2026-07-21 (Alberto Fojo) |
 | SPEC-004 — nucleo-de-roles-sin-token-de-harness | hecho | 2026-07-21 (Alberto Fojo) |
 | SPEC-005 — fuente-unica-de-la-description-de-rol | hecho | 2026-07-21 (Alberto Fojo) |
+| SPEC-013 — cierre-ce-2-verificacion-end-to-end-contra-el-cli-real-de-kimi | bloqueada | 2026-07-26 (Alberto Fojo) |
 
 ## EPIC-002 — higiene-del-proceso-y-tooling-del-metodo (aprobada)
 
@@ -47,7 +48,9 @@ Actualizado: 2026-07-25
 | ADR-006 | aprobada | anatomia-de-un-gate-atribucion-rol-vs-persona-y-politica-de-firma-por-tipo-y-estado | 2026-07-22 (Alberto Fojo) |
 | ADR-007 | aprobada | encaje-de-opencode-y-su-modelo-de-enforcement | 2026-07-22 (Alberto Fojo) |
 | ADR-008 | aprobada | politica-del-prefijo-de-plugin-en-la-identidad-de-rol-de-protege-verdad | 2026-07-25 (Alberto Fojo) |
+| ADR-009 | aprobada | politica-de-tools-del-verificador-no-escribe-fuentes-si-el-ledger-de-evidencia | 2026-07-25 (Alberto Fojo) |
 
 ## Resumen
 
 - hecho: 12
+- bloqueada: 1
