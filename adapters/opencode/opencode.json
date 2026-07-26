@@ -1,5 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
+  "plugin": ["./plugins/require-spec.mjs"],
   "permission": {
     "edit": {
       "docs/tablero.md": "deny",

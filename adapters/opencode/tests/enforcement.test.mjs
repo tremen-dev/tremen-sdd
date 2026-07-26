@@ -154,3 +154,21 @@ test('CA-5: el frontmatter de agents sigue intacto (no lo rompe el enforcement)'
   const { data } = parseFrontmatter(fs.readFileSync(path.join(DIST, 'agents', 'sdd-orquestador.md'), 'utf8'));
   assert.equal(data.mode, 'primary');
 });
+
+// --- SPEC-014 CA-1 (lazo RED→GREEN contra el CLI real 1.18.5): el auto-descubrimiento
+// de plugins de opencode solo toma `*.ts`/`*.js` de `.opencode/plugin(s)/` (skill
+// built-in customize-opencode del propio CLI, ejercido 2026-07-27: un probe `.js`
+// carga, un probe `.mjs` NO). El plugin del adaptador es `.mjs`, así que el
+// manifiesto DEBE registrarlo explícitamente en `plugin` con ruta relativa al
+// config (la vía que ADR-007 [H5] ya preveía); registrado, el `.mjs` carga. ---
+test('SPEC-014 CA-1: el manifiesto registra el plugin .mjs en `plugin` (el CLI no auto-descubre .mjs)', () => {
+  const manifiesto = JSON.parse(fs.readFileSync(path.join(DIST, 'opencode.json'), 'utf8'));
+  assert.ok(Array.isArray(manifiesto.plugin), 'opencode.json declara el array `plugin`');
+  assert.ok(manifiesto.plugin.includes('./plugins/require-spec.mjs'),
+    'el plugin de enforcement va registrado con ruta relativa al config del artefacto');
+  // La ruta registrada resuelve dentro del artefacto (instalación: el config vive
+  // junto a plugins/, p. ej. .opencode/opencode.json → .opencode/plugins/).
+  for (const entrada of manifiesto.plugin) {
+    assert.ok(fs.existsSync(path.resolve(DIST, entrada)), `la entrada ${entrada} resuelve dentro del artefacto`);
+  }
+});
