@@ -2,11 +2,12 @@
 id: SPEC-013
 tipo: spec
 epica: EPIC-001
-estado: aprobada
+estado: bloqueada
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-07-25, por: sdd-arquitecto}
   - {estado: aprobada, fecha: 2026-07-25, por: Alberto Fojo}
+  - {estado: bloqueada, fecha: 2026-07-26, por: Alberto Fojo}
 ---
 # SPEC-013 — Cierre CE-2: verificación end-to-end contra el CLI real de Kimi
 
