@@ -133,11 +133,12 @@ test('CA-3: opencode.json declara deny estático de los generados (docs/tablero.
   assert.equal(edit['dist/**'], 'deny', 'deniega el artefacto de build (RN-05)');
 });
 
-test('CA-3: los roles read-only mantienen permission.edit deny (heredado de SPEC-010)', () => {
+// Actualizado por SPEC-014 CA-3 (ADR-009): el verificador ya NO es deny en seco
+// (le retiraría la tool edit y no podría escribir su ledger); su forma granular
+// la afirma el test "SPEC-014 CA-3" de abajo. como-vamos sí sigue en seco.
+test('CA-3: como-vamos mantiene permission.edit deny (read-only puro, ADR-009 §5)', () => {
   const man = JSON.parse(fs.readFileSync(path.join(DIST, 'opencode.json'), 'utf8'));
-  for (const rol of ['sdd-verificador', 'sdd-como-vamos']) {
-    assert.equal(man.agent[rol].permission.edit, 'deny', `${rol} sigue read-only`);
-  }
+  assert.equal(man.agent['sdd-como-vamos'].permission.edit, 'deny', 'sdd-como-vamos sigue read-only');
 });
 
 // --- CA-5: el plugin viaja empaquetado en el artefacto y resuelve el núcleo interno ---
@@ -161,6 +162,22 @@ test('CA-5: el frontmatter de agents sigue intacto (no lo rompe el enforcement)'
 // carga, un probe `.mjs` NO). El plugin del adaptador es `.mjs`, así que el
 // manifiesto DEBE registrarlo explícitamente en `plugin` con ruta relativa al
 // config (la vía que ADR-007 [H5] ya preveía); registrado, el `.mjs` carga. ---
+// SPEC-014 CA-3 (lazo ADR-009 contra el CLI real): `edit: "deny"` en seco retira
+// la tool del agente y el verificador no puede escribir su ledger; la política
+// "no escribe fuentes, SÍ el ledger" se declara con edit granular (deny catch-all
+// + allow acotado a ledger/_qa). como-vamos sigue read-only en seco (ADR-009 §5).
+test('SPEC-014 CA-3: el verificador construido lleva edit granular ADR-009 (ledger/_qa sí, resto no)', () => {
+  const man = JSON.parse(fs.readFileSync(path.join(DIST, 'opencode.json'), 'utf8'));
+  const edit = man.agent['sdd-verificador'].permission.edit;
+  assert.equal(typeof edit, 'object', 'edit granular (objeto de patrones), no deny en seco');
+  assert.equal(edit['*'], 'deny', 'catch-all deny: las fuentes siguen vetadas');
+  const allows = Object.entries(edit).filter(([, v]) => v === 'allow').map(([k]) => k);
+  assert.ok(allows.some((p) => /ledger/.test(p)), 'allow del ledger de evidencia');
+  assert.ok(allows.some((p) => /_qa/.test(p)), 'allow de docs/_qa (artefactos de evidencia)');
+  assert.ok(allows.every((p) => /ledger|_qa/.test(p)), 'ningún allow fuera de ledger/_qa');
+  assert.equal(man.agent['sdd-como-vamos'].permission.edit, 'deny', 'como-vamos sigue read-only en seco');
+});
+
 test('SPEC-014 CA-1: el manifiesto registra el plugin .mjs en `plugin` (el CLI no auto-descubre .mjs)', () => {
   const manifiesto = JSON.parse(fs.readFileSync(path.join(DIST, 'opencode.json'), 'utf8'));
   assert.ok(Array.isArray(manifiesto.plugin), 'opencode.json declara el array `plugin`');

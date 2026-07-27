@@ -1,12 +1,19 @@
 {
-  "$schema": "https://opencode.ai/config.json",
-  "plugin": ["./plugins/require-spec.mjs"],
+  "model": "opencode/deepseek-v4-flash-free",
+  "small_model": "opencode/deepseek-v4-flash-free",
+  "plugin": [
+    "file:///C:/Users/Albert/AppData/Local/Temp/claude/D--src-tremen-sdd/13be4f6f-d60c-4d5e-b0dc-b092cf834326/scratchpad/fixture-spec014/.opencode/plugins/require-spec.mjs"
+  ],
   "permission": {
     "edit": {
       "docs/tablero.md": "deny",
       "dist/**": "deny"
     }
   },
+  "command": [
+    "sdd-tablero",
+    "sdd-init"
+  ],
   "agent": {
     "sdd-orquestador": {
       "mode": "primary",
@@ -25,34 +32,45 @@
     },
     "sdd-producto": {
       "mode": "subagent",
-      "permission": { "edit": "allow", "task": "deny" }
+      "permission": {
+        "edit": "allow",
+        "task": "deny"
+      }
     },
     "sdd-arquitecto": {
       "mode": "subagent",
-      "permission": { "edit": "allow", "task": "deny" }
+      "permission": {
+        "edit": "allow",
+        "task": "deny"
+      }
     },
     "sdd-implementador": {
       "mode": "subagent",
-      "permission": { "edit": "allow", "task": "deny" }
+      "permission": {
+        "edit": "allow",
+        "task": "deny"
+      }
     },
     "sdd-verificador": {
       "mode": "subagent",
       "permission": {
-        "edit": {
-          "*": "deny",
-          "docs/epicas/**/*.ledger.md": "allow",
-          "docs/_qa/**": "allow"
-        },
+        "edit": "deny",
         "task": "deny"
       }
     },
     "sdd-documentalista": {
       "mode": "subagent",
-      "permission": { "edit": "allow", "task": "deny" }
+      "permission": {
+        "edit": "allow",
+        "task": "deny"
+      }
     },
     "sdd-como-vamos": {
       "mode": "subagent",
-      "permission": { "edit": "deny", "task": "deny" }
+      "permission": {
+        "edit": "deny",
+        "task": "deny"
+      }
     }
   }
 }

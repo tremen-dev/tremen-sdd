@@ -1,0 +1,6 @@
+fecha: 2026-07-26
+opencode --version: 1.18.5
+instalado en: C:\ProgramData\chocolatey\bin\opencode.exe (chocolatey)
+provider autenticado: OpenCode Zen (api key; 'opencode auth list' = 1 credencial)
+modelo del piloto (no normativo): opencode/deepseek-v4-flash-free
+fixture: repo git propio y desechable fuera del arbol de tremen-sdd (scratchpad de la sesion)
