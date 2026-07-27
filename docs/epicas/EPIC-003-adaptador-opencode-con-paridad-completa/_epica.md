@@ -1,10 +1,13 @@
 ---
 id: EPIC-003
 tipo: epica
-estado: aprobada
+estado: hecho
 historial:
   - {estado: borrador, fecha: 2026-07-22, por: sdd-producto}
   - {estado: aprobada, fecha: 2026-07-22, por: Alberto Fojo}
+  - {estado: en-progreso, fecha: 2026-07-27, por: Alberto Fojo}
+  - {estado: en-revision, fecha: 2026-07-27, por: Alberto Fojo}
+  - {estado: hecho, fecha: 2026-07-27, por: Alberto Fojo}
 aprobada-por: Alberto Fojo
 ---
 # EPIC-003 — Adaptador opencode con paridad completa

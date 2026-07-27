@@ -22,7 +22,7 @@ Actualizado: 2026-07-27
 | SPEC-007 — el-tablero-indexa-los-adrs | hecho | 2026-07-22 (sdd-verificador) |
 | SPEC-008 — limpieza-de-tooling-y-ci | hecho | 2026-07-22 (sdd-verificador) |
 
-## EPIC-003 — adaptador-opencode-con-paridad-completa (aprobada)
+## EPIC-003 — adaptador-opencode-con-paridad-completa (hecho)
 
 | Spec | Estado | Último cambio |
 |---|---|---|

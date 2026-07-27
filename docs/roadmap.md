@@ -7,20 +7,6 @@ tipo: roadmap
 > El estado fino por spec vive en el tablero; aquí vive la INTENCIÓN.
 
 ## Ahora (en curso)
-- **EPIC-003 — Adaptador opencode con paridad completa**: tercer harness (roles,
-  comandos y enforcement real) sobre el mismo núcleo, para un equipo interno que
-  ya lo necesita. Entra ahora pero **detrás de EPIC-002**: no queremos construir
-  el tercer adaptador sobre un pipeline con defectos de proceso aún abiertos.
-  Sube por delante de la Distribución porque tiene un usuario concreto empujando,
-  y no espera a EPIC-001 (bloqueada por dependencia externa de Kimi, no por
-  trabajo aquí). Es, además, el primer test real de "añadir un harness es un
-  adaptador fino" (EPIC-001 CE-5).
-  **En cierre (2026-07-27)**: CE-1/CE-2/CE-3 cumplidos (SPEC-014 GREEN contra
-  opencode 1.18.5 real). Queda **CE-4 a medias**: la guía "Añadir un harness"
-  (`docs/arquitectura.md`) no incorpora opencode — sigue siendo el recetario
-  as-built de Kimi. Decisión del gate: **escribir la spec pendiente del desglose
-  (#5, 2ª pasada de la guía) antes de cerrar la épica**, en vez de cerrar con
-  residual. Es lo último que le queda.
 - **EPIC-004 — Distribución del artefacto a runtime**: que un equipo de
   tremen.dev instale y actualice tremen-sdd en su harness **sin clonar el repo ni
   construir nada**. Sube de "Después" a "Ahora" (2026-07-27) y va **detrás del
@@ -32,6 +18,22 @@ tipo: roadmap
   la visión deja como puerta abierta no entra. Canal: GitHub de la organización.
 
 ## Cerradas
+- **EPIC-003 — Adaptador opencode con paridad completa** — `hecho` 2026-07-27
+  (Alberto Fojo), **cerrada limpia**: los 4 criterios cumplidos, 5 specs en
+  `hecho`. CE-1/CE-2/CE-3 los cerró SPEC-014 ejerciendo el pipeline completo
+  contra el CLI real de opencode 1.18.5, en dos rondas. CE-4 lo cierra SPEC-015:
+  la guía "Añadir un harness" incorpora opencode y registra seis desviaciones.
+  Tercer harness operativo sobre el mismo núcleo, sin que `core/` ganara una sola
+  dependencia hacia opencode.
+  **Lo que esta épica desmintió, y conviene no olvidar**: la promesa de EPIC-001
+  CE-5 de que añadir un harness es "una lista cerrada de piezas de adaptador"
+  nunca fue cierta — `package.json`, `tools/check.mjs`, `tools/checks/*` y
+  `tools/tests/*` se tocaron **las tres veces**. La guía lo dice ahora por
+  escrito, con una segunda lista explícita de puntos de integración. La promesa
+  que sí aguanta, verificada tres veces por el check `nucleo-aislado`, es la
+  otra: **sin tocar el núcleo**.
+  Residual heredado, no creado aquí: la deuda de `layout.mjs` (F-SPEC-015-2) sale
+  a EPIC-FIX con spec propia.
 - **EPIC-002 — Higiene del proceso y tooling del método** — `hecho` 2026-07-27
   (Alberto Fojo), **cerrada limpia**: los 4 criterios cumplidos con evidencia.
   CE-1, barrera estructural de gates ejercida adversarialmente (SPEC-006); CE-2,
