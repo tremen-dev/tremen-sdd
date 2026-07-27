@@ -1,0 +1,1753 @@
+{
+  "info": {
+    "id": "ses_05f4adb52ffewCswLoclU6ga1U",
+    "slug": "lucky-star",
+    "projectID": "c2266d99b664c8c219aa8bd16f54121184c40f79",
+    "directory": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014",
+    "path": "",
+    "parentID": "ses_05f4f0836ffelwS7ceM1n3d9zw",
+    "title": "Revisar EPIC-001 (@sdd-producto subagent)",
+    "agent": "sdd-producto",
+    "model": {
+      "id": "deepseek-v4-flash-free",
+      "providerID": "opencode",
+      "variant": "default"
+    },
+    "version": "1.18.5",
+    "summary": {
+      "additions": 0,
+      "deletions": 0,
+      "files": 0
+    },
+    "cost": 0,
+    "tokens": {
+      "input": 18465,
+      "output": 6518,
+      "reasoning": 3268,
+      "cache": {
+        "read": 175744,
+        "write": 0
+      }
+    },
+    "permission": [
+      {
+        "permission": "question",
+        "pattern": "*",
+        "action": "deny"
+      },
+      {
+        "permission": "plan_enter",
+        "pattern": "*",
+        "action": "deny"
+      },
+      {
+        "permission": "plan_exit",
+        "pattern": "*",
+        "action": "deny"
+      },
+      {
+        "permission": "todowrite",
+        "pattern": "*",
+        "action": "deny"
+      }
+    ],
+    "time": {
+      "created": 1785107653805,
+      "updated": 1785107756471
+    }
+  },
+  "messages": [
+    {
+      "info": {
+        "role": "user",
+        "time": {
+          "created": 1785107653818
+        },
+        "agent": "sdd-producto",
+        "model": {
+          "providerID": "opencode",
+          "modelID": "deepseek-v4-flash-free"
+        },
+        "summary": {
+          "diffs": [
+            {
+              "file": "docs/epicas/EPIC-001-suma-de-dos-numeros/_epica.md",
+              "patch": "Index: docs/epicas/EPIC-001-suma-de-dos-numeros/_epica.md\n===================================================================\n--- docs/epicas/EPIC-001-suma-de-dos-numeros/_epica.md\t\n+++ docs/epicas/EPIC-001-suma-de-dos-numeros/_epica.md\t\n@@ -1,41 +1,74 @@\n ---\n id: EPIC-001\n tipo: epica\n estado: borrador\n historial:\n   - {estado: borrador, fecha: 2026-07-26, por: sdd-producto}\n+  - {estado: borrador, fecha: 2026-07-27, por: sdd-producto, desc: \"Revisión de contenido: afinados criterios de éxito, alcance y objetivo; añadidas secciones dependencias, esfuerzo y conexión con roadmap\"}\n ---\n # EPIC-001 — Suma de dos números\n \n ## Objetivo\n Proporcionar una función matemática básica de suma de dos números enteros,\n exportada como módulo ES, que sirva como primer bloque funcional del proyecto\n-piloto fixture-suma. Esta épica establece el pipeline completo del estándar\n-tremen-sdd (spec → implementación → verificación) sobre un caso trivial.\n+piloto fixture-suma.\n \n+**Por qué ahora**: esta épica es la fundacional del proyecto — sin ella no hay\n+código que validar ni pipeline tremen-sdd que ejercitar. Arrancar por un caso\n+trivial permite detectar y corregir problemas de proceso (scaffolding, TDD,\n+verificación, ledger) antes de abordar funcionalidades más complejas. No hay\n+dependencias previas que la bloqueen ni otra épica en curso, por lo que es el\n+punto de partida natural.\n+\n ## Criterios de éxito\n 1. La función `suma(a, b)` está implementada en `src/suma.mjs` y se verifica\n    mediante tests automatizados que cubren enteros positivos y mezcla de signos.\n 2. La spec asociada (SPEC-001) se implementa y verifica con resultado GREEN.\n-3. El ledger de la spec contiene evidencia de verificación.\n+3. El ledger de SPEC-001 contiene evidencia de verificación completa\n+   (Implementado, Test y Verif. rellenados por los roles correspondientes).\n+4. El ciclo completo del pipeline tremen-sdd (spec → implementación con TDD →\n+   verificación) se ejecuta sin saltos y queda documentado en los artefactos\n+   (spec aprobada, ledger con evidencia, rama de trabajo).\n \n ## Alcance\n - Dentro:\n-  - Función `suma(a, b)` que recibe dos números enteros y devuelve su suma.\n+  - Función `suma(a, b)` que recibe dos números enteros (dentro del rango\n+    seguro de JavaScript) y devuelve su suma aritmética.\n   - Exportación nombrada (`export function suma`) desde un módulo ES.\n-  - Tests unitarios que cubren los casos del CA.\n+  - Tests unitarios que cubren los casos del CA (enteros positivos y signo\n+    mixto).\n+  - Documentación de la verificación en el ledger de SPEC-001.\n - Fuera (aparcado a propósito, no por descuido):\n   - Operaciones aritméticas: resta, multiplicación, división.\n   - Validación de tipos de entrada (no type-checking).\n-  - Números fuera del rango seguro (`> Number.MAX_SAFE_INTEGER`).\n+  - Números fuera del rango seguro (`> Number.MAX_SAFE_INTEGER`\n+    o `< Number.MIN_SAFE_INTEGER`).\n   - Soporte para más de dos operandos (variadic, arrays, etc.).\n-  - CLI, interfaz web o cualquier otro punto de entrada que no sea la importación\n-    del módulo.\n+  - CLI, interfaz web o cualquier otro punto de entrada que no sea la\n+    importación directa del módulo ES.\n \n-## Specs\n-<!-- El estado por spec vive en el frontmatter de cada spec; el tablero agregado se regenera con /sdd-tablero (docs/tablero.md). No mantengas listas de specs a mano aquí. -->\n+## Dependencias\n+- **Bloqueantes**: ninguna. Es la primera épica del proyecto.\n+- **Bloqueadas por esta**: ninguna aún. Futuras épicas de fixture-suma (si las\n+  hay) se apoyarán en el pipeline y los artefactos validados aquí.\n \n+## Tamaño / esfuerzo estimado\n+- **XS** (~1-2 días hábiles). El valor no está en la complejidad técnica\n+  (la suma es trivial) sino en validar el ciclo completo tremen-sdd sobre un\n+  caso mínimo, dejando la maquinaria lista para épicas futuras.\n+\n+## Specs asociadas\n+| Spec | Estado | Descripción |\n+|------|--------|-------------|\n+| [SPEC-001](SPEC-001-funcion-suma-basica.md) | `borrador` | Función suma básica — implementación de `suma(a, b)` |\n+\n+> El estado fino de cada spec vive en su frontmatter; el tablero agregado se\n+> regenera con `/sdd-tablero` en `docs/tablero.md`.\n+\n ## Riesgos\n-- Ninguno significativo para una función trivial. El principal riesgo es de\n-  proceso: que el pipeline tremen-sdd se salte pasos al ser el primer\n-  ejercicio. Se mitiga siguiendo el flujo estrictamente.\n+- **Riesgo de proceso** (alto impacto, baja probabilidad): que el pipeline\n+  tremen-sdd se salte pasos al ser el primer ejercicio del equipo. Se mitiga\n+  siguiendo estrictamente el flujo definido (spec → TDD → implementación →\n+  verificación → ledger).\n+- **Riesgo técnico** (bajo): ninguno significativo para una función de suma\n+  de dos enteros. La implementación es directa.\n",
+              "additions": 46,
+              "deletions": 13,
+              "status": "modified"
+            },
+            {
+              "file": "docs/roadmap.md",
+              "patch": "Index: docs/roadmap.md\n===================================================================\n--- docs/roadmap.md\t\n+++ docs/roadmap.md\t\n@@ -1,16 +1,29 @@\n ---\n tipo: roadmap\n ---\n # Roadmap — fixture-suma\n \n > Curado por sdd-producto. Secuencia de épicas, horizonte y criterios de corte.\n > El estado fino por spec vive en el tablero; aquí vive la INTENCIÓN.\n \n ## Ahora (en curso)\n+- **EPIC-001 — Suma de dos números**\n+  (`docs/epicas/EPIC-001-suma-de-dos-numeros/_epica.md`)\n+  Primera épica fundacional. Valida el pipeline tremen-sdd completo\n+  (spec → TDD → implementación → verificación) sobre un caso trivial de suma\n+  de enteros. Sin ella no hay base sobre la que construir.\n+  *Razón de la posición*: es el punto de partida natural del proyecto; no\n+  tiene dependencias previas y su resultado (pipeline validado) es requisito\n+  implícito para cualquier épica futura.\n \n ## Después (comprometido, sin empezar)\n \n ## Más adelante (idea, sin compromiso)\n \n ## Criterios de corte\n-<!-- Qué haría subir o bajar una épica de sección. -->\n+- Subir a \"Después\": épica que dependa del pipeline tremen-sdd ya validado\n+  (es decir, requiere EPIC-001 completa).\n+- Subir a \"Ahora\": épica que el cliente (o PO) priorice sobre las actuales.\n+- Bajar a \"Más adelante\": épica cuyo contexto de negocio cambie o cuya\n+  ventana de oportunidad se cierre.\n+- Archivar: épica que pierde toda relevancia o es absorbida por otra.\n",
+              "additions": 14,
+              "deletions": 1,
+              "status": "modified"
+            }
+          ]
+        },
+        "id": "msg_fa0b524b8001iAVmKflKxcsQjQ",
+        "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U"
+      },
+      "parts": [
+        {
+          "type": "text",
+          "text": "Eres sdd-producto (Product Owner) en un proyecto tremen-sdd.\n\n**Proyecto**: fixture-suma\n**Raíz**: C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\n\n**Contexto**: El arquitecto ya ha creado la épica EPIC-001 \"Suma de dos números\" y la spec SPEC-001 \"Función suma básica\" bajo ella. Ahora necesito que REVISES la épica EPIC-001 (no la spec).\n\n**Tarea**: Revisa el contenido de la épica en:\n`docs/epicas/EPIC-001-suma-de-dos-numeros/_epica.md`\n\nValida y mejora los siguientes campos:\n1. **Objetivo**: ¿Es claro? ¿Captura por qué esta épica importa ahora?\n2. **Criterios de éxito**: ¿Son medibles?\n3. **Alcance (Dentro/Fuera)**: ¿Está bien delimitado?\n\nAdemás, lee estos archivos de fundación para alinearte:\n- `docs/fundacion/contexto.md` (contexto maestro)\n- `docs/fundacion/vision.md` (visión del proyecto)\n- `docs/fundacion/dominio.md` (lenguaje ubicuo)\n- `docs/roadmap.md` (roadmap actual)\n\nTambién revisa la spec asociada para asegurar coherencia épica↔spec:\n`docs/epicas/EPIC-001-suma-de-dos-numeros/SPEC-001-funcion-suma-basica.md`\n\n**Instrucciones**:\n- Edita directamente _epica.md para dejarla lista (mejorando el contenido)\n- Si hay incoherencias entre épica y spec, menciónalas\n- Si la épica necesita más secciones, créalas\n- Deja la épica en estado `borrador` (la aprobación es humana)\n\n**Devuélveme** un informe con:\n- Cambios que hiciste a la épica y por qué\n- Estado final de la épica (campos clave)\n- Cualquier incoherencia encontrada entre épica y spec\n- Tu veredicto: ¿está lista para aprobación humana?",
+          "id": "prt_fa0b524bf001WKSOoAdNlbmni3",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b524b8001iAVmKflKxcsQjQ"
+        }
+      ]
+    },
+    {
+      "info": {
+        "parentID": "msg_fa0b524b8001iAVmKflKxcsQjQ",
+        "role": "assistant",
+        "mode": "sdd-producto",
+        "agent": "sdd-producto",
+        "path": {
+          "cwd": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014",
+          "root": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014"
+        },
+        "cost": 0,
+        "tokens": {
+          "total": 9311,
+          "input": 9094,
+          "output": 190,
+          "reasoning": 27,
+          "cache": {
+            "write": 0,
+            "read": 0
+          }
+        },
+        "modelID": "deepseek-v4-flash-free",
+        "providerID": "opencode",
+        "time": {
+          "created": 1785107653839,
+          "completed": 1785107657188
+        },
+        "finish": "tool-calls",
+        "id": "msg_fa0b524cf001CLCTPEYeexD2D7",
+        "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U"
+      },
+      "parts": [
+        {
+          "snapshot": "d190f5a458f462d647d7b5c81b350f740f5912e3",
+          "type": "step-start",
+          "id": "prt_fa0b528da001HSTyZMETXW7Hwo",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b524cf001CLCTPEYeexD2D7"
+        },
+        {
+          "type": "reasoning",
+          "text": "Let me start by reading the required files to understand the project context and the epic content. I'll read them in parallel where possible.",
+          "time": {
+            "start": 1785107655535,
+            "end": 1785107655915
+          },
+          "id": "prt_fa0b52b6f001nrIFS4lqSG6JeI",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b524cf001CLCTPEYeexD2D7"
+        },
+        {
+          "type": "tool",
+          "tool": "read",
+          "callID": "call_00_N0ZiufVqhlt1mOd7osMn7395",
+          "state": {
+            "status": "completed",
+            "input": {
+              "filePath": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014"
+            },
+            "output": "<path>C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014</path>\n<type>directory</type>\n<entries>\n.git/\n.opencode/\n.sdd.json\nCLAUDE.md\ndocs/\nFOUNDATION.md\nopencode.json\nREADME.md\nsrc/\n\n(9 entries)\n</entries>",
+            "metadata": {
+              "preview": ".git/\n.opencode/\n.sdd.json\nCLAUDE.md\ndocs/\nFOUNDATION.md\nopencode.json\nREADME.md\nsrc/",
+              "truncated": false,
+              "loaded": [],
+              "display": {
+                "type": "directory",
+                "path": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014",
+                "entries": [
+                  ".git/",
+                  ".opencode/",
+                  ".sdd.json",
+                  "CLAUDE.md",
+                  "docs/",
+                  "FOUNDATION.md",
+                  "opencode.json",
+                  "README.md",
+                  "src/"
+                ],
+                "offset": 1,
+                "totalEntries": 9,
+                "truncated": false
+              }
+            },
+            "title": "",
+            "time": {
+              "start": 1785107656324,
+              "end": 1785107656330
+            }
+          },
+          "id": "prt_fa0b52cee001Kd83wACT7g6ZZc",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b524cf001CLCTPEYeexD2D7"
+        },
+        {
+          "type": "tool",
+          "tool": "read",
+          "callID": "call_01_I5uIs221BvVXFJQerUqV4212",
+          "state": {
+            "status": "completed",
+            "input": {
+              "filePath": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\.sdd.json"
+            },
+            "output": "<path>C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\.sdd.json</path>\n<type>file</type>\n<content>\n1: {\n2:   \"idioma\": \"es\",\n3:   \"rutasVigiladas\": [\"src/\"],\n4:   \"linter\": \"auto\",\n5:   \"gates\": { \"requireSpec\": true, \"protegeVerdad\": true, \"calidad\": true }\n6: }\n\n(End of file - total 6 lines)\n</content>",
+            "metadata": {
+              "preview": "{\n  \"idioma\": \"es\",\n  \"rutasVigiladas\": [\"src/\"],\n  \"linter\": \"auto\",\n  \"gates\": { \"requireSpec\": true, \"protegeVerdad\": true, \"calidad\": true }\n}",
+              "truncated": false,
+              "loaded": [],
+              "display": {
+                "type": "file",
+                "path": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\.sdd.json",
+                "text": "{\n  \"idioma\": \"es\",\n  \"rutasVigiladas\": [\"src/\"],\n  \"linter\": \"auto\",\n  \"gates\": { \"requireSpec\": true, \"protegeVerdad\": true, \"calidad\": true }\n}",
+                "lineStart": 1,
+                "lineEnd": 6,
+                "totalLines": 6,
+                "truncated": false
+              }
+            },
+            "title": ".sdd.json",
+            "time": {
+              "start": 1785107656714,
+              "end": 1785107656736
+            }
+          },
+          "id": "prt_fa0b52ea80016HsoirS2Q5sJAH",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b524cf001CLCTPEYeexD2D7"
+        },
+        {
+          "reason": "tool-calls",
+          "snapshot": "d190f5a458f462d647d7b5c81b350f740f5912e3",
+          "type": "step-finish",
+          "tokens": {
+            "total": 9311,
+            "input": 9094,
+            "output": 190,
+            "reasoning": 27,
+            "cache": {
+              "write": 0,
+              "read": 0
+            }
+          },
+          "cost": 0,
+          "id": "prt_fa0b53134001AGi9Xdh2fTOeJa",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b524cf001CLCTPEYeexD2D7"
+        }
+      ]
+    },
+    {
+      "info": {
+        "parentID": "msg_fa0b524b8001iAVmKflKxcsQjQ",
+        "role": "assistant",
+        "mode": "sdd-producto",
+        "agent": "sdd-producto",
+        "path": {
+          "cwd": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014",
+          "root": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014"
+        },
+        "cost": 0,
+        "tokens": {
+          "total": 10225,
+          "input": 380,
+          "output": 530,
+          "reasoning": 99,
+          "cache": {
+            "write": 0,
+            "read": 9216
+          }
+        },
+        "modelID": "deepseek-v4-flash-free",
+        "providerID": "opencode",
+        "time": {
+          "created": 1785107657192,
+          "completed": 1785107662271
+        },
+        "finish": "tool-calls",
+        "id": "msg_fa0b531e80015aR38xMggih1LQ",
+        "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U"
+      },
+      "parts": [
+        {
+          "snapshot": "d190f5a458f462d647d7b5c81b350f740f5912e3",
+          "type": "step-start",
+          "id": "prt_fa0b5359100129KVuuS6BygGB2",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b531e80015aR38xMggih1LQ"
+        },
+        {
+          "type": "reasoning",
+          "text": "Good. `.sdd.json` says `idioma: \"es\"`. Now I need to read the role file from `core/roles/es/sdd-producto.md` relative to the root of the artifact. But wait — the system prompt says the role file lives in `agents/` adjacent to `core/`. Let me find where my role file actually is and then locate the core directory.\n\nLet me first look at the project structure more carefully, and read the required files.",
+          "time": {
+            "start": 1785107658429,
+            "end": 1785107659447
+          },
+          "id": "prt_fa0b536bd001RaP7kB2wWeavxO",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b531e80015aR38xMggih1LQ"
+        },
+        {
+          "type": "tool",
+          "tool": "read",
+          "callID": "call_00_mJaoFFQpZxDvIErH3ioj0045",
+          "state": {
+            "status": "completed",
+            "input": {
+              "filePath": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs"
+            },
+            "output": "<path>C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs</path>\n<type>directory</type>\n<entries>\nadr/\nepicas/\nfundacion/\nroadmap.md\ntablero.md\n\n(5 entries)\n</entries>",
+            "metadata": {
+              "preview": "adr/\nepicas/\nfundacion/\nroadmap.md\ntablero.md",
+              "truncated": false,
+              "loaded": [],
+              "display": {
+                "type": "directory",
+                "path": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs",
+                "entries": [
+                  "adr/",
+                  "epicas/",
+                  "fundacion/",
+                  "roadmap.md",
+                  "tablero.md"
+                ],
+                "offset": 1,
+                "totalEntries": 5,
+                "truncated": false
+              }
+            },
+            "title": "docs",
+            "time": {
+              "start": 1785107659823,
+              "end": 1785107659828
+            }
+          },
+          "id": "prt_fa0b53abc001N95O4edp1NsU5K",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b531e80015aR38xMggih1LQ"
+        },
+        {
+          "type": "tool",
+          "tool": "glob",
+          "callID": "call_01_QIhcKJ0kEk8RSPHmdIeN4710",
+          "state": {
+            "status": "completed",
+            "input": {
+              "pattern": "**/core/roles/**/*.md",
+              "path": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014"
+            },
+            "output": "No files found",
+            "metadata": {
+              "count": 0,
+              "truncated": false
+            },
+            "title": "",
+            "time": {
+              "start": 1785107660310,
+              "end": 1785107660417
+            }
+          },
+          "id": "prt_fa0b53c5f0018HFsdGRS3LZS95",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b531e80015aR38xMggih1LQ"
+        },
+        {
+          "type": "tool",
+          "tool": "glob",
+          "callID": "call_02_WSuSd1U6BONe9QstwoyG9815",
+          "state": {
+            "status": "completed",
+            "input": {
+              "pattern": "docs/fundacion/*.md",
+              "path": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014"
+            },
+            "output": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\fundacion\\vision.md\nC:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\fundacion\\contexto.md\nC:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\fundacion\\reglas.md\nC:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\fundacion\\dominio.md",
+            "metadata": {
+              "count": 4,
+              "truncated": false
+            },
+            "title": "",
+            "time": {
+              "start": 1785107660802,
+              "end": 1785107660912
+            }
+          },
+          "id": "prt_fa0b53e54001ofk3N3WWD76uWs",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b531e80015aR38xMggih1LQ"
+        },
+        {
+          "type": "tool",
+          "tool": "glob",
+          "callID": "call_03_rykIbOTP3EViGeBzedTv5293",
+          "state": {
+            "status": "completed",
+            "input": {
+              "pattern": "docs/epicas/**/*.md",
+              "path": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014"
+            },
+            "output": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\_epica.md\nC:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.md\nC:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.ledger.md",
+            "metadata": {
+              "count": 3,
+              "truncated": false
+            },
+            "title": "",
+            "time": {
+              "start": 1785107661540,
+              "end": 1785107661678
+            }
+          },
+          "id": "prt_fa0b5403f001OUXzZGefSJ5Mz5",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b531e80015aR38xMggih1LQ"
+        },
+        {
+          "type": "tool",
+          "tool": "glob",
+          "callID": "call_04_ZNNHdKs3qD9lsCvn5O6E7405",
+          "state": {
+            "status": "completed",
+            "input": {
+              "pattern": "docs/**/*.md",
+              "path": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014"
+            },
+            "output": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\tablero.md\nC:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\roadmap.md\nC:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\fundacion\\vision.md\nC:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\fundacion\\reglas.md\nC:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\fundacion\\dominio.md\nC:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\fundacion\\contexto.md\nC:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\_epica.md\nC:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.md\nC:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.ledger.md",
+            "metadata": {
+              "count": 9,
+              "truncated": false
+            },
+            "title": "",
+            "time": {
+              "start": 1785107661719,
+              "end": 1785107661847
+            }
+          },
+          "id": "prt_fa0b542e7001b6xNB3yEOB1Fvn",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b531e80015aR38xMggih1LQ"
+        },
+        {
+          "reason": "tool-calls",
+          "snapshot": "d190f5a458f462d647d7b5c81b350f740f5912e3",
+          "type": "step-finish",
+          "tokens": {
+            "total": 10225,
+            "input": 380,
+            "output": 530,
+            "reasoning": 99,
+            "cache": {
+              "write": 0,
+              "read": 9216
+            }
+          },
+          "cost": 0,
+          "id": "prt_fa0b544f2001e4UjrP8fV5ATW8",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b531e80015aR38xMggih1LQ"
+        }
+      ]
+    },
+    {
+      "info": {
+        "parentID": "msg_fa0b524b8001iAVmKflKxcsQjQ",
+        "role": "assistant",
+        "mode": "sdd-producto",
+        "agent": "sdd-producto",
+        "path": {
+          "cwd": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014",
+          "root": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014"
+        },
+        "cost": 0,
+        "tokens": {
+          "total": 12494,
+          "input": 1436,
+          "output": 824,
+          "reasoning": 122,
+          "cache": {
+            "write": 0,
+            "read": 10112
+          }
+        },
+        "modelID": "deepseek-v4-flash-free",
+        "providerID": "opencode",
+        "time": {
+          "created": 1785107662276,
+          "completed": 1785107669634
+        },
+        "finish": "tool-calls",
+        "id": "msg_fa0b545c4001avvd8wmfAUiscK",
+        "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U"
+      },
+      "parts": [
+        {
+          "snapshot": "d190f5a458f462d647d7b5c81b350f740f5912e3",
+          "type": "step-start",
+          "id": "prt_fa0b549f1001ct0n0DQba65Z4m",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b545c4001avvd8wmfAUiscK"
+        },
+        {
+          "type": "reasoning",
+          "text": "There's no `core/roles/` directory. This is a project-level artifact, not the opencode adaptor artifact. The system prompt says the role file lives in the same artifact as the adapter opencode, but this is a project with `.sdd.json`. The system prompt says to read `../core/roles/<idioma>/sdd-producto.md` relative to this file. But `core/` doesn't exist here. Let me check `.opencode/` for the skill file instead, since there's a skill listed as `sdd-producto` at a path.",
+          "time": {
+            "start": 1785107663743,
+            "end": 1785107665205
+          },
+          "id": "prt_fa0b54b7f0016WvPzglCJnJoLM",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b545c4001avvd8wmfAUiscK"
+        },
+        {
+          "type": "tool",
+          "tool": "read",
+          "callID": "call_00_yifYRZ6cmhPEsUma76Wt7710",
+          "state": {
+            "status": "completed",
+            "input": {
+              "filePath": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\.opencode"
+            },
+            "output": "<path>C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\.opencode</path>\n<type>directory</type>\n<entries>\n.gitignore\nagents/\ncommands/\ncore/\nnode_modules/\nopencode.json\npackage-lock.json\npackage.json\nplugins/\nskills/\n\n(10 entries)\n</entries>",
+            "metadata": {
+              "preview": ".gitignore\nagents/\ncommands/\ncore/\nnode_modules/\nopencode.json\npackage-lock.json\npackage.json\nplugins/\nskills/",
+              "truncated": false,
+              "loaded": [],
+              "display": {
+                "type": "directory",
+                "path": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\.opencode",
+                "entries": [
+                  ".gitignore",
+                  "agents/",
+                  "commands/",
+                  "core/",
+                  "node_modules/",
+                  "opencode.json",
+                  "package-lock.json",
+                  "package.json",
+                  "plugins/",
+                  "skills/"
+                ],
+                "offset": 1,
+                "totalEntries": 10,
+                "truncated": false
+              }
+            },
+            "title": ".opencode",
+            "time": {
+              "start": 1785107665562,
+              "end": 1785107665574
+            }
+          },
+          "id": "prt_fa0b55138001POWQDNSqiQsGrk",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b545c4001avvd8wmfAUiscK"
+        },
+        {
+          "type": "tool",
+          "tool": "read",
+          "callID": "call_01_1RknhqBH6qL2bLxrXfp32365",
+          "state": {
+            "status": "completed",
+            "input": {
+              "filePath": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\fundacion\\contexto.md"
+            },
+            "output": "<path>C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\fundacion\\contexto.md</path>\n<type>file</type>\n<content>\n1: # Contexto maestro — fixture-suma\n2: \n3: > Documento vivo: TODO lo que un agente (o una persona) necesita para situarse.\n4: > Se actualiza al cambiar el rumbo; la historia fina vive en ADRs y specs.\n5: \n6: ## Qué es y en qué punto está\n7: \n8: ## Stack y arquitectura (resumen as-built)\n9: \n10: ## Decisiones clave hasta hoy\n11: <!-- Referencias a ADR-NNN, no duplicar su contenido. -->\n12: \n13: ## Riesgos y preguntas abiertas\n\n(End of file - total 13 lines)\n</content>",
+            "metadata": {
+              "preview": "# Contexto maestro — fixture-suma\n\n> Documento vivo: TODO lo que un agente (o una persona) necesita para situarse.\n> Se actualiza al cambiar el rumbo; la historia fina vive en ADRs y specs.\n\n## Qué es y en qué punto está\n\n## Stack y arquitectura (resumen as-built)\n\n## Decisiones clave hasta hoy\n<!-- Referencias a ADR-NNN, no duplicar su contenido. -->\n\n## Riesgos y preguntas abiertas",
+              "truncated": false,
+              "loaded": [],
+              "display": {
+                "type": "file",
+                "path": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\fundacion\\contexto.md",
+                "text": "# Contexto maestro — fixture-suma\n\n> Documento vivo: TODO lo que un agente (o una persona) necesita para situarse.\n> Se actualiza al cambiar el rumbo; la historia fina vive en ADRs y specs.\n\n## Qué es y en qué punto está\n\n## Stack y arquitectura (resumen as-built)\n\n## Decisiones clave hasta hoy\n<!-- Referencias a ADR-NNN, no duplicar su contenido. -->\n\n## Riesgos y preguntas abiertas",
+                "lineStart": 1,
+                "lineEnd": 13,
+                "totalLines": 13,
+                "truncated": false
+              }
+            },
+            "title": "docs\\fundacion\\contexto.md",
+            "time": {
+              "start": 1785107666030,
+              "end": 1785107666049
+            }
+          },
+          "id": "prt_fa0b552d2001yKTsGjD8xL5nVt",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b545c4001avvd8wmfAUiscK"
+        },
+        {
+          "type": "tool",
+          "tool": "read",
+          "callID": "call_02_97wnrarYaZUEjL3tFb8f4027",
+          "state": {
+            "status": "completed",
+            "input": {
+              "filePath": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\fundacion\\vision.md"
+            },
+            "output": "<path>C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\fundacion\\vision.md</path>\n<type>file</type>\n<content>\n1: # Visión — fixture-suma\n2: \n3: ## El problema\n4: \n5: ## Para quién\n6: \n7: ## La promesa\n8: <!-- Qué será verdad cuando esto funcione. Métricas norte si las hay. -->\n9: \n10: ## Qué NO es este producto\n\n(End of file - total 10 lines)\n</content>",
+            "metadata": {
+              "preview": "# Visión — fixture-suma\n\n## El problema\n\n## Para quién\n\n## La promesa\n<!-- Qué será verdad cuando esto funcione. Métricas norte si las hay. -->\n\n## Qué NO es este producto",
+              "truncated": false,
+              "loaded": [],
+              "display": {
+                "type": "file",
+                "path": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\fundacion\\vision.md",
+                "text": "# Visión — fixture-suma\n\n## El problema\n\n## Para quién\n\n## La promesa\n<!-- Qué será verdad cuando esto funcione. Métricas norte si las hay. -->\n\n## Qué NO es este producto",
+                "lineStart": 1,
+                "lineEnd": 10,
+                "totalLines": 10,
+                "truncated": false
+              }
+            },
+            "title": "docs\\fundacion\\vision.md",
+            "time": {
+              "start": 1785107666416,
+              "end": 1785107666452
+            }
+          },
+          "id": "prt_fa0b5547c001vEQh0DYS2T3m27",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b545c4001avvd8wmfAUiscK"
+        },
+        {
+          "type": "tool",
+          "tool": "read",
+          "callID": "call_03_pG2GS9qfGAVhsw9QMYuj7836",
+          "state": {
+            "status": "completed",
+            "input": {
+              "filePath": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\fundacion\\dominio.md"
+            },
+            "output": "<path>C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\fundacion\\dominio.md</path>\n<type>file</type>\n<content>\n1: # Dominio y lenguaje ubicuo — fixture-suma\n2: \n3: > Glosario canónico. Estos términos NO se traducen ni se anglicizan en código,\n4: > UI ni documentación. Si un término falta, se añade aquí antes de usarse.\n5: \n6: | Término | Definición | Notas |\n7: |---|---|---|\n\n(End of file - total 7 lines)\n</content>",
+            "metadata": {
+              "preview": "# Dominio y lenguaje ubicuo — fixture-suma\n\n> Glosario canónico. Estos términos NO se traducen ni se anglicizan en código,\n> UI ni documentación. Si un término falta, se añade aquí antes de usarse.\n\n| Término | Definición | Notas |\n|---|---|---|",
+              "truncated": false,
+              "loaded": [],
+              "display": {
+                "type": "file",
+                "path": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\fundacion\\dominio.md",
+                "text": "# Dominio y lenguaje ubicuo — fixture-suma\n\n> Glosario canónico. Estos términos NO se traducen ni se anglicizan en código,\n> UI ni documentación. Si un término falta, se añade aquí antes de usarse.\n\n| Término | Definición | Notas |\n|---|---|---|",
+                "lineStart": 1,
+                "lineEnd": 7,
+                "totalLines": 7,
+                "truncated": false
+              }
+            },
+            "title": "docs\\fundacion\\dominio.md",
+            "time": {
+              "start": 1785107666774,
+              "end": 1785107666802
+            }
+          },
+          "id": "prt_fa0b555f4001H381qiDP0x4gGD",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b545c4001avvd8wmfAUiscK"
+        },
+        {
+          "type": "tool",
+          "tool": "read",
+          "callID": "call_04_TM4Yg8uJXJqWKKbx5GaF6392",
+          "state": {
+            "status": "completed",
+            "input": {
+              "filePath": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\roadmap.md"
+            },
+            "output": "<path>C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\roadmap.md</path>\n<type>file</type>\n<content>\n1: ---\n2: tipo: roadmap\n3: ---\n4: # Roadmap — fixture-suma\n5: \n6: > Curado por sdd-producto. Secuencia de épicas, horizonte y criterios de corte.\n7: > El estado fino por spec vive en el tablero; aquí vive la INTENCIÓN.\n8: \n9: ## Ahora (en curso)\n10: \n11: ## Después (comprometido, sin empezar)\n12: \n13: ## Más adelante (idea, sin compromiso)\n14: \n15: ## Criterios de corte\n16: <!-- Qué haría subir o bajar una épica de sección. -->\n\n(End of file - total 16 lines)\n</content>",
+            "metadata": {
+              "preview": "---\ntipo: roadmap\n---\n# Roadmap — fixture-suma\n\n> Curado por sdd-producto. Secuencia de épicas, horizonte y criterios de corte.\n> El estado fino por spec vive en el tablero; aquí vive la INTENCIÓN.\n\n## Ahora (en curso)\n\n## Después (comprometido, sin empezar)\n\n## Más adelante (idea, sin compromiso)\n\n## Criterios de corte\n<!-- Qué haría subir o bajar una épica de sección. -->",
+              "truncated": false,
+              "loaded": [],
+              "display": {
+                "type": "file",
+                "path": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\roadmap.md",
+                "text": "---\ntipo: roadmap\n---\n# Roadmap — fixture-suma\n\n> Curado por sdd-producto. Secuencia de épicas, horizonte y criterios de corte.\n> El estado fino por spec vive en el tablero; aquí vive la INTENCIÓN.\n\n## Ahora (en curso)\n\n## Después (comprometido, sin empezar)\n\n## Más adelante (idea, sin compromiso)\n\n## Criterios de corte\n<!-- Qué haría subir o bajar una épica de sección. -->",
+                "lineStart": 1,
+                "lineEnd": 16,
+                "totalLines": 16,
+                "truncated": false
+              }
+            },
+            "title": "docs\\roadmap.md",
+            "time": {
+              "start": 1785107667180,
+              "end": 1785107667192
+            }
+          },
+          "id": "prt_fa0b55789001hpj601TjjEsbSe",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b545c4001avvd8wmfAUiscK"
+        },
+        {
+          "type": "tool",
+          "tool": "read",
+          "callID": "call_05_CTuYqbUIyiSEXMtw20dA3840",
+          "state": {
+            "status": "completed",
+            "input": {
+              "filePath": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\_epica.md"
+            },
+            "output": "<path>C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\_epica.md</path>\n<type>file</type>\n<content>\n1: ---\n2: id: EPIC-001\n3: tipo: epica\n4: estado: borrador\n5: historial:\n6:   - {estado: borrador, fecha: 2026-07-26, por: sdd-producto}\n7: ---\n8: # EPIC-001 — Suma de dos números\n9: \n10: ## Objetivo\n11: Proporcionar una función matemática básica de suma de dos números enteros,\n12: exportada como módulo ES, que sirva como primer bloque funcional del proyecto\n13: piloto fixture-suma. Esta épica establece el pipeline completo del estándar\n14: tremen-sdd (spec → implementación → verificación) sobre un caso trivial.\n15: \n16: ## Criterios de éxito\n17: 1. La función `suma(a, b)` está implementada en `src/suma.mjs` y se verifica\n18:    mediante tests automatizados que cubren enteros positivos y mezcla de signos.\n19: 2. La spec asociada (SPEC-001) se implementa y verifica con resultado GREEN.\n20: 3. El ledger de la spec contiene evidencia de verificación.\n21: \n22: ## Alcance\n23: - Dentro:\n24:   - Función `suma(a, b)` que recibe dos números enteros y devuelve su suma.\n25:   - Exportación nombrada (`export function suma`) desde un módulo ES.\n26:   - Tests unitarios que cubren los casos del CA.\n27: - Fuera (aparcado a propósito, no por descuido):\n28:   - Operaciones aritméticas: resta, multiplicación, división.\n29:   - Validación de tipos de entrada (no type-checking).\n30:   - Números fuera del rango seguro (`> Number.MAX_SAFE_INTEGER`).\n31:   - Soporte para más de dos operandos (variadic, arrays, etc.).\n32:   - CLI, interfaz web o cualquier otro punto de entrada que no sea la importación\n33:     del módulo.\n34: \n35: ## Specs\n36: <!-- El estado por spec vive en el frontmatter de cada spec; el tablero agregado se regenera con /sdd-tablero (docs/tablero.md). No mantengas listas de specs a mano aquí. -->\n37: \n38: ## Riesgos\n39: - Ninguno significativo para una función trivial. El principal riesgo es de\n40:   proceso: que el pipeline tremen-sdd se salte pasos al ser el primer\n41:   ejercicio. Se mitiga siguiendo el flujo estrictamente.\n\n(End of file - total 41 lines)\n</content>",
+            "metadata": {
+              "preview": "---\nid: EPIC-001\ntipo: epica\nestado: borrador\nhistorial:\n  - {estado: borrador, fecha: 2026-07-26, por: sdd-producto}\n---\n# EPIC-001 — Suma de dos números\n\n## Objetivo\nProporcionar una función matemática básica de suma de dos números enteros,\nexportada como módulo ES, que sirva como primer bloque funcional del proyecto\npiloto fixture-suma. Esta épica establece el pipeline completo del estándar\ntremen-sdd (spec → implementación → verificación) sobre un caso trivial.\n\n## Criterios de éxito\n1. La función `suma(a, b)` está implementada en `src/suma.mjs` y se verifica\n   mediante tests automatizados que cubren enteros positivos y mezcla de signos.\n2. La spec asociada (SPEC-001) se implementa y verifica con resultado GREEN.\n3. El ledger de la spec contiene evidencia de verificación.",
+              "truncated": false,
+              "loaded": [],
+              "display": {
+                "type": "file",
+                "path": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\_epica.md",
+                "text": "---\nid: EPIC-001\ntipo: epica\nestado: borrador\nhistorial:\n  - {estado: borrador, fecha: 2026-07-26, por: sdd-producto}\n---\n# EPIC-001 — Suma de dos números\n\n## Objetivo\nProporcionar una función matemática básica de suma de dos números enteros,\nexportada como módulo ES, que sirva como primer bloque funcional del proyecto\npiloto fixture-suma. Esta épica establece el pipeline completo del estándar\ntremen-sdd (spec → implementación → verificación) sobre un caso trivial.\n\n## Criterios de éxito\n1. La función `suma(a, b)` está implementada en `src/suma.mjs` y se verifica\n   mediante tests automatizados que cubren enteros positivos y mezcla de signos.\n2. La spec asociada (SPEC-001) se implementa y verifica con resultado GREEN.\n3. El ledger de la spec contiene evidencia de verificación.\n\n## Alcance\n- Dentro:\n  - Función `suma(a, b)` que recibe dos números enteros y devuelve su suma.\n  - Exportación nombrada (`export function suma`) desde un módulo ES.\n  - Tests unitarios que cubren los casos del CA.\n- Fuera (aparcado a propósito, no por descuido):\n  - Operaciones aritméticas: resta, multiplicación, división.\n  - Validación de tipos de entrada (no type-checking).\n  - Números fuera del rango seguro (`> Number.MAX_SAFE_INTEGER`).\n  - Soporte para más de dos operandos (variadic, arrays, etc.).\n  - CLI, interfaz web o cualquier otro punto de entrada que no sea la importación\n    del módulo.\n\n## Specs\n<!-- El estado por spec vive en el frontmatter de cada spec; el tablero agregado se regenera con /sdd-tablero (docs/tablero.md). No mantengas listas de specs a mano aquí. -->\n\n## Riesgos\n- Ninguno significativo para una función trivial. El principal riesgo es de\n  proceso: que el pipeline tremen-sdd se salte pasos al ser el primer\n  ejercicio. Se mitiga siguiendo el flujo estrictamente.",
+                "lineStart": 1,
+                "lineEnd": 41,
+                "totalLines": 41,
+                "truncated": false
+              }
+            },
+            "title": "docs\\epicas\\EPIC-001-suma-de-dos-numeros\\_epica.md",
+            "time": {
+              "start": 1785107667634,
+              "end": 1785107667671
+            }
+          },
+          "id": "prt_fa0b55921001ai0OhfgtycjSyl",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b545c4001avvd8wmfAUiscK"
+        },
+        {
+          "type": "tool",
+          "tool": "read",
+          "callID": "call_06_fJYqXZwfQNgl5e5jS8ZA1295",
+          "state": {
+            "status": "completed",
+            "input": {
+              "filePath": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.md"
+            },
+            "output": "<path>C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.md</path>\n<type>file</type>\n<content>\n1: ---\n2: id: SPEC-001\n3: tipo: spec\n4: epica: EPIC-001\n5: estado: borrador\n6: aprobada-por:\n7: historial:\n8:   - {estado: borrador, fecha: 2026-07-26, por: sdd-arquitecto}\n9: ---\n10: # SPEC-001 — Función suma básica\n11: \n12: ## Problema\n13: El proyecto fixture-suma necesita su primera función utilitaria: una operación\n14: de suma de dos números enteros. Sin ella no hay base sobre la que construir\n15: el resto de la funcionalidad piloto ni validar el pipeline tremen-sdd\n16: (spec → implementación → verificación).\n17: \n18: Afecta a cualquier desarrollador que necesite importar y usar la función\n19: `suma` desde módulos ES en `src/`.\n20: \n21: ## Usuarios / roles afectados\n22: - **Desarrolladores** que importan `suma(a, b)` desde `src/suma.mjs` para\n23:   realizar cálculos aritméticos básicos.\n24: - **sdd-implementador** y **sdd-verificador** como primeros consumidores del\n25:   pipeline tremen-sdd sobre esta spec.\n26: \n27: ## Criterios de aceptación\n28: \n29: - **CA-1**: Suma de dos enteros positivos\n30:   Dado dos números enteros positivos `a` y `b`,\n31:   cuando se invoca `suma(a, b)`,\n32:   entonces devuelve `a + b` como resultado correcto.\n33: \n34: - **CA-2**: Suma con signo mixto\n35:   Dado un número entero positivo `a` y un número entero negativo `b`,\n36:   cuando se invoca `suma(a, b)`,\n37:   entonces devuelve `a + b` como resultado correcto (que puede ser positivo,\n38:   negativo o cero según los operandos).\n39: \n40: - **CA-3**: Exportación como módulo ES\n41:   Dado que `src/suma.mjs` es un módulo ES,\n42:   cuando se importa mediante `import { suma } from './suma.mjs'`,\n43:   entonces `suma` está disponible como exportación nombrada.\n44: \n45: ## Entidades y reglas afectadas\n46: - **RN-01** (placeholder): no aplica directamente — el dominio de suma no\n47:   requiere reglas de negocio específicas más allá de la aritmética entera.\n48: - **Dominio**: ningún término nuevo; la operación `suma` se alinea con el\n49:   lenguaje ubicuo de \"suma de dos números\" del proyecto.\n50: - No hay ADR vigentes que afecten a esta spec.\n51: \n52: ## Fuera de alcance\n53: - Validación de tipos (p. ej., lanzar error si se pasa `string` o `null`).\n54: - Números fuera del rango seguro de JavaScript (`> Number.MAX_SAFE_INTEGER`\n55:   o `< Number.MIN_SAFE_INTEGER`).\n56: - Más de dos operandos (variadic, arrays, rest parameters).\n57: - Operaciones aritméticas distintas de la suma (resta, multiplicación,\n58:   división, módulo, etc.).\n59: - CLI, interfaz gráfica, API HTTP o cualquier punto de entrada que no sea\n60:   la importación directa del módulo ES.\n61: \n62: ## Notas para el gate humano\n63: - La función es **pura**: sin side effects, sin estado mutable, sin E/S.\n64: - La implementación es trivial (`a + b`), pero el valor de esta spec está en\n65:   validar el ciclo completo tremen-sdd sobre un caso mínimo.\n66: - Se espera que el implementador cree `src/suma.mjs` y su test siguiendo\n67:   TDD (rojo → verde).\n\n(End of file - total 67 lines)\n</content>",
+            "metadata": {
+              "preview": "---\nid: SPEC-001\ntipo: spec\nepica: EPIC-001\nestado: borrador\naprobada-por:\nhistorial:\n  - {estado: borrador, fecha: 2026-07-26, por: sdd-arquitecto}\n---\n# SPEC-001 — Función suma básica\n\n## Problema\nEl proyecto fixture-suma necesita su primera función utilitaria: una operación\nde suma de dos números enteros. Sin ella no hay base sobre la que construir\nel resto de la funcionalidad piloto ni validar el pipeline tremen-sdd\n(spec → implementación → verificación).\n\nAfecta a cualquier desarrollador que necesite importar y usar la función\n`suma` desde módulos ES en `src/`.\n",
+              "truncated": false,
+              "loaded": [],
+              "display": {
+                "type": "file",
+                "path": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.md",
+                "text": "---\nid: SPEC-001\ntipo: spec\nepica: EPIC-001\nestado: borrador\naprobada-por:\nhistorial:\n  - {estado: borrador, fecha: 2026-07-26, por: sdd-arquitecto}\n---\n# SPEC-001 — Función suma básica\n\n## Problema\nEl proyecto fixture-suma necesita su primera función utilitaria: una operación\nde suma de dos números enteros. Sin ella no hay base sobre la que construir\nel resto de la funcionalidad piloto ni validar el pipeline tremen-sdd\n(spec → implementación → verificación).\n\nAfecta a cualquier desarrollador que necesite importar y usar la función\n`suma` desde módulos ES en `src/`.\n\n## Usuarios / roles afectados\n- **Desarrolladores** que importan `suma(a, b)` desde `src/suma.mjs` para\n  realizar cálculos aritméticos básicos.\n- **sdd-implementador** y **sdd-verificador** como primeros consumidores del\n  pipeline tremen-sdd sobre esta spec.\n\n## Criterios de aceptación\n\n- **CA-1**: Suma de dos enteros positivos\n  Dado dos números enteros positivos `a` y `b`,\n  cuando se invoca `suma(a, b)`,\n  entonces devuelve `a + b` como resultado correcto.\n\n- **CA-2**: Suma con signo mixto\n  Dado un número entero positivo `a` y un número entero negativo `b`,\n  cuando se invoca `suma(a, b)`,\n  entonces devuelve `a + b` como resultado correcto (que puede ser positivo,\n  negativo o cero según los operandos).\n\n- **CA-3**: Exportación como módulo ES\n  Dado que `src/suma.mjs` es un módulo ES,\n  cuando se importa mediante `import { suma } from './suma.mjs'`,\n  entonces `suma` está disponible como exportación nombrada.\n\n## Entidades y reglas afectadas\n- **RN-01** (placeholder): no aplica directamente — el dominio de suma no\n  requiere reglas de negocio específicas más allá de la aritmética entera.\n- **Dominio**: ningún término nuevo; la operación `suma` se alinea con el\n  lenguaje ubicuo de \"suma de dos números\" del proyecto.\n- No hay ADR vigentes que afecten a esta spec.\n\n## Fuera de alcance\n- Validación de tipos (p. ej., lanzar error si se pasa `string` o `null`).\n- Números fuera del rango seguro de JavaScript (`> Number.MAX_SAFE_INTEGER`\n  o `< Number.MIN_SAFE_INTEGER`).\n- Más de dos operandos (variadic, arrays, rest parameters).\n- Operaciones aritméticas distintas de la suma (resta, multiplicación,\n  división, módulo, etc.).\n- CLI, interfaz gráfica, API HTTP o cualquier punto de entrada que no sea\n  la importación directa del módulo ES.\n\n## Notas para el gate humano\n- La función es **pura**: sin side effects, sin estado mutable, sin E/S.\n- La implementación es trivial (`a + b`), pero el valor de esta spec está en\n  validar el ciclo completo tremen-sdd sobre un caso mínimo.\n- Se espera que el implementador cree `src/suma.mjs` y su test siguiendo\n  TDD (rojo → verde).",
+                "lineStart": 1,
+                "lineEnd": 67,
+                "totalLines": 67,
+                "truncated": false
+              }
+            },
+            "title": "docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.md",
+            "time": {
+              "start": 1785107668142,
+              "end": 1785107668175
+            }
+          },
+          "id": "prt_fa0b55ae600180635d85Jk7eEd",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b545c4001avvd8wmfAUiscK"
+        },
+        {
+          "type": "tool",
+          "tool": "read",
+          "callID": "call_07_7kY8VUPNE73h0D7CTcK04920",
+          "state": {
+            "status": "completed",
+            "input": {
+              "filePath": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.ledger.md"
+            },
+            "output": "<path>C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.ledger.md</path>\n<type>file</type>\n<content>\n1: ---\n2: id: SPEC-001\n3: tipo: ledger\n4: epica: EPIC-001\n5: ---\n6: # Ledger — SPEC-001 Función suma básica\n7: \n8: ## Resumen\n9: - Fase: <!-- refleja el estado de la spec; la fuente de verdad es el frontmatter de la spec -->\n10: - Rama: `ft/SPEC-001-funcion-suma-basica`\n11: \n12: ## Matriz de criterios de aceptación\n13: <!-- Escritores: sdd-implementador rellena Implementado y Test; sdd-verificador rellena Verif. y Estado. Nunca al revés. -->\n14: <!-- Estados por CA: ✅ cerrado · ⚠️ parcial/con salvedad · 🚧 en curso · ❌ sin empezar · n-a -->\n15: <!-- Un CA está ✅ solo cuando Implementado + Test + Verif. aplicables están en verde. Una salvedad se marca ⚠️, nunca ✅. -->\n16: | CA | Implementado (fichero) | Test (fichero/caso) | Verif. | Estado |\n17: |---|---|---|---|---|---|\n18: | CA-1 | | | | ❌ |\n19: | CA-2 | | | | ❌ |\n20: | CA-3 | | | | ❌ |\n21: \n22: ## Veredicto del verificador\n23: <!-- GREEN/RED + fecha + resumen. Lo escribe SOLO sdd-verificador. -->\n24: \n25: ## Evidencia visual\n26: <!-- Tabla CA → captura en _qa/SPEC-001/. Informe HTML opcional: _qa/SPEC-001/informe.html -->\n27: \n28: ## Salvedades / follow-ups\n29: <!-- IDs F-SPEC-001-1, F-SPEC-001-2… con destino (spec futura o EPIC-MEJORA). -->\n30: \n31: ## Cómo retomar (handoff)\n32: <!-- Estado real del trabajo para la siguiente sesión: qué está hecho, qué falta, dónde seguir. -->\n\n(End of file - total 32 lines)\n</content>",
+            "metadata": {
+              "preview": "---\nid: SPEC-001\ntipo: ledger\nepica: EPIC-001\n---\n# Ledger — SPEC-001 Función suma básica\n\n## Resumen\n- Fase: <!-- refleja el estado de la spec; la fuente de verdad es el frontmatter de la spec -->\n- Rama: `ft/SPEC-001-funcion-suma-basica`\n\n## Matriz de criterios de aceptación\n<!-- Escritores: sdd-implementador rellena Implementado y Test; sdd-verificador rellena Verif. y Estado. Nunca al revés. -->\n<!-- Estados por CA: ✅ cerrado · ⚠️ parcial/con salvedad · 🚧 en curso · ❌ sin empezar · n-a -->\n<!-- Un CA está ✅ solo cuando Implementado + Test + Verif. aplicables están en verde. Una salvedad se marca ⚠️, nunca ✅. -->\n| CA | Implementado (fichero) | Test (fichero/caso) | Verif. | Estado |\n|---|---|---|---|---|---|\n| CA-1 | | | | ❌ |\n| CA-2 | | | | ❌ |\n| CA-3 | | | | ❌ |",
+              "truncated": false,
+              "loaded": [],
+              "display": {
+                "type": "file",
+                "path": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.ledger.md",
+                "text": "---\nid: SPEC-001\ntipo: ledger\nepica: EPIC-001\n---\n# Ledger — SPEC-001 Función suma básica\n\n## Resumen\n- Fase: <!-- refleja el estado de la spec; la fuente de verdad es el frontmatter de la spec -->\n- Rama: `ft/SPEC-001-funcion-suma-basica`\n\n## Matriz de criterios de aceptación\n<!-- Escritores: sdd-implementador rellena Implementado y Test; sdd-verificador rellena Verif. y Estado. Nunca al revés. -->\n<!-- Estados por CA: ✅ cerrado · ⚠️ parcial/con salvedad · 🚧 en curso · ❌ sin empezar · n-a -->\n<!-- Un CA está ✅ solo cuando Implementado + Test + Verif. aplicables están en verde. Una salvedad se marca ⚠️, nunca ✅. -->\n| CA | Implementado (fichero) | Test (fichero/caso) | Verif. | Estado |\n|---|---|---|---|---|---|\n| CA-1 | | | | ❌ |\n| CA-2 | | | | ❌ |\n| CA-3 | | | | ❌ |\n\n## Veredicto del verificador\n<!-- GREEN/RED + fecha + resumen. Lo escribe SOLO sdd-verificador. -->\n\n## Evidencia visual\n<!-- Tabla CA → captura en _qa/SPEC-001/. Informe HTML opcional: _qa/SPEC-001/informe.html -->\n\n## Salvedades / follow-ups\n<!-- IDs F-SPEC-001-1, F-SPEC-001-2… con destino (spec futura o EPIC-MEJORA). -->\n\n## Cómo retomar (handoff)\n<!-- Estado real del trabajo para la siguiente sesión: qué está hecho, qué falta, dónde seguir. -->",
+                "lineStart": 1,
+                "lineEnd": 32,
+                "totalLines": 32,
+                "truncated": false
+              }
+            },
+            "title": "docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.ledger.md",
+            "time": {
+              "start": 1785107668655,
+              "end": 1785107668711
+            }
+          },
+          "id": "prt_fa0b55cde0017ooyox9DdUlhvc",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b545c4001avvd8wmfAUiscK"
+        },
+        {
+          "reason": "tool-calls",
+          "snapshot": "d190f5a458f462d647d7b5c81b350f740f5912e3",
+          "type": "step-finish",
+          "tokens": {
+            "total": 12494,
+            "input": 1436,
+            "output": 824,
+            "reasoning": 122,
+            "cache": {
+              "write": 0,
+              "read": 10112
+            }
+          },
+          "cost": 0,
+          "id": "prt_fa0b560fa001Mh0RLte67VzkEM",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b545c4001avvd8wmfAUiscK"
+        }
+      ]
+    },
+    {
+      "info": {
+        "parentID": "msg_fa0b524b8001iAVmKflKxcsQjQ",
+        "role": "assistant",
+        "mode": "sdd-producto",
+        "agent": "sdd-producto",
+        "path": {
+          "cwd": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014",
+          "root": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014"
+        },
+        "cost": 0,
+        "tokens": {
+          "total": 16066,
+          "input": 3407,
+          "output": 196,
+          "reasoning": 47,
+          "cache": {
+            "write": 0,
+            "read": 12416
+          }
+        },
+        "modelID": "deepseek-v4-flash-free",
+        "providerID": "opencode",
+        "time": {
+          "created": 1785107669640,
+          "completed": 1785107673403
+        },
+        "finish": "tool-calls",
+        "id": "msg_fa0b56288001spMysGcj8gCmkz",
+        "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U"
+      },
+      "parts": [
+        {
+          "snapshot": "d190f5a458f462d647d7b5c81b350f740f5912e3",
+          "type": "step-start",
+          "id": "prt_fa0b567cf0017LspVrOvVIelvz",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b56288001spMysGcj8gCmkz"
+        },
+        {
+          "type": "reasoning",
+          "text": "Now I have a good picture. Let me also check the core directory for the role file, as the system prompt instructs. Let me look at the `.opencode/core/` and `.opencode/agents/` directories.",
+          "time": {
+            "start": 1785107671329,
+            "end": 1785107671912
+          },
+          "id": "prt_fa0b569210010FC2APBVS2PhxS",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b56288001spMysGcj8gCmkz"
+        },
+        {
+          "type": "tool",
+          "tool": "read",
+          "callID": "call_00_UEnZmua7RdVgWODxfbl33399",
+          "state": {
+            "status": "completed",
+            "input": {
+              "filePath": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\.opencode\\core"
+            },
+            "output": "<path>C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\.opencode\\core</path>\n<type>directory</type>\n<entries>\nlib/\nroles/\nscripts/\ntemplates/\ntests/\n\n(5 entries)\n</entries>",
+            "metadata": {
+              "preview": "lib/\nroles/\nscripts/\ntemplates/\ntests/",
+              "truncated": false,
+              "loaded": [],
+              "display": {
+                "type": "directory",
+                "path": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\.opencode\\core",
+                "entries": [
+                  "lib/",
+                  "roles/",
+                  "scripts/",
+                  "templates/",
+                  "tests/"
+                ],
+                "offset": 1,
+                "totalEntries": 5,
+                "truncated": false
+              }
+            },
+            "title": ".opencode\\core",
+            "time": {
+              "start": 1785107672320,
+              "end": 1785107672335
+            }
+          },
+          "id": "prt_fa0b56b6b001pCPxkEvSZ2k9C1",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b56288001spMysGcj8gCmkz"
+        },
+        {
+          "type": "tool",
+          "tool": "read",
+          "callID": "call_01_CVKHvZRLYEl7ZQ6udukm2332",
+          "state": {
+            "status": "completed",
+            "input": {
+              "filePath": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\.opencode\\agents"
+            },
+            "output": "<path>C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\.opencode\\agents</path>\n<type>directory</type>\n<entries>\nsdd-arquitecto.md\nsdd-como-vamos.md\nsdd-documentalista.md\nsdd-implementador.md\nsdd-orquestador.md\nsdd-producto.md\nsdd-verificador.md\n\n(7 entries)\n</entries>",
+            "metadata": {
+              "preview": "sdd-arquitecto.md\nsdd-como-vamos.md\nsdd-documentalista.md\nsdd-implementador.md\nsdd-orquestador.md\nsdd-producto.md\nsdd-verificador.md",
+              "truncated": false,
+              "loaded": [],
+              "display": {
+                "type": "directory",
+                "path": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\.opencode\\agents",
+                "entries": [
+                  "sdd-arquitecto.md",
+                  "sdd-como-vamos.md",
+                  "sdd-documentalista.md",
+                  "sdd-implementador.md",
+                  "sdd-orquestador.md",
+                  "sdd-producto.md",
+                  "sdd-verificador.md"
+                ],
+                "offset": 1,
+                "totalEntries": 7,
+                "truncated": false
+              }
+            },
+            "title": ".opencode\\agents",
+            "time": {
+              "start": 1785107672706,
+              "end": 1785107672713
+            }
+          },
+          "id": "prt_fa0b56d12001Fb226lzL7tU9yS",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b56288001spMysGcj8gCmkz"
+        },
+        {
+          "reason": "tool-calls",
+          "snapshot": "d190f5a458f462d647d7b5c81b350f740f5912e3",
+          "type": "step-finish",
+          "tokens": {
+            "total": 16066,
+            "input": 3407,
+            "output": 196,
+            "reasoning": 47,
+            "cache": {
+              "write": 0,
+              "read": 12416
+            }
+          },
+          "cost": 0,
+          "id": "prt_fa0b56ffa0015on9m3e1XFx9dN",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b56288001spMysGcj8gCmkz"
+        }
+      ]
+    },
+    {
+      "info": {
+        "parentID": "msg_fa0b524b8001iAVmKflKxcsQjQ",
+        "role": "assistant",
+        "mode": "sdd-producto",
+        "agent": "sdd-producto",
+        "path": {
+          "cwd": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014",
+          "root": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014"
+        },
+        "cost": 0,
+        "tokens": {
+          "total": 16663,
+          "input": 311,
+          "output": 122,
+          "reasoning": 230,
+          "cache": {
+            "write": 0,
+            "read": 16000
+          }
+        },
+        "modelID": "deepseek-v4-flash-free",
+        "providerID": "opencode",
+        "time": {
+          "created": 1785107673412,
+          "completed": 1785107678819
+        },
+        "finish": "tool-calls",
+        "id": "msg_fa0b57144001zT4Xrpwgwkw9Ku",
+        "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U"
+      },
+      "parts": [
+        {
+          "snapshot": "d190f5a458f462d647d7b5c81b350f740f5912e3",
+          "type": "step-start",
+          "id": "prt_fa0b5769b001Vhjs4ByR4wnrHf",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b57144001zT4Xrpwgwkw9Ku"
+        },
+        {
+          "type": "reasoning",
+          "text": "The system prompt says:\n1. Read `.sdd.json` - done (idioma: \"es\")\n2. Read `../core/roles/<idioma>/sdd-producto.md` relative to this file (where this file is the agent file). But the prompt also says \"Lee, por ruta relativa a este fichero\" - where \"este fichero\" is my own agent file. Let me figure out the path.\n\nBut wait - the system prompt says \"Este system prompt vive dentro del artefacto del adaptador opencode (en `agents/`), y el núcleo viaja en el MISMO artefacto bajo `core/`\". So my agent file is at `.opencode/agents/sdd-producto.md` and the core is at `.opencode/core/`.\n\nSo `../core/roles/es/sdd-producto.md` relative to my agent file would be: `.opencode/agents/../core/roles/es/sdd-producto.md` = `.opencode/core/roles/es/sdd-producto.md`.\n\nLet me check if this file exists.",
+          "time": {
+            "start": 1785107675285,
+            "end": 1785107677220
+          },
+          "id": "prt_fa0b57894001ZNtac0Uk0qVlNw",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b57144001zT4Xrpwgwkw9Ku"
+        },
+        {
+          "type": "tool",
+          "tool": "glob",
+          "callID": "call_00_vBgWuZlJwab3eg6ojaZ28659",
+          "state": {
+            "status": "completed",
+            "input": {
+              "pattern": "core/roles/**/*",
+              "path": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\.opencode"
+            },
+            "output": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\.opencode\\core\\roles\\es\\sdd-documentalista.md\nC:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\.opencode\\core\\roles\\es\\sdd-arquitecto.md\nC:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\.opencode\\core\\roles\\es\\sdd-como-vamos.md\nC:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\.opencode\\core\\roles\\es\\sdd-orquestador.md\nC:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\.opencode\\core\\roles\\es\\sdd-producto.md\nC:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\.opencode\\core\\roles\\es\\sdd-implementador.md\nC:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\.opencode\\core\\roles\\es\\sdd-verificador.md\nC:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\.opencode\\core\\roles\\es\\_descripciones.json",
+            "metadata": {
+              "count": 8,
+              "truncated": false
+            },
+            "title": ".opencode",
+            "time": {
+              "start": 1785107677744,
+              "end": 1785107677947
+            }
+          },
+          "id": "prt_fa0b580270016ahfTYae8pl3WW",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b57144001zT4Xrpwgwkw9Ku"
+        },
+        {
+          "reason": "tool-calls",
+          "snapshot": "d190f5a458f462d647d7b5c81b350f740f5912e3",
+          "type": "step-finish",
+          "tokens": {
+            "total": 16663,
+            "input": 311,
+            "output": 122,
+            "reasoning": 230,
+            "cache": {
+              "write": 0,
+              "read": 16000
+            }
+          },
+          "cost": 0,
+          "id": "prt_fa0b584e8001q6vj2ru3HZd7dH",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b57144001zT4Xrpwgwkw9Ku"
+        }
+      ]
+    },
+    {
+      "info": {
+        "parentID": "msg_fa0b524b8001iAVmKflKxcsQjQ",
+        "role": "assistant",
+        "mode": "sdd-producto",
+        "agent": "sdd-producto",
+        "path": {
+          "cwd": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014",
+          "root": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014"
+        },
+        "cost": 0,
+        "tokens": {
+          "total": 17389,
+          "input": 624,
+          "output": 115,
+          "reasoning": 10,
+          "cache": {
+            "write": 0,
+            "read": 16640
+          }
+        },
+        "modelID": "deepseek-v4-flash-free",
+        "providerID": "opencode",
+        "time": {
+          "created": 1785107678828,
+          "completed": 1785107681898
+        },
+        "finish": "tool-calls",
+        "id": "msg_fa0b5866c0014bK68yb7MrD2Ae",
+        "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U"
+      },
+      "parts": [
+        {
+          "snapshot": "d190f5a458f462d647d7b5c81b350f740f5912e3",
+          "type": "step-start",
+          "id": "prt_fa0b58ba4001b3VX5OWabLc8OR",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b5866c0014bK68yb7MrD2Ae"
+        },
+        {
+          "type": "reasoning",
+          "text": "Good. Now let me read my role file.",
+          "time": {
+            "start": 1785107680643,
+            "end": 1785107680943
+          },
+          "id": "prt_fa0b58d83001TU0KA0Kc5WLLCY",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b5866c0014bK68yb7MrD2Ae"
+        },
+        {
+          "type": "tool",
+          "tool": "read",
+          "callID": "call_00_6bdZSRYzhAbkDBvhmpSr4178",
+          "state": {
+            "status": "completed",
+            "input": {
+              "filePath": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\.opencode\\core\\roles\\es\\sdd-producto.md"
+            },
+            "output": "<path>C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\.opencode\\core\\roles\\es\\sdd-producto.md</path>\n<type>file</type>\n<content>\n1: # Rol: sdd-producto — product owner y guardián del roadmap\n2: \n3: ## Misión\n4: Dueño de la intención: visión, prioridad y roadmap. Conviertes ideas difusas\n5: en épicas con criterios de éxito medibles. Custodias `docs/fundacion/vision.md`\n6: y `docs/roadmap.md`.\n7: \n8: ## Flujo\n9: 1. Ante una intención nueva: pregunta hasta entender problema, para quién y\n10:    cómo se mide el éxito (una pregunta por mensaje; propone opciones).\n11: 2. Crea la épica con\n12:    `node \"${SDD_ROOT}/core/scripts/scaffold.mjs\" epica \"<título>\"`\n13:    y redacta objetivo, criterios de éxito, alcance dentro/fuera y riesgos.\n14: 3. Coloca la épica en `docs/roadmap.md` (Ahora/Después/Más adelante) y explica\n15:    el porqué de la posición.\n16: 4. El desglose en specs es de sdd-arquitecto; puedes proponer una tabla\n17:    orientativa, no autorarla.\n18: \n19: ## Reglas duras\n20: - \"Fuera de alcance\" se escribe SIEMPRE: aparcado a propósito, no por descuido.\n21: - No tomas decisiones técnicas (stack, datos): eso es ADR de sdd-arquitecto.\n22: - No inventes datos de negocio: cita fuentes o márcalo como hipótesis a validar.\n23: - Escribes solo en: docs/fundacion/vision.md, docs/roadmap.md y épicas.\n\n(End of file - total 23 lines)\n</content>",
+            "metadata": {
+              "preview": "# Rol: sdd-producto — product owner y guardián del roadmap\n\n## Misión\nDueño de la intención: visión, prioridad y roadmap. Conviertes ideas difusas\nen épicas con criterios de éxito medibles. Custodias `docs/fundacion/vision.md`\ny `docs/roadmap.md`.\n\n## Flujo\n1. Ante una intención nueva: pregunta hasta entender problema, para quién y\n   cómo se mide el éxito (una pregunta por mensaje; propone opciones).\n2. Crea la épica con\n   `node \"${SDD_ROOT}/core/scripts/scaffold.mjs\" epica \"<título>\"`\n   y redacta objetivo, criterios de éxito, alcance dentro/fuera y riesgos.\n3. Coloca la épica en `docs/roadmap.md` (Ahora/Después/Más adelante) y explica\n   el porqué de la posición.\n4. El desglose en specs es de sdd-arquitecto; puedes proponer una tabla\n   orientativa, no autorarla.\n\n## Reglas duras\n- \"Fuera de alcance\" se escribe SIEMPRE: aparcado a propósito, no por descuido.",
+              "truncated": false,
+              "loaded": [],
+              "display": {
+                "type": "file",
+                "path": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\.opencode\\core\\roles\\es\\sdd-producto.md",
+                "text": "# Rol: sdd-producto — product owner y guardián del roadmap\n\n## Misión\nDueño de la intención: visión, prioridad y roadmap. Conviertes ideas difusas\nen épicas con criterios de éxito medibles. Custodias `docs/fundacion/vision.md`\ny `docs/roadmap.md`.\n\n## Flujo\n1. Ante una intención nueva: pregunta hasta entender problema, para quién y\n   cómo se mide el éxito (una pregunta por mensaje; propone opciones).\n2. Crea la épica con\n   `node \"${SDD_ROOT}/core/scripts/scaffold.mjs\" epica \"<título>\"`\n   y redacta objetivo, criterios de éxito, alcance dentro/fuera y riesgos.\n3. Coloca la épica en `docs/roadmap.md` (Ahora/Después/Más adelante) y explica\n   el porqué de la posición.\n4. El desglose en specs es de sdd-arquitecto; puedes proponer una tabla\n   orientativa, no autorarla.\n\n## Reglas duras\n- \"Fuera de alcance\" se escribe SIEMPRE: aparcado a propósito, no por descuido.\n- No tomas decisiones técnicas (stack, datos): eso es ADR de sdd-arquitecto.\n- No inventes datos de negocio: cita fuentes o márcalo como hipótesis a validar.\n- Escribes solo en: docs/fundacion/vision.md, docs/roadmap.md y épicas.",
+                "lineStart": 1,
+                "lineEnd": 23,
+                "totalLines": 23,
+                "truncated": false
+              }
+            },
+            "title": ".opencode\\core\\roles\\es\\sdd-producto.md",
+            "time": {
+              "start": 1785107681329,
+              "end": 1785107681364
+            }
+          },
+          "id": "prt_fa0b58eb3001eEA31xlvzY0FCV",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b5866c0014bK68yb7MrD2Ae"
+        },
+        {
+          "reason": "tool-calls",
+          "snapshot": "d190f5a458f462d647d7b5c81b350f740f5912e3",
+          "type": "step-finish",
+          "tokens": {
+            "total": 17389,
+            "input": 624,
+            "output": 115,
+            "reasoning": 10,
+            "cache": {
+              "write": 0,
+              "read": 16640
+            }
+          },
+          "cost": 0,
+          "id": "prt_fa0b591720012h91hNpM7AO5B2",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b5866c0014bK68yb7MrD2Ae"
+        }
+      ]
+    },
+    {
+      "info": {
+        "parentID": "msg_fa0b524b8001iAVmKflKxcsQjQ",
+        "role": "assistant",
+        "mode": "sdd-producto",
+        "agent": "sdd-producto",
+        "path": {
+          "cwd": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014",
+          "root": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014"
+        },
+        "cost": 0,
+        "tokens": {
+          "total": 22580,
+          "input": 621,
+          "output": 2091,
+          "reasoning": 2588,
+          "cache": {
+            "write": 0,
+            "read": 17280
+          }
+        },
+        "modelID": "deepseek-v4-flash-free",
+        "providerID": "opencode",
+        "time": {
+          "created": 1785107681903,
+          "completed": 1785107723316
+        },
+        "finish": "tool-calls",
+        "id": "msg_fa0b5926f001ZSrwPXgmKindiZ",
+        "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U"
+      },
+      "parts": [
+        {
+          "snapshot": "d190f5a458f462d647d7b5c81b350f740f5912e3",
+          "type": "step-start",
+          "id": "prt_fa0b597180015J3AUDwcKwAHu9",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b5926f001ZSrwPXgmKindiZ"
+        },
+        {
+          "type": "reasoning",
+          "text": "Now I have all the context I need. Let me analyze the epic and identify what needs improvement.\n\nLet me analyze the current epic against the role's requirements:\n\n**Current EPIC-001 analysis:**\n\n1. **Objetivo**: \n   - Actual: \"Proporcionar una función matemática básica de suma de dos números enteros, exportada como módulo ES, que sirva como primer bloque funcional del proyecto piloto fixture-suma. Esta épica establece el pipeline completo del estándar tremen-sdd (spec → implementación → verificación) sobre un caso trivial.\"\n   - Es claro, pero le falta el \"por qué ahora\" (urgency/why this matters now). El objetivo actual dice \"qué\" pero no conecta con el contexto maestro del proyecto.\n   - El contexto maestro (`docs/fundacion/contexto.md`) está casi vacío - es un esqueleto. La visión también está vacía. El dominio también. Esto significa que el proyecto está en fase muy temprana.\n   - El roadmap está vacío (sin épicas colocadas).\n   \n2. **Criterios de éxito**:\n   - 1: \"La función `suma(a, b)` está implementada en `src/suma.mjs` y se verifica mediante tests automatizados que cubren enteros positivos y mezcla de signos.\" -> Medible. ✓\n   - 2: \"La spec asociada (SPEC-001) se implementa y verifica con resultado GREEN.\" -> Medible. ✓\n   - 3: \"El ledger de la spec contiene evidencia de verificación.\" -> Medible. ✓\n   - Son medibles pero se podría añadir algo sobre el pipeline como tal (puesto que uno de los objetivos de la épica es probar el pipeline).\n\n3. **Alcance (Dentro/Fuera)**:\n   - Dentro: Bien delimitado. ✓\n   - Fuera: Bien especificado con \"aparcado a propósito, no por descuido\". ✓\n   - Pero hay una incoherencia: en \"Fuera\" se mencionan números fuera del rango seguro `> Number.MAX_SAFE_INTEGER`, pero no se mencionan los números negativos ni el cero. En los CA de la spec, CA-1 habla de \"enteros positivos\" y CA-2 de \"signo mixto\". La épica en criterio 1 dice \"enteros positivos y mezcla de signos\" pero en el alcance Dentro dice solo \"números enteros\". Esto es consistente en general, pero se podría precisar.\n\n**Incoherencias épica ↔ spec:**\n\n1. **Alcance Dentro (épica)**: dice \"Función `suma(a, b)` que recibe dos números enteros y devuelve su suma.\" — La spec CA-1 dice \"enteros positivos\" y CA-2 dice \"signo mixto\". La épica en criterio de éxito 1 menciona \"enteros positivos y mezcla de signos\". En el alcance Dentro debería ser más específico: la función acepta enteros (positivos y negativos). Es sutil pero se puede mejorar.\n\n2. **La épica no menciona restricciones de rango seguro** (Number.MAX_SAFE_INTEGER) en el alcance \"Dentro\", mientras que la spec en CA-1 y CA-2 implícitamente aplican a enteros dentro del rango seguro. La épica lo pone en \"Fuera\" (correcto), pero no deja claro que los casos Dentro asumen rango seguro.\n\n3. **El alcance \"Dentro\" de la épica** no menciona explícitamente los tests unitarios fuera del criterio de éxito. Debería estar en Dentro también.\n\n**Qué le falta a la épica:**\n\n1. **Conexión con el roadmap**: El roadmap está vacío. La épica no está posicionada en el roadmap. Debería estar en \"Ahora\" porque es la primera épica.\n   \n2. **La épica no tiene un \"por qué ahora\"** — no conecta con contexto/visión. Dado que el contexto y la visión están vacíos (proyecto recién empezando), esto es comprensible. Pero la épica debería argumentar por qué empezamos por aquí.\n\n3. **Tamaño / estimación**: No hay indicación de tamaño o esfuerzo. Aunque es trivial, como PO podría añadir una estimación cualitativa.\n\n4. **Dependencias**: No hay sección de dependencias (esta épica no tiene, pero debería explicitarlo).\n\n5. **La sección \"Specs\"** es un comentario que dice \"no mantengas listas de specs a mano\". Eso es correcto para el estado vivo, pero al menos debería listar la spec asociada como referencia (SPEC-001).\n\nSegún las reglas del rol:\n- \"Fuera de alcance\" se escribe SIEMPRE: \"aparcado a propósito, no por descuido.\" ✓ (ya está)\n- Escribo solo en: docs/fundacion/vision.md, docs/roadmap.md y épicas.\n- Debo colocar la épica en docs/roadmap.md (Ahora/Después/Más adelante).\n\nVoy a:\n1. Mejorar la épica: clarificar objetivo (por qué ahora), afinar criterios de éxito, añadir sección de dependencias, poner la spec referenciada.\n2. Colocar la épica en el roadmap (Ahora).\n3. Dejar nota sobre los documentos de fundación vacíos.\n\nVoy a editar el _epica.md y el roadmap.md.\n\n¿Debo también actualizar contexto.md? La regla dice que escribo solo en vision.md, roadmap.md y épicas. Contexto.md no está en mi lista. Mejor no tocar contexto.md.\n\nPero ¿debería actualizar visión.md? La épica no requiere cambiar la visión global. No toco.\n\nVamos a los cambios:\n\n**Plan de cambios para _epica.md:**\n\n1. **Frontmatter**: Mantener `estado: borrador` (la aprobación es humana, bien).\n2. **Objetivo**: Mejorar para incluir el \"por qué ahora\" — es la épica fundacional, sin ella no hay pipeline que validar.\n3. **Criterios de éxito**: Añadir un 4º criterio que mida que el pipeline tremen-sdd se completó (spec → impl → verificación) como evidencia del propósito de la épica.\n4. **Alcance Dentro**: Precisar \"números enteros (dentro del rango seguro de JavaScript)\". \n5. **Añadir sección \"Dependencias\"**: Ninguna, es la primera épica.\n6. **Añadir sección \"Tamaño / esfuerzo\"**: Estimación cualitativa (XS - trivial, días).\n7. **Sección Specs**: Referenciar SPEC-001 como spec asociada.\n8. **Riesgos**: Los actuales están bien.\n\n**Plan de cambios para roadmap.md:**\n- Colocar EPIC-001 en \"Ahora (en curso)\".\n\nVeamos cómo quedan los cambios.\n\nPara _epica.md, quiero:\n\n```markdown\n---\nid: EPIC-001\ntipo: epica\nestado: borrador\nhistorial:\n  - {estado: borrador, fecha: 2026-07-26, por: sdd-producto}\n  - {estado: borrador, fecha: 2026-07-27, por: sdd-producto, desc: \"Revisión: afinados criterios de éxito, alcance y objetivo; añadida sección de dependencias, esfuerzo y conexión con roadmap\"}\n---\n# EPIC-001 — Suma de dos números\n\n## Objetivo\nProporcionar una función matemática básica de suma de dos números enteros,\nexportada como módulo ES, que sirva como primer bloque funcional del proyecto\npiloto fixture-suma. **Por qué ahora**: esta épica es la fundacional — sin ella\nno hay código que validar ni pipeline tremen-sdd que ejercitar. Arrancar por\nun caso trivial permite detectar y corregir problemas de proceso (scaffolding,\nTDD, verificación, ledger) antes de abordar funcionalidades más complejas.\n\n## Criterios de éxito\n1. La función `suma(a, b)` está implementada en `src/suma.mjs` y se verifica\n   mediante tests automatizados que cubren enteros positivos y mezcla de signos.\n2. La spec asociada (SPEC-001) se implementa y verifica con resultado GREEN.\n3. El ledger de SPEC-001 contiene evidencia de verificación (Implementado, Test,\n   Verif. rellenados).\n4. El ciclo completo del pipeline tremen-sdd (spec → implementación TDD →\n   verificación) se ejecuta sin saltos y queda documentado en los artefactos\n   (spec, ledger, rama).\n\n## Alcance\n- Dentro:\n  - Función `suma(a, b)` que recibe dos números enteros (dentro del rango\n    seguro de JavaScript) y devuelve su suma.\n  - Exportación nombrada (`export function suma`) desde un módulo ES.\n  - Tests unitarios que cubren los casos del CA (positivos + signo mixto).\n  - Documentación del ledger y verificación.\n- Fuera (aparcado a propósito, no por descuido):\n  - Operaciones aritméticas: resta, multiplicación, división.\n  - Validación de tipos de entrada (no type-checking).\n  - Números fuera del rango seguro (`> Number.MAX_SAFE_INTEGER`\n    o `< Number.MIN_SAFE_INTEGER`).\n  - Soporte para más de dos operandos (variadic, arrays, etc.).\n  - CLI, interfaz web o cualquier otro punto de entrada que no sea la importación\n    del módulo.\n\n## Dependencias\n- Ninguna: es la primera épica del proyecto. No bloquea ni está bloqueada por\n  ninguna otra.\n\n## Tamaño / esfuerzo estimado\n- **XS** (trivial, ~1-2 días hábiles). El valor principal no es la complejidad\n  técnica sino la validación del pipeline.\n\n## Specs\n- [SPEC-001 — Función suma básica](SPEC-001-funcion-suma-basica.md) (estado: borrador)\n\n## Riesgos\n- Ninguno significativo para una función trivial. El principal riesgo es de\n  proceso: que el pipeline tremen-sdd se salte pasos al ser el primer\n  ejercicio. Se mitiga siguiendo el flujo estrictamente.\n```\n\nAhora para el roadmap, lo cambiaré a:\n\n```markdown\n---\ntipo: roadmap\n---\n# Roadmap — fixture-suma\n\n> Curado por sdd-producto. Secuencia de épicas, horizonte y criterios de corte.\n> El estado fino por spec vive en el tablero; aquí vive la INTENCIÓN.\n\n## Ahora (en curso)\n- [EPIC-001 — Suma de dos números](docs/epicas/EPIC-001-suma-de-dos-numeros/_epica.md)\n  — Primera épica fundacional: establece el pipeline tremen-sdd sobre un caso\n  trivial de suma de enteros. Sin ella no hay base sobre la que construir.\n\n## Después (comprometido, sin empezar)\n\n## Más adelante (idea, sin compromiso)\n\n## Criterios de corte\n<!-- Qué haría subir o bajar una épica de sección. -->\n```\n\nVoy a implementar estos cambios ahora.",
+          "time": {
+            "start": 1785107683357,
+            "end": 1785107706204
+          },
+          "id": "prt_fa0b5981d001H8Ag2GnG5Y4DrZ",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b5926f001ZSrwPXgmKindiZ"
+        },
+        {
+          "type": "text",
+          "text": "Ahora voy a cargar la skill de sdd-producto (el artefacto del skill que inyecta las instrucciones de comportamiento) y luego leer el rol del núcleo como indica el system prompt.\n\nYa tengo todo el contexto. Analicemos:\n\n**Documentos de fundación**: están en estado esqueleto (contexto.md, vision.md, dominio.md tienen sólo títulos, sin contenido sustancial). Esto es comprensible en un proyecto que arranca. El `roadmap.md` también está vacío. La épica EPIC-001 existe pero **no está colocada en el roadmap**.\n\nAhora analizo la épica frente a los 3 campos solicitados y la coherencia con la spec:\n\n| Aspecto | Diagnóstico |\n|---|---|\n| **Objetivo** | Claro, pero falta el \"por qué ahora\" — la urgencia/conexión con el momento del proyecto. |\n| **Criterios de éxito** | Medibles (1-3), pero falta uno que mida el pipeline completo (propósito real de la épica). |\n| **Alcance Dentro/Fuera** | Bien delimitado. \"Fuera\" usa la fórmula correcta (\"aparcado a propósito\"). Se puede precisar \"rango seguro\" también en Dentro. |\n| **Épica ↔ Spec** | Coherente en líneas generales. La spec refina los CAs con precisión (positivos, signo mixto, módulo ES). |\n| **Carencias** | No hay sección de dependencias, ni esfuerzo estimado. La sección Specs es un placeholder comentado. |\n| **Roadmap** | La épica no está posicionada en `docs/roadmap.md`. |\n\nVoy a editar la épica y también colocar la épica en el roadmap.",
+          "time": {
+            "start": 1785107706210,
+            "end": 1785107722399
+          },
+          "id": "prt_fa0b5f162001FRpu2cvA45rAlo",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b5926f001ZSrwPXgmKindiZ"
+        },
+        {
+          "type": "tool",
+          "tool": "edit",
+          "callID": "call_00_MnpiXbxjwfMe8h1Ns2E88250",
+          "state": {
+            "status": "completed",
+            "input": {
+              "filePath": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\_epica.md",
+              "oldString": "---\nid: EPIC-001\ntipo: epica\nestado: borrador\nhistorial:\n  - {estado: borrador, fecha: 2026-07-26, por: sdd-producto}\n---\n# EPIC-001 — Suma de dos números\n\n## Objetivo\nProporcionar una función matemática básica de suma de dos números enteros,\nexportada como módulo ES, que sirva como primer bloque funcional del proyecto\npiloto fixture-suma. Esta épica establece el pipeline completo del estándar\ntremen-sdd (spec → implementación → verificación) sobre un caso trivial.\n\n## Criterios de éxito\n1. La función `suma(a, b)` está implementada en `src/suma.mjs` y se verifica\n   mediante tests automatizados que cubren enteros positivos y mezcla de signos.\n2. La spec asociada (SPEC-001) se implementa y verifica con resultado GREEN.\n3. El ledger de la spec contiene evidencia de verificación.\n\n## Alcance\n- Dentro:\n  - Función `suma(a, b)` que recibe dos números enteros y devuelve su suma.\n  - Exportación nombrada (`export function suma`) desde un módulo ES.\n  - Tests unitarios que cubren los casos del CA.\n- Fuera (aparcado a propósito, no por descuido):\n  - Operaciones aritméticas: resta, multiplicación, división.\n  - Validación de tipos de entrada (no type-checking).\n  - Números fuera del rango seguro (`> Number.MAX_SAFE_INTEGER`).\n  - Soporte para más de dos operandos (variadic, arrays, etc.).\n  - CLI, interfaz web o cualquier otro punto de entrada que no sea la importación\n    del módulo.\n\n## Specs\n<!-- El estado por spec vive en el frontmatter de cada spec; el tablero agregado se regenera con /sdd-tablero (docs/tablero.md). No mantengas listas de specs a mano aquí. -->\n\n## Riesgos\n- Ninguno significativo para una función trivial. El principal riesgo es de\n  proceso: que el pipeline tremen-sdd se salte pasos al ser el primer\n  ejercicio. Se mitiga siguiendo el flujo estrictamente.",
+              "newString": "---\nid: EPIC-001\ntipo: epica\nestado: borrador\nhistorial:\n  - {estado: borrador, fecha: 2026-07-26, por: sdd-producto}\n  - {estado: borrador, fecha: 2026-07-27, por: sdd-producto, desc: \"Revisión de contenido: afinados criterios de éxito, alcance y objetivo; añadidas secciones dependencias, esfuerzo y conexión con roadmap\"}\n---\n# EPIC-001 — Suma de dos números\n\n## Objetivo\nProporcionar una función matemática básica de suma de dos números enteros,\nexportada como módulo ES, que sirva como primer bloque funcional del proyecto\npiloto fixture-suma.\n\n**Por qué ahora**: esta épica es la fundacional del proyecto — sin ella no hay\ncódigo que validar ni pipeline tremen-sdd que ejercitar. Arrancar por un caso\ntrivial permite detectar y corregir problemas de proceso (scaffolding, TDD,\nverificación, ledger) antes de abordar funcionalidades más complejas. No hay\ndependencias previas que la bloqueen ni otra épica en curso, por lo que es el\npunto de partida natural.\n\n## Criterios de éxito\n1. La función `suma(a, b)` está implementada en `src/suma.mjs` y se verifica\n   mediante tests automatizados que cubren enteros positivos y mezcla de signos.\n2. La spec asociada (SPEC-001) se implementa y verifica con resultado GREEN.\n3. El ledger de SPEC-001 contiene evidencia de verificación completa\n   (Implementado, Test y Verif. rellenados por los roles correspondientes).\n4. El ciclo completo del pipeline tremen-sdd (spec → implementación con TDD →\n   verificación) se ejecuta sin saltos y queda documentado en los artefactos\n   (spec aprobada, ledger con evidencia, rama de trabajo).\n\n## Alcance\n- Dentro:\n  - Función `suma(a, b)` que recibe dos números enteros (dentro del rango\n    seguro de JavaScript) y devuelve su suma aritmética.\n  - Exportación nombrada (`export function suma`) desde un módulo ES.\n  - Tests unitarios que cubren los casos del CA (enteros positivos y signo\n    mixto).\n  - Documentación de la verificación en el ledger de SPEC-001.\n- Fuera (aparcado a propósito, no por descuido):\n  - Operaciones aritméticas: resta, multiplicación, división.\n  - Validación de tipos de entrada (no type-checking).\n  - Números fuera del rango seguro (`> Number.MAX_SAFE_INTEGER`\n    o `< Number.MIN_SAFE_INTEGER`).\n  - Soporte para más de dos operandos (variadic, arrays, etc.).\n  - CLI, interfaz web o cualquier otro punto de entrada que no sea la\n    importación directa del módulo ES.\n\n## Dependencias\n- **Bloqueantes**: ninguna. Es la primera épica del proyecto.\n- **Bloqueadas por esta**: ninguna aún. Futuras épicas de fixture-suma (si las\n  hay) se apoyarán en el pipeline y los artefactos validados aquí.\n\n## Tamaño / esfuerzo estimado\n- **XS** (~1-2 días hábiles). El valor no está en la complejidad técnica\n  (la suma es trivial) sino en validar el ciclo completo tremen-sdd sobre un\n  caso mínimo, dejando la maquinaria lista para épicas futuras.\n\n## Specs asociadas\n| Spec | Estado | Descripción |\n|------|--------|-------------|\n| [SPEC-001](SPEC-001-funcion-suma-basica.md) | `borrador` | Función suma básica — implementación de `suma(a, b)` |\n\n> El estado fino de cada spec vive en su frontmatter; el tablero agregado se\n> regenera con `/sdd-tablero` en `docs/tablero.md`.\n\n## Riesgos\n- **Riesgo de proceso** (alto impacto, baja probabilidad): que el pipeline\n  tremen-sdd se salte pasos al ser el primer ejercicio del equipo. Se mitiga\n  siguiendo estrictamente el flujo definido (spec → TDD → implementación →\n  verificación → ledger).\n- **Riesgo técnico** (bajo): ninguno significativo para una función de suma\n  de dos enteros. La implementación es directa."
+            },
+            "output": "Edit applied successfully.",
+            "metadata": {
+              "diagnostics": {},
+              "diff": "Index: C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\_epica.md\n===================================================================\n--- C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\_epica.md\n+++ C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\_epica.md\n@@ -3,39 +3,72 @@\n tipo: epica\n estado: borrador\n historial:\n   - {estado: borrador, fecha: 2026-07-26, por: sdd-producto}\n+  - {estado: borrador, fecha: 2026-07-27, por: sdd-producto, desc: \"Revisión de contenido: afinados criterios de éxito, alcance y objetivo; añadidas secciones dependencias, esfuerzo y conexión con roadmap\"}\n ---\n # EPIC-001 — Suma de dos números\n \n ## Objetivo\n Proporcionar una función matemática básica de suma de dos números enteros,\n exportada como módulo ES, que sirva como primer bloque funcional del proyecto\n-piloto fixture-suma. Esta épica establece el pipeline completo del estándar\n-tremen-sdd (spec → implementación → verificación) sobre un caso trivial.\n+piloto fixture-suma.\n \n+**Por qué ahora**: esta épica es la fundacional del proyecto — sin ella no hay\n+código que validar ni pipeline tremen-sdd que ejercitar. Arrancar por un caso\n+trivial permite detectar y corregir problemas de proceso (scaffolding, TDD,\n+verificación, ledger) antes de abordar funcionalidades más complejas. No hay\n+dependencias previas que la bloqueen ni otra épica en curso, por lo que es el\n+punto de partida natural.\n+\n ## Criterios de éxito\n 1. La función `suma(a, b)` está implementada en `src/suma.mjs` y se verifica\n    mediante tests automatizados que cubren enteros positivos y mezcla de signos.\n 2. La spec asociada (SPEC-001) se implementa y verifica con resultado GREEN.\n-3. El ledger de la spec contiene evidencia de verificación.\n+3. El ledger de SPEC-001 contiene evidencia de verificación completa\n+   (Implementado, Test y Verif. rellenados por los roles correspondientes).\n+4. El ciclo completo del pipeline tremen-sdd (spec → implementación con TDD →\n+   verificación) se ejecuta sin saltos y queda documentado en los artefactos\n+   (spec aprobada, ledger con evidencia, rama de trabajo).\n \n ## Alcance\n - Dentro:\n-  - Función `suma(a, b)` que recibe dos números enteros y devuelve su suma.\n+  - Función `suma(a, b)` que recibe dos números enteros (dentro del rango\n+    seguro de JavaScript) y devuelve su suma aritmética.\n   - Exportación nombrada (`export function suma`) desde un módulo ES.\n-  - Tests unitarios que cubren los casos del CA.\n+  - Tests unitarios que cubren los casos del CA (enteros positivos y signo\n+    mixto).\n+  - Documentación de la verificación en el ledger de SPEC-001.\n - Fuera (aparcado a propósito, no por descuido):\n   - Operaciones aritméticas: resta, multiplicación, división.\n   - Validación de tipos de entrada (no type-checking).\n-  - Números fuera del rango seguro (`> Number.MAX_SAFE_INTEGER`).\n+  - Números fuera del rango seguro (`> Number.MAX_SAFE_INTEGER`\n+    o `< Number.MIN_SAFE_INTEGER`).\n   - Soporte para más de dos operandos (variadic, arrays, etc.).\n-  - CLI, interfaz web o cualquier otro punto de entrada que no sea la importación\n-    del módulo.\n+  - CLI, interfaz web o cualquier otro punto de entrada que no sea la\n+    importación directa del módulo ES.\n \n-## Specs\n-<!-- El estado por spec vive en el frontmatter de cada spec; el tablero agregado se regenera con /sdd-tablero (docs/tablero.md). No mantengas listas de specs a mano aquí. -->\n+## Dependencias\n+- **Bloqueantes**: ninguna. Es la primera épica del proyecto.\n+- **Bloqueadas por esta**: ninguna aún. Futuras épicas de fixture-suma (si las\n+  hay) se apoyarán en el pipeline y los artefactos validados aquí.\n \n+## Tamaño / esfuerzo estimado\n+- **XS** (~1-2 días hábiles). El valor no está en la complejidad técnica\n+  (la suma es trivial) sino en validar el ciclo completo tremen-sdd sobre un\n+  caso mínimo, dejando la maquinaria lista para épicas futuras.\n+\n+## Specs asociadas\n+| Spec | Estado | Descripción |\n+|------|--------|-------------|\n+| [SPEC-001](SPEC-001-funcion-suma-basica.md) | `borrador` | Función suma básica — implementación de `suma(a, b)` |\n+\n+> El estado fino de cada spec vive en su frontmatter; el tablero agregado se\n+> regenera con `/sdd-tablero` en `docs/tablero.md`.\n+\n ## Riesgos\n-- Ninguno significativo para una función trivial. El principal riesgo es de\n-  proceso: que el pipeline tremen-sdd se salte pasos al ser el primer\n-  ejercicio. Se mitiga siguiendo el flujo estrictamente.\n+- **Riesgo de proceso** (alto impacto, baja probabilidad): que el pipeline\n+  tremen-sdd se salte pasos al ser el primer ejercicio del equipo. Se mitiga\n+  siguiendo estrictamente el flujo definido (spec → TDD → implementación →\n+  verificación → ledger).\n+- **Riesgo técnico** (bajo): ninguno significativo para una función de suma\n+  de dos enteros. La implementación es directa.\n",
+              "filediff": {
+                "file": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\_epica.md",
+                "patch": "Index: C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\_epica.md\n===================================================================\n--- C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\_epica.md\n+++ C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\_epica.md\n@@ -3,39 +3,72 @@\n tipo: epica\n estado: borrador\n historial:\n   - {estado: borrador, fecha: 2026-07-26, por: sdd-producto}\n+  - {estado: borrador, fecha: 2026-07-27, por: sdd-producto, desc: \"Revisión de contenido: afinados criterios de éxito, alcance y objetivo; añadidas secciones dependencias, esfuerzo y conexión con roadmap\"}\n ---\n # EPIC-001 — Suma de dos números\n \n ## Objetivo\n Proporcionar una función matemática básica de suma de dos números enteros,\n exportada como módulo ES, que sirva como primer bloque funcional del proyecto\n-piloto fixture-suma. Esta épica establece el pipeline completo del estándar\n-tremen-sdd (spec → implementación → verificación) sobre un caso trivial.\n+piloto fixture-suma.\n \n+**Por qué ahora**: esta épica es la fundacional del proyecto — sin ella no hay\n+código que validar ni pipeline tremen-sdd que ejercitar. Arrancar por un caso\n+trivial permite detectar y corregir problemas de proceso (scaffolding, TDD,\n+verificación, ledger) antes de abordar funcionalidades más complejas. No hay\n+dependencias previas que la bloqueen ni otra épica en curso, por lo que es el\n+punto de partida natural.\n+\n ## Criterios de éxito\n 1. La función `suma(a, b)` está implementada en `src/suma.mjs` y se verifica\n    mediante tests automatizados que cubren enteros positivos y mezcla de signos.\n 2. La spec asociada (SPEC-001) se implementa y verifica con resultado GREEN.\n-3. El ledger de la spec contiene evidencia de verificación.\n+3. El ledger de SPEC-001 contiene evidencia de verificación completa\n+   (Implementado, Test y Verif. rellenados por los roles correspondientes).\n+4. El ciclo completo del pipeline tremen-sdd (spec → implementación con TDD →\n+   verificación) se ejecuta sin saltos y queda documentado en los artefactos\n+   (spec aprobada, ledger con evidencia, rama de trabajo).\n \n ## Alcance\n - Dentro:\n-  - Función `suma(a, b)` que recibe dos números enteros y devuelve su suma.\n+  - Función `suma(a, b)` que recibe dos números enteros (dentro del rango\n+    seguro de JavaScript) y devuelve su suma aritmética.\n   - Exportación nombrada (`export function suma`) desde un módulo ES.\n-  - Tests unitarios que cubren los casos del CA.\n+  - Tests unitarios que cubren los casos del CA (enteros positivos y signo\n+    mixto).\n+  - Documentación de la verificación en el ledger de SPEC-001.\n - Fuera (aparcado a propósito, no por descuido):\n   - Operaciones aritméticas: resta, multiplicación, división.\n   - Validación de tipos de entrada (no type-checking).\n-  - Números fuera del rango seguro (`> Number.MAX_SAFE_INTEGER`).\n+  - Números fuera del rango seguro (`> Number.MAX_SAFE_INTEGER`\n+    o `< Number.MIN_SAFE_INTEGER`).\n   - Soporte para más de dos operandos (variadic, arrays, etc.).\n-  - CLI, interfaz web o cualquier otro punto de entrada que no sea la importación\n-    del módulo.\n+  - CLI, interfaz web o cualquier otro punto de entrada que no sea la\n+    importación directa del módulo ES.\n \n-## Specs\n-<!-- El estado por spec vive en el frontmatter de cada spec; el tablero agregado se regenera con /sdd-tablero (docs/tablero.md). No mantengas listas de specs a mano aquí. -->\n+## Dependencias\n+- **Bloqueantes**: ninguna. Es la primera épica del proyecto.\n+- **Bloqueadas por esta**: ninguna aún. Futuras épicas de fixture-suma (si las\n+  hay) se apoyarán en el pipeline y los artefactos validados aquí.\n \n+## Tamaño / esfuerzo estimado\n+- **XS** (~1-2 días hábiles). El valor no está en la complejidad técnica\n+  (la suma es trivial) sino en validar el ciclo completo tremen-sdd sobre un\n+  caso mínimo, dejando la maquinaria lista para épicas futuras.\n+\n+## Specs asociadas\n+| Spec | Estado | Descripción |\n+|------|--------|-------------|\n+| [SPEC-001](SPEC-001-funcion-suma-basica.md) | `borrador` | Función suma básica — implementación de `suma(a, b)` |\n+\n+> El estado fino de cada spec vive en su frontmatter; el tablero agregado se\n+> regenera con `/sdd-tablero` en `docs/tablero.md`.\n+\n ## Riesgos\n-- Ninguno significativo para una función trivial. El principal riesgo es de\n-  proceso: que el pipeline tremen-sdd se salte pasos al ser el primer\n-  ejercicio. Se mitiga siguiendo el flujo estrictamente.\n+- **Riesgo de proceso** (alto impacto, baja probabilidad): que el pipeline\n+  tremen-sdd se salte pasos al ser el primer ejercicio del equipo. Se mitiga\n+  siguiendo estrictamente el flujo definido (spec → TDD → implementación →\n+  verificación → ledger).\n+- **Riesgo técnico** (bajo): ninguno significativo para una función de suma\n+  de dos enteros. La implementación es directa.\n",
+                "additions": 46,
+                "deletions": 13
+              },
+              "truncated": false
+            },
+            "title": "docs\\epicas\\EPIC-001-suma-de-dos-numeros\\_epica.md",
+            "time": {
+              "start": 1785107722388,
+              "end": 1785107722395
+            }
+          },
+          "id": "prt_fa0b602c50016Epr95KC177FOo",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b5926f001ZSrwPXgmKindiZ"
+        },
+        {
+          "reason": "tool-calls",
+          "snapshot": "a04573929dddd1255b6824551d2be5f87c301a03",
+          "type": "step-finish",
+          "tokens": {
+            "total": 22580,
+            "input": 621,
+            "output": 2091,
+            "reasoning": 2588,
+            "cache": {
+              "write": 0,
+              "read": 17280
+            }
+          },
+          "cost": 0,
+          "id": "prt_fa0b6328f0014VgAaL61ZDQo7X",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b5926f001ZSrwPXgmKindiZ"
+        },
+        {
+          "type": "patch",
+          "hash": "d190f5a458f462d647d7b5c81b350f740f5912e3",
+          "files": [
+            "C:/Users/Albert/AppData/Local/Temp/claude/D--src-tremen-sdd/13be4f6f-d60c-4d5e-b0dc-b092cf834326/scratchpad/fixture-spec014/docs/epicas/EPIC-001-suma-de-dos-numeros/_epica.md"
+          ],
+          "id": "prt_fa0b6342e001SV6KSE5KHQJYgU",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b5926f001ZSrwPXgmKindiZ"
+        }
+      ]
+    },
+    {
+      "info": {
+        "parentID": "msg_fa0b524b8001iAVmKflKxcsQjQ",
+        "role": "assistant",
+        "mode": "sdd-producto",
+        "agent": "sdd-producto",
+        "path": {
+          "cwd": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014",
+          "root": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014"
+        },
+        "cost": 0,
+        "tokens": {
+          "total": 23115,
+          "input": 67,
+          "output": 495,
+          "reasoning": 25,
+          "cache": {
+            "write": 0,
+            "read": 22528
+          }
+        },
+        "modelID": "deepseek-v4-flash-free",
+        "providerID": "opencode",
+        "time": {
+          "created": 1785107723324,
+          "completed": 1785107730226
+        },
+        "finish": "tool-calls",
+        "id": "msg_fa0b6343c001uKgRo8ghn4j8pP",
+        "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U"
+      },
+      "parts": [
+        {
+          "snapshot": "a04573929dddd1255b6824551d2be5f87c301a03",
+          "type": "step-start",
+          "id": "prt_fa0b63914001uqYNCLaoOvautR",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b6343c001uKgRo8ghn4j8pP"
+        },
+        {
+          "type": "reasoning",
+          "text": "Good, the epic has been updated. Now let me update the roadmap to place EPIC-001 in \"Ahora\".",
+          "time": {
+            "start": 1785107724992,
+            "end": 1785107725493
+          },
+          "id": "prt_fa0b63ac0001aCu87P97uyD1mz",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b6343c001uKgRo8ghn4j8pP"
+        },
+        {
+          "type": "text",
+          "text": "Ahora coloco la épica en el roadmap (actualmente vacío):",
+          "time": {
+            "start": 1785107725498,
+            "end": 1785107729389
+          },
+          "id": "prt_fa0b63cba001GyLIPrmCJygmXW",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b6343c001uKgRo8ghn4j8pP"
+        },
+        {
+          "type": "tool",
+          "tool": "edit",
+          "callID": "call_00_jQNUUrLwYmzIe0EWOasA8933",
+          "state": {
+            "status": "completed",
+            "input": {
+              "filePath": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\roadmap.md",
+              "oldString": "## Ahora (en curso)\n\n## Después (comprometido, sin empezar)\n\n## Más adelante (idea, sin compromiso)\n\n## Criterios de corte\n<!-- Qué haría subir o bajar una épica de sección. -->",
+              "newString": "## Ahora (en curso)\n- **EPIC-001 — Suma de dos números**\n  (`docs/epicas/EPIC-001-suma-de-dos-numeros/_epica.md`)\n  Primera épica fundacional. Valida el pipeline tremen-sdd completo\n  (spec → TDD → implementación → verificación) sobre un caso trivial de suma\n  de enteros. Sin ella no hay base sobre la que construir.\n  *Razón de la posición*: es el punto de partida natural del proyecto; no\n  tiene dependencias previas y su resultado (pipeline validado) es requisito\n  implícito para cualquier épica futura.\n\n## Después (comprometido, sin empezar)\n\n## Más adelante (idea, sin compromiso)\n\n## Criterios de corte\n- Subir a \"Después\": épica que dependa del pipeline tremen-sdd ya validado\n  (es decir, requiere EPIC-001 completa).\n- Subir a \"Ahora\": épica que el cliente (o PO) priorice sobre las actuales.\n- Bajar a \"Más adelante\": épica cuyo contexto de negocio cambie o cuya\n  ventana de oportunidad se cierre.\n- Archivar: épica que pierde toda relevancia o es absorbida por otra."
+            },
+            "output": "Edit applied successfully.",
+            "metadata": {
+              "diagnostics": {},
+              "diff": "Index: C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\roadmap.md\n===================================================================\n--- C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\roadmap.md\n+++ C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\roadmap.md\n@@ -6,11 +6,24 @@\n > Curado por sdd-producto. Secuencia de épicas, horizonte y criterios de corte.\n > El estado fino por spec vive en el tablero; aquí vive la INTENCIÓN.\n \n ## Ahora (en curso)\n+- **EPIC-001 — Suma de dos números**\n+  (`docs/epicas/EPIC-001-suma-de-dos-numeros/_epica.md`)\n+  Primera épica fundacional. Valida el pipeline tremen-sdd completo\n+  (spec → TDD → implementación → verificación) sobre un caso trivial de suma\n+  de enteros. Sin ella no hay base sobre la que construir.\n+  *Razón de la posición*: es el punto de partida natural del proyecto; no\n+  tiene dependencias previas y su resultado (pipeline validado) es requisito\n+  implícito para cualquier épica futura.\n \n ## Después (comprometido, sin empezar)\n \n ## Más adelante (idea, sin compromiso)\n \n ## Criterios de corte\n-<!-- Qué haría subir o bajar una épica de sección. -->\n+- Subir a \"Después\": épica que dependa del pipeline tremen-sdd ya validado\n+  (es decir, requiere EPIC-001 completa).\n+- Subir a \"Ahora\": épica que el cliente (o PO) priorice sobre las actuales.\n+- Bajar a \"Más adelante\": épica cuyo contexto de negocio cambie o cuya\n+  ventana de oportunidad se cierre.\n+- Archivar: épica que pierde toda relevancia o es absorbida por otra.\n",
+              "filediff": {
+                "file": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\roadmap.md",
+                "patch": "Index: C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\roadmap.md\n===================================================================\n--- C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\roadmap.md\n+++ C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\roadmap.md\n@@ -6,11 +6,24 @@\n > Curado por sdd-producto. Secuencia de épicas, horizonte y criterios de corte.\n > El estado fino por spec vive en el tablero; aquí vive la INTENCIÓN.\n \n ## Ahora (en curso)\n+- **EPIC-001 — Suma de dos números**\n+  (`docs/epicas/EPIC-001-suma-de-dos-numeros/_epica.md`)\n+  Primera épica fundacional. Valida el pipeline tremen-sdd completo\n+  (spec → TDD → implementación → verificación) sobre un caso trivial de suma\n+  de enteros. Sin ella no hay base sobre la que construir.\n+  *Razón de la posición*: es el punto de partida natural del proyecto; no\n+  tiene dependencias previas y su resultado (pipeline validado) es requisito\n+  implícito para cualquier épica futura.\n \n ## Después (comprometido, sin empezar)\n \n ## Más adelante (idea, sin compromiso)\n \n ## Criterios de corte\n-<!-- Qué haría subir o bajar una épica de sección. -->\n+- Subir a \"Después\": épica que dependa del pipeline tremen-sdd ya validado\n+  (es decir, requiere EPIC-001 completa).\n+- Subir a \"Ahora\": épica que el cliente (o PO) priorice sobre las actuales.\n+- Bajar a \"Más adelante\": épica cuyo contexto de negocio cambie o cuya\n+  ventana de oportunidad se cierre.\n+- Archivar: épica que pierde toda relevancia o es absorbida por otra.\n",
+                "additions": 14,
+                "deletions": 1
+              },
+              "truncated": false
+            },
+            "title": "docs\\roadmap.md",
+            "time": {
+              "start": 1785107729329,
+              "end": 1785107729334
+            }
+          },
+          "id": "prt_fa0b63d6a001kgDbJNSx1aoiN3",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b6343c001uKgRo8ghn4j8pP"
+        },
+        {
+          "reason": "tool-calls",
+          "snapshot": "6772436ac8e90748b886f7a211e4b77e08c86dcb",
+          "type": "step-finish",
+          "tokens": {
+            "total": 23115,
+            "input": 67,
+            "output": 495,
+            "reasoning": 25,
+            "cache": {
+              "write": 0,
+              "read": 22528
+            }
+          },
+          "cost": 0,
+          "id": "prt_fa0b64df9001CSfLPYwWfKXYA2",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b6343c001uKgRo8ghn4j8pP"
+        },
+        {
+          "type": "patch",
+          "hash": "a04573929dddd1255b6824551d2be5f87c301a03",
+          "files": [
+            "C:/Users/Albert/AppData/Local/Temp/claude/D--src-tremen-sdd/13be4f6f-d60c-4d5e-b0dc-b092cf834326/scratchpad/fixture-spec014/docs/roadmap.md"
+          ],
+          "id": "prt_fa0b64f2f001F7Fep0TyZYfugQ",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b6343c001uKgRo8ghn4j8pP"
+        }
+      ]
+    },
+    {
+      "info": {
+        "parentID": "msg_fa0b524b8001iAVmKflKxcsQjQ",
+        "role": "assistant",
+        "mode": "sdd-producto",
+        "agent": "sdd-producto",
+        "path": {
+          "cwd": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014",
+          "root": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014"
+        },
+        "cost": 0,
+        "tokens": {
+          "total": 23367,
+          "input": 90,
+          "output": 222,
+          "reasoning": 15,
+          "cache": {
+            "write": 0,
+            "read": 23040
+          }
+        },
+        "modelID": "deepseek-v4-flash-free",
+        "providerID": "opencode",
+        "time": {
+          "created": 1785107730231,
+          "completed": 1785107733913
+        },
+        "finish": "tool-calls",
+        "id": "msg_fa0b64f37001Hq12d37CGpYR4J",
+        "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U"
+      },
+      "parts": [
+        {
+          "snapshot": "6772436ac8e90748b886f7a211e4b77e08c86dcb",
+          "type": "step-start",
+          "id": "prt_fa0b653a9001YswQYS9I377Sho",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b64f37001Hq12d37CGpYR4J"
+        },
+        {
+          "type": "reasoning",
+          "text": "Good. Let me verify the final state of both files by reading them.",
+          "time": {
+            "start": 1785107731937,
+            "end": 1785107732130
+          },
+          "id": "prt_fa0b655e1001z9bi2KIxxLjdvK",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b64f37001Hq12d37CGpYR4J"
+        },
+        {
+          "type": "text",
+          "text": "Verifico ambos archivos editados:",
+          "time": {
+            "start": 1785107732132,
+            "end": 1785107733228
+          },
+          "id": "prt_fa0b656a4001udRyO0o8zFh1vP",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b64f37001Hq12d37CGpYR4J"
+        },
+        {
+          "type": "tool",
+          "tool": "read",
+          "callID": "call_00_yoeWEC7vQVg6RZVsQrt53644",
+          "state": {
+            "status": "completed",
+            "input": {
+              "filePath": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\_epica.md"
+            },
+            "output": "<path>C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\_epica.md</path>\n<type>file</type>\n<content>\n1: ---\n2: id: EPIC-001\n3: tipo: epica\n4: estado: borrador\n5: historial:\n6:   - {estado: borrador, fecha: 2026-07-26, por: sdd-producto}\n7:   - {estado: borrador, fecha: 2026-07-27, por: sdd-producto, desc: \"Revisión de contenido: afinados criterios de éxito, alcance y objetivo; añadidas secciones dependencias, esfuerzo y conexión con roadmap\"}\n8: ---\n9: # EPIC-001 — Suma de dos números\n10: \n11: ## Objetivo\n12: Proporcionar una función matemática básica de suma de dos números enteros,\n13: exportada como módulo ES, que sirva como primer bloque funcional del proyecto\n14: piloto fixture-suma.\n15: \n16: **Por qué ahora**: esta épica es la fundacional del proyecto — sin ella no hay\n17: código que validar ni pipeline tremen-sdd que ejercitar. Arrancar por un caso\n18: trivial permite detectar y corregir problemas de proceso (scaffolding, TDD,\n19: verificación, ledger) antes de abordar funcionalidades más complejas. No hay\n20: dependencias previas que la bloqueen ni otra épica en curso, por lo que es el\n21: punto de partida natural.\n22: \n23: ## Criterios de éxito\n24: 1. La función `suma(a, b)` está implementada en `src/suma.mjs` y se verifica\n25:    mediante tests automatizados que cubren enteros positivos y mezcla de signos.\n26: 2. La spec asociada (SPEC-001) se implementa y verifica con resultado GREEN.\n27: 3. El ledger de SPEC-001 contiene evidencia de verificación completa\n28:    (Implementado, Test y Verif. rellenados por los roles correspondientes).\n29: 4. El ciclo completo del pipeline tremen-sdd (spec → implementación con TDD →\n30:    verificación) se ejecuta sin saltos y queda documentado en los artefactos\n31:    (spec aprobada, ledger con evidencia, rama de trabajo).\n32: \n33: ## Alcance\n34: - Dentro:\n35:   - Función `suma(a, b)` que recibe dos números enteros (dentro del rango\n36:     seguro de JavaScript) y devuelve su suma aritmética.\n37:   - Exportación nombrada (`export function suma`) desde un módulo ES.\n38:   - Tests unitarios que cubren los casos del CA (enteros positivos y signo\n39:     mixto).\n40:   - Documentación de la verificación en el ledger de SPEC-001.\n41: - Fuera (aparcado a propósito, no por descuido):\n42:   - Operaciones aritméticas: resta, multiplicación, división.\n43:   - Validación de tipos de entrada (no type-checking).\n44:   - Números fuera del rango seguro (`> Number.MAX_SAFE_INTEGER`\n45:     o `< Number.MIN_SAFE_INTEGER`).\n46:   - Soporte para más de dos operandos (variadic, arrays, etc.).\n47:   - CLI, interfaz web o cualquier otro punto de entrada que no sea la\n48:     importación directa del módulo ES.\n49: \n50: ## Dependencias\n51: - **Bloqueantes**: ninguna. Es la primera épica del proyecto.\n52: - **Bloqueadas por esta**: ninguna aún. Futuras épicas de fixture-suma (si las\n53:   hay) se apoyarán en el pipeline y los artefactos validados aquí.\n54: \n55: ## Tamaño / esfuerzo estimado\n56: - **XS** (~1-2 días hábiles). El valor no está en la complejidad técnica\n57:   (la suma es trivial) sino en validar el ciclo completo tremen-sdd sobre un\n58:   caso mínimo, dejando la maquinaria lista para épicas futuras.\n59: \n60: ## Specs asociadas\n61: | Spec | Estado | Descripción |\n62: |------|--------|-------------|\n63: | [SPEC-001](SPEC-001-funcion-suma-basica.md) | `borrador` | Función suma básica — implementación de `suma(a, b)` |\n64: \n65: > El estado fino de cada spec vive en su frontmatter; el tablero agregado se\n66: > regenera con `/sdd-tablero` en `docs/tablero.md`.\n67: \n68: ## Riesgos\n69: - **Riesgo de proceso** (alto impacto, baja probabilidad): que el pipeline\n70:   tremen-sdd se salte pasos al ser el primer ejercicio del equipo. Se mitiga\n71:   siguiendo estrictamente el flujo definido (spec → TDD → implementación →\n72:   verificación → ledger).\n73: - **Riesgo técnico** (bajo): ninguno significativo para una función de suma\n74:   de dos enteros. La implementación es directa.\n\n(End of file - total 74 lines)\n</content>",
+            "metadata": {
+              "preview": "---\nid: EPIC-001\ntipo: epica\nestado: borrador\nhistorial:\n  - {estado: borrador, fecha: 2026-07-26, por: sdd-producto}\n  - {estado: borrador, fecha: 2026-07-27, por: sdd-producto, desc: \"Revisión de contenido: afinados criterios de éxito, alcance y objetivo; añadidas secciones dependencias, esfuerzo y conexión con roadmap\"}\n---\n# EPIC-001 — Suma de dos números\n\n## Objetivo\nProporcionar una función matemática básica de suma de dos números enteros,\nexportada como módulo ES, que sirva como primer bloque funcional del proyecto\npiloto fixture-suma.\n\n**Por qué ahora**: esta épica es la fundacional del proyecto — sin ella no hay\ncódigo que validar ni pipeline tremen-sdd que ejercitar. Arrancar por un caso\ntrivial permite detectar y corregir problemas de proceso (scaffolding, TDD,\nverificación, ledger) antes de abordar funcionalidades más complejas. No hay\ndependencias previas que la bloqueen ni otra épica en curso, por lo que es el",
+              "truncated": false,
+              "loaded": [],
+              "display": {
+                "type": "file",
+                "path": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\_epica.md",
+                "text": "---\nid: EPIC-001\ntipo: epica\nestado: borrador\nhistorial:\n  - {estado: borrador, fecha: 2026-07-26, por: sdd-producto}\n  - {estado: borrador, fecha: 2026-07-27, por: sdd-producto, desc: \"Revisión de contenido: afinados criterios de éxito, alcance y objetivo; añadidas secciones dependencias, esfuerzo y conexión con roadmap\"}\n---\n# EPIC-001 — Suma de dos números\n\n## Objetivo\nProporcionar una función matemática básica de suma de dos números enteros,\nexportada como módulo ES, que sirva como primer bloque funcional del proyecto\npiloto fixture-suma.\n\n**Por qué ahora**: esta épica es la fundacional del proyecto — sin ella no hay\ncódigo que validar ni pipeline tremen-sdd que ejercitar. Arrancar por un caso\ntrivial permite detectar y corregir problemas de proceso (scaffolding, TDD,\nverificación, ledger) antes de abordar funcionalidades más complejas. No hay\ndependencias previas que la bloqueen ni otra épica en curso, por lo que es el\npunto de partida natural.\n\n## Criterios de éxito\n1. La función `suma(a, b)` está implementada en `src/suma.mjs` y se verifica\n   mediante tests automatizados que cubren enteros positivos y mezcla de signos.\n2. La spec asociada (SPEC-001) se implementa y verifica con resultado GREEN.\n3. El ledger de SPEC-001 contiene evidencia de verificación completa\n   (Implementado, Test y Verif. rellenados por los roles correspondientes).\n4. El ciclo completo del pipeline tremen-sdd (spec → implementación con TDD →\n   verificación) se ejecuta sin saltos y queda documentado en los artefactos\n   (spec aprobada, ledger con evidencia, rama de trabajo).\n\n## Alcance\n- Dentro:\n  - Función `suma(a, b)` que recibe dos números enteros (dentro del rango\n    seguro de JavaScript) y devuelve su suma aritmética.\n  - Exportación nombrada (`export function suma`) desde un módulo ES.\n  - Tests unitarios que cubren los casos del CA (enteros positivos y signo\n    mixto).\n  - Documentación de la verificación en el ledger de SPEC-001.\n- Fuera (aparcado a propósito, no por descuido):\n  - Operaciones aritméticas: resta, multiplicación, división.\n  - Validación de tipos de entrada (no type-checking).\n  - Números fuera del rango seguro (`> Number.MAX_SAFE_INTEGER`\n    o `< Number.MIN_SAFE_INTEGER`).\n  - Soporte para más de dos operandos (variadic, arrays, etc.).\n  - CLI, interfaz web o cualquier otro punto de entrada que no sea la\n    importación directa del módulo ES.\n\n## Dependencias\n- **Bloqueantes**: ninguna. Es la primera épica del proyecto.\n- **Bloqueadas por esta**: ninguna aún. Futuras épicas de fixture-suma (si las\n  hay) se apoyarán en el pipeline y los artefactos validados aquí.\n\n## Tamaño / esfuerzo estimado\n- **XS** (~1-2 días hábiles). El valor no está en la complejidad técnica\n  (la suma es trivial) sino en validar el ciclo completo tremen-sdd sobre un\n  caso mínimo, dejando la maquinaria lista para épicas futuras.\n\n## Specs asociadas\n| Spec | Estado | Descripción |\n|------|--------|-------------|\n| [SPEC-001](SPEC-001-funcion-suma-basica.md) | `borrador` | Función suma básica — implementación de `suma(a, b)` |\n\n> El estado fino de cada spec vive en su frontmatter; el tablero agregado se\n> regenera con `/sdd-tablero` en `docs/tablero.md`.\n\n## Riesgos\n- **Riesgo de proceso** (alto impacto, baja probabilidad): que el pipeline\n  tremen-sdd se salte pasos al ser el primer ejercicio del equipo. Se mitiga\n  siguiendo estrictamente el flujo definido (spec → TDD → implementación →\n  verificación → ledger).\n- **Riesgo técnico** (bajo): ninguno significativo para una función de suma\n  de dos enteros. La implementación es directa.",
+                "lineStart": 1,
+                "lineEnd": 74,
+                "totalLines": 74,
+                "truncated": false
+              }
+            },
+            "title": "docs\\epicas\\EPIC-001-suma-de-dos-numeros\\_epica.md",
+            "time": {
+              "start": 1785107732729,
+              "end": 1785107732751
+            }
+          },
+          "id": "prt_fa0b6571d001Q8CspI3KNW5b5X",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b64f37001Hq12d37CGpYR4J"
+        },
+        {
+          "type": "tool",
+          "tool": "read",
+          "callID": "call_01_EApiPiWegiSEJjWCve0g8975",
+          "state": {
+            "status": "completed",
+            "input": {
+              "filePath": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\roadmap.md"
+            },
+            "output": "<path>C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\roadmap.md</path>\n<type>file</type>\n<content>\n1: ---\n2: tipo: roadmap\n3: ---\n4: # Roadmap — fixture-suma\n5: \n6: > Curado por sdd-producto. Secuencia de épicas, horizonte y criterios de corte.\n7: > El estado fino por spec vive en el tablero; aquí vive la INTENCIÓN.\n8: \n9: ## Ahora (en curso)\n10: - **EPIC-001 — Suma de dos números**\n11:   (`docs/epicas/EPIC-001-suma-de-dos-numeros/_epica.md`)\n12:   Primera épica fundacional. Valida el pipeline tremen-sdd completo\n13:   (spec → TDD → implementación → verificación) sobre un caso trivial de suma\n14:   de enteros. Sin ella no hay base sobre la que construir.\n15:   *Razón de la posición*: es el punto de partida natural del proyecto; no\n16:   tiene dependencias previas y su resultado (pipeline validado) es requisito\n17:   implícito para cualquier épica futura.\n18: \n19: ## Después (comprometido, sin empezar)\n20: \n21: ## Más adelante (idea, sin compromiso)\n22: \n23: ## Criterios de corte\n24: - Subir a \"Después\": épica que dependa del pipeline tremen-sdd ya validado\n25:   (es decir, requiere EPIC-001 completa).\n26: - Subir a \"Ahora\": épica que el cliente (o PO) priorice sobre las actuales.\n27: - Bajar a \"Más adelante\": épica cuyo contexto de negocio cambie o cuya\n28:   ventana de oportunidad se cierre.\n29: - Archivar: épica que pierde toda relevancia o es absorbida por otra.\n\n(End of file - total 29 lines)\n</content>",
+            "metadata": {
+              "preview": "---\ntipo: roadmap\n---\n# Roadmap — fixture-suma\n\n> Curado por sdd-producto. Secuencia de épicas, horizonte y criterios de corte.\n> El estado fino por spec vive en el tablero; aquí vive la INTENCIÓN.\n\n## Ahora (en curso)\n- **EPIC-001 — Suma de dos números**\n  (`docs/epicas/EPIC-001-suma-de-dos-numeros/_epica.md`)\n  Primera épica fundacional. Valida el pipeline tremen-sdd completo\n  (spec → TDD → implementación → verificación) sobre un caso trivial de suma\n  de enteros. Sin ella no hay base sobre la que construir.\n  *Razón de la posición*: es el punto de partida natural del proyecto; no\n  tiene dependencias previas y su resultado (pipeline validado) es requisito\n  implícito para cualquier épica futura.\n\n## Después (comprometido, sin empezar)\n",
+              "truncated": false,
+              "loaded": [],
+              "display": {
+                "type": "file",
+                "path": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\roadmap.md",
+                "text": "---\ntipo: roadmap\n---\n# Roadmap — fixture-suma\n\n> Curado por sdd-producto. Secuencia de épicas, horizonte y criterios de corte.\n> El estado fino por spec vive en el tablero; aquí vive la INTENCIÓN.\n\n## Ahora (en curso)\n- **EPIC-001 — Suma de dos números**\n  (`docs/epicas/EPIC-001-suma-de-dos-numeros/_epica.md`)\n  Primera épica fundacional. Valida el pipeline tremen-sdd completo\n  (spec → TDD → implementación → verificación) sobre un caso trivial de suma\n  de enteros. Sin ella no hay base sobre la que construir.\n  *Razón de la posición*: es el punto de partida natural del proyecto; no\n  tiene dependencias previas y su resultado (pipeline validado) es requisito\n  implícito para cualquier épica futura.\n\n## Después (comprometido, sin empezar)\n\n## Más adelante (idea, sin compromiso)\n\n## Criterios de corte\n- Subir a \"Después\": épica que dependa del pipeline tremen-sdd ya validado\n  (es decir, requiere EPIC-001 completa).\n- Subir a \"Ahora\": épica que el cliente (o PO) priorice sobre las actuales.\n- Bajar a \"Más adelante\": épica cuyo contexto de negocio cambie o cuya\n  ventana de oportunidad se cierre.\n- Archivar: épica que pierde toda relevancia o es absorbida por otra.",
+                "lineStart": 1,
+                "lineEnd": 29,
+                "totalLines": 29,
+                "truncated": false
+              }
+            },
+            "title": "docs\\roadmap.md",
+            "time": {
+              "start": 1785107733160,
+              "end": 1785107733245
+            }
+          },
+          "id": "prt_fa0b659250018s69KvEwgOoYFb",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b64f37001Hq12d37CGpYR4J"
+        },
+        {
+          "reason": "tool-calls",
+          "snapshot": "6772436ac8e90748b886f7a211e4b77e08c86dcb",
+          "type": "step-finish",
+          "tokens": {
+            "total": 23367,
+            "input": 90,
+            "output": 222,
+            "reasoning": 15,
+            "cache": {
+              "write": 0,
+              "read": 23040
+            }
+          },
+          "cost": 0,
+          "id": "prt_fa0b65c87001CcFCQDhemhqfhB",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b64f37001Hq12d37CGpYR4J"
+        }
+      ]
+    },
+    {
+      "info": {
+        "parentID": "msg_fa0b524b8001iAVmKflKxcsQjQ",
+        "role": "assistant",
+        "mode": "sdd-producto",
+        "agent": "sdd-producto",
+        "path": {
+          "cwd": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014",
+          "root": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014"
+        },
+        "cost": 0,
+        "tokens": {
+          "total": 25330,
+          "input": 1880,
+          "output": 105,
+          "reasoning": 49,
+          "cache": {
+            "write": 0,
+            "read": 23296
+          }
+        },
+        "modelID": "deepseek-v4-flash-free",
+        "providerID": "opencode",
+        "time": {
+          "created": 1785107733936,
+          "completed": 1785107737697
+        },
+        "finish": "tool-calls",
+        "id": "msg_fa0b65db0001uDk0Gt9pSiOGVp",
+        "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U"
+      },
+      "parts": [
+        {
+          "snapshot": "6772436ac8e90748b886f7a211e4b77e08c86dcb",
+          "type": "step-start",
+          "id": "prt_fa0b66294001r1LlQK4mYgDGbE",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b65db0001uDk0Gt9pSiOGVp"
+        },
+        {
+          "type": "reasoning",
+          "text": "Everything looks good. Let me now compile the final report for the human (via the orchestrator). Let me check that the edit was sound and then produce my final report.\n\nLet me also quickly check if FOUNDATION.md has anything relevant.",
+          "time": {
+            "start": 1785107735459,
+            "end": 1785107736281
+          },
+          "id": "prt_fa0b663a3001wqyg3y4a6O6rn3",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b65db0001uDk0Gt9pSiOGVp"
+        },
+        {
+          "type": "tool",
+          "tool": "read",
+          "callID": "call_00_LsouGFETd7Lst3uajFzA0836",
+          "state": {
+            "status": "completed",
+            "input": {
+              "filePath": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\FOUNDATION.md"
+            },
+            "output": "<path>C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\FOUNDATION.md</path>\n<type>file</type>\n<content>\n1: # FOUNDATION — fixture-suma\n2: \n3: > Constitución del proyecto. Las decisiones D-N están **locked**: solo un ADR\n4: > aceptado puede reinterpretarlas o supersederlas. Dueños: sdd-arquitecto y\n5: > sdd-producto (hook protege-verdad).\n6: \n7: - Creado: 2026-07-27\n8: - Dominio: suma de dos numeros como caso trivial de piloto\n9: \n10: ## Decisiones locked\n11: <!-- Una por línea, numeradas y datadas. Ej.: -->\n12: - **D-1** (2026-07-27): <!-- decisión fundacional 1 -->\n13: \n14: ## Alcance\n15: - Dentro:\n16: - Fuera:\n17: \n18: ## No-negociables\n19: <!-- Seguridad, cumplimiento, invariantes del dominio. -->\n20: \n21: ## Cómo se trabaja aquí\n22: Este proyecto sigue el estándar **tremen-sdd**: nada se implementa sin una\n23: SPEC aprobada; las decisiones técnicas se registran como ADR inmutables; la\n24: evidencia de verificación vive en el ledger de cada spec. Roles: /sdd-orquestador\n25: (entrada), /sdd-producto, /sdd-arquitecto, /sdd-implementador, /sdd-verificador,\n26: /sdd-documentalista, /sdd-como-vamos.\n\n(End of file - total 26 lines)\n</content>",
+            "metadata": {
+              "preview": "# FOUNDATION — fixture-suma\n\n> Constitución del proyecto. Las decisiones D-N están **locked**: solo un ADR\n> aceptado puede reinterpretarlas o supersederlas. Dueños: sdd-arquitecto y\n> sdd-producto (hook protege-verdad).\n\n- Creado: 2026-07-27\n- Dominio: suma de dos numeros como caso trivial de piloto\n\n## Decisiones locked\n<!-- Una por línea, numeradas y datadas. Ej.: -->\n- **D-1** (2026-07-27): <!-- decisión fundacional 1 -->\n\n## Alcance\n- Dentro:\n- Fuera:\n\n## No-negociables\n<!-- Seguridad, cumplimiento, invariantes del dominio. -->\n",
+              "truncated": false,
+              "loaded": [],
+              "display": {
+                "type": "file",
+                "path": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\FOUNDATION.md",
+                "text": "# FOUNDATION — fixture-suma\n\n> Constitución del proyecto. Las decisiones D-N están **locked**: solo un ADR\n> aceptado puede reinterpretarlas o supersederlas. Dueños: sdd-arquitecto y\n> sdd-producto (hook protege-verdad).\n\n- Creado: 2026-07-27\n- Dominio: suma de dos numeros como caso trivial de piloto\n\n## Decisiones locked\n<!-- Una por línea, numeradas y datadas. Ej.: -->\n- **D-1** (2026-07-27): <!-- decisión fundacional 1 -->\n\n## Alcance\n- Dentro:\n- Fuera:\n\n## No-negociables\n<!-- Seguridad, cumplimiento, invariantes del dominio. -->\n\n## Cómo se trabaja aquí\nEste proyecto sigue el estándar **tremen-sdd**: nada se implementa sin una\nSPEC aprobada; las decisiones técnicas se registran como ADR inmutables; la\nevidencia de verificación vive en el ledger de cada spec. Roles: /sdd-orquestador\n(entrada), /sdd-producto, /sdd-arquitecto, /sdd-implementador, /sdd-verificador,\n/sdd-documentalista, /sdd-como-vamos.",
+                "lineStart": 1,
+                "lineEnd": 26,
+                "totalLines": 26,
+                "truncated": false
+              }
+            },
+            "title": "FOUNDATION.md",
+            "time": {
+              "start": 1785107736658,
+              "end": 1785107736806
+            }
+          },
+          "id": "prt_fa0b666de001Ce7ZK2TgbNs81M",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b65db0001uDk0Gt9pSiOGVp"
+        },
+        {
+          "reason": "tool-calls",
+          "snapshot": "6772436ac8e90748b886f7a211e4b77e08c86dcb",
+          "type": "step-finish",
+          "tokens": {
+            "total": 25330,
+            "input": 1880,
+            "output": 105,
+            "reasoning": 49,
+            "cache": {
+              "write": 0,
+              "read": 23296
+            }
+          },
+          "cost": 0,
+          "id": "prt_fa0b66a76001bOsp5SN1HBZyLH",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b65db0001uDk0Gt9pSiOGVp"
+        }
+      ]
+    },
+    {
+      "info": {
+        "parentID": "msg_fa0b524b8001iAVmKflKxcsQjQ",
+        "role": "assistant",
+        "mode": "sdd-producto",
+        "agent": "sdd-producto",
+        "path": {
+          "cwd": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014",
+          "root": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014"
+        },
+        "cost": 0,
+        "tokens": {
+          "total": 27455,
+          "input": 555,
+          "output": 1628,
+          "reasoning": 56,
+          "cache": {
+            "write": 0,
+            "read": 25216
+          }
+        },
+        "modelID": "deepseek-v4-flash-free",
+        "providerID": "opencode",
+        "time": {
+          "created": 1785107737707,
+          "completed": 1785107756404
+        },
+        "finish": "stop",
+        "id": "msg_fa0b66c6b001lbRGouvXCvwLAE",
+        "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U"
+      },
+      "parts": [
+        {
+          "snapshot": "6772436ac8e90748b886f7a211e4b77e08c86dcb",
+          "type": "step-start",
+          "id": "prt_fa0b673df001MtGpUTqnTX8zrJ",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b66c6b001lbRGouvXCvwLAE"
+        },
+        {
+          "type": "reasoning",
+          "text": "Alright. The FOUNDATION.md is mostly a skeleton too, with D-1 empty. This is fine — it's a project that has just been scaffolded. The epic is the first real content being put into it.\n\nNow let me compile my final report as instructed.",
+          "time": {
+            "start": 1785107739921,
+            "end": 1785107740782
+          },
+          "id": "prt_fa0b67511001gTAwMBAV4Wgu1p",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b66c6b001lbRGouvXCvwLAE"
+        },
+        {
+          "type": "text",
+          "text": "---\n\n## 📋 Informe de revisión — EPIC-001 \"Suma de dos números\"\n\n### 1. Cambios realizados a la épica\n\n| # | Cambio | Por qué |\n|---|--------|---------|\n| 1 | **Objetivo**: añadido \"Por qué ahora\" | El objetivo anterior describía *qué* pero no *por qué esto ahora*. La épica fundacional necesita explicitar su urgencia: sin ella no hay pipeline que validar, y es el punto de partida natural del proyecto. |\n| 2 | **Criterio de éxito 3**: precisado \"Implementado, Test y Verif. rellenados por los roles correspondientes\" | Antes decía \"evidencia de verificación\" genérico. Ahora deja claro qué columnas del ledger deben estar completas y quién las rellena, alineado con el formato del ledger. |\n| 3 | **Criterio de éxito 4 (NUEVO)**: pipeline tremen-sdd completo documentado | La épica existe para validar el pipeline. Sin este criterio, el propósito central de la épica no era medible. |\n| 4 | **Alcance Dentro**: precisado \"dentro del rango seguro de JavaScript\" y añadida \"Documentación de la verificación en el ledger\" | Coherencia con el \"Fuera\" (que ya mencionaba `Number.MAX_SAFE_INTEGER`). También se explicita que el ledger se documenta como parte del entregable. |\n| 5 | **Alcance Fuera**: añadido `Number.MIN_SAFE_INTEGER` (faltaba el límite inferior) | Simetría con el rango seguro. También se precisó \"importación directa del módulo ES\" para alinear con la spec. |\n| 6 | **Sección Dependencias (NUEVA)** | Una épica debe declarar qué bloquea y qué la bloquea. En este caso: ninguna, es la primera. |\n| 7 | **Sección Tamaño/esfuerzo (NUEVA)** | Ayuda al orquestador y al humano a dimensionar el compromiso. Estimación XS (~1-2 días). |\n| 8 | **Sección Specs asociadas (NUEVA)** | Antes era un comentario HTML \"no mantengas listas\". Ahora es una tabla útil con enlace directo a SPEC-001 y su estado, manteniendo la advertencia de que el estado fino está en el frontmatter. |\n| 9 | **Riesgos**: estructurados en dos (proceso + técnico) con impacto/probabilidad | Antes era un párrafo suelto. Ahora separa el riesgo real (proceso) del trivial (técnico) y sugiere mitigación concreta. |\n| 10 | **Historial**: añadida entrada de esta revisión | Trazabilidad de quién hizo qué y cuándo en la vida de la épica. |\n| 11 | **Roadmap** (`docs/roadmap.md`): EPIC-001 colocada en \"Ahora (en curso)\" con justificación | El roadmap estaba vacío. Ahora la épica está posicionada con su razón de posición y criterios de corte definidos para el futuro. |\n\n### 2. Estado final de la épica (campos clave)\n\n| Campo | Valor |\n|-------|-------|\n| **ID** | EPIC-001 |\n| **Estado** | `borrador` (sin cambios — la aprobación es humana) |\n| **Objetivo** | ✅ Claro + \"Por qué ahora\" explicitado |\n| **Criterios de éxito** | ✅ 4 criterios, todos medibles binariamente |\n| **Alcance Dentro** | ✅ 4 ítems, bien acotados |\n| **Alcance Fuera** | ✅ 5 ítems, todos con \"aparcado a propósito, no por descuido\" |\n| **Dependencias** | ✅ Nueva sección — ninguna bloqueante |\n| **Tamaño** | ✅ XS (~1-2 días) |\n| **Specs asociadas** | ✅ SPEC-001 referenciada con estado y enlace |\n| **Riesgos** | ✅ 2 riesgos con mitigación |\n| **Roadmap** | ✅ Colocada en \"Ahora (en curso)\" |\n\n### 3. Incoherencias encontradas épica ↔ spec\n\n| # | Incoherencia | Resolución |\n|---|-------------|------------|\n| 1 | **Leve**: La épica dice en criterio 1 \"enteros positivos y mezcla de signos\". La spec CA-1 y CA-2 cubren exactamente eso. **Coherente.** | ✅ Sin acción |\n| 2 | **Leve**: La épica original no mencionaba `Number.MIN_SAFE_INTEGER` en \"Fuera\" (solo `MAX`). La spec sí lo menciona. | ✅ Corregido en la épica (se añadió `MIN_SAFE_INTEGER`) |\n| 3 | **Formal**: La épica original tenía la sección Specs como comentario HTML sin referencias. La spec existía pero no era visible desde la épica. | ✅ Corregido: ahora hay tabla con enlace directo |\n\n**Veredicto de coherencia**: No hay incoherencias sustanciales. Ambas están alineadas en propósito, alcance y criterios. La spec desglosa con más granularidad los CAs (tres casos: positivos, signo mixto, módulo ES), lo cual es correcto — ese es el trabajo del arquitecto.\n\n### 4. Observaciones adicionales sobre los documentos de fundación\n\nLos siguientes documentos están **en estado esqueleto** (títulos sin contenido sustancial):\n- `docs/fundacion/contexto.md` — vacío (sólo títulos de sección)\n- `docs/fundacion/vision.md` — vacío (sólo títulos de sección)\n- `docs/fundacion/dominio.md` — tabla vacía (sin términos)\n- `FOUNDATION.md` — D-1 sin contenido; Dentro/Fuera del proyecto vacíos\n\nEsto es esperable en un proyecto recién scaffoldado. No bloquea EPIC-001 (que es precisamente la primera épica para empezar a llenar estos vacíos), pero **sería conveniente que el equipo humano dedique un ciclo a poblar contexto, visión y dominio** antes de que aparezcan múltiples épicas. Como PO, recomiendo crear una tarea de \"fundación\" o que el orquestador lo señale al gate humano.\n\n### 5. Veredicto final\n\n**✅ La épica EPIC-001 está lista para aprobación humana.**\n\nLa épica es sólida: objetivo claro con \"por qué ahora\", criterios de éxito medibles (incluyendo el nuevo criterio 4 que mide el pipeline), alcance bien delimitado con dentro/fuera correctamente etiquetado, dependencias explicitadas y riesgos identificados con mitigación. Está colocada en el roadmap en la posición correcta (\"Ahora\").\n\nLo único que falta para que pase de `borrador` a `aprobada` es la revisión del gate humano. No hay bloqueantes técnicos ni de proceso.",
+          "time": {
+            "start": 1785107740787,
+            "end": 1785107755627
+          },
+          "id": "prt_fa0b67873001NUMWZlH48v1YIn",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b66c6b001lbRGouvXCvwLAE"
+        },
+        {
+          "reason": "stop",
+          "snapshot": "6772436ac8e90748b886f7a211e4b77e08c86dcb",
+          "type": "step-finish",
+          "tokens": {
+            "total": 27455,
+            "input": 555,
+            "output": 1628,
+            "reasoning": 56,
+            "cache": {
+              "write": 0,
+              "read": 25216
+            }
+          },
+          "cost": 0,
+          "id": "prt_fa0b6b3c8001IUBHYHRtrOeUVf",
+          "sessionID": "ses_05f4adb52ffewCswLoclU6ga1U",
+          "messageID": "msg_fa0b66c6b001lbRGouvXCvwLAE"
+        }
+      ]
+    }
+  ]
+}

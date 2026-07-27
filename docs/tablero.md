@@ -1,7 +1,7 @@
 <!-- GENERADO por tremen-sdd (scripts/tablero.mjs). NO EDITAR A MANO. -->
 # Tablero
 
-Actualizado: 2026-07-26
+Actualizado: 2026-07-27
 
 ## EPIC-001 — tremen-sdd-multi-harness (hecho)
 
@@ -29,6 +29,7 @@ Actualizado: 2026-07-26
 | SPEC-009 — estudio-y-mapa-de-capacidades-de-opencode | hecho | 2026-07-22 (sdd-verificador) |
 | SPEC-010 — adaptador-opencode-roles-y-comandos | hecho | 2026-07-22 (sdd-verificador) |
 | SPEC-011 — enforcement-en-harness-de-opencode-plugin-que-deniega | hecho | 2026-07-23 (sdd-verificador) |
+| SPEC-014 — cierre-ce-1-pipeline-sdd-completo-contra-el-cli-real-de-opencode | hecho | 2026-07-27 (sdd-verificador) |
 
 ## EPIC-FIX (aprobada)
 
@@ -52,5 +53,4 @@ Actualizado: 2026-07-26
 
 ## Resumen
 
-- hecho: 12
-- bloqueada: 1
+- hecho: 13

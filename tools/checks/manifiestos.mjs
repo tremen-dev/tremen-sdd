@@ -166,7 +166,25 @@ export function checkManifiestosOpencode(distDir) {
       // subagent_depth=1 ya lo impide, pero el manifiesto lo fija: solo el
       // orquestador despacha (task deny en los subagentes).
       if (a.permission?.task !== 'deny') errores.push(`opencode.json: ${rol} debe declarar permission.task 'deny' (solo el orquestador despacha)`);
-      if (READONLY_OPENCODE.includes(rol) && a.permission?.edit !== 'deny') {
+      // ADR-009 (ejercido en runtime por SPEC-014 CA-3): `edit: "deny"` en seco
+      // RETIRA la tool del agente en opencode, y el verificador DEBE poder
+      // escribir su ledger de evidencia ("no escribe fuentes, SÍ el ledger").
+      // Por eso el verificador declara edit GRANULAR: catch-all deny + allow
+      // acotado a ledger/_qa. como-vamos sí es read-only en seco (ADR-009 §5).
+      if (rol === 'sdd-verificador') {
+        const edit = a.permission?.edit;
+        if (!edit || typeof edit !== 'object') {
+          errores.push(`opencode.json: ${rol} debe declarar edit granular ADR-009 (deny catch-all + allow del ledger; 'deny' en seco le retira la tool y no puede escribir su ledger)`);
+        } else {
+          if (edit['*'] !== 'deny') errores.push(`opencode.json: ${rol} debe denegar edit por defecto ('*': 'deny'; ADR-009: fuentes no)`);
+          const allows = Object.entries(edit).filter(([, v]) => v === 'allow').map(([k]) => k);
+          if (!allows.some((p) => p.includes('.ledger.md'))) errores.push(`opencode.json: ${rol} debe poder escribir su ledger de evidencia (ADR-009)`);
+          if (!allows.some((p) => p.includes('_qa'))) errores.push(`opencode.json: ${rol} debe poder escribir docs/_qa (evidencia; ADR-009)`);
+          for (const p of allows) {
+            if (!p.includes('.ledger.md') && !p.includes('_qa')) errores.push(`opencode.json: ${rol} tiene edit allow fuera de ledger/_qa ('${p}'): el juez no toca las fuentes (ADR-009)`);
+          }
+        }
+      } else if (READONLY_OPENCODE.includes(rol) && a.permission?.edit !== 'deny') {
         errores.push(`opencode.json: ${rol} debe ser read-only (permission.edit 'deny')`);
       }
     }

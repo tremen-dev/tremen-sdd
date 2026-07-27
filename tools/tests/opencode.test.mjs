@@ -133,7 +133,14 @@ function crearOpencodeMinimo(repo, mut = (m) => m) {
       },
     },
   };
-  for (const r of subs) man.agent[r] = { mode: 'subagent', permission: { edit: readonly.has(r) ? 'deny' : 'allow', task: 'deny' } };
+  // SPEC-014 CA-3 (ADR-009): el verificador NO es read-only puro — escribe su
+  // ledger/_qa (edit granular deny-por-defecto); como-vamos sí es deny en seco.
+  for (const r of subs) {
+    let edit = 'allow';
+    if (r === 'sdd-como-vamos') edit = 'deny';
+    if (r === 'sdd-verificador') edit = { '*': 'deny', 'docs/epicas/**/*.ledger.md': 'allow', 'docs/_qa/**': 'allow' };
+    man.agent[r] = { mode: 'subagent', permission: { edit, task: 'deny' } };
+  }
   mut(man);
   fs.writeFileSync(path.join(dist, 'opencode.json'), JSON.stringify(man, null, 2));
   for (const r of ['sdd-orquestador', ...subs]) fs.writeFileSync(path.join(dist, 'agents', `${r}.md`), 'x ../core/roles/\n');
@@ -167,7 +174,35 @@ test('CA-6: un rol read-only con permission.edit allow hace fallar', () => {
   const repo = crearOpencodeMinimo(tmp('sdd-oc-man-rw-'), (m) => { m.agent['sdd-verificador'].permission.edit = 'allow'; });
   const { ok, errores } = checkManifiestos(repo, 'opencode');
   assert.equal(ok, false);
-  assert.ok(errores.some((e) => /sdd-verificador/.test(e) && /read-only/.test(e)));
+  assert.ok(errores.some((e) => /sdd-verificador/.test(e) && /ledger/.test(e)));
+});
+
+// SPEC-014 CA-3 (lazo ADR-009, ejercido contra el CLI real 1.18.5): con
+// `permission.edit: "deny"` en seco opencode RETIRA la tool edit del agente
+// ("Model tried to call unavailable tool 'edit'") y el verificador no puede
+// escribir su ledger — la política ADR-009 ("no escribe fuentes, SÍ el ledger")
+// exige el edit GRANULAR: deny catch-all + allow SOLO ledger/_qa.
+test('SPEC-014 CA-3: el verificador con edit deny EN SECO hace fallar (ADR-009: debe poder su ledger)', () => {
+  const repo = crearOpencodeMinimo(tmp('sdd-oc-man-adr9a-'), (m) => { m.agent['sdd-verificador'].permission.edit = 'deny'; });
+  const { ok, errores } = checkManifiestos(repo, 'opencode');
+  assert.equal(ok, false);
+  assert.ok(errores.some((e) => /sdd-verificador/.test(e) && /ledger/.test(e)));
+});
+
+test('SPEC-014 CA-3: el verificador con un allow FUERA de ledger/_qa hace fallar (ADR-009: fuentes no)', () => {
+  const repo = crearOpencodeMinimo(tmp('sdd-oc-man-adr9b-'), (m) => {
+    m.agent['sdd-verificador'].permission.edit['src/**'] = 'allow';
+  });
+  const { ok, errores } = checkManifiestos(repo, 'opencode');
+  assert.equal(ok, false);
+  assert.ok(errores.some((e) => /sdd-verificador/.test(e) && /fuentes|allow/.test(e)));
+});
+
+test('SPEC-014 CA-3: como-vamos SIGUE siendo read-only en seco (ADR-009 punto 5)', () => {
+  const repo = crearOpencodeMinimo(tmp('sdd-oc-man-adr9c-'), (m) => { m.agent['sdd-como-vamos'].permission.edit = 'allow'; });
+  const { ok, errores } = checkManifiestos(repo, 'opencode');
+  assert.equal(ok, false);
+  assert.ok(errores.some((e) => /sdd-como-vamos/.test(e) && /read-only/.test(e)));
 });
 
 test('CA-6: el orquestador sin permission.task hace fallar', () => {
