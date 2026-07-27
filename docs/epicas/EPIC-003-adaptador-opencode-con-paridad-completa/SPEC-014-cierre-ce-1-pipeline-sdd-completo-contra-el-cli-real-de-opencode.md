@@ -9,6 +9,8 @@ historial:
   - {estado: aprobada, fecha: 2026-07-26, por: Alberto Fojo}
   - {estado: en-progreso, fecha: 2026-07-26, por: sdd-implementador}
   - {estado: en-revision, fecha: 2026-07-27, por: sdd-implementador}
+  - {estado: en-progreso, fecha: 2026-07-27, por: sdd-verificador}
+  - {estado: en-revision, fecha: 2026-07-27, por: sdd-implementador}
 ---
 # SPEC-014 — Cierre CE-1: pipeline SDD completo contra el CLI real de opencode
 

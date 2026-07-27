@@ -1,0 +1,273 @@
+{
+  "info": {
+    "id": "ses_05de0de06ffecOHvczslcEfuMu",
+    "slug": "playful-forest",
+    "projectID": "c2266d99b664c8c219aa8bd16f54121184c40f79",
+    "directory": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014",
+    "path": "",
+    "title": "New session - 2026-07-27T05:49:37.146Z",
+    "agent": "sdd-orquestador",
+    "model": {
+      "id": "deepseek-v4-flash-free",
+      "providerID": "opencode",
+      "variant": "default"
+    },
+    "version": "1.18.5",
+    "summary": {
+      "additions": 0,
+      "deletions": 0,
+      "files": 0
+    },
+    "cost": 0,
+    "tokens": {
+      "input": 19960,
+      "output": 11,
+      "reasoning": 40,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "permission": [
+      {
+        "permission": "question",
+        "pattern": "*",
+        "action": "deny"
+      },
+      {
+        "permission": "plan_enter",
+        "pattern": "*",
+        "action": "deny"
+      },
+      {
+        "permission": "plan_exit",
+        "pattern": "*",
+        "action": "deny"
+      }
+    ],
+    "time": {
+      "created": 1785131377146,
+      "updated": 1785131401675
+    }
+  },
+  "messages": [
+    {
+      "info": {
+        "role": "user",
+        "time": {
+          "created": 1785131377267
+        },
+        "agent": "sdd-orquestador",
+        "model": {
+          "providerID": "opencode",
+          "modelID": "deepseek-v4-flash-free"
+        },
+        "summary": {
+          "diffs": []
+        },
+        "id": "msg_fa21f227300173nvXPxPXdvENB",
+        "sessionID": "ses_05de0de06ffecOHvczslcEfuMu"
+      },
+      "parts": [
+        {
+          "type": "text",
+          "text": "\"Di exactamente PROBE-UNO y nada mas. No uses tools.\"",
+          "id": "prt_fa21f227e001KeO2ShkWaLiJK7",
+          "sessionID": "ses_05de0de06ffecOHvczslcEfuMu",
+          "messageID": "msg_fa21f227300173nvXPxPXdvENB"
+        }
+      ]
+    },
+    {
+      "info": {
+        "parentID": "msg_fa21f227300173nvXPxPXdvENB",
+        "role": "assistant",
+        "mode": "sdd-orquestador",
+        "agent": "sdd-orquestador",
+        "path": {
+          "cwd": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014",
+          "root": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014"
+        },
+        "cost": 0,
+        "tokens": {
+          "total": 9991,
+          "input": 9968,
+          "output": 6,
+          "reasoning": 17,
+          "cache": {
+            "write": 0,
+            "read": 0
+          }
+        },
+        "modelID": "deepseek-v4-flash-free",
+        "providerID": "opencode",
+        "time": {
+          "created": 1785131377701,
+          "completed": 1785131381947
+        },
+        "finish": "stop",
+        "id": "msg_fa21f24250011UoOwuAOZI4sBu",
+        "sessionID": "ses_05de0de06ffecOHvczslcEfuMu"
+      },
+      "parts": [
+        {
+          "snapshot": "9f9fdeb626d9f243c2aa5b35d0d790eeb67b6274",
+          "type": "step-start",
+          "id": "prt_fa21f2faf001ez74ZWMjuyZ0Zj",
+          "sessionID": "ses_05de0de06ffecOHvczslcEfuMu",
+          "messageID": "msg_fa21f24250011UoOwuAOZI4sBu"
+        },
+        {
+          "type": "reasoning",
+          "text": "The user wants me to say \"PROBE-UNO\" and nothing else.",
+          "time": {
+            "start": 1785131381164,
+            "end": 1785131381461
+          },
+          "id": "prt_fa21f31ab001OE1l0J4EoPQ1KZ",
+          "sessionID": "ses_05de0de06ffecOHvczslcEfuMu",
+          "messageID": "msg_fa21f24250011UoOwuAOZI4sBu"
+        },
+        {
+          "type": "text",
+          "text": "PROBE-UNO",
+          "time": {
+            "start": 1785131381464,
+            "end": 1785131381496
+          },
+          "id": "prt_fa21f32d8001Ii63DYiMFV7aMT",
+          "sessionID": "ses_05de0de06ffecOHvczslcEfuMu",
+          "messageID": "msg_fa21f24250011UoOwuAOZI4sBu"
+        },
+        {
+          "reason": "stop",
+          "snapshot": "9f9fdeb626d9f243c2aa5b35d0d790eeb67b6274",
+          "type": "step-finish",
+          "tokens": {
+            "total": 9991,
+            "input": 9968,
+            "output": 6,
+            "reasoning": 17,
+            "cache": {
+              "write": 0,
+              "read": 0
+            }
+          },
+          "cost": 0,
+          "id": "prt_fa21f33ec0010YbLG1Ggi4J4DG",
+          "sessionID": "ses_05de0de06ffecOHvczslcEfuMu",
+          "messageID": "msg_fa21f24250011UoOwuAOZI4sBu"
+        }
+      ]
+    },
+    {
+      "info": {
+        "role": "user",
+        "time": {
+          "created": 1785131397074
+        },
+        "agent": "sdd-orquestador",
+        "model": {
+          "providerID": "opencode",
+          "modelID": "deepseek-v4-flash-free"
+        },
+        "summary": {
+          "diffs": []
+        },
+        "id": "msg_fa21f6fd2001L26Vc4Il6NcCSw",
+        "sessionID": "ses_05de0de06ffecOHvczslcEfuMu"
+      },
+      "parts": [
+        {
+          "type": "text",
+          "text": "\"Di exactamente PROBE-DOS y nada mas. No uses tools.\"",
+          "id": "prt_fa21f6fd4001zk40dxPSYi4X8X",
+          "sessionID": "ses_05de0de06ffecOHvczslcEfuMu",
+          "messageID": "msg_fa21f6fd2001L26Vc4Il6NcCSw"
+        }
+      ]
+    },
+    {
+      "info": {
+        "parentID": "msg_fa21f6fd2001L26Vc4Il6NcCSw",
+        "role": "assistant",
+        "mode": "sdd-orquestador",
+        "agent": "sdd-orquestador",
+        "path": {
+          "cwd": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014",
+          "root": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014"
+        },
+        "cost": 0,
+        "tokens": {
+          "total": 10020,
+          "input": 9992,
+          "output": 5,
+          "reasoning": 23,
+          "cache": {
+            "write": 0,
+            "read": 0
+          }
+        },
+        "modelID": "deepseek-v4-flash-free",
+        "providerID": "opencode",
+        "time": {
+          "created": 1785131397494,
+          "completed": 1785131401659
+        },
+        "finish": "stop",
+        "id": "msg_fa21f7176001VfNL3Und3RGi0C",
+        "sessionID": "ses_05de0de06ffecOHvczslcEfuMu"
+      },
+      "parts": [
+        {
+          "snapshot": "9dde1c2e7e153e9e170bc8eeb1682db6fe9f82a3",
+          "type": "step-start",
+          "id": "prt_fa21f7cb7001uNivZMMKSR6et6",
+          "sessionID": "ses_05de0de06ffecOHvczslcEfuMu",
+          "messageID": "msg_fa21f7176001VfNL3Und3RGi0C"
+        },
+        {
+          "type": "reasoning",
+          "text": "The user is asking me to say \"PROBE-DOS\" and nothing else, and not to use tools.",
+          "time": {
+            "start": 1785131400919,
+            "end": 1785131401222
+          },
+          "id": "prt_fa21f7ed700155VDlxXG1Quu8I",
+          "sessionID": "ses_05de0de06ffecOHvczslcEfuMu",
+          "messageID": "msg_fa21f7176001VfNL3Und3RGi0C"
+        },
+        {
+          "type": "text",
+          "text": "PROBE-DOS",
+          "time": {
+            "start": 1785131401226,
+            "end": 1785131401314
+          },
+          "id": "prt_fa21f800a001W5wRUp37LQfMpZ",
+          "sessionID": "ses_05de0de06ffecOHvczslcEfuMu",
+          "messageID": "msg_fa21f7176001VfNL3Und3RGi0C"
+        },
+        {
+          "reason": "stop",
+          "snapshot": "9dde1c2e7e153e9e170bc8eeb1682db6fe9f82a3",
+          "type": "step-finish",
+          "tokens": {
+            "total": 10020,
+            "input": 9992,
+            "output": 5,
+            "reasoning": 23,
+            "cache": {
+              "write": 0,
+              "read": 0
+            }
+          },
+          "cost": 0,
+          "id": "prt_fa21f8107001VbKUZ6u0sH3W3B",
+          "sessionID": "ses_05de0de06ffecOHvczslcEfuMu",
+          "messageID": "msg_fa21f7176001VfNL3Und3RGi0C"
+        }
+      ]
+    }
+  ]
+}

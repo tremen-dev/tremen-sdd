@@ -53,7 +53,7 @@
   (así se implementó el caso trivial). Bonus: con la spec en `hecho` (estado
   terminal, no codeable) el plugin también deniega — mensaje "SPEC-001 está en
   estado 'hecho'…".
-- **Payload real** (`ca7-sonda-h3-payload.log`): `input = {tool, sessionID,
+- **Payload real** (`ca7-sonda-h3-payload.jsonl`): `input = {tool, sessionID,
   callID}`; `output.args = {filePath, oldString, newString…}` — coincide con lo
   que asume el shim `_comun.mjs`.
 - **Observación** (no falla del gate): el modelo free a veces **alucina éxito**
@@ -70,7 +70,7 @@
   incluye el **`client` (SDK)** — la sesión conoce su `agent` (los exports lo
   muestran: `info.agent: "sdd-verificador"`, etc.), así que la identidad es
   **resoluble indirectamente** (sessionID → sesión → agent).
-- **Evidencia**: `ca7-sonda-h3-payload.log` (keys del factory-ctx:
+- **Evidencia**: `ca7-sonda-h3-payload.jsonl` (keys del factory-ctx:
   `client, project, worktree, directory, experimental_workspace, serverUrl, $`;
   keys de input/output) + exports de sesiones hijas con `info.agent`.
 - **Consecuencia**: `protege-verdad` por identidad de agente es **viable** como
@@ -84,17 +84,32 @@
   como turnos (invoca → recibe informe → **PARA** y devuelve el control → solo
   tras la respuesta del operador emite el siguiente `task`); un subagente **no
   puede** lanzar otro.
-- **Evidencia** (`ca3-pipeline/ca3-parent-export.json`, `ca4-gates-turnos/`):
-  una única sesión primary con 4+ `task` (arquitecto, producto, implementador,
-  verificador) y paradas de gate explícitas entre ellos (aprobación de
-  épica/spec pedida al operador y firmada solo tras su input; presentación del
-  informe GREEN). Anidamiento provocado: el subagente sdd-arquitecto **no tiene
-  la tool `task`** en su set (`permission.task: deny` + `subagent_depth` default
-  1) — "Model tried to call unavailable tool" es el modo de fallo observable.
+- **Evidencia** (`ca3-pipeline/ca3-ronda2-parent-export.json` +
+  `ca3-ronda2-t{1,2,3}.json`, `ca4-gates-turnos/`): sesión primary
+  `ses_05dd780d7ffezSMaSyztXFmmiW` con `info.agent: "sdd-orquestador"` en la
+  sesión y en **los 46 mensajes** (verificado sobre el export), que despacha las
+  **cuatro** delegaciones `task` (producto, arquitecto, implementador,
+  verificador) desde mensajes del primary, con parada de gate explícita
+  (SPEC-002 en `borrador` → PARA → aprobación del operador → firma vía
+  `estado.mjs` → siguiente `task`) e informes presentados al operador tras cada
+  subagente. Anidamiento provocado: el subagente sdd-arquitecto **no tiene la
+  tool `task`** en su set (`permission.task: deny` + `subagent_depth` default 1)
+  — "Model tried to call unavailable tool" es el modo de fallo observable.
   Jerarquía plana confirmada.
+- **Fe de erratas (finding V1 de la verificación, ronda 1)**: en la primera
+  ronda del piloto solo el turno inicial corrió como `sdd-orquestador`; las
+  continuaciones `run -s` **omitieron `--agent`** y el CLI las ejecutó con el
+  agente por defecto `build` (`ca3-pipeline/ca3-parent-export.json`, turnos
+  2-10, incluidas las 4 `task` de la ronda 1). Los artefactos del fixture que
+  esa ronda produjo son reales y quedan como evidencia de CA-3, pero la
+  afirmación "sesión primary con 4 task" solo la sostiene la **ronda 2**
+  (re-ejercida con `--agent sdd-orquestador` en cada turno). Hallazgo de
+  conducción del CLI: **`run -s` NO conserva el agente de la sesión; hay que
+  re-pasar `--agent` en cada continuación** (sonda del verificador:
+  `verif/verif-sonda-continuacion-respeta-agent.json`).
 - **Matiz**: en `opencode run` no interactivo el "turno" es la terminación del
-  proceso `run`; el operador contesta con `-s <sesión>`. Mismo mecanismo, otra
-  superficie.
+  proceso `run`; el operador contesta con `-s <sesión> --agent <primary>`.
+  Mismo mecanismo, otra superficie.
 
 ### [H5] Instalación/descubrimiento sin marketplace — **MATIZADA** (auto-descubrimiento sí, con UNA excepción: plugins `.mjs`)
 
@@ -141,10 +156,14 @@
 4. **Conducción no interactiva**: `opencode run` con `--agent` acepta un agente
    **primary**; con un subagente cae en silencio al agente por defecto (`build`)
    — hallazgo de runtime; los subagentes se ejercen vía `task` del primary (o
-   `@mención`, que en la práctica despachó por la tool `skill`). `--command`
-   ejecuta los slash-commands. `--format json` emite eventos por línea
-   (tool/text/step) y `opencode export` da la sesión completa (incl. hijas de
-   `task` vía `metadata.sessionId`).
+   `@mención`, que en la práctica despachó por la tool `skill`). **Las
+   continuaciones `run -s <sesión>` tampoco conservan el agente: sin `--agent`
+   explícito el turno corre como `build`** (así se produjo el finding V1 de la
+   ronda 1; con `--agent sdd-orquestador` en cada turno la continuación lo
+   respeta — ronda 2 y sonda del verificador). `--command` ejecuta los
+   slash-commands. `--format json` emite eventos por línea (tool/text/step) y
+   `opencode export` da la sesión completa (incl. hijas de `task` vía
+   `metadata.sessionId`).
 5. **Coste/fricción del modelo free** (DeepSeek v4 flash free): varios turnos
    colgados sin salida (reintentados tras matar el proceso; en uno el trabajo
    previo al cuelgue —la firma de la épica— sí se había persistido), una
@@ -170,13 +189,19 @@ permission), no de forma.
 
 - **CE-1**: el ciclo completo **init → épica → spec → implementación →
   verificación** se operó desde el CLI real de opencode, sin pasar por Claude
-  Code ni Kimi: `/sdd-init` inicializó; el primary delegó en producto,
-  arquitecto, implementador y verificador; la spec del fixture quedó `aprobada`
-  por el operador en el gate (firmada vía `estado.mjs`); `src/suma.mjs` +
+  Code ni Kimi, en dos rondas: la **ronda 1** (SPEC-001, suma) produjo los
+  artefactos completos — `/sdd-init` inicializó; épica+spec aprobadas por el
+  operador en el gate (firmadas vía `estado.mjs`); `src/suma.mjs` +
   `src/suma.test.mjs` en verde (8/8, exit 0); el **verificador de opencode
   escribió el ledger del fixture** (GREEN) y transicionó la spec a `hecho`;
-  tablero regenerado con `/sdd-tablero`. Estado final en
-  `docs/_qa/SPEC-014/ca3-pipeline/estado-final-fixture.txt`.
+  tablero regenerado con `/sdd-tablero` — pero condujo los turnos 2-10 como
+  `build` (finding V1). La **ronda 2** (SPEC-002, resta) re-ejerció las cuatro
+  delegaciones y el gate **como `sdd-orquestador` en todos los turnos**
+  (export: 46/46 mensajes del primary; segunda spec aprobada, implementada con
+  4/4 tests y verificada GREEN con ledger escrito por el verificador de
+  opencode). Estado ronda 1 en
+  `docs/_qa/SPEC-014/ca3-pipeline/estado-final-fixture.txt`; ronda 2 en
+  `ca3-pipeline/ca3-ronda2-*.json`.
 - **CE-3 (medición en vivo)**: intento real de codear sin spec **bloqueado** por
   el plugin (write y edit abortados, ficheros intactos) y el mismo camino
   **permitido** en carril legítimo. L1 deniega de verdad; L2/L3 siguen detrás.

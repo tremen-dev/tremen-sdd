@@ -1,4 +1,5 @@
-fecha: 2026-07-26
+fecha: 2026-07-27 (hora local de la maquina; algunos timestamps UTC de los logs
+  del CLI caen aun en 2026-07-26 por el desfase huso horario — misma sesion de piloto)
 opencode --version: 1.18.5
 instalado en: C:\ProgramData\chocolatey\bin\opencode.exe (chocolatey)
 provider autenticado: OpenCode Zen (api key; 'opencode auth list' = 1 credencial)
