@@ -137,20 +137,29 @@ test('SPEC-017 CA-9: la cabecera de check.mjs no repite el conteo de checks', ()
     'la cabecera declara un conteo de checks que puede envejecer; remite a PASOS');
 });
 
-test('SPEC-017 CA-9: PASOS referencia exactamente 9 scripts distintos de tools/checks/', () => {
-  const scripts = new Set(PASOS.map((p) => p.cmd[1]).filter((s) => s.includes('tools/checks/')));
-  assert.equal(scripts.size, 9);
+// SPEC-016: el conteo dejó de estar clavado a mano —envejece con cada check nuevo
+// (RN-10)— y se DERIVA del directorio: todo check de tools/checks/ está cableado.
+test('SPEC-017 CA-9 / SPEC-016: PASOS referencia exactamente los checks que existen en tools/checks/', () => {
+  const enDisco = fs.readdirSync(path.join(REPO, 'tools', 'checks'))
+    .filter((f) => f.endsWith('.mjs') && !f.startsWith('_')).sort();
+  const cableados = [...new Set(PASOS.map((p) => p.cmd[1]).filter((s) => s.includes('tools/checks/')))]
+    .map((s) => path.basename(s)).sort();
+  assert.deepEqual(cableados, enDisco, 'hay checks sin cablear en el runner (o al revés)');
 });
 
-test('SPEC-017 CA-10: el runner conserva sus 17 pasos, con layout como un solo paso', () => {
-  assert.equal(PASOS.length, 17);
-  assert.deepEqual(nombres(), [
-    'build', 'build-kimi', 'build-opencode',
-    'layout', 'nucleo-aislado', 'nucleo-agnostico', 'fuente-unica',
-    'referencias', 'referencias-kimi', 'referencias-opencode',
-    'roles-fuente-unica',
-    'manifiestos', 'manifiestos-kimi', 'manifiestos-opencode',
-    'descripcion-fuente-unica', 'prosa-gates', 'valida',
-  ]);
+// ORDEN es el pin explícito del encadenamiento: cambiarlo exige tocar este test a
+// propósito. La longitud se deriva de la propia lista, no de un número suelto.
+const ORDEN = [
+  'build', 'build-kimi', 'build-opencode',
+  'layout', 'nucleo-aislado', 'nucleo-agnostico', 'fuente-unica',
+  'referencias', 'referencias-kimi', 'referencias-opencode',
+  'roles-fuente-unica',
+  'manifiestos', 'manifiestos-kimi', 'manifiestos-opencode',
+  'descripcion-fuente-unica', 'prosa-gates', 'version-unica', 'valida',
+];
+
+test('SPEC-017 CA-10: el runner conserva su encadenamiento, con layout como un solo paso', () => {
+  assert.deepEqual(nombres(), ORDEN);
+  assert.equal(PASOS.length, ORDEN.length);
   assert.equal(PASOS.filter((p) => p.cmd[1] === 'tools/checks/layout.mjs').length, 1);
 });
