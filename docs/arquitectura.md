@@ -91,15 +91,26 @@ opencode: `opencode.json` — bloque `agent` con `mode`, `permission.task` del p
 `descripcion-fuente-unica` (la description de disparo de cada rol coincide entre la
 canónica en `core/roles/es/_descripciones.json` y las superficies de los adaptadores),
 `prosa-gates` (la prosa de `sdd-documentalista` prohíbe cerrar/proponer cerrar épicas — SPEC-006).
-Los checks `referencias`, `roles-fuente-unica`, `manifiestos` y
+Los checks `layout`, `referencias`, `roles-fuente-unica`, `manifiestos` y
 `descripcion-fuente-unica` están **generalizados a los tres adaptadores**
-(claude-code, kimi-code y opencode): `referencias` y `manifiestos` se invocan una vez
-por adaptador desde `PASOS` de `tools/check.mjs`; `roles-fuente-unica` itera el
-directorio `adapters/` y `descripcion-fuente-unica` enumera las superficies de los
-tres. `nucleo-aislado`, `nucleo-agnostico`, `fuente-unica` y `prosa-gates` no se
-parametrizan por adaptador porque miran solo el núcleo o el árbol comiteado; `layout`
-tampoco, pero **hoy solo verifica la superficie de `adapters/claude-code/`** (no la de
-kimi-code ni la de opencode). El YAML de los agentes Kimi se parsea con un loader
+(claude-code, kimi-code y opencode), pero **no por el mismo mecanismo**, y cuál toca
+lo decide **ADR-011** (¿el invariante existe sin conocer el harness?):
+`referencias` y `manifiestos` **enumeran** —se invocan una vez por adaptador desde
+`PASOS` de `tools/check.mjs`— porque qué es un manifiesto o una referencia válida
+depende del harness; `descripcion-fuente-unica` enumera internamente las superficies
+de los tres; `roles-fuente-unica` y `layout` **se autodescubren**, iterando el
+directorio `adapters/` y aplicando la regla a lo que encuentren, así que un harness
+nuevo queda cubierto el día que se crea su directorio. En `layout` el reparto es:
+**mínimo común** exigido a todos (`agents/`, `skills/`, `tests/`) por
+autodescubrimiento, más **extras declarativos por harness** en una tabla dentro del
+check (claude-code: `.claude-plugin/plugin.json`, `commands/`, `hooks/`; kimi-code:
+`hooks/`; opencode: `opencode.json`, `commands/`, `plugins/`), porque las superficies
+difieren **por diseño** (ADR-003, ADR-007) y exigirlas a todos inventaría
+incumplimientos; un adaptador no declarado se juzga solo por el mínimo común. La
+lista de superficie de adaptador **prohibida en la raíz** sigue siendo una constante
+cerrada (ADR-011 §4), nunca derivada del FS. `nucleo-aislado`, `nucleo-agnostico`,
+`fuente-unica` y `prosa-gates` no se parametrizan por adaptador porque miran solo el
+núcleo o el árbol comiteado. El YAML de los agentes Kimi se parsea con un loader
 mínimo propio (`tools/checks/_yaml.mjs`), porque el núcleo no admite dependencias.
 
 ## Flujo de trabajo (y dogfooding)
