@@ -163,7 +163,9 @@ export function ensambla({ repoRoot = REPO_ROOT, outDir, harnesses = HARNESSES }
 // Comprueba el contrato del árbol antes de comitear nada.
 export function verificaLayout(dir) {
   const errores = [];
-  const hay = fs.readdirSync(dir).sort();
+  // En un worktree, `.git` es un fichero-puntero al repo: es infraestructura de
+  // git, no contenido publicado (no viaja en el checkout de nadie).
+  const hay = fs.readdirSync(dir).filter((e) => e !== '.git').sort();
   const esperado = [...LAYOUT_RAIZ].sort();
   for (const e of esperado) if (!hay.includes(e)) errores.push(`falta '${e}' en la raíz del árbol publicado`);
   for (const e of hay) if (!esperado.includes(e)) errores.push(`sobra '${e}' en la raíz del árbol publicado`);

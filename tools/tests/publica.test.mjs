@@ -14,7 +14,7 @@ import os from 'node:os';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
-import { ensambla, LAYOUT_RAIZ, HARNESSES } from '../publica.mjs';
+import { ensambla, verificaLayout, LAYOUT_RAIZ, HARNESSES } from '../publica.mjs';
 import { walk } from '../checks/_util.mjs';
 
 const REPO = path.dirname(path.dirname(path.dirname(fileURLToPath(import.meta.url))));
@@ -34,6 +34,28 @@ const OUT = ensambla({ outDir: tmp('layout') });
 
 test('CA-3: el árbol de publicación contiene EXACTAMENTE el layout de ADR-010 §2', () => {
   assert.deepEqual(fs.readdirSync(OUT).sort(), [...LAYOUT_RAIZ].sort());
+});
+
+test('CA-3: verificaLayout acepta el árbol y no confunde el .git del worktree con contenido', () => {
+  assert.deepEqual(verificaLayout(OUT), { ok: true, errores: [] });
+  // Un worktree trae un fichero-puntero .git: es infraestructura, no publicación.
+  fs.writeFileSync(path.join(OUT, '.git'), 'gitdir: /ruta/al/repo\n');
+  try {
+    assert.deepEqual(verificaLayout(OUT), { ok: true, errores: [] });
+  } finally {
+    fs.rmSync(path.join(OUT, '.git'));
+  }
+});
+
+test('CA-3: verificaLayout FALLA si sobra o falta algo en la raíz', () => {
+  fs.writeFileSync(path.join(OUT, 'intruso.txt'), 'x');
+  try {
+    const { ok, errores } = verificaLayout(OUT);
+    assert.equal(ok, false);
+    assert.match(errores.join('\n'), /sobra 'intruso\.txt'/);
+  } finally {
+    fs.rmSync(path.join(OUT, 'intruso.txt'));
+  }
 });
 
 test('CA-3: los árboles por harness cuelgan de la RAÍZ, no de dist/', () => {
