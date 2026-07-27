@@ -65,15 +65,19 @@ deriva; segunda pasada limpia. Hay test que lo fija.)
 
 **CA-4 — publicación LOCAL (rama y tag creados, NADA empujado)**
 
+La rama local se **regenera** cada vez que avanza la rama de spec, para que el
+árbol publicado sea siempre el del `HEAD` (los SHAs concretos son los que imprime
+el script; el último ejercicio se hizo sobre el `HEAD` final de la rama).
+
 ```
 $ node tools/publica.mjs --local
-[publica] rama 'release' avanzada en LOCAL: commit 7187cf0… (fuente 61f4b00…), tag v0.5.0.
+[publica] rama 'release' avanzada en LOCAL: commit <sha-publicación> (fuente <sha-fuente>), tag v0.5.0.
 [publica] NADA se ha empujado. La publicación real la ejecuta una persona: …
 $ git merge-base main release ; echo $?
 1                              # sin ancestro común → huérfana (CA-4a)
 $ git log release --oneline    # exactamente UN commit
 $ git tag -l v0.5.0 -n1
-v0.5.0   tremen-sdd v0.5.0 (fuente 61f4b00…)
+v0.5.0   tremen-sdd v0.5.0 (fuente <sha-fuente>)
 ```
 
 Mensaje del commit (CA-4d): cita `version: 0.5.0` y el SHA de 40 de la fuente.
@@ -100,12 +104,14 @@ EXIT DEL HOOK=0
 `on: push:` / `pull_request:` **sin filtros**. Estado final: `push:` con
 `branches-ignore: ['release']`, `pull_request` intacto.
 
-| Qué | Rama / evento | Run id | Resultado |
-|---|---|---|---|
-| push a `ft/**` con el workflow ya filtrado | `ft/SPEC-016-publicar-rama-release` (`84d7d21`) | **30310308149** | `success` |
-| push a `ft/**` (2.º) | `ft/SPEC-016-publicar-rama-release` (`cb81fc5`) | **30310657690** | `success` |
+| Qué | Rama / evento | Head SHA | Run id | Resultado |
+|---|---|---|---|---|
+| push a `ft/**` con el workflow ya filtrado | `ft/SPEC-016-publicar-rama-release` | `84d7d21` | **30310308149** | `success` |
+| push a `ft/**` (2.º) | idem | `cb81fc5` | **30310657690** | `success` |
+| push a `ft/**` (3.º) | idem | `61f4b00` | **30311131688** | `success` |
+| push a `ft/**` (4.º, estado final) | idem | `b1a45d4` | **30311546374** | `success` |
 
-Los dos runs son **posteriores** al commit que introduce `branches-ignore`, así
+Los cuatro runs son **posteriores** al commit que introduce `branches-ignore`, así
 que demuestran que `ft/**` sigue disparando el run completo y pasa. Las dos
 mitades que faltan (push a `release` → 0 runs; push a `main` → run) **no se
 pueden observar sin la publicación remota ni sin merge**: quedan pendientes
