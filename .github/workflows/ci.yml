@@ -2,8 +2,21 @@ name: CI
 
 # Enforcement autoritativo (ADR-002, L3): fail-closed, no evitable en local.
 # Corre en cada push y PR. Sin `npm ci` significativo: el repo es cero-deps.
+#
+# ÚNICA excepción (ADR-010 §8, SPEC-016 CA-5): `release` es la rama de PUBLICACIÓN
+# —huérfana y 100% generada— y no contiene fuente: sin package.json, sin tools/ y
+# sin core/, un run sobre ella está condenado a fallar. Se ignora en `push` y solo
+# ahí. No se puede combinar `branches` con `branches-ignore` para el mismo evento,
+# así que TODAS las demás ramas siguen disparando CI exactamente igual. Declarar
+# solo `branches-ignore` deja además fuera los pushes de TAG («the workflow won't
+# run for events affecting the undefined Git ref»), que no pierde cobertura: todo
+# commit de fuente llega a CI por el push de su rama y por su PR, y un tag apunta
+# a un commit ya validado. `pull_request` NO se filtra: un PR contra main —incluido
+# uno que intentara mezclar `release`— sigue corriendo la suite completa y falla,
+# que es justo la protección que se quiere.
 on:
   push:
+    branches-ignore: ['release']
   pull_request:
 
 jobs:
