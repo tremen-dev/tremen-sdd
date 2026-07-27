@@ -1,0 +1,41 @@
+== git log ==
+1c4c424 feat(SPEC-001): implementar función suma básica con TDD
+d4d190e chore: proyecto inicializado con /sdd-init (piloto SPEC-014)
+e2b3026 chore: reinstala artefacto con plugin registrado en el manifiesto
+35e0ffe chore: instala adaptador tremen-sdd (dist/opencode) + modelo por defecto
+c2266d9 chore: fixture inicial
+
+== rama ==
+ft/SPEC-001-funcion-suma-basica
+
+== arbol (sin .git/.opencode) ==
+./.sdd.json
+./CLAUDE.md
+./FOUNDATION.md
+./README.md
+./docs/epicas/EPIC-001-suma-de-dos-numeros/SPEC-001-funcion-suma-basica.ledger.md
+./docs/epicas/EPIC-001-suma-de-dos-numeros/SPEC-001-funcion-suma-basica.md
+./docs/epicas/EPIC-001-suma-de-dos-numeros/_epica.md
+./docs/fundacion/contexto.md
+./docs/fundacion/dominio.md
+./docs/fundacion/reglas.md
+./docs/fundacion/vision.md
+./docs/roadmap.md
+./docs/tablero.md
+./opencode.json
+./sonda-payload.log
+./src/.gitkeep
+./src/suma.mjs
+./src/suma.test.mjs
+
+== estados finales ==
+docs/epicas/EPIC-001-suma-de-dos-numeros/_epica.md:estado: aprobada
+docs/epicas/EPIC-001-suma-de-dos-numeros/SPEC-001-funcion-suma-basica.md:estado: hecho
+
+== tests del fixture ==
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 157.5255

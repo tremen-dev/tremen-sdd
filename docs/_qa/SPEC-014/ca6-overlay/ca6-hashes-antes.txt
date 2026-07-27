@@ -1,0 +1,2 @@
+f3d7d91b75c360abee4d4f6f3f5cd38f14ccd4f6 *docs/fundacion/vision.md
+d5435a7cf2cd1fb3b299f9e5bb6d19433901cec1 *docs/tablero.md

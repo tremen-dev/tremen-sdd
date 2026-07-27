@@ -1,0 +1,2399 @@
+{
+  "info": {
+    "id": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+    "slug": "swift-engine",
+    "projectID": "c2266d99b664c8c219aa8bd16f54121184c40f79",
+    "directory": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014",
+    "path": "",
+    "parentID": "ses_05f4f0836ffelwS7ceM1n3d9zw",
+    "title": "Generar SPEC suma (@sdd-arquitecto subagent)",
+    "agent": "sdd-arquitecto",
+    "model": {
+      "id": "deepseek-v4-flash-free",
+      "providerID": "opencode",
+      "variant": "default"
+    },
+    "version": "1.18.5",
+    "summary": {
+      "additions": 0,
+      "deletions": 0,
+      "files": 0
+    },
+    "cost": 0,
+    "tokens": {
+      "input": 16827,
+      "output": 6766,
+      "reasoning": 1379,
+      "cache": {
+        "read": 247936,
+        "write": 0
+      }
+    },
+    "permission": [
+      {
+        "permission": "question",
+        "pattern": "*",
+        "action": "deny"
+      },
+      {
+        "permission": "plan_enter",
+        "pattern": "*",
+        "action": "deny"
+      },
+      {
+        "permission": "plan_exit",
+        "pattern": "*",
+        "action": "deny"
+      },
+      {
+        "permission": "todowrite",
+        "pattern": "*",
+        "action": "deny"
+      }
+    ],
+    "time": {
+      "created": 1785107484900,
+      "updated": 1785107584087
+    }
+  },
+  "messages": [
+    {
+      "info": {
+        "role": "user",
+        "time": {
+          "created": 1785107484915
+        },
+        "agent": "sdd-arquitecto",
+        "model": {
+          "providerID": "opencode",
+          "modelID": "deepseek-v4-flash-free"
+        },
+        "summary": {
+          "diffs": [
+            {
+              "file": "docs/epicas/EPIC-001-suma-de-dos-numeros/SPEC-001-funcion-suma-basica.ledger.md",
+              "patch": "Index: docs/epicas/EPIC-001-suma-de-dos-numeros/SPEC-001-funcion-suma-basica.ledger.md\n===================================================================\n--- docs/epicas/EPIC-001-suma-de-dos-numeros/SPEC-001-funcion-suma-basica.ledger.md\t\n+++ docs/epicas/EPIC-001-suma-de-dos-numeros/SPEC-001-funcion-suma-basica.ledger.md\t\n@@ -0,0 +1,32 @@\n+---\n+id: SPEC-001\n+tipo: ledger\n+epica: EPIC-001\n+---\n+# Ledger — SPEC-001 Función suma básica\n+\n+## Resumen\n+- Fase: <!-- refleja el estado de la spec; la fuente de verdad es el frontmatter de la spec -->\n+- Rama: `ft/SPEC-001-funcion-suma-basica`\n+\n+## Matriz de criterios de aceptación\n+<!-- Escritores: sdd-implementador rellena Implementado y Test; sdd-verificador rellena Verif. y Estado. Nunca al revés. -->\n+<!-- Estados por CA: ✅ cerrado · ⚠️ parcial/con salvedad · 🚧 en curso · ❌ sin empezar · n-a -->\n+<!-- Un CA está ✅ solo cuando Implementado + Test + Verif. aplicables están en verde. Una salvedad se marca ⚠️, nunca ✅. -->\n+| CA | Implementado (fichero) | Test (fichero/caso) | Verif. | Estado |\n+|---|---|---|---|---|---|\n+| CA-1 | | | | ❌ |\n+| CA-2 | | | | ❌ |\n+| CA-3 | | | | ❌ |\n+\n+## Veredicto del verificador\n+<!-- GREEN/RED + fecha + resumen. Lo escribe SOLO sdd-verificador. -->\n+\n+## Evidencia visual\n+<!-- Tabla CA → captura en _qa/SPEC-001/. Informe HTML opcional: _qa/SPEC-001/informe.html -->\n+\n+## Salvedades / follow-ups\n+<!-- IDs F-SPEC-001-1, F-SPEC-001-2… con destino (spec futura o EPIC-MEJORA). -->\n+\n+## Cómo retomar (handoff)\n+<!-- Estado real del trabajo para la siguiente sesión: qué está hecho, qué falta, dónde seguir. -->\n",
+              "additions": 32,
+              "deletions": 0,
+              "status": "added"
+            },
+            {
+              "file": "docs/epicas/EPIC-001-suma-de-dos-numeros/SPEC-001-funcion-suma-basica.md",
+              "patch": "Index: docs/epicas/EPIC-001-suma-de-dos-numeros/SPEC-001-funcion-suma-basica.md\n===================================================================\n--- docs/epicas/EPIC-001-suma-de-dos-numeros/SPEC-001-funcion-suma-basica.md\t\n+++ docs/epicas/EPIC-001-suma-de-dos-numeros/SPEC-001-funcion-suma-basica.md\t\n@@ -0,0 +1,67 @@\n+---\n+id: SPEC-001\n+tipo: spec\n+epica: EPIC-001\n+estado: borrador\n+aprobada-por:\n+historial:\n+  - {estado: borrador, fecha: 2026-07-26, por: sdd-arquitecto}\n+---\n+# SPEC-001 — Función suma básica\n+\n+## Problema\n+El proyecto fixture-suma necesita su primera función utilitaria: una operación\n+de suma de dos números enteros. Sin ella no hay base sobre la que construir\n+el resto de la funcionalidad piloto ni validar el pipeline tremen-sdd\n+(spec → implementación → verificación).\n+\n+Afecta a cualquier desarrollador que necesite importar y usar la función\n+`suma` desde módulos ES en `src/`.\n+\n+## Usuarios / roles afectados\n+- **Desarrolladores** que importan `suma(a, b)` desde `src/suma.mjs` para\n+  realizar cálculos aritméticos básicos.\n+- **sdd-implementador** y **sdd-verificador** como primeros consumidores del\n+  pipeline tremen-sdd sobre esta spec.\n+\n+## Criterios de aceptación\n+\n+- **CA-1**: Suma de dos enteros positivos\n+  Dado dos números enteros positivos `a` y `b`,\n+  cuando se invoca `suma(a, b)`,\n+  entonces devuelve `a + b` como resultado correcto.\n+\n+- **CA-2**: Suma con signo mixto\n+  Dado un número entero positivo `a` y un número entero negativo `b`,\n+  cuando se invoca `suma(a, b)`,\n+  entonces devuelve `a + b` como resultado correcto (que puede ser positivo,\n+  negativo o cero según los operandos).\n+\n+- **CA-3**: Exportación como módulo ES\n+  Dado que `src/suma.mjs` es un módulo ES,\n+  cuando se importa mediante `import { suma } from './suma.mjs'`,\n+  entonces `suma` está disponible como exportación nombrada.\n+\n+## Entidades y reglas afectadas\n+- **RN-01** (placeholder): no aplica directamente — el dominio de suma no\n+  requiere reglas de negocio específicas más allá de la aritmética entera.\n+- **Dominio**: ningún término nuevo; la operación `suma` se alinea con el\n+  lenguaje ubicuo de \"suma de dos números\" del proyecto.\n+- No hay ADR vigentes que afecten a esta spec.\n+\n+## Fuera de alcance\n+- Validación de tipos (p. ej., lanzar error si se pasa `string` o `null`).\n+- Números fuera del rango seguro de JavaScript (`> Number.MAX_SAFE_INTEGER`\n+  o `< Number.MIN_SAFE_INTEGER`).\n+- Más de dos operandos (variadic, arrays, rest parameters).\n+- Operaciones aritméticas distintas de la suma (resta, multiplicación,\n+  división, módulo, etc.).\n+- CLI, interfaz gráfica, API HTTP o cualquier punto de entrada que no sea\n+  la importación directa del módulo ES.\n+\n+## Notas para el gate humano\n+- La función es **pura**: sin side effects, sin estado mutable, sin E/S.\n+- La implementación es trivial (`a + b`), pero el valor de esta spec está en\n+  validar el ciclo completo tremen-sdd sobre un caso mínimo.\n+- Se espera que el implementador cree `src/suma.mjs` y su test siguiendo\n+  TDD (rojo → verde).\n",
+              "additions": 67,
+              "deletions": 0,
+              "status": "added"
+            },
+            {
+              "file": "docs/epicas/EPIC-001-suma-de-dos-numeros/_epica.md",
+              "patch": "Index: docs/epicas/EPIC-001-suma-de-dos-numeros/_epica.md\n===================================================================\n--- docs/epicas/EPIC-001-suma-de-dos-numeros/_epica.md\t\n+++ docs/epicas/EPIC-001-suma-de-dos-numeros/_epica.md\t\n@@ -0,0 +1,41 @@\n+---\n+id: EPIC-001\n+tipo: epica\n+estado: borrador\n+historial:\n+  - {estado: borrador, fecha: 2026-07-26, por: sdd-producto}\n+---\n+# EPIC-001 — Suma de dos números\n+\n+## Objetivo\n+Proporcionar una función matemática básica de suma de dos números enteros,\n+exportada como módulo ES, que sirva como primer bloque funcional del proyecto\n+piloto fixture-suma. Esta épica establece el pipeline completo del estándar\n+tremen-sdd (spec → implementación → verificación) sobre un caso trivial.\n+\n+## Criterios de éxito\n+1. La función `suma(a, b)` está implementada en `src/suma.mjs` y se verifica\n+   mediante tests automatizados que cubren enteros positivos y mezcla de signos.\n+2. La spec asociada (SPEC-001) se implementa y verifica con resultado GREEN.\n+3. El ledger de la spec contiene evidencia de verificación.\n+\n+## Alcance\n+- Dentro:\n+  - Función `suma(a, b)` que recibe dos números enteros y devuelve su suma.\n+  - Exportación nombrada (`export function suma`) desde un módulo ES.\n+  - Tests unitarios que cubren los casos del CA.\n+- Fuera (aparcado a propósito, no por descuido):\n+  - Operaciones aritméticas: resta, multiplicación, división.\n+  - Validación de tipos de entrada (no type-checking).\n+  - Números fuera del rango seguro (`> Number.MAX_SAFE_INTEGER`).\n+  - Soporte para más de dos operandos (variadic, arrays, etc.).\n+  - CLI, interfaz web o cualquier otro punto de entrada que no sea la importación\n+    del módulo.\n+\n+## Specs\n+<!-- El estado por spec vive en el frontmatter de cada spec; el tablero agregado se regenera con /sdd-tablero (docs/tablero.md). No mantengas listas de specs a mano aquí. -->\n+\n+## Riesgos\n+- Ninguno significativo para una función trivial. El principal riesgo es de\n+  proceso: que el pipeline tremen-sdd se salte pasos al ser el primer\n+  ejercicio. Se mitiga siguiendo el flujo estrictamente.\n",
+              "additions": 41,
+              "deletions": 0,
+              "status": "added"
+            }
+          ]
+        },
+        "id": "msg_fa0b290f20015rR5thIzI6IhKC",
+        "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K"
+      },
+      "parts": [
+        {
+          "type": "text",
+          "text": "Eres sdd-arquitecto. Genera los artefactos de especificación (épica + spec) para esta petición:\n\n**Proyecto**: fixture-suma (tremen-sdd)\n**Raíz del proyecto**: C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\n\n**Petición**: \"Crear una función que suma dos números en src/suma.mjs, con su test.\"\n\n**Contexto**:\n- El proyecto es un piloto trivial de suma de dos números.\n- No hay épicas ni specs existentes.\n- El dominio está en docs/fundacion/dominio.md (vacío), reglas en docs/fundacion/reglas.md (solo RN-01 placeholder).\n- Código e identificadores van en INGLÉS. Docs/specs en ESPAÑOL.\n\n**Herramientas disponibles**: Usa bash para ejecutar scripts Node.js y el scaffold.\n\n**Instrucciones**:\n\n1. **Crea la épica**: Ejecuta el script de scaffold para crear la épica:\n   ```\n   node .opencode/core/scripts/scaffold.mjs epica \"Suma de dos números\"\n   ```\n   Esto creará un directorio en docs/epicas/EPIC-001-suma-de-dos-numeros/ con _epica.md.\n   Luego RELLENA el contenido de _epica.md con objetivos, criterios de éxito, alcance (dentro: la función suma; fuera: resta, multiplicación, división).\n\n2. **Crea la spec**: Ejecuta el scaffold para crear la spec bajo esa épica:\n   ```\n   node .opencode/core/scripts/scaffold.mjs spec \"Función suma básica\" --epica EPIC-001\n   ```\n   Esto creará SPEC-001-funcion-suma-basica.md y su ledger dentro del directorio de la épica.\n   Luego RELLENA la spec con:\n   - Problema: necesidad de sumar dos números enteros\n   - Usuarios: desarrolladores que importan la función\n   - Criterios de aceptación (en Given/When/Then):\n     - CA-1: Dado dos números enteros positivos, cuando se llama suma(a,b), entonces devuelve la suma correcta.\n     - CA-2: Dado un número positivo y uno negativo, cuando se llama suma(a,b), entonces devuelve la suma correcta.\n     - CA-3: Dado que suma.mjs se importa como módulo ES, entonces exporta la función suma como export nombrado.\n   - Entidades: ninguna nueva\n   - Fuera de alcance: validación de tipos, números grandes (>2^53), más de 2 operandos\n   - Notas para gate humano: función pura sin side effects, implementación trivial\n\n3. **Devuélveme tu informe** con:\n   - IDs creados (épica y spec)\n   - Rutas absolutas de los archivos generados\n   - El contenido completo de la spec (incluyendo frontmatter con estado \"borrador\")\n   - Cualquier decisión técnica que hayas tomado\n\nImportante: NO implementes código aún. Solo genera los artefactos de especificación.",
+          "id": "prt_fa0b290f8001rIpEDDpNvePHCs",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b290f20015rR5thIzI6IhKC"
+        }
+      ]
+    },
+    {
+      "info": {
+        "parentID": "msg_fa0b290f20015rR5thIzI6IhKC",
+        "role": "assistant",
+        "mode": "sdd-arquitecto",
+        "agent": "sdd-arquitecto",
+        "path": {
+          "cwd": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014",
+          "root": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014"
+        },
+        "cost": 0,
+        "tokens": {
+          "total": 9569,
+          "input": 9309,
+          "output": 230,
+          "reasoning": 30,
+          "cache": {
+            "write": 0,
+            "read": 0
+          }
+        },
+        "modelID": "deepseek-v4-flash-free",
+        "providerID": "opencode",
+        "time": {
+          "created": 1785107484947,
+          "completed": 1785107489330
+        },
+        "finish": "tool-calls",
+        "id": "msg_fa0b29113001wt4sfq89MoMeF1",
+        "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K"
+      },
+      "parts": [
+        {
+          "snapshot": "9d2a158c5a8b13a6ecb6a95a39cf5465184eeae9",
+          "type": "step-start",
+          "id": "prt_fa0b29572001ytdT719wJ3VemP",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b29113001wt4sfq89MoMeF1"
+        },
+        {
+          "type": "reasoning",
+          "text": "Let me start by reading the project's `.sdd.json` to determine the language, then load my skill file, and proceed with the instructions.",
+          "time": {
+            "start": 1785107486554,
+            "end": 1785107487085
+          },
+          "id": "prt_fa0b2975a001FW2HZjJmdYWoA8",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b29113001wt4sfq89MoMeF1"
+        },
+        {
+          "type": "text",
+          "text": "Voy a seguir el protocolo. Primero leo el `.sdd.json` para determinar el idioma, luego cargo mi skill, y procedo paso a paso.",
+          "time": {
+            "start": 1785107487089,
+            "end": 1785107488440
+          },
+          "id": "prt_fa0b29971001JKw5IwvH5eIiZX",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b29113001wt4sfq89MoMeF1"
+        },
+        {
+          "type": "tool",
+          "tool": "read",
+          "callID": "call_00_ckGDZNFSMooaYVygwXM87518",
+          "state": {
+            "status": "completed",
+            "input": {
+              "filePath": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\.sdd.json"
+            },
+            "output": "<path>C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\.sdd.json</path>\n<type>file</type>\n<content>\n1: {\n2:   \"idioma\": \"es\",\n3:   \"rutasVigiladas\": [\"src/\"],\n4:   \"linter\": \"auto\",\n5:   \"gates\": { \"requireSpec\": true, \"protegeVerdad\": true, \"calidad\": true }\n6: }\n\n(End of file - total 6 lines)\n</content>",
+            "metadata": {
+              "preview": "{\n  \"idioma\": \"es\",\n  \"rutasVigiladas\": [\"src/\"],\n  \"linter\": \"auto\",\n  \"gates\": { \"requireSpec\": true, \"protegeVerdad\": true, \"calidad\": true }\n}",
+              "truncated": false,
+              "loaded": [],
+              "display": {
+                "type": "file",
+                "path": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\.sdd.json",
+                "text": "{\n  \"idioma\": \"es\",\n  \"rutasVigiladas\": [\"src/\"],\n  \"linter\": \"auto\",\n  \"gates\": { \"requireSpec\": true, \"protegeVerdad\": true, \"calidad\": true }\n}",
+                "lineStart": 1,
+                "lineEnd": 6,
+                "totalLines": 6,
+                "truncated": false
+              }
+            },
+            "title": ".sdd.json",
+            "time": {
+              "start": 1785107487891,
+              "end": 1785107487945
+            }
+          },
+          "id": "prt_fa0b29afa001wWIXvuX4MLyR6N",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b29113001wt4sfq89MoMeF1"
+        },
+        {
+          "type": "tool",
+          "tool": "read",
+          "callID": "call_01_XakeWiJHtzsVIM8FZp120546",
+          "state": {
+            "status": "completed",
+            "input": {
+              "filePath": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\.opencode\\agents"
+            },
+            "output": "<path>C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\.opencode\\agents</path>\n<type>directory</type>\n<entries>\nsdd-arquitecto.md\nsdd-como-vamos.md\nsdd-documentalista.md\nsdd-implementador.md\nsdd-orquestador.md\nsdd-producto.md\nsdd-verificador.md\n\n(7 entries)\n</entries>",
+            "metadata": {
+              "preview": "sdd-arquitecto.md\nsdd-como-vamos.md\nsdd-documentalista.md\nsdd-implementador.md\nsdd-orquestador.md\nsdd-producto.md\nsdd-verificador.md",
+              "truncated": false,
+              "loaded": [],
+              "display": {
+                "type": "directory",
+                "path": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\.opencode\\agents",
+                "entries": [
+                  "sdd-arquitecto.md",
+                  "sdd-como-vamos.md",
+                  "sdd-documentalista.md",
+                  "sdd-implementador.md",
+                  "sdd-orquestador.md",
+                  "sdd-producto.md",
+                  "sdd-verificador.md"
+                ],
+                "offset": 1,
+                "totalEntries": 7,
+                "truncated": false
+              }
+            },
+            "title": ".opencode\\agents",
+            "time": {
+              "start": 1785107488347,
+              "end": 1785107488356
+            }
+          },
+          "id": "prt_fa0b29cb8001qVtzzSsAXe5mZB",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b29113001wt4sfq89MoMeF1"
+        },
+        {
+          "reason": "tool-calls",
+          "snapshot": "9d2a158c5a8b13a6ecb6a95a39cf5465184eeae9",
+          "type": "step-finish",
+          "tokens": {
+            "total": 9569,
+            "input": 9309,
+            "output": 230,
+            "reasoning": 30,
+            "cache": {
+              "write": 0,
+              "read": 0
+            }
+          },
+          "cost": 0,
+          "id": "prt_fa0b2a04a001OtEaqmGS0B3Ncy",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b29113001wt4sfq89MoMeF1"
+        }
+      ]
+    },
+    {
+      "info": {
+        "parentID": "msg_fa0b290f20015rR5thIzI6IhKC",
+        "role": "assistant",
+        "mode": "sdd-arquitecto",
+        "agent": "sdd-arquitecto",
+        "path": {
+          "cwd": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014",
+          "root": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014"
+        },
+        "cost": 0,
+        "tokens": {
+          "total": 10305,
+          "input": 407,
+          "output": 322,
+          "reasoning": 104,
+          "cache": {
+            "write": 0,
+            "read": 9472
+          }
+        },
+        "modelID": "deepseek-v4-flash-free",
+        "providerID": "opencode",
+        "time": {
+          "created": 1785107489339,
+          "completed": 1785107494262
+        },
+        "finish": "tool-calls",
+        "id": "msg_fa0b2a23b001X928nOgDyBkbQ8",
+        "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K"
+      },
+      "parts": [
+        {
+          "snapshot": "9d2a158c5a8b13a6ecb6a95a39cf5465184eeae9",
+          "type": "step-start",
+          "id": "prt_fa0b2a762001828MJIU1dFUIyQ",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b2a23b001X928nOgDyBkbQ8"
+        },
+        {
+          "type": "reasoning",
+          "text": "El idioma es `es`. Ahora debo leer mi fichero de rol en `core/roles/es/sdd-arquitecto.md`. Según las instrucciones, debo leerlo por ruta relativa a este fichero (el system prompt vive en `agents/`), así que `../core/roles/es/sdd-arquitecto.md` relativo a `agents/`.\n\nPero primero, veamos la estructura del proyecto para entender dónde está `core/`.",
+          "time": {
+            "start": 1785107490986,
+            "end": 1785107491962
+          },
+          "id": "prt_fa0b2a8aa001I8HpOyE3Gy1qpA",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b2a23b001X928nOgDyBkbQ8"
+        },
+        {
+          "type": "text",
+          "text": "Idioma detectado: `es`. Ahora leo mi fichero de rol y exploro la estructura del núcleo.",
+          "time": {
+            "start": 1785107491968,
+            "end": 1785107493591
+          },
+          "id": "prt_fa0b2ac80001fubkUgQjiVyDEG",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b2a23b001X928nOgDyBkbQ8"
+        },
+        {
+          "type": "tool",
+          "tool": "read",
+          "callID": "call_00_kkgYlULkNWWQquIGkHUY2916",
+          "state": {
+            "status": "completed",
+            "input": {
+              "filePath": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\.opencode\\core\\roles\\es\\sdd-arquitecto.md"
+            },
+            "output": "<path>C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\.opencode\\core\\roles\\es\\sdd-arquitecto.md</path>\n<type>file</type>\n<content>\n1: # Rol: sdd-arquitecto — specs y decisiones\n2: \n3: ## Misión\n4: Única autora de SPECs y ADRs. Conviertes una épica (o petición concreta) en\n5: specs implementables y testables, y registras cada decisión técnica no trivial\n6: como ADR inmutable. Dueño (con sdd-producto) de FOUNDATION.md y docs/fundacion/.\n7: \n8: ## Flujo\n9: 1. Lee FOUNDATION.md, docs/fundacion/ y los ADR existentes ANTES de decidir.\n10: 2. Crea la spec:\n11:    `node \"${SDD_ROOT}/core/scripts/scaffold.mjs\" spec \"<título>\" --epica EPIC-NNN`\n12:    Rellena: problema, roles afectados, CA en Given/When/Then (cada CA\n13:    verificable con un test), entidades y RN-xx citadas, fuera de alcance,\n14:    notas para el gate humano.\n15: 3. Toda decisión que constriña trabajo futuro (stack, datos, fronteras,\n16:    integraciones) → ADR:\n17:    `node \"${SDD_ROOT}/core/scripts/scaffold.mjs\" adr \"<título>\"`\n18:    con contexto, decisión, consecuencias y alternativas rechazadas con motivo.\n19:    En `Deciders` registra quién propone y quién aprueba, con matices.\n20: 4. Presenta spec y ADRs al humano vía el orquestador. NO los apruebes tú.\n21: \n22: ## Reglas duras\n23: - Las specs REFERENCIAN las fuentes de verdad (dominio.md, reglas.md, ADRs),\n24:   no las duplican.\n25: - Un ADR aceptado es INMUTABLE: para cambiarlo, escribe otro que lo supersede.\n26: - No implementas: ni código, ni tests. Diseñas y especificas.\n27: - CA sin forma verificable = spec incompleta. Reescríbela.\n\n(End of file - total 27 lines)\n</content>",
+            "metadata": {
+              "preview": "# Rol: sdd-arquitecto — specs y decisiones\n\n## Misión\nÚnica autora de SPECs y ADRs. Conviertes una épica (o petición concreta) en\nspecs implementables y testables, y registras cada decisión técnica no trivial\ncomo ADR inmutable. Dueño (con sdd-producto) de FOUNDATION.md y docs/fundacion/.\n\n## Flujo\n1. Lee FOUNDATION.md, docs/fundacion/ y los ADR existentes ANTES de decidir.\n2. Crea la spec:\n   `node \"${SDD_ROOT}/core/scripts/scaffold.mjs\" spec \"<título>\" --epica EPIC-NNN`\n   Rellena: problema, roles afectados, CA en Given/When/Then (cada CA\n   verificable con un test), entidades y RN-xx citadas, fuera de alcance,\n   notas para el gate humano.\n3. Toda decisión que constriña trabajo futuro (stack, datos, fronteras,\n   integraciones) → ADR:\n   `node \"${SDD_ROOT}/core/scripts/scaffold.mjs\" adr \"<título>\"`\n   con contexto, decisión, consecuencias y alternativas rechazadas con motivo.\n   En `Deciders` registra quién propone y quién aprueba, con matices.\n4. Presenta spec y ADRs al humano vía el orquestador. NO los apruebes tú.",
+              "truncated": false,
+              "loaded": [],
+              "display": {
+                "type": "file",
+                "path": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\.opencode\\core\\roles\\es\\sdd-arquitecto.md",
+                "text": "# Rol: sdd-arquitecto — specs y decisiones\n\n## Misión\nÚnica autora de SPECs y ADRs. Conviertes una épica (o petición concreta) en\nspecs implementables y testables, y registras cada decisión técnica no trivial\ncomo ADR inmutable. Dueño (con sdd-producto) de FOUNDATION.md y docs/fundacion/.\n\n## Flujo\n1. Lee FOUNDATION.md, docs/fundacion/ y los ADR existentes ANTES de decidir.\n2. Crea la spec:\n   `node \"${SDD_ROOT}/core/scripts/scaffold.mjs\" spec \"<título>\" --epica EPIC-NNN`\n   Rellena: problema, roles afectados, CA en Given/When/Then (cada CA\n   verificable con un test), entidades y RN-xx citadas, fuera de alcance,\n   notas para el gate humano.\n3. Toda decisión que constriña trabajo futuro (stack, datos, fronteras,\n   integraciones) → ADR:\n   `node \"${SDD_ROOT}/core/scripts/scaffold.mjs\" adr \"<título>\"`\n   con contexto, decisión, consecuencias y alternativas rechazadas con motivo.\n   En `Deciders` registra quién propone y quién aprueba, con matices.\n4. Presenta spec y ADRs al humano vía el orquestador. NO los apruebes tú.\n\n## Reglas duras\n- Las specs REFERENCIAN las fuentes de verdad (dominio.md, reglas.md, ADRs),\n  no las duplican.\n- Un ADR aceptado es INMUTABLE: para cambiarlo, escribe otro que lo supersede.\n- No implementas: ni código, ni tests. Diseñas y especificas.\n- CA sin forma verificable = spec incompleta. Reescríbela.",
+                "lineStart": 1,
+                "lineEnd": 27,
+                "totalLines": 27,
+                "truncated": false
+              }
+            },
+            "title": ".opencode\\core\\roles\\es\\sdd-arquitecto.md",
+            "time": {
+              "start": 1785107492729,
+              "end": 1785107492766
+            }
+          },
+          "id": "prt_fa0b2ad9b001wm0uV56mHMS9sP",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b2a23b001X928nOgDyBkbQ8"
+        },
+        {
+          "type": "tool",
+          "tool": "read",
+          "callID": "call_01_4J09y3SI1w3B06XLrABw2494",
+          "state": {
+            "status": "completed",
+            "input": {
+              "filePath": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\.opencode\\core"
+            },
+            "output": "<path>C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\.opencode\\core</path>\n<type>directory</type>\n<entries>\nlib/\nroles/\nscripts/\ntemplates/\ntests/\n\n(5 entries)\n</entries>",
+            "metadata": {
+              "preview": "lib/\nroles/\nscripts/\ntemplates/\ntests/",
+              "truncated": false,
+              "loaded": [],
+              "display": {
+                "type": "directory",
+                "path": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\.opencode\\core",
+                "entries": [
+                  "lib/",
+                  "roles/",
+                  "scripts/",
+                  "templates/",
+                  "tests/"
+                ],
+                "offset": 1,
+                "totalEntries": 5,
+                "truncated": false
+              }
+            },
+            "title": ".opencode\\core",
+            "time": {
+              "start": 1785107493125,
+              "end": 1785107493154
+            }
+          },
+          "id": "prt_fa0b2afa30018fF4dgJwM2vxFr",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b2a23b001X928nOgDyBkbQ8"
+        },
+        {
+          "type": "tool",
+          "tool": "read",
+          "callID": "call_02_5HWBsbafjld4zzv6ieRL0525",
+          "state": {
+            "status": "completed",
+            "input": {
+              "filePath": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014"
+            },
+            "output": "<path>C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014</path>\n<type>directory</type>\n<entries>\n.git/\n.opencode/\n.sdd.json\nCLAUDE.md\ndocs/\nFOUNDATION.md\nopencode.json\nREADME.md\nsrc/\n\n(9 entries)\n</entries>",
+            "metadata": {
+              "preview": ".git/\n.opencode/\n.sdd.json\nCLAUDE.md\ndocs/\nFOUNDATION.md\nopencode.json\nREADME.md\nsrc/",
+              "truncated": false,
+              "loaded": [],
+              "display": {
+                "type": "directory",
+                "path": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014",
+                "entries": [
+                  ".git/",
+                  ".opencode/",
+                  ".sdd.json",
+                  "CLAUDE.md",
+                  "docs/",
+                  "FOUNDATION.md",
+                  "opencode.json",
+                  "README.md",
+                  "src/"
+                ],
+                "offset": 1,
+                "totalEntries": 9,
+                "truncated": false
+              }
+            },
+            "title": "",
+            "time": {
+              "start": 1785107493513,
+              "end": 1785107493536
+            }
+          },
+          "id": "prt_fa0b2b127001CNB2HddjMUsNbP",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b2a23b001X928nOgDyBkbQ8"
+        },
+        {
+          "reason": "tool-calls",
+          "snapshot": "9d2a158c5a8b13a6ecb6a95a39cf5465184eeae9",
+          "type": "step-finish",
+          "tokens": {
+            "total": 10305,
+            "input": 407,
+            "output": 322,
+            "reasoning": 104,
+            "cache": {
+              "write": 0,
+              "read": 9472
+            }
+          },
+          "cost": 0,
+          "id": "prt_fa0b2b434001yMhe7Z6FY3nrJg",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b2a23b001X928nOgDyBkbQ8"
+        }
+      ]
+    },
+    {
+      "info": {
+        "parentID": "msg_fa0b290f20015rR5thIzI6IhKC",
+        "role": "assistant",
+        "mode": "sdd-arquitecto",
+        "agent": "sdd-arquitecto",
+        "path": {
+          "cwd": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014",
+          "root": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014"
+        },
+        "cost": 0,
+        "tokens": {
+          "total": 11992,
+          "input": 876,
+          "output": 394,
+          "reasoning": 482,
+          "cache": {
+            "write": 0,
+            "read": 10240
+          }
+        },
+        "modelID": "deepseek-v4-flash-free",
+        "providerID": "opencode",
+        "time": {
+          "created": 1785107494274,
+          "completed": 1785107502203
+        },
+        "finish": "tool-calls",
+        "id": "msg_fa0b2b582001S4w4eh1GJiNbZY",
+        "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K"
+      },
+      "parts": [
+        {
+          "snapshot": "9d2a158c5a8b13a6ecb6a95a39cf5465184eeae9",
+          "type": "step-start",
+          "id": "prt_fa0b2ba87001JF7kUNHEwYYwam",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b2b582001S4w4eh1GJiNbZY"
+        },
+        {
+          "type": "reasoning",
+          "text": "Bueno, veo que el core está en `.opencode/core/`. El rol me pide usar `${SDD_ROOT}/core/scripts/scaffold.mjs`. Según las instrucciones del system prompt, `${SDD_ROOT}` se resuelve a la raíz de este artefacto, un nivel por encima de `agents/`. El fichero del rol (sdd-arquitecto.md) está en `.opencode/agents/`, y el core está en `.opencode/core/`. Entonces `${SDD_ROOT}` es la raíz del proyecto, pero... Releyendo:\n\n\"En opencode no hay variable de plugin-root; `${SDD_ROOT}` es la raíz de ESTE artefacto, un nivel por encima de este fichero (que vive en `agents/`). Cuando el rol invoque un script del núcleo (p. ej. `${SDD_ROOT}/core/scripts/estado.mjs`; también `scaffold.mjs`, `tablero.mjs`, `valida.mjs`, `informe-qa.mjs`), resuelve `${SDD_ROOT}` a esa raíz y ejecútalo por ruta relativa (`../core/scripts/<script>.mjs`).\"\n\nO sea, el fichero de rol (system prompt) está en `agents/sdd-arquitecto.md`. La raíz del artefacto es un nivel arriba: `.opencode/`. Pero el core está en `.opencode/core/`. \n\nPor ruta relativa desde `agents/sdd-arquitecto.md`: `../core/scripts/scaffold.mjs` → `.opencode/core/scripts/scaffold.mjs`.\n\nVoy a ejecutar los scripts desde el directorio raíz del proyecto, usando la ruta relativa o absoluta.\n\nEl scaffold.mjs está en `C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\.opencode\\core\\scripts\\scaffold.mjs`\n\nVeamos qué scripts hay disponibles y cómo funciona el scaffold.",
+          "time": {
+            "start": 1785107496026,
+            "end": 1785107499660
+          },
+          "id": "prt_fa0b2bc590019rgmcstd75ISkf",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b2b582001S4w4eh1GJiNbZY"
+        },
+        {
+          "type": "text",
+          "text": "Veamos los scripts del núcleo y la estructura existente de docs para entender el estado actual.",
+          "time": {
+            "start": 1785107499664,
+            "end": 1785107501651
+          },
+          "id": "prt_fa0b2ca9000153HBZUgWttqYXu",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b2b582001S4w4eh1GJiNbZY"
+        },
+        {
+          "type": "tool",
+          "tool": "read",
+          "callID": "call_00_A4KNIHx38hL97ZcTBGE75506",
+          "state": {
+            "status": "completed",
+            "input": {
+              "filePath": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\.opencode\\core\\scripts"
+            },
+            "output": "<path>C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\.opencode\\core\\scripts</path>\n<type>directory</type>\n<entries>\nestado.mjs\ninforme-qa.mjs\nscaffold.mjs\ntablero.mjs\nvalida.mjs\n\n(5 entries)\n</entries>",
+            "metadata": {
+              "preview": "estado.mjs\ninforme-qa.mjs\nscaffold.mjs\ntablero.mjs\nvalida.mjs",
+              "truncated": false,
+              "loaded": [],
+              "display": {
+                "type": "directory",
+                "path": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\.opencode\\core\\scripts",
+                "entries": [
+                  "estado.mjs",
+                  "informe-qa.mjs",
+                  "scaffold.mjs",
+                  "tablero.mjs",
+                  "valida.mjs"
+                ],
+                "offset": 1,
+                "totalEntries": 5,
+                "truncated": false
+              }
+            },
+            "title": ".opencode\\core\\scripts",
+            "time": {
+              "start": 1785107500417,
+              "end": 1785107500445
+            }
+          },
+          "id": "prt_fa0b2cc12001HGitYMB1sRi7d4",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b2b582001S4w4eh1GJiNbZY"
+        },
+        {
+          "type": "tool",
+          "tool": "read",
+          "callID": "call_01_tkZgth6AJu6U33eP8n4s8756",
+          "state": {
+            "status": "completed",
+            "input": {
+              "filePath": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs"
+            },
+            "output": "<path>C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs</path>\n<type>directory</type>\n<entries>\nadr/\nepicas/\nfundacion/\nroadmap.md\ntablero.md\n\n(5 entries)\n</entries>",
+            "metadata": {
+              "preview": "adr/\nepicas/\nfundacion/\nroadmap.md\ntablero.md",
+              "truncated": false,
+              "loaded": [],
+              "display": {
+                "type": "directory",
+                "path": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs",
+                "entries": [
+                  "adr/",
+                  "epicas/",
+                  "fundacion/",
+                  "roadmap.md",
+                  "tablero.md"
+                ],
+                "offset": 1,
+                "totalEntries": 5,
+                "truncated": false
+              }
+            },
+            "title": "docs",
+            "time": {
+              "start": 1785107500791,
+              "end": 1785107500798
+            }
+          },
+          "id": "prt_fa0b2cdb30014XLaH6RClPC1ja",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b2b582001S4w4eh1GJiNbZY"
+        },
+        {
+          "type": "tool",
+          "tool": "read",
+          "callID": "call_02_WYXG5vmIy3iHYX2EU45I2905",
+          "state": {
+            "status": "completed",
+            "input": {
+              "filePath": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\FOUNDATION.md"
+            },
+            "output": "<path>C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\FOUNDATION.md</path>\n<type>file</type>\n<content>\n1: # FOUNDATION — fixture-suma\n2: \n3: > Constitución del proyecto. Las decisiones D-N están **locked**: solo un ADR\n4: > aceptado puede reinterpretarlas o supersederlas. Dueños: sdd-arquitecto y\n5: > sdd-producto (hook protege-verdad).\n6: \n7: - Creado: 2026-07-27\n8: - Dominio: suma de dos numeros como caso trivial de piloto\n9: \n10: ## Decisiones locked\n11: <!-- Una por línea, numeradas y datadas. Ej.: -->\n12: - **D-1** (2026-07-27): <!-- decisión fundacional 1 -->\n13: \n14: ## Alcance\n15: - Dentro:\n16: - Fuera:\n17: \n18: ## No-negociables\n19: <!-- Seguridad, cumplimiento, invariantes del dominio. -->\n20: \n21: ## Cómo se trabaja aquí\n22: Este proyecto sigue el estándar **tremen-sdd**: nada se implementa sin una\n23: SPEC aprobada; las decisiones técnicas se registran como ADR inmutables; la\n24: evidencia de verificación vive en el ledger de cada spec. Roles: /sdd-orquestador\n25: (entrada), /sdd-producto, /sdd-arquitecto, /sdd-implementador, /sdd-verificador,\n26: /sdd-documentalista, /sdd-como-vamos.\n\n(End of file - total 26 lines)\n</content>",
+            "metadata": {
+              "preview": "# FOUNDATION — fixture-suma\n\n> Constitución del proyecto. Las decisiones D-N están **locked**: solo un ADR\n> aceptado puede reinterpretarlas o supersederlas. Dueños: sdd-arquitecto y\n> sdd-producto (hook protege-verdad).\n\n- Creado: 2026-07-27\n- Dominio: suma de dos numeros como caso trivial de piloto\n\n## Decisiones locked\n<!-- Una por línea, numeradas y datadas. Ej.: -->\n- **D-1** (2026-07-27): <!-- decisión fundacional 1 -->\n\n## Alcance\n- Dentro:\n- Fuera:\n\n## No-negociables\n<!-- Seguridad, cumplimiento, invariantes del dominio. -->\n",
+              "truncated": false,
+              "loaded": [],
+              "display": {
+                "type": "file",
+                "path": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\FOUNDATION.md",
+                "text": "# FOUNDATION — fixture-suma\n\n> Constitución del proyecto. Las decisiones D-N están **locked**: solo un ADR\n> aceptado puede reinterpretarlas o supersederlas. Dueños: sdd-arquitecto y\n> sdd-producto (hook protege-verdad).\n\n- Creado: 2026-07-27\n- Dominio: suma de dos numeros como caso trivial de piloto\n\n## Decisiones locked\n<!-- Una por línea, numeradas y datadas. Ej.: -->\n- **D-1** (2026-07-27): <!-- decisión fundacional 1 -->\n\n## Alcance\n- Dentro:\n- Fuera:\n\n## No-negociables\n<!-- Seguridad, cumplimiento, invariantes del dominio. -->\n\n## Cómo se trabaja aquí\nEste proyecto sigue el estándar **tremen-sdd**: nada se implementa sin una\nSPEC aprobada; las decisiones técnicas se registran como ADR inmutables; la\nevidencia de verificación vive en el ledger de cada spec. Roles: /sdd-orquestador\n(entrada), /sdd-producto, /sdd-arquitecto, /sdd-implementador, /sdd-verificador,\n/sdd-documentalista, /sdd-como-vamos.",
+                "lineStart": 1,
+                "lineEnd": 26,
+                "totalLines": 26,
+                "truncated": false
+              }
+            },
+            "title": "FOUNDATION.md",
+            "time": {
+              "start": 1785107501171,
+              "end": 1785107501202
+            }
+          },
+          "id": "prt_fa0b2cf2b001FAhRxlJ1pPdOTA",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b2b582001S4w4eh1GJiNbZY"
+        },
+        {
+          "type": "tool",
+          "tool": "read",
+          "callID": "call_03_wvggI0P1o1hOK1T6a6TW8233",
+          "state": {
+            "status": "completed",
+            "input": {
+              "filePath": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\src"
+            },
+            "output": "<path>C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\src</path>\n<type>directory</type>\n<entries>\n.gitkeep\n\n(1 entries)\n</entries>",
+            "metadata": {
+              "preview": ".gitkeep",
+              "truncated": false,
+              "loaded": [],
+              "display": {
+                "type": "directory",
+                "path": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\src",
+                "entries": [
+                  ".gitkeep"
+                ],
+                "offset": 1,
+                "totalEntries": 1,
+                "truncated": false
+              }
+            },
+            "title": "src",
+            "time": {
+              "start": 1785107501550,
+              "end": 1785107501564
+            }
+          },
+          "id": "prt_fa0b2d0a7001p9poF0qFzIQgzc",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b2b582001S4w4eh1GJiNbZY"
+        },
+        {
+          "reason": "tool-calls",
+          "snapshot": "9d2a158c5a8b13a6ecb6a95a39cf5465184eeae9",
+          "type": "step-finish",
+          "tokens": {
+            "total": 11992,
+            "input": 876,
+            "output": 394,
+            "reasoning": 482,
+            "cache": {
+              "write": 0,
+              "read": 10240
+            }
+          },
+          "cost": 0,
+          "id": "prt_fa0b2d3520017kO8fB1J0DzKPU",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b2b582001S4w4eh1GJiNbZY"
+        }
+      ]
+    },
+    {
+      "info": {
+        "parentID": "msg_fa0b290f20015rR5thIzI6IhKC",
+        "role": "assistant",
+        "mode": "sdd-arquitecto",
+        "agent": "sdd-arquitecto",
+        "path": {
+          "cwd": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014",
+          "root": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014"
+        },
+        "cost": 0,
+        "tokens": {
+          "total": 12921,
+          "input": 845,
+          "output": 105,
+          "reasoning": 67,
+          "cache": {
+            "write": 0,
+            "read": 11904
+          }
+        },
+        "modelID": "deepseek-v4-flash-free",
+        "providerID": "opencode",
+        "time": {
+          "created": 1785107502211,
+          "completed": 1785107505720
+        },
+        "finish": "tool-calls",
+        "id": "msg_fa0b2d483001kB4ZYkq34OWbtn",
+        "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K"
+      },
+      "parts": [
+        {
+          "snapshot": "9d2a158c5a8b13a6ecb6a95a39cf5465184eeae9",
+          "type": "step-start",
+          "id": "prt_fa0b2d94b001rQNRtnhYIslA6A",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b2d483001kB4ZYkq34OWbtn"
+        },
+        {
+          "type": "reasoning",
+          "text": "Veo que ya existe `docs/epicas/` y `docs/adr/`. Es bueno. El proyecto es limpio.\n\nAhora necesito:\n\n1. Leer FOUNDATION.md y docs/fundacion/ como dice el rol. Ya leí FOUNDATION.md. Leamos docs/fundacion/.",
+          "time": {
+            "start": 1785107503820,
+            "end": 1785107504682
+          },
+          "id": "prt_fa0b2dacc0010nehO3cBg08Lxg",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b2d483001kB4ZYkq34OWbtn"
+        },
+        {
+          "type": "tool",
+          "tool": "read",
+          "callID": "call_00_TQcHIy3IX3dRvAeesCWg0652",
+          "state": {
+            "status": "completed",
+            "input": {
+              "filePath": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\fundacion"
+            },
+            "output": "<path>C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\fundacion</path>\n<type>directory</type>\n<entries>\ncontexto.md\ndominio.md\nreglas.md\nvision.md\n\n(4 entries)\n</entries>",
+            "metadata": {
+              "preview": "contexto.md\ndominio.md\nreglas.md\nvision.md",
+              "truncated": false,
+              "loaded": [],
+              "display": {
+                "type": "directory",
+                "path": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\fundacion",
+                "entries": [
+                  "contexto.md",
+                  "dominio.md",
+                  "reglas.md",
+                  "vision.md"
+                ],
+                "offset": 1,
+                "totalEntries": 4,
+                "truncated": false
+              }
+            },
+            "title": "docs\\fundacion",
+            "time": {
+              "start": 1785107505065,
+              "end": 1785107505081
+            }
+          },
+          "id": "prt_fa0b2de350016p2klkge2wsVHr",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b2d483001kB4ZYkq34OWbtn"
+        },
+        {
+          "reason": "tool-calls",
+          "snapshot": "9d2a158c5a8b13a6ecb6a95a39cf5465184eeae9",
+          "type": "step-finish",
+          "tokens": {
+            "total": 12921,
+            "input": 845,
+            "output": 105,
+            "reasoning": 67,
+            "cache": {
+              "write": 0,
+              "read": 11904
+            }
+          },
+          "cost": 0,
+          "id": "prt_fa0b2e112001hGUXv362jBgIMp",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b2d483001kB4ZYkq34OWbtn"
+        }
+      ]
+    },
+    {
+      "info": {
+        "parentID": "msg_fa0b290f20015rR5thIzI6IhKC",
+        "role": "assistant",
+        "mode": "sdd-arquitecto",
+        "agent": "sdd-arquitecto",
+        "path": {
+          "cwd": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014",
+          "root": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014"
+        },
+        "cost": 0,
+        "tokens": {
+          "total": 13435,
+          "input": 230,
+          "output": 393,
+          "reasoning": 12,
+          "cache": {
+            "write": 0,
+            "read": 12800
+          }
+        },
+        "modelID": "deepseek-v4-flash-free",
+        "providerID": "opencode",
+        "time": {
+          "created": 1785107505726,
+          "completed": 1785107510065
+        },
+        "finish": "tool-calls",
+        "id": "msg_fa0b2e23e001L7amOPXLIY0GeZ",
+        "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K"
+      },
+      "parts": [
+        {
+          "snapshot": "9d2a158c5a8b13a6ecb6a95a39cf5465184eeae9",
+          "type": "step-start",
+          "id": "prt_fa0b2e744001PbNCRhPTJ7ht4P",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b2e23e001L7amOPXLIY0GeZ"
+        },
+        {
+          "type": "reasoning",
+          "text": "Let me read the fundacion files to understand the context.",
+          "time": {
+            "start": 1785107507349,
+            "end": 1785107507620
+          },
+          "id": "prt_fa0b2e895001yYIOIJLN2wrVke",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b2e23e001L7amOPXLIY0GeZ"
+        },
+        {
+          "type": "tool",
+          "tool": "read",
+          "callID": "call_00_r0PdyZmp0k8lzAfrf8Sj7872",
+          "state": {
+            "status": "completed",
+            "input": {
+              "filePath": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\fundacion\\contexto.md"
+            },
+            "output": "<path>C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\fundacion\\contexto.md</path>\n<type>file</type>\n<content>\n1: # Contexto maestro — fixture-suma\n2: \n3: > Documento vivo: TODO lo que un agente (o una persona) necesita para situarse.\n4: > Se actualiza al cambiar el rumbo; la historia fina vive en ADRs y specs.\n5: \n6: ## Qué es y en qué punto está\n7: \n8: ## Stack y arquitectura (resumen as-built)\n9: \n10: ## Decisiones clave hasta hoy\n11: <!-- Referencias a ADR-NNN, no duplicar su contenido. -->\n12: \n13: ## Riesgos y preguntas abiertas\n\n(End of file - total 13 lines)\n</content>",
+            "metadata": {
+              "preview": "# Contexto maestro — fixture-suma\n\n> Documento vivo: TODO lo que un agente (o una persona) necesita para situarse.\n> Se actualiza al cambiar el rumbo; la historia fina vive en ADRs y specs.\n\n## Qué es y en qué punto está\n\n## Stack y arquitectura (resumen as-built)\n\n## Decisiones clave hasta hoy\n<!-- Referencias a ADR-NNN, no duplicar su contenido. -->\n\n## Riesgos y preguntas abiertas",
+              "truncated": false,
+              "loaded": [],
+              "display": {
+                "type": "file",
+                "path": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\fundacion\\contexto.md",
+                "text": "# Contexto maestro — fixture-suma\n\n> Documento vivo: TODO lo que un agente (o una persona) necesita para situarse.\n> Se actualiza al cambiar el rumbo; la historia fina vive en ADRs y specs.\n\n## Qué es y en qué punto está\n\n## Stack y arquitectura (resumen as-built)\n\n## Decisiones clave hasta hoy\n<!-- Referencias a ADR-NNN, no duplicar su contenido. -->\n\n## Riesgos y preguntas abiertas",
+                "lineStart": 1,
+                "lineEnd": 13,
+                "totalLines": 13,
+                "truncated": false
+              }
+            },
+            "title": "docs\\fundacion\\contexto.md",
+            "time": {
+              "start": 1785107508098,
+              "end": 1785107508123
+            }
+          },
+          "id": "prt_fa0b2e9a8001hQQmaL5Q7tgGzB",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b2e23e001L7amOPXLIY0GeZ"
+        },
+        {
+          "type": "tool",
+          "tool": "read",
+          "callID": "call_01_iHhO88L5dMAKQUXPMUQZ5183",
+          "state": {
+            "status": "completed",
+            "input": {
+              "filePath": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\fundacion\\dominio.md"
+            },
+            "output": "<path>C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\fundacion\\dominio.md</path>\n<type>file</type>\n<content>\n1: # Dominio y lenguaje ubicuo — fixture-suma\n2: \n3: > Glosario canónico. Estos términos NO se traducen ni se anglicizan en código,\n4: > UI ni documentación. Si un término falta, se añade aquí antes de usarse.\n5: \n6: | Término | Definición | Notas |\n7: |---|---|---|\n\n(End of file - total 7 lines)\n</content>",
+            "metadata": {
+              "preview": "# Dominio y lenguaje ubicuo — fixture-suma\n\n> Glosario canónico. Estos términos NO se traducen ni se anglicizan en código,\n> UI ni documentación. Si un término falta, se añade aquí antes de usarse.\n\n| Término | Definición | Notas |\n|---|---|---|",
+              "truncated": false,
+              "loaded": [],
+              "display": {
+                "type": "file",
+                "path": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\fundacion\\dominio.md",
+                "text": "# Dominio y lenguaje ubicuo — fixture-suma\n\n> Glosario canónico. Estos términos NO se traducen ni se anglicizan en código,\n> UI ni documentación. Si un término falta, se añade aquí antes de usarse.\n\n| Término | Definición | Notas |\n|---|---|---|",
+                "lineStart": 1,
+                "lineEnd": 7,
+                "totalLines": 7,
+                "truncated": false
+              }
+            },
+            "title": "docs\\fundacion\\dominio.md",
+            "time": {
+              "start": 1785107508470,
+              "end": 1785107508508
+            }
+          },
+          "id": "prt_fa0b2eb85001TKzbuI2xMDeIt0",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b2e23e001L7amOPXLIY0GeZ"
+        },
+        {
+          "type": "tool",
+          "tool": "read",
+          "callID": "call_02_9YYLeUECKjuHhSZIn9RM7546",
+          "state": {
+            "status": "completed",
+            "input": {
+              "filePath": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\fundacion\\reglas.md"
+            },
+            "output": "<path>C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\fundacion\\reglas.md</path>\n<type>file</type>\n<content>\n1: # Reglas de negocio — fixture-suma\n2: \n3: > Numeradas y estables: las specs y ADRs las citan como RN-xx. No se borran;\n4: > se marcan derogadas con fecha y motivo.\n5: \n6: - **RN-01**: <!-- primera regla de negocio -->\n\n(End of file - total 6 lines)\n</content>",
+            "metadata": {
+              "preview": "# Reglas de negocio — fixture-suma\n\n> Numeradas y estables: las specs y ADRs las citan como RN-xx. No se borran;\n> se marcan derogadas con fecha y motivo.\n\n- **RN-01**: <!-- primera regla de negocio -->",
+              "truncated": false,
+              "loaded": [],
+              "display": {
+                "type": "file",
+                "path": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\fundacion\\reglas.md",
+                "text": "# Reglas de negocio — fixture-suma\n\n> Numeradas y estables: las specs y ADRs las citan como RN-xx. No se borran;\n> se marcan derogadas con fecha y motivo.\n\n- **RN-01**: <!-- primera regla de negocio -->",
+                "lineStart": 1,
+                "lineEnd": 6,
+                "totalLines": 6,
+                "truncated": false
+              }
+            },
+            "title": "docs\\fundacion\\reglas.md",
+            "time": {
+              "start": 1785107508914,
+              "end": 1785107508971
+            }
+          },
+          "id": "prt_fa0b2ed17001nCtwQLdO8sreDa",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b2e23e001L7amOPXLIY0GeZ"
+        },
+        {
+          "type": "tool",
+          "tool": "read",
+          "callID": "call_03_K2vq18wQr2Rn3cCImKdE8910",
+          "state": {
+            "status": "completed",
+            "input": {
+              "filePath": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\fundacion\\vision.md"
+            },
+            "output": "<path>C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\fundacion\\vision.md</path>\n<type>file</type>\n<content>\n1: # Visión — fixture-suma\n2: \n3: ## El problema\n4: \n5: ## Para quién\n6: \n7: ## La promesa\n8: <!-- Qué será verdad cuando esto funcione. Métricas norte si las hay. -->\n9: \n10: ## Qué NO es este producto\n\n(End of file - total 10 lines)\n</content>",
+            "metadata": {
+              "preview": "# Visión — fixture-suma\n\n## El problema\n\n## Para quién\n\n## La promesa\n<!-- Qué será verdad cuando esto funcione. Métricas norte si las hay. -->\n\n## Qué NO es este producto",
+              "truncated": false,
+              "loaded": [],
+              "display": {
+                "type": "file",
+                "path": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\fundacion\\vision.md",
+                "text": "# Visión — fixture-suma\n\n## El problema\n\n## Para quién\n\n## La promesa\n<!-- Qué será verdad cuando esto funcione. Métricas norte si las hay. -->\n\n## Qué NO es este producto",
+                "lineStart": 1,
+                "lineEnd": 10,
+                "totalLines": 10,
+                "truncated": false
+              }
+            },
+            "title": "docs\\fundacion\\vision.md",
+            "time": {
+              "start": 1785107509347,
+              "end": 1785107509410
+            }
+          },
+          "id": "prt_fa0b2eed4001a6nktgCKZSHli7",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b2e23e001L7amOPXLIY0GeZ"
+        },
+        {
+          "reason": "tool-calls",
+          "snapshot": "9d2a158c5a8b13a6ecb6a95a39cf5465184eeae9",
+          "type": "step-finish",
+          "tokens": {
+            "total": 13435,
+            "input": 230,
+            "output": 393,
+            "reasoning": 12,
+            "cache": {
+              "write": 0,
+              "read": 12800
+            }
+          },
+          "cost": 0,
+          "id": "prt_fa0b2f1c9001vUmWmctw8ZA61k",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b2e23e001L7amOPXLIY0GeZ"
+        }
+      ]
+    },
+    {
+      "info": {
+        "parentID": "msg_fa0b290f20015rR5thIzI6IhKC",
+        "role": "assistant",
+        "mode": "sdd-arquitecto",
+        "agent": "sdd-arquitecto",
+        "path": {
+          "cwd": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014",
+          "root": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014"
+        },
+        "cost": 0,
+        "tokens": {
+          "total": 14471,
+          "input": 891,
+          "output": 190,
+          "reasoning": 78,
+          "cache": {
+            "write": 0,
+            "read": 13312
+          }
+        },
+        "modelID": "deepseek-v4-flash-free",
+        "providerID": "opencode",
+        "time": {
+          "created": 1785107510073,
+          "completed": 1785107514773
+        },
+        "finish": "tool-calls",
+        "id": "msg_fa0b2f338001IE86L5kiwugt7x",
+        "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K"
+      },
+      "parts": [
+        {
+          "snapshot": "9d2a158c5a8b13a6ecb6a95a39cf5465184eeae9",
+          "type": "step-start",
+          "id": "prt_fa0b2f89b001B7KzSsjyl9R5JG",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b2f338001IE86L5kiwugt7x"
+        },
+        {
+          "type": "reasoning",
+          "text": "Bien, ya tengo contexto. Ahora voy a:\n\n1. Ejecutar el scaffold para crear la épica\n2. Rellenar su contenido\n3. Ejecutar el scaffold para crear la spec\n4. Rellenar la spec\n\nPrimero, veamos cómo funciona el scaffold. Voy a ejecutar el script de scaffold para ver sus parámetros.",
+          "time": {
+            "start": 1785107511856,
+            "end": 1785107512617
+          },
+          "id": "prt_fa0b2fa30001qaZ3BliDBI0rJO",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b2f338001IE86L5kiwugt7x"
+        },
+        {
+          "type": "text",
+          "text": "Ahora ejecuto el scaffold para crear la épica. Primero veo la ayuda del script.",
+          "time": {
+            "start": 1785107512621,
+            "end": 1785107513622
+          },
+          "id": "prt_fa0b2fd2d001isq0OW7YUDI2rh",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b2f338001IE86L5kiwugt7x"
+        },
+        {
+          "type": "tool",
+          "tool": "bash",
+          "callID": "call_00_yxPoy4V0XHsWzFyEu2BK3531",
+          "state": {
+            "status": "completed",
+            "input": {
+              "command": "node \".opencode/core/scripts/scaffold.mjs\" --help 2>&1 || node \".opencode/core/scripts/scaffold.mjs\" 2>&1",
+              "workdir": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014",
+              "timeout": 15000
+            },
+            "output": "[scaffold] Tipo desconocido: --help. Usa epica|spec|task|adr.\n[scaffold] Tipo desconocido: undefined. Usa epica|spec|task|adr.\n",
+            "metadata": {
+              "output": "[scaffold] Tipo desconocido: --help. Usa epica|spec|task|adr.\n[scaffold] Tipo desconocido: undefined. Usa epica|spec|task|adr.\n",
+              "exit": 1,
+              "truncated": false
+            },
+            "title": "node \".opencode/core/scripts/scaffold.mjs\" --help 2>&1 || node \".opencode/core/scripts/scaffold.mjs\" 2>&1",
+            "time": {
+              "start": 1785107514050,
+              "end": 1785107514065
+            }
+          },
+          "id": "prt_fa0b2fe27001CXsSwr8T5QE5yw",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b2f338001IE86L5kiwugt7x"
+        },
+        {
+          "reason": "tool-calls",
+          "snapshot": "9d2a158c5a8b13a6ecb6a95a39cf5465184eeae9",
+          "type": "step-finish",
+          "tokens": {
+            "total": 14471,
+            "input": 891,
+            "output": 190,
+            "reasoning": 78,
+            "cache": {
+              "write": 0,
+              "read": 13312
+            }
+          },
+          "cost": 0,
+          "id": "prt_fa0b3042c00161GEU5SoaWOwC0",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b2f338001IE86L5kiwugt7x"
+        }
+      ]
+    },
+    {
+      "info": {
+        "parentID": "msg_fa0b290f20015rR5thIzI6IhKC",
+        "role": "assistant",
+        "mode": "sdd-arquitecto",
+        "agent": "sdd-arquitecto",
+        "path": {
+          "cwd": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014",
+          "root": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014"
+        },
+        "cost": 0,
+        "tokens": {
+          "total": 14729,
+          "input": 67,
+          "output": 155,
+          "reasoning": 43,
+          "cache": {
+            "write": 0,
+            "read": 14464
+          }
+        },
+        "modelID": "deepseek-v4-flash-free",
+        "providerID": "opencode",
+        "time": {
+          "created": 1785107514781,
+          "completed": 1785107519300
+        },
+        "finish": "tool-calls",
+        "id": "msg_fa0b3059d001Z9seLuKoHOMQVE",
+        "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K"
+      },
+      "parts": [
+        {
+          "snapshot": "9d2a158c5a8b13a6ecb6a95a39cf5465184eeae9",
+          "type": "step-start",
+          "id": "prt_fa0b30ad9001d41srdpAMmT9h2",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b3059d001Z9seLuKoHOMQVE"
+        },
+        {
+          "type": "reasoning",
+          "text": "El scaffold espera: `node scaffold.mjs epica|spec|task|adr <título> [opciones]`. No hay flag `--help`. Voy a crear la épica primero.",
+          "time": {
+            "start": 1785107516591,
+            "end": 1785107517183
+          },
+          "id": "prt_fa0b30caf001XgWUVaW4n93XNp",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b3059d001Z9seLuKoHOMQVE"
+        },
+        {
+          "type": "tool",
+          "tool": "bash",
+          "callID": "call_00_m3oYf7kNxcDR7Mzo6N5z2722",
+          "state": {
+            "status": "completed",
+            "input": {
+              "command": "node \".opencode/core/scripts/scaffold.mjs\" epica \"Suma de dos números\"",
+              "workdir": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014",
+              "timeout": 15000
+            },
+            "output": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\_epica.md\n",
+            "metadata": {
+              "output": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\_epica.md\n",
+              "exit": 0,
+              "truncated": false
+            },
+            "title": "node \".opencode/core/scripts/scaffold.mjs\" epica \"Suma de dos números\"",
+            "time": {
+              "start": 1785107518062,
+              "end": 1785107518100
+            }
+          },
+          "id": "prt_fa0b30f020015yu1uMzKZCmBx3",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b3059d001Z9seLuKoHOMQVE"
+        },
+        {
+          "reason": "tool-calls",
+          "snapshot": "c33d62df16071bb889c9d05b9403a4687588ee56",
+          "type": "step-finish",
+          "tokens": {
+            "total": 14729,
+            "input": 67,
+            "output": 155,
+            "reasoning": 43,
+            "cache": {
+              "write": 0,
+              "read": 14464
+            }
+          },
+          "cost": 0,
+          "id": "prt_fa0b3154f001qPSbRYImwMRt6D",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b3059d001Z9seLuKoHOMQVE"
+        },
+        {
+          "type": "patch",
+          "hash": "9d2a158c5a8b13a6ecb6a95a39cf5465184eeae9",
+          "files": [
+            "C:/Users/Albert/AppData/Local/Temp/claude/D--src-tremen-sdd/13be4f6f-d60c-4d5e-b0dc-b092cf834326/scratchpad/fixture-spec014/docs/epicas/EPIC-001-suma-de-dos-numeros/_epica.md"
+          ],
+          "id": "prt_fa0b3173c001dANhokZ860S1iS",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b3059d001Z9seLuKoHOMQVE"
+        }
+      ]
+    },
+    {
+      "info": {
+        "parentID": "msg_fa0b290f20015rR5thIzI6IhKC",
+        "role": "assistant",
+        "mode": "sdd-arquitecto",
+        "agent": "sdd-arquitecto",
+        "path": {
+          "cwd": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014",
+          "root": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014"
+        },
+        "cost": 0,
+        "tokens": {
+          "total": 14987,
+          "input": 100,
+          "output": 142,
+          "reasoning": 25,
+          "cache": {
+            "write": 0,
+            "read": 14720
+          }
+        },
+        "modelID": "deepseek-v4-flash-free",
+        "providerID": "opencode",
+        "time": {
+          "created": 1785107519309,
+          "completed": 1785107523324
+        },
+        "finish": "tool-calls",
+        "id": "msg_fa0b3174d001ex0lcNfqVlPJW0",
+        "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K"
+      },
+      "parts": [
+        {
+          "snapshot": "c33d62df16071bb889c9d05b9403a4687588ee56",
+          "type": "step-start",
+          "id": "prt_fa0b31cff001ADI1aKJ5bpdHHm",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b3174d001ex0lcNfqVlPJW0"
+        },
+        {
+          "type": "reasoning",
+          "text": "La épica se creó. Ahora leo el archivo generado para ver su contenido y rellenarlo.",
+          "time": {
+            "start": 1785107521263,
+            "end": 1785107521611
+          },
+          "id": "prt_fa0b31eef00118Qgyqwb3ZIYkW",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b3174d001ex0lcNfqVlPJW0"
+        },
+        {
+          "type": "text",
+          "text": "Épica creada. Ahora leo el archivo generado y lo relleno.",
+          "time": {
+            "start": 1785107521616,
+            "end": 1785107522402
+          },
+          "id": "prt_fa0b3205000183Au7IhrJF4Nl4",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b3174d001ex0lcNfqVlPJW0"
+        },
+        {
+          "type": "tool",
+          "tool": "read",
+          "callID": "call_00_9owfnxwchP9OuXE8dRom6097",
+          "state": {
+            "status": "completed",
+            "input": {
+              "filePath": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\_epica.md"
+            },
+            "output": "<path>C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\_epica.md</path>\n<type>file</type>\n<content>\n1: ---\n2: id: EPIC-001\n3: tipo: epica\n4: estado: borrador\n5: historial:\n6:   - {estado: borrador, fecha: 2026-07-26, por: sdd-producto}\n7: ---\n8: # EPIC-001 — Suma de dos números\n9: \n10: ## Objetivo\n11: <!-- Qué capacidad de negocio entrega esta épica y por qué ahora. -->\n12: \n13: ## Criterios de éxito\n14: <!-- Medibles. Cómo sabremos que la épica cumplió su promesa. -->\n15: \n16: ## Alcance\n17: - Dentro:\n18: - Fuera (aparcado a propósito, no por descuido):\n19: \n20: ## Specs\n21: <!-- El estado por spec vive en el frontmatter de cada spec; el tablero agregado se regenera con /sdd-tablero (docs/tablero.md). No mantengas listas de specs a mano aquí. -->\n22: \n23: ## Riesgos\n\n(End of file - total 23 lines)\n</content>",
+            "metadata": {
+              "preview": "---\nid: EPIC-001\ntipo: epica\nestado: borrador\nhistorial:\n  - {estado: borrador, fecha: 2026-07-26, por: sdd-producto}\n---\n# EPIC-001 — Suma de dos números\n\n## Objetivo\n<!-- Qué capacidad de negocio entrega esta épica y por qué ahora. -->\n\n## Criterios de éxito\n<!-- Medibles. Cómo sabremos que la épica cumplió su promesa. -->\n\n## Alcance\n- Dentro:\n- Fuera (aparcado a propósito, no por descuido):\n\n## Specs",
+              "truncated": false,
+              "loaded": [],
+              "display": {
+                "type": "file",
+                "path": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\_epica.md",
+                "text": "---\nid: EPIC-001\ntipo: epica\nestado: borrador\nhistorial:\n  - {estado: borrador, fecha: 2026-07-26, por: sdd-producto}\n---\n# EPIC-001 — Suma de dos números\n\n## Objetivo\n<!-- Qué capacidad de negocio entrega esta épica y por qué ahora. -->\n\n## Criterios de éxito\n<!-- Medibles. Cómo sabremos que la épica cumplió su promesa. -->\n\n## Alcance\n- Dentro:\n- Fuera (aparcado a propósito, no por descuido):\n\n## Specs\n<!-- El estado por spec vive en el frontmatter de cada spec; el tablero agregado se regenera con /sdd-tablero (docs/tablero.md). No mantengas listas de specs a mano aquí. -->\n\n## Riesgos",
+                "lineStart": 1,
+                "lineEnd": 23,
+                "totalLines": 23,
+                "truncated": false
+              }
+            },
+            "title": "docs\\epicas\\EPIC-001-suma-de-dos-numeros\\_epica.md",
+            "time": {
+              "start": 1785107522323,
+              "end": 1785107522393
+            }
+          },
+          "id": "prt_fa0b32130001c8vtn7WrMr4cvM",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b3174d001ex0lcNfqVlPJW0"
+        },
+        {
+          "reason": "tool-calls",
+          "snapshot": "c33d62df16071bb889c9d05b9403a4687588ee56",
+          "type": "step-finish",
+          "tokens": {
+            "total": 14987,
+            "input": 100,
+            "output": 142,
+            "reasoning": 25,
+            "cache": {
+              "write": 0,
+              "read": 14720
+            }
+          },
+          "cost": 0,
+          "id": "prt_fa0b324f5001b3L2t7ZpYGHgzd",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b3174d001ex0lcNfqVlPJW0"
+        }
+      ]
+    },
+    {
+      "info": {
+        "parentID": "msg_fa0b290f20015rR5thIzI6IhKC",
+        "role": "assistant",
+        "mode": "sdd-arquitecto",
+        "agent": "sdd-arquitecto",
+        "path": {
+          "cwd": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014",
+          "root": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014"
+        },
+        "cost": 0,
+        "tokens": {
+          "total": 16302,
+          "input": 372,
+          "output": 874,
+          "reasoning": 80,
+          "cache": {
+            "write": 0,
+            "read": 14976
+          }
+        },
+        "modelID": "deepseek-v4-flash-free",
+        "providerID": "opencode",
+        "time": {
+          "created": 1785107523338,
+          "completed": 1785107534115
+        },
+        "finish": "tool-calls",
+        "id": "msg_fa0b32709001ezbNctzq4w7W17",
+        "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K"
+      },
+      "parts": [
+        {
+          "snapshot": "c33d62df16071bb889c9d05b9403a4687588ee56",
+          "type": "step-start",
+          "id": "prt_fa0b32cf6001EbLtTsmVToUEeF",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b32709001ezbNctzq4w7W17"
+        },
+        {
+          "type": "reasoning",
+          "text": "Ahora relleno la épica con el contenido adecuado y voy a actualizar el frontmatter también (fecha correcta hoy es 2026-07-27 según el env, pero el historial dice 2026-07-26... bueno, lo dejo como está ya que el scaffold lo puso).\n\nVoy a rellenar la épica.",
+          "time": {
+            "start": 1785107525131,
+            "end": 1785107526045
+          },
+          "id": "prt_fa0b32e0b001JeGfTHK84Z4cxX",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b32709001ezbNctzq4w7W17"
+        },
+        {
+          "type": "text",
+          "text": "Relleno la épica con objetivos, criterios de éxito y alcance.",
+          "time": {
+            "start": 1785107526047,
+            "end": 1785107532904
+          },
+          "id": "prt_fa0b3319f001mHfaNWTzl0EMHq",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b32709001ezbNctzq4w7W17"
+        },
+        {
+          "type": "tool",
+          "tool": "edit",
+          "callID": "call_00_WEXA6Ilh1nezL6zNbYFp5212",
+          "state": {
+            "status": "completed",
+            "input": {
+              "filePath": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\_epica.md",
+              "oldString": "---\nid: EPIC-001\ntipo: epica\nestado: borrador\nhistorial:\n  - {estado: borrador, fecha: 2026-07-26, por: sdd-producto}\n---\n# EPIC-001 — Suma de dos números\n\n## Objetivo\n<!-- Qué capacidad de negocio entrega esta épica y por qué ahora. -->\n\n## Criterios de éxito\n<!-- Medibles. Cómo sabremos que la épica cumplió su promesa. -->\n\n## Alcance\n- Dentro:\n- Fuera (aparcado a propósito, no por descuido):\n\n## Specs\n<!-- El estado por spec vive en el frontmatter de cada spec; el tablero agregado se regenera con /sdd-tablero (docs/tablero.md). No mantengas listas de specs a mano aquí. -->\n\n## Riesgos",
+              "newString": "---\nid: EPIC-001\ntipo: epica\nestado: borrador\nhistorial:\n  - {estado: borrador, fecha: 2026-07-26, por: sdd-producto}\n---\n# EPIC-001 — Suma de dos números\n\n## Objetivo\nProporcionar una función matemática básica de suma de dos números enteros,\nexportada como módulo ES, que sirva como primer bloque funcional del proyecto\npiloto fixture-suma. Esta épica establece el pipeline completo del estándar\ntremen-sdd (spec → implementación → verificación) sobre un caso trivial.\n\n## Criterios de éxito\n1. La función `suma(a, b)` está implementada en `src/suma.mjs` y se verifica\n   mediante tests automatizados que cubren enteros positivos y mezcla de signos.\n2. La spec asociada (SPEC-001) se implementa y verifica con resultado GREEN.\n3. El ledger de la spec contiene evidencia de verificación.\n\n## Alcance\n- Dentro:\n  - Función `suma(a, b)` que recibe dos números enteros y devuelve su suma.\n  - Exportación nombrada (`export function suma`) desde un módulo ES.\n  - Tests unitarios que cubren los casos del CA.\n- Fuera (aparcado a propósito, no por descuido):\n  - Operaciones aritméticas: resta, multiplicación, división.\n  - Validación de tipos de entrada (no type-checking).\n  - Números fuera del rango seguro (`> Number.MAX_SAFE_INTEGER`).\n  - Soporte para más de dos operandos (variadic, arrays, etc.).\n  - CLI, interfaz web o cualquier otro punto de entrada que no sea la importación\n    del módulo.\n\n## Specs\n<!-- El estado por spec vive en el frontmatter de cada spec; el tablero agregado se regenera con /sdd-tablero (docs/tablero.md). No mantengas listas de specs a mano aquí. -->\n\n## Riesgos\n- Ninguno significativo para una función trivial. El principal riesgo es de\n  proceso: que el pipeline tremen-sdd se salte pasos al ser el primer\n  ejercicio. Se mitiga siguiendo el flujo estrictamente."
+            },
+            "output": "Edit applied successfully.",
+            "metadata": {
+              "diagnostics": {},
+              "diff": "Index: C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\_epica.md\n===================================================================\n--- C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\_epica.md\n+++ C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\_epica.md\n@@ -7,17 +7,35 @@\n ---\n # EPIC-001 — Suma de dos números\n \n ## Objetivo\n-<!-- Qué capacidad de negocio entrega esta épica y por qué ahora. -->\n+Proporcionar una función matemática básica de suma de dos números enteros,\n+exportada como módulo ES, que sirva como primer bloque funcional del proyecto\n+piloto fixture-suma. Esta épica establece el pipeline completo del estándar\n+tremen-sdd (spec → implementación → verificación) sobre un caso trivial.\n \n ## Criterios de éxito\n-<!-- Medibles. Cómo sabremos que la épica cumplió su promesa. -->\n+1. La función `suma(a, b)` está implementada en `src/suma.mjs` y se verifica\n+   mediante tests automatizados que cubren enteros positivos y mezcla de signos.\n+2. La spec asociada (SPEC-001) se implementa y verifica con resultado GREEN.\n+3. El ledger de la spec contiene evidencia de verificación.\n \n ## Alcance\n - Dentro:\n+  - Función `suma(a, b)` que recibe dos números enteros y devuelve su suma.\n+  - Exportación nombrada (`export function suma`) desde un módulo ES.\n+  - Tests unitarios que cubren los casos del CA.\n - Fuera (aparcado a propósito, no por descuido):\n+  - Operaciones aritméticas: resta, multiplicación, división.\n+  - Validación de tipos de entrada (no type-checking).\n+  - Números fuera del rango seguro (`> Number.MAX_SAFE_INTEGER`).\n+  - Soporte para más de dos operandos (variadic, arrays, etc.).\n+  - CLI, interfaz web o cualquier otro punto de entrada que no sea la importación\n+    del módulo.\n \n ## Specs\n <!-- El estado por spec vive en el frontmatter de cada spec; el tablero agregado se regenera con /sdd-tablero (docs/tablero.md). No mantengas listas de specs a mano aquí. -->\n \n ## Riesgos\n+- Ninguno significativo para una función trivial. El principal riesgo es de\n+  proceso: que el pipeline tremen-sdd se salte pasos al ser el primer\n+  ejercicio. Se mitiga siguiendo el flujo estrictamente.\n",
+              "filediff": {
+                "file": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\_epica.md",
+                "patch": "Index: C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\_epica.md\n===================================================================\n--- C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\_epica.md\n+++ C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\_epica.md\n@@ -7,17 +7,35 @@\n ---\n # EPIC-001 — Suma de dos números\n \n ## Objetivo\n-<!-- Qué capacidad de negocio entrega esta épica y por qué ahora. -->\n+Proporcionar una función matemática básica de suma de dos números enteros,\n+exportada como módulo ES, que sirva como primer bloque funcional del proyecto\n+piloto fixture-suma. Esta épica establece el pipeline completo del estándar\n+tremen-sdd (spec → implementación → verificación) sobre un caso trivial.\n \n ## Criterios de éxito\n-<!-- Medibles. Cómo sabremos que la épica cumplió su promesa. -->\n+1. La función `suma(a, b)` está implementada en `src/suma.mjs` y se verifica\n+   mediante tests automatizados que cubren enteros positivos y mezcla de signos.\n+2. La spec asociada (SPEC-001) se implementa y verifica con resultado GREEN.\n+3. El ledger de la spec contiene evidencia de verificación.\n \n ## Alcance\n - Dentro:\n+  - Función `suma(a, b)` que recibe dos números enteros y devuelve su suma.\n+  - Exportación nombrada (`export function suma`) desde un módulo ES.\n+  - Tests unitarios que cubren los casos del CA.\n - Fuera (aparcado a propósito, no por descuido):\n+  - Operaciones aritméticas: resta, multiplicación, división.\n+  - Validación de tipos de entrada (no type-checking).\n+  - Números fuera del rango seguro (`> Number.MAX_SAFE_INTEGER`).\n+  - Soporte para más de dos operandos (variadic, arrays, etc.).\n+  - CLI, interfaz web o cualquier otro punto de entrada que no sea la importación\n+    del módulo.\n \n ## Specs\n <!-- El estado por spec vive en el frontmatter de cada spec; el tablero agregado se regenera con /sdd-tablero (docs/tablero.md). No mantengas listas de specs a mano aquí. -->\n \n ## Riesgos\n+- Ninguno significativo para una función trivial. El principal riesgo es de\n+  proceso: que el pipeline tremen-sdd se salte pasos al ser el primer\n+  ejercicio. Se mitiga siguiendo el flujo estrictamente.\n",
+                "additions": 20,
+                "deletions": 2
+              },
+              "truncated": false
+            },
+            "title": "docs\\epicas\\EPIC-001-suma-de-dos-numeros\\_epica.md",
+            "time": {
+              "start": 1785107532828,
+              "end": 1785107532844
+            }
+          },
+          "id": "prt_fa0b3324a001dYPp4teopOP0dg",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b32709001ezbNctzq4w7W17"
+        },
+        {
+          "reason": "tool-calls",
+          "snapshot": "59335ffef10b0cc504c24c2b069a82b0f1bfcc5a",
+          "type": "step-finish",
+          "tokens": {
+            "total": 16302,
+            "input": 372,
+            "output": 874,
+            "reasoning": 80,
+            "cache": {
+              "write": 0,
+              "read": 14976
+            }
+          },
+          "cost": 0,
+          "id": "prt_fa0b34f5d001EooQyBnGKypTd2",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b32709001ezbNctzq4w7W17"
+        },
+        {
+          "type": "patch",
+          "hash": "c33d62df16071bb889c9d05b9403a4687588ee56",
+          "files": [
+            "C:/Users/Albert/AppData/Local/Temp/claude/D--src-tremen-sdd/13be4f6f-d60c-4d5e-b0dc-b092cf834326/scratchpad/fixture-spec014/docs/epicas/EPIC-001-suma-de-dos-numeros/_epica.md"
+          ],
+          "id": "prt_fa0b3511c001Jnid5so2de42GZ",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b32709001ezbNctzq4w7W17"
+        }
+      ]
+    },
+    {
+      "info": {
+        "parentID": "msg_fa0b290f20015rR5thIzI6IhKC",
+        "role": "assistant",
+        "mode": "sdd-arquitecto",
+        "agent": "sdd-arquitecto",
+        "path": {
+          "cwd": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014",
+          "root": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014"
+        },
+        "cost": 0,
+        "tokens": {
+          "total": 16508,
+          "input": 61,
+          "output": 176,
+          "reasoning": 15,
+          "cache": {
+            "write": 0,
+            "read": 16256
+          }
+        },
+        "modelID": "deepseek-v4-flash-free",
+        "providerID": "opencode",
+        "time": {
+          "created": 1785107534123,
+          "completed": 1785107538012
+        },
+        "finish": "tool-calls",
+        "id": "msg_fa0b3512b001gutSAvAxudf8cU",
+        "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K"
+      },
+      "parts": [
+        {
+          "snapshot": "59335ffef10b0cc504c24c2b069a82b0f1bfcc5a",
+          "type": "step-start",
+          "id": "prt_fa0b35654001mYBIyiJhooSxsG",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b3512b001gutSAvAxudf8cU"
+        },
+        {
+          "type": "reasoning",
+          "text": "Ahora creo la spec bajo la épica EPIC-001.",
+          "time": {
+            "start": 1785107535903,
+            "end": 1785107536073
+          },
+          "id": "prt_fa0b3581f001EVN6TJC6f1Jh2M",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b3512b001gutSAvAxudf8cU"
+        },
+        {
+          "type": "text",
+          "text": "Épica lista. Ahora creo la spec bajo esa épica.",
+          "time": {
+            "start": 1785107536077,
+            "end": 1785107536912
+          },
+          "id": "prt_fa0b358cd001kCtLhh26R8APIX",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b3512b001gutSAvAxudf8cU"
+        },
+        {
+          "type": "tool",
+          "tool": "bash",
+          "callID": "call_00_zSrYJHCsEc1ahnZKhuSv1845",
+          "state": {
+            "status": "completed",
+            "input": {
+              "command": "node \".opencode/core/scripts/scaffold.mjs\" spec \"Función suma básica\" --epica EPIC-001",
+              "workdir": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014",
+              "timeout": 15000
+            },
+            "output": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.md\n",
+            "metadata": {
+              "output": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.md\n",
+              "exit": 0,
+              "truncated": false
+            },
+            "title": "node \".opencode/core/scripts/scaffold.mjs\" spec \"Función suma básica\" --epica EPIC-001",
+            "time": {
+              "start": 1785107537035,
+              "end": 1785107537044
+            }
+          },
+          "id": "prt_fa0b35959001pruXVi2UV410Rs",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b3512b001gutSAvAxudf8cU"
+        },
+        {
+          "reason": "tool-calls",
+          "snapshot": "0d342527067ac82c2146603dcfa40f48f31caacb",
+          "type": "step-finish",
+          "tokens": {
+            "total": 16508,
+            "input": 61,
+            "output": 176,
+            "reasoning": 15,
+            "cache": {
+              "write": 0,
+              "read": 16256
+            }
+          },
+          "cost": 0,
+          "id": "prt_fa0b35e99001sPqzPqkka8DRPW",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b3512b001gutSAvAxudf8cU"
+        },
+        {
+          "type": "patch",
+          "hash": "59335ffef10b0cc504c24c2b069a82b0f1bfcc5a",
+          "files": [
+            "C:/Users/Albert/AppData/Local/Temp/claude/D--src-tremen-sdd/13be4f6f-d60c-4d5e-b0dc-b092cf834326/scratchpad/fixture-spec014/docs/epicas/EPIC-001-suma-de-dos-numeros/SPEC-001-funcion-suma-basica.ledger.md",
+            "C:/Users/Albert/AppData/Local/Temp/claude/D--src-tremen-sdd/13be4f6f-d60c-4d5e-b0dc-b092cf834326/scratchpad/fixture-spec014/docs/epicas/EPIC-001-suma-de-dos-numeros/SPEC-001-funcion-suma-basica.md"
+          ],
+          "id": "prt_fa0b36054001Xvs33inUn9jxMD",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b3512b001gutSAvAxudf8cU"
+        }
+      ]
+    },
+    {
+      "info": {
+        "parentID": "msg_fa0b290f20015rR5thIzI6IhKC",
+        "role": "assistant",
+        "mode": "sdd-arquitecto",
+        "agent": "sdd-arquitecto",
+        "path": {
+          "cwd": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014",
+          "root": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014"
+        },
+        "cost": 0,
+        "tokens": {
+          "total": 16767,
+          "input": 224,
+          "output": 142,
+          "reasoning": 17,
+          "cache": {
+            "write": 0,
+            "read": 16384
+          }
+        },
+        "modelID": "deepseek-v4-flash-free",
+        "providerID": "opencode",
+        "time": {
+          "created": 1785107538021,
+          "completed": 1785107541547
+        },
+        "finish": "tool-calls",
+        "id": "msg_fa0b36065001NpbD1PcGA8pPvS",
+        "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K"
+      },
+      "parts": [
+        {
+          "snapshot": "0d342527067ac82c2146603dcfa40f48f31caacb",
+          "type": "step-start",
+          "id": "prt_fa0b365db001cVdNTz9UQBq7FT",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b36065001NpbD1PcGA8pPvS"
+        },
+        {
+          "type": "reasoning",
+          "text": "La spec se creó. Ahora la leo y la relleno.",
+          "time": {
+            "start": 1785107539917,
+            "end": 1785107540228
+          },
+          "id": "prt_fa0b367cd001RV4u5b0GUiXBEP",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b36065001NpbD1PcGA8pPvS"
+        },
+        {
+          "type": "text",
+          "text": "Spec creada. La leo para rellenarla.",
+          "time": {
+            "start": 1785107540234,
+            "end": 1785107540963
+          },
+          "id": "prt_fa0b3690a0017D13pVBr1UXVNw",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b36065001NpbD1PcGA8pPvS"
+        },
+        {
+          "type": "tool",
+          "tool": "read",
+          "callID": "call_00_n3Zz6k3app1szKrqTY1L4169",
+          "state": {
+            "status": "completed",
+            "input": {
+              "filePath": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.md"
+            },
+            "output": "<path>C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.md</path>\n<type>file</type>\n<content>\n1: ---\n2: id: SPEC-001\n3: tipo: spec\n4: epica: EPIC-001\n5: estado: borrador\n6: aprobada-por:\n7: historial:\n8:   - {estado: borrador, fecha: 2026-07-26, por: sdd-arquitecto}\n9: ---\n10: # SPEC-001 — Función suma básica\n11: \n12: ## Problema\n13: <!-- Qué duele y a quién. Cita reglas de negocio (RN-xx) de docs/fundacion/reglas.md. -->\n14: \n15: ## Usuarios / roles afectados\n16: \n17: ## Criterios de aceptación\n18: <!-- CA-1, CA-2… en Given/When/Then. Cada CA debe ser verificable con un test. -->\n19: - **CA-1**: Dado … cuando … entonces …\n20: \n21: ## Entidades y reglas afectadas\n22: <!-- Cita RN-xx, ADR-NNN y términos de docs/fundacion/dominio.md. Referencia, no dupliques. -->\n23: \n24: ## Fuera de alcance\n25: <!-- Aparcado a propósito, no por descuido. -->\n26: \n27: ## Notas para el gate humano\n28: <!-- Lo que quien aprueba necesita saber para decidir. -->\n\n(End of file - total 28 lines)\n</content>",
+            "metadata": {
+              "preview": "---\nid: SPEC-001\ntipo: spec\nepica: EPIC-001\nestado: borrador\naprobada-por:\nhistorial:\n  - {estado: borrador, fecha: 2026-07-26, por: sdd-arquitecto}\n---\n# SPEC-001 — Función suma básica\n\n## Problema\n<!-- Qué duele y a quién. Cita reglas de negocio (RN-xx) de docs/fundacion/reglas.md. -->\n\n## Usuarios / roles afectados\n\n## Criterios de aceptación\n<!-- CA-1, CA-2… en Given/When/Then. Cada CA debe ser verificable con un test. -->\n- **CA-1**: Dado … cuando … entonces …\n",
+              "truncated": false,
+              "loaded": [],
+              "display": {
+                "type": "file",
+                "path": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.md",
+                "text": "---\nid: SPEC-001\ntipo: spec\nepica: EPIC-001\nestado: borrador\naprobada-por:\nhistorial:\n  - {estado: borrador, fecha: 2026-07-26, por: sdd-arquitecto}\n---\n# SPEC-001 — Función suma básica\n\n## Problema\n<!-- Qué duele y a quién. Cita reglas de negocio (RN-xx) de docs/fundacion/reglas.md. -->\n\n## Usuarios / roles afectados\n\n## Criterios de aceptación\n<!-- CA-1, CA-2… en Given/When/Then. Cada CA debe ser verificable con un test. -->\n- **CA-1**: Dado … cuando … entonces …\n\n## Entidades y reglas afectadas\n<!-- Cita RN-xx, ADR-NNN y términos de docs/fundacion/dominio.md. Referencia, no dupliques. -->\n\n## Fuera de alcance\n<!-- Aparcado a propósito, no por descuido. -->\n\n## Notas para el gate humano\n<!-- Lo que quien aprueba necesita saber para decidir. -->",
+                "lineStart": 1,
+                "lineEnd": 28,
+                "totalLines": 28,
+                "truncated": false
+              }
+            },
+            "title": "docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.md",
+            "time": {
+              "start": 1785107540910,
+              "end": 1785107541013
+            }
+          },
+          "id": "prt_fa0b369b6001QlT2610APOemfa",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b36065001NpbD1PcGA8pPvS"
+        },
+        {
+          "reason": "tool-calls",
+          "snapshot": "0d342527067ac82c2146603dcfa40f48f31caacb",
+          "type": "step-finish",
+          "tokens": {
+            "total": 16767,
+            "input": 224,
+            "output": 142,
+            "reasoning": 17,
+            "cache": {
+              "write": 0,
+              "read": 16384
+            }
+          },
+          "cost": 0,
+          "id": "prt_fa0b36d28001aBVdo11KVaQqsS",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b36065001NpbD1PcGA8pPvS"
+        }
+      ]
+    },
+    {
+      "info": {
+        "parentID": "msg_fa0b290f20015rR5thIzI6IhKC",
+        "role": "assistant",
+        "mode": "sdd-arquitecto",
+        "agent": "sdd-arquitecto",
+        "path": {
+          "cwd": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014",
+          "root": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014"
+        },
+        "cost": 0,
+        "tokens": {
+          "total": 18644,
+          "input": 568,
+          "output": 1219,
+          "reasoning": 217,
+          "cache": {
+            "write": 0,
+            "read": 16640
+          }
+        },
+        "modelID": "deepseek-v4-flash-free",
+        "providerID": "opencode",
+        "time": {
+          "created": 1785107541553,
+          "completed": 1785107555384
+        },
+        "finish": "tool-calls",
+        "id": "msg_fa0b36e31001ft2WXA47RBb4vz",
+        "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K"
+      },
+      "parts": [
+        {
+          "snapshot": "0d342527067ac82c2146603dcfa40f48f31caacb",
+          "type": "step-start",
+          "id": "prt_fa0b372e3001zFbg2TJ2LvHWty",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b36e31001ft2WXA47RBb4vz"
+        },
+        {
+          "type": "reasoning",
+          "text": "Ahora relleno la spec con todo el contenido solicitado:\n\n1. Problema: necesidad de sumar dos números enteros\n2. Usuarios: desarrolladores que importan la función\n3. CA-1: enteros positivos\n4. CA-2: positivo + negativo\n5. CA-3: export nombrado\n6. Entidades: ninguna nueva\n7. Fuera de alcance: validación de tipos, números grandes, más de 2 operandos\n8. Notas para gate humano: función pura, implementación trivial\n\nTambién debo referenciar reglas de negocio (RN-01 placeholder existe pero no aplica realmente). Como la instrucción dice \"referencia fuentes de verdad, no dupliques\", debo citar RN-01 si aplica, pero RN-01 está vacío. No hay ADR aún. Dominio.md está vacío. Entonces no cito RNs ni ADRs específicos.\n\nVoy a rellenar la spec completa.",
+          "time": {
+            "start": 1785107543370,
+            "end": 1785107545380
+          },
+          "id": "prt_fa0b3754a001Nm302T6DD5Eai1",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b36e31001ft2WXA47RBb4vz"
+        },
+        {
+          "type": "text",
+          "text": "Ahora relleno la spec con todos los detalles solicitados.",
+          "time": {
+            "start": 1785107545382,
+            "end": 1785107554277
+          },
+          "id": "prt_fa0b37d260018Clz0xqG13ALSw",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b36e31001ft2WXA47RBb4vz"
+        },
+        {
+          "type": "tool",
+          "tool": "edit",
+          "callID": "call_00_PUQl228EhBy52XEQgW8b9649",
+          "state": {
+            "status": "completed",
+            "input": {
+              "filePath": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.md",
+              "oldString": "---\nid: SPEC-001\ntipo: spec\nepica: EPIC-001\nestado: borrador\naprobada-por:\nhistorial:\n  - {estado: borrador, fecha: 2026-07-26, por: sdd-arquitecto}\n---\n# SPEC-001 — Función suma básica\n\n## Problema\n<!-- Qué duele y a quién. Cita reglas de negocio (RN-xx) de docs/fundacion/reglas.md. -->\n\n## Usuarios / roles afectados\n\n## Criterios de aceptación\n<!-- CA-1, CA-2… en Given/When/Then. Cada CA debe ser verificable con un test. -->\n- **CA-1**: Dado … cuando … entonces …\n\n## Entidades y reglas afectadas\n<!-- Cita RN-xx, ADR-NNN y términos de docs/fundacion/dominio.md. Referencia, no dupliques. -->\n\n## Fuera de alcance\n<!-- Aparcado a propósito, no por descuido. -->\n\n## Notas para el gate humano\n<!-- Lo que quien aprueba necesita saber para decidir. -->",
+              "newString": "---\nid: SPEC-001\ntipo: spec\nepica: EPIC-001\nestado: borrador\naprobada-por:\nhistorial:\n  - {estado: borrador, fecha: 2026-07-26, por: sdd-arquitecto}\n---\n# SPEC-001 — Función suma básica\n\n## Problema\nEl proyecto fixture-suma necesita su primera función utilitaria: una operación\nde suma de dos números enteros. Sin ella no hay base sobre la que construir\nel resto de la funcionalidad piloto ni validar el pipeline tremen-sdd\n(spec → implementación → verificación).\n\nAfecta a cualquier desarrollador que necesite importar y usar la función\n`suma` desde módulos ES en `src/`.\n\n## Usuarios / roles afectados\n- **Desarrolladores** que importan `suma(a, b)` desde `src/suma.mjs` para\n  realizar cálculos aritméticos básicos.\n- **sdd-implementador** y **sdd-verificador** como primeros consumidores del\n  pipeline tremen-sdd sobre esta spec.\n\n## Criterios de aceptación\n\n- **CA-1**: Suma de dos enteros positivos\n  Dado dos números enteros positivos `a` y `b`,\n  cuando se invoca `suma(a, b)`,\n  entonces devuelve `a + b` como resultado correcto.\n\n- **CA-2**: Suma con signo mixto\n  Dado un número entero positivo `a` y un número entero negativo `b`,\n  cuando se invoca `suma(a, b)`,\n  entonces devuelve `a + b` como resultado correcto (que puede ser positivo,\n  negativo o cero según los operandos).\n\n- **CA-3**: Exportación como módulo ES\n  Dado que `src/suma.mjs` es un módulo ES,\n  cuando se importa mediante `import { suma } from './suma.mjs'`,\n  entonces `suma` está disponible como exportación nombrada.\n\n## Entidades y reglas afectadas\n- **RN-01** (placeholder): no aplica directamente — el dominio de suma no\n  requiere reglas de negocio específicas más allá de la aritmética entera.\n- **Dominio**: ningún término nuevo; la operación `suma` se alinea con el\n  lenguaje ubicuo de \"suma de dos números\" del proyecto.\n- No hay ADR vigentes que afecten a esta spec.\n\n## Fuera de alcance\n- Validación de tipos (p. ej., lanzar error si se pasa `string` o `null`).\n- Números fuera del rango seguro de JavaScript (`> Number.MAX_SAFE_INTEGER`\n  o `< Number.MIN_SAFE_INTEGER`).\n- Más de dos operandos (variadic, arrays, rest parameters).\n- Operaciones aritméticas distintas de la suma (resta, multiplicación,\n  división, módulo, etc.).\n- CLI, interfaz gráfica, API HTTP o cualquier punto de entrada que no sea\n  la importación directa del módulo ES.\n\n## Notas para el gate humano\n- La función es **pura**: sin side effects, sin estado mutable, sin E/S.\n- La implementación es trivial (`a + b`), pero el valor de esta spec está en\n  validar el ciclo completo tremen-sdd sobre un caso mínimo.\n- Se espera que el implementador cree `src/suma.mjs` y su test siguiendo\n  TDD (rojo → verde)."
+            },
+            "output": "Edit applied successfully.",
+            "metadata": {
+              "diagnostics": {},
+              "diff": "Index: C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.md\n===================================================================\n--- C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.md\n+++ C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.md\n@@ -9,20 +9,59 @@\n ---\n # SPEC-001 — Función suma básica\n \n ## Problema\n-<!-- Qué duele y a quién. Cita reglas de negocio (RN-xx) de docs/fundacion/reglas.md. -->\n+El proyecto fixture-suma necesita su primera función utilitaria: una operación\n+de suma de dos números enteros. Sin ella no hay base sobre la que construir\n+el resto de la funcionalidad piloto ni validar el pipeline tremen-sdd\n+(spec → implementación → verificación).\n \n+Afecta a cualquier desarrollador que necesite importar y usar la función\n+`suma` desde módulos ES en `src/`.\n+\n ## Usuarios / roles afectados\n+- **Desarrolladores** que importan `suma(a, b)` desde `src/suma.mjs` para\n+  realizar cálculos aritméticos básicos.\n+- **sdd-implementador** y **sdd-verificador** como primeros consumidores del\n+  pipeline tremen-sdd sobre esta spec.\n \n ## Criterios de aceptación\n-<!-- CA-1, CA-2… en Given/When/Then. Cada CA debe ser verificable con un test. -->\n-- **CA-1**: Dado … cuando … entonces …\n \n+- **CA-1**: Suma de dos enteros positivos\n+  Dado dos números enteros positivos `a` y `b`,\n+  cuando se invoca `suma(a, b)`,\n+  entonces devuelve `a + b` como resultado correcto.\n+\n+- **CA-2**: Suma con signo mixto\n+  Dado un número entero positivo `a` y un número entero negativo `b`,\n+  cuando se invoca `suma(a, b)`,\n+  entonces devuelve `a + b` como resultado correcto (que puede ser positivo,\n+  negativo o cero según los operandos).\n+\n+- **CA-3**: Exportación como módulo ES\n+  Dado que `src/suma.mjs` es un módulo ES,\n+  cuando se importa mediante `import { suma } from './suma.mjs'`,\n+  entonces `suma` está disponible como exportación nombrada.\n+\n ## Entidades y reglas afectadas\n-<!-- Cita RN-xx, ADR-NNN y términos de docs/fundacion/dominio.md. Referencia, no dupliques. -->\n+- **RN-01** (placeholder): no aplica directamente — el dominio de suma no\n+  requiere reglas de negocio específicas más allá de la aritmética entera.\n+- **Dominio**: ningún término nuevo; la operación `suma` se alinea con el\n+  lenguaje ubicuo de \"suma de dos números\" del proyecto.\n+- No hay ADR vigentes que afecten a esta spec.\n \n ## Fuera de alcance\n-<!-- Aparcado a propósito, no por descuido. -->\n+- Validación de tipos (p. ej., lanzar error si se pasa `string` o `null`).\n+- Números fuera del rango seguro de JavaScript (`> Number.MAX_SAFE_INTEGER`\n+  o `< Number.MIN_SAFE_INTEGER`).\n+- Más de dos operandos (variadic, arrays, rest parameters).\n+- Operaciones aritméticas distintas de la suma (resta, multiplicación,\n+  división, módulo, etc.).\n+- CLI, interfaz gráfica, API HTTP o cualquier punto de entrada que no sea\n+  la importación directa del módulo ES.\n \n ## Notas para el gate humano\n-<!-- Lo que quien aprueba necesita saber para decidir. -->\n+- La función es **pura**: sin side effects, sin estado mutable, sin E/S.\n+- La implementación es trivial (`a + b`), pero el valor de esta spec está en\n+  validar el ciclo completo tremen-sdd sobre un caso mínimo.\n+- Se espera que el implementador cree `src/suma.mjs` y su test siguiendo\n+  TDD (rojo → verde).\n",
+              "filediff": {
+                "file": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.md",
+                "patch": "Index: C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.md\n===================================================================\n--- C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.md\n+++ C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.md\n@@ -9,20 +9,59 @@\n ---\n # SPEC-001 — Función suma básica\n \n ## Problema\n-<!-- Qué duele y a quién. Cita reglas de negocio (RN-xx) de docs/fundacion/reglas.md. -->\n+El proyecto fixture-suma necesita su primera función utilitaria: una operación\n+de suma de dos números enteros. Sin ella no hay base sobre la que construir\n+el resto de la funcionalidad piloto ni validar el pipeline tremen-sdd\n+(spec → implementación → verificación).\n \n+Afecta a cualquier desarrollador que necesite importar y usar la función\n+`suma` desde módulos ES en `src/`.\n+\n ## Usuarios / roles afectados\n+- **Desarrolladores** que importan `suma(a, b)` desde `src/suma.mjs` para\n+  realizar cálculos aritméticos básicos.\n+- **sdd-implementador** y **sdd-verificador** como primeros consumidores del\n+  pipeline tremen-sdd sobre esta spec.\n \n ## Criterios de aceptación\n-<!-- CA-1, CA-2… en Given/When/Then. Cada CA debe ser verificable con un test. -->\n-- **CA-1**: Dado … cuando … entonces …\n \n+- **CA-1**: Suma de dos enteros positivos\n+  Dado dos números enteros positivos `a` y `b`,\n+  cuando se invoca `suma(a, b)`,\n+  entonces devuelve `a + b` como resultado correcto.\n+\n+- **CA-2**: Suma con signo mixto\n+  Dado un número entero positivo `a` y un número entero negativo `b`,\n+  cuando se invoca `suma(a, b)`,\n+  entonces devuelve `a + b` como resultado correcto (que puede ser positivo,\n+  negativo o cero según los operandos).\n+\n+- **CA-3**: Exportación como módulo ES\n+  Dado que `src/suma.mjs` es un módulo ES,\n+  cuando se importa mediante `import { suma } from './suma.mjs'`,\n+  entonces `suma` está disponible como exportación nombrada.\n+\n ## Entidades y reglas afectadas\n-<!-- Cita RN-xx, ADR-NNN y términos de docs/fundacion/dominio.md. Referencia, no dupliques. -->\n+- **RN-01** (placeholder): no aplica directamente — el dominio de suma no\n+  requiere reglas de negocio específicas más allá de la aritmética entera.\n+- **Dominio**: ningún término nuevo; la operación `suma` se alinea con el\n+  lenguaje ubicuo de \"suma de dos números\" del proyecto.\n+- No hay ADR vigentes que afecten a esta spec.\n \n ## Fuera de alcance\n-<!-- Aparcado a propósito, no por descuido. -->\n+- Validación de tipos (p. ej., lanzar error si se pasa `string` o `null`).\n+- Números fuera del rango seguro de JavaScript (`> Number.MAX_SAFE_INTEGER`\n+  o `< Number.MIN_SAFE_INTEGER`).\n+- Más de dos operandos (variadic, arrays, rest parameters).\n+- Operaciones aritméticas distintas de la suma (resta, multiplicación,\n+  división, módulo, etc.).\n+- CLI, interfaz gráfica, API HTTP o cualquier punto de entrada que no sea\n+  la importación directa del módulo ES.\n \n ## Notas para el gate humano\n-<!-- Lo que quien aprueba necesita saber para decidir. -->\n+- La función es **pura**: sin side effects, sin estado mutable, sin E/S.\n+- La implementación es trivial (`a + b`), pero el valor de esta spec está en\n+  validar el ciclo completo tremen-sdd sobre un caso mínimo.\n+- Se espera que el implementador cree `src/suma.mjs` y su test siguiendo\n+  TDD (rojo → verde).\n",
+                "additions": 45,
+                "deletions": 6
+              },
+              "truncated": false
+            },
+            "title": "docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.md",
+            "time": {
+              "start": 1785107554236,
+              "end": 1785107554255
+            }
+          },
+          "id": "prt_fa0b37dce001v4xqJMUcCfGXrJ",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b36e31001ft2WXA47RBb4vz"
+        },
+        {
+          "reason": "tool-calls",
+          "snapshot": "52f7a96579d4c6a690520f0cfc994c80aa3b5425",
+          "type": "step-finish",
+          "tokens": {
+            "total": 18644,
+            "input": 568,
+            "output": 1219,
+            "reasoning": 217,
+            "cache": {
+              "write": 0,
+              "read": 16640
+            }
+          },
+          "cost": 0,
+          "id": "prt_fa0b3a2a0001C6Bc9iCK19pwSE",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b36e31001ft2WXA47RBb4vz"
+        },
+        {
+          "type": "patch",
+          "hash": "0d342527067ac82c2146603dcfa40f48f31caacb",
+          "files": [
+            "C:/Users/Albert/AppData/Local/Temp/claude/D--src-tremen-sdd/13be4f6f-d60c-4d5e-b0dc-b092cf834326/scratchpad/fixture-spec014/docs/epicas/EPIC-001-suma-de-dos-numeros/SPEC-001-funcion-suma-basica.md"
+          ],
+          "id": "prt_fa0b3a4340014zhzwJTIRtSzWv",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b36e31001ft2WXA47RBb4vz"
+        }
+      ]
+    },
+    {
+      "info": {
+        "parentID": "msg_fa0b290f20015rR5thIzI6IhKC",
+        "role": "assistant",
+        "mode": "sdd-arquitecto",
+        "agent": "sdd-arquitecto",
+        "path": {
+          "cwd": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014",
+          "root": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014"
+        },
+        "cost": 0,
+        "tokens": {
+          "total": 18858,
+          "input": 99,
+          "output": 153,
+          "reasoning": 46,
+          "cache": {
+            "write": 0,
+            "read": 18560
+          }
+        },
+        "modelID": "deepseek-v4-flash-free",
+        "providerID": "opencode",
+        "time": {
+          "created": 1785107555391,
+          "completed": 1785107559374
+        },
+        "finish": "tool-calls",
+        "id": "msg_fa0b3a43f001ckCrddD7cFpuFT",
+        "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K"
+      },
+      "parts": [
+        {
+          "snapshot": "52f7a96579d4c6a690520f0cfc994c80aa3b5425",
+          "type": "step-start",
+          "id": "prt_fa0b3a9c1001SEQlSkeaU968rW",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b3a43f001ckCrddD7cFpuFT"
+        },
+        {
+          "type": "reasoning",
+          "text": "Ahora verifico que se haya creado también el ledger de la spec. Debería haber un archivo `SPEC-001-funcion-suma-basica.ledger.md` en el mismo directorio.",
+          "time": {
+            "start": 1785107557234,
+            "end": 1785107557737
+          },
+          "id": "prt_fa0b3ab72001Y78bWCjE8J35wY",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b3a43f001ckCrddD7cFpuFT"
+        },
+        {
+          "type": "text",
+          "text": "Verifico que el ledger se haya creado y que todo esté en orden.",
+          "time": {
+            "start": 1785107557746,
+            "end": 1785107558565
+          },
+          "id": "prt_fa0b3ad72001StprV3TFoWYtqG",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b3a43f001ckCrddD7cFpuFT"
+        },
+        {
+          "type": "tool",
+          "tool": "bash",
+          "callID": "call_00_6E7vrouw6g9LhA9mojdL1439",
+          "state": {
+            "status": "completed",
+            "input": {
+              "command": "ls -la \"docs/epicas/EPIC-001-suma-de-dos-numeros/\"",
+              "workdir": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014"
+            },
+            "output": "total 16\ndrwxr-xr-x 1 Albert 197121    0 Jul 27 01:12 .\ndrwxr-xr-x 1 Albert 197121    0 Jul 27 01:11 ..\n-rw-r--r-- 1 Albert 197121 1234 Jul 27 01:12 SPEC-001-funcion-suma-basica.ledger.md\n-rw-r--r-- 1 Albert 197121 2732 Jul 27 01:12 SPEC-001-funcion-suma-basica.md\n-rw-r--r-- 1 Albert 197121 1834 Jul 27 01:12 _epica.md\n",
+            "metadata": {
+              "output": "total 16\ndrwxr-xr-x 1 Albert 197121    0 Jul 27 01:12 .\ndrwxr-xr-x 1 Albert 197121    0 Jul 27 01:11 ..\n-rw-r--r-- 1 Albert 197121 1234 Jul 27 01:12 SPEC-001-funcion-suma-basica.ledger.md\n-rw-r--r-- 1 Albert 197121 2732 Jul 27 01:12 SPEC-001-funcion-suma-basica.md\n-rw-r--r-- 1 Albert 197121 1834 Jul 27 01:12 _epica.md\n",
+              "exit": 0,
+              "truncated": false
+            },
+            "title": "ls -la \"docs/epicas/EPIC-001-suma-de-dos-numeros/\"",
+            "time": {
+              "start": 1785107558665,
+              "end": 1785107558677
+            }
+          },
+          "id": "prt_fa0b3ae26001woF8Tczllr87QP",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b3a43f001ckCrddD7cFpuFT"
+        },
+        {
+          "reason": "tool-calls",
+          "snapshot": "52f7a96579d4c6a690520f0cfc994c80aa3b5425",
+          "type": "step-finish",
+          "tokens": {
+            "total": 18858,
+            "input": 99,
+            "output": 153,
+            "reasoning": 46,
+            "cache": {
+              "write": 0,
+              "read": 18560
+            }
+          },
+          "cost": 0,
+          "id": "prt_fa0b3b283001UDzMIhaNFzTo2g",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b3a43f001ckCrddD7cFpuFT"
+        }
+      ]
+    },
+    {
+      "info": {
+        "parentID": "msg_fa0b290f20015rR5thIzI6IhKC",
+        "role": "assistant",
+        "mode": "sdd-arquitecto",
+        "agent": "sdd-arquitecto",
+        "path": {
+          "cwd": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014",
+          "root": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014"
+        },
+        "cost": 0,
+        "tokens": {
+          "total": 19169,
+          "input": 202,
+          "output": 134,
+          "reasoning": 17,
+          "cache": {
+            "write": 0,
+            "read": 18816
+          }
+        },
+        "modelID": "deepseek-v4-flash-free",
+        "providerID": "opencode",
+        "time": {
+          "created": 1785107559383,
+          "completed": 1785107562354
+        },
+        "finish": "tool-calls",
+        "id": "msg_fa0b3b3d7001xJBNycVe27jz4x",
+        "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K"
+      },
+      "parts": [
+        {
+          "snapshot": "52f7a96579d4c6a690520f0cfc994c80aa3b5425",
+          "type": "step-start",
+          "id": "prt_fa0b3b8e2001n43DJXVKwsiLPD",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b3b3d7001xJBNycVe27jz4x"
+        },
+        {
+          "type": "reasoning",
+          "text": "El ledger se ha creado. Voy a leerlo para confirmar su estructura.",
+          "time": {
+            "start": 1785107560934,
+            "end": 1785107561283
+          },
+          "id": "prt_fa0b3b9e6001tU8z832lKpACc3",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b3b3d7001xJBNycVe27jz4x"
+        },
+        {
+          "type": "tool",
+          "tool": "read",
+          "callID": "call_00_ahq9Z1tYvhISJ5ugl6Mu7929",
+          "state": {
+            "status": "completed",
+            "input": {
+              "filePath": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.ledger.md"
+            },
+            "output": "<path>C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.ledger.md</path>\n<type>file</type>\n<content>\n1: ---\n2: id: SPEC-001\n3: tipo: ledger\n4: epica: EPIC-001\n5: ---\n6: # Ledger — SPEC-001 Función suma básica\n7: \n8: ## Resumen\n9: - Fase: <!-- refleja el estado de la spec; la fuente de verdad es el frontmatter de la spec -->\n10: - Rama: `ft/SPEC-001-funcion-suma-basica`\n11: \n12: ## Matriz de criterios de aceptación\n13: <!-- Escritores: sdd-implementador rellena Implementado y Test; sdd-verificador rellena Verif. y Estado. Nunca al revés. -->\n14: <!-- Estados por CA: ✅ cerrado · ⚠️ parcial/con salvedad · 🚧 en curso · ❌ sin empezar · n-a -->\n15: <!-- Un CA está ✅ solo cuando Implementado + Test + Verif. aplicables están en verde. Una salvedad se marca ⚠️, nunca ✅. -->\n16: | CA | Implementado (fichero) | Test (fichero/caso) | Verif. | Estado |\n17: |---|---|---|---|---|\n18: | CA-1 | | | | ❌ |\n19: \n20: ## Veredicto del verificador\n21: <!-- GREEN/RED + fecha + resumen. Lo escribe SOLO sdd-verificador. -->\n22: \n23: ## Evidencia visual\n24: <!-- Tabla CA → captura en _qa/SPEC-001/. Informe HTML opcional: _qa/SPEC-001/informe.html -->\n25: \n26: ## Salvedades / follow-ups\n27: <!-- IDs F-SPEC-001-1, F-SPEC-001-2… con destino (spec futura o EPIC-MEJORA). -->\n28: \n29: ## Cómo retomar (handoff)\n30: <!-- Estado real del trabajo para la siguiente sesión: qué está hecho, qué falta, dónde seguir. -->\n\n(End of file - total 30 lines)\n</content>",
+            "metadata": {
+              "preview": "---\nid: SPEC-001\ntipo: ledger\nepica: EPIC-001\n---\n# Ledger — SPEC-001 Función suma básica\n\n## Resumen\n- Fase: <!-- refleja el estado de la spec; la fuente de verdad es el frontmatter de la spec -->\n- Rama: `ft/SPEC-001-funcion-suma-basica`\n\n## Matriz de criterios de aceptación\n<!-- Escritores: sdd-implementador rellena Implementado y Test; sdd-verificador rellena Verif. y Estado. Nunca al revés. -->\n<!-- Estados por CA: ✅ cerrado · ⚠️ parcial/con salvedad · 🚧 en curso · ❌ sin empezar · n-a -->\n<!-- Un CA está ✅ solo cuando Implementado + Test + Verif. aplicables están en verde. Una salvedad se marca ⚠️, nunca ✅. -->\n| CA | Implementado (fichero) | Test (fichero/caso) | Verif. | Estado |\n|---|---|---|---|---|\n| CA-1 | | | | ❌ |\n\n## Veredicto del verificador",
+              "truncated": false,
+              "loaded": [],
+              "display": {
+                "type": "file",
+                "path": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.ledger.md",
+                "text": "---\nid: SPEC-001\ntipo: ledger\nepica: EPIC-001\n---\n# Ledger — SPEC-001 Función suma básica\n\n## Resumen\n- Fase: <!-- refleja el estado de la spec; la fuente de verdad es el frontmatter de la spec -->\n- Rama: `ft/SPEC-001-funcion-suma-basica`\n\n## Matriz de criterios de aceptación\n<!-- Escritores: sdd-implementador rellena Implementado y Test; sdd-verificador rellena Verif. y Estado. Nunca al revés. -->\n<!-- Estados por CA: ✅ cerrado · ⚠️ parcial/con salvedad · 🚧 en curso · ❌ sin empezar · n-a -->\n<!-- Un CA está ✅ solo cuando Implementado + Test + Verif. aplicables están en verde. Una salvedad se marca ⚠️, nunca ✅. -->\n| CA | Implementado (fichero) | Test (fichero/caso) | Verif. | Estado |\n|---|---|---|---|---|\n| CA-1 | | | | ❌ |\n\n## Veredicto del verificador\n<!-- GREEN/RED + fecha + resumen. Lo escribe SOLO sdd-verificador. -->\n\n## Evidencia visual\n<!-- Tabla CA → captura en _qa/SPEC-001/. Informe HTML opcional: _qa/SPEC-001/informe.html -->\n\n## Salvedades / follow-ups\n<!-- IDs F-SPEC-001-1, F-SPEC-001-2… con destino (spec futura o EPIC-MEJORA). -->\n\n## Cómo retomar (handoff)\n<!-- Estado real del trabajo para la siguiente sesión: qué está hecho, qué falta, dónde seguir. -->",
+                "lineStart": 1,
+                "lineEnd": 30,
+                "totalLines": 30,
+                "truncated": false
+              }
+            },
+            "title": "docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.ledger.md",
+            "time": {
+              "start": 1785107561813,
+              "end": 1785107561824
+            }
+          },
+          "id": "prt_fa0b3bb46001PSxJK703uBDfQg",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b3b3d7001xJBNycVe27jz4x"
+        },
+        {
+          "reason": "tool-calls",
+          "snapshot": "52f7a96579d4c6a690520f0cfc994c80aa3b5425",
+          "type": "step-finish",
+          "tokens": {
+            "total": 19169,
+            "input": 202,
+            "output": 134,
+            "reasoning": 17,
+            "cache": {
+              "write": 0,
+              "read": 18816
+            }
+          },
+          "cost": 0,
+          "id": "prt_fa0b3be98001JylrqY54nXwSdh",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b3b3d7001xJBNycVe27jz4x"
+        }
+      ]
+    },
+    {
+      "info": {
+        "parentID": "msg_fa0b290f20015rR5thIzI6IhKC",
+        "role": "assistant",
+        "mode": "sdd-arquitecto",
+        "agent": "sdd-arquitecto",
+        "path": {
+          "cwd": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014",
+          "root": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014"
+        },
+        "cost": 0,
+        "tokens": {
+          "total": 20074,
+          "input": 674,
+          "output": 290,
+          "reasoning": 38,
+          "cache": {
+            "write": 0,
+            "read": 19072
+          }
+        },
+        "modelID": "deepseek-v4-flash-free",
+        "providerID": "opencode",
+        "time": {
+          "created": 1785107562359,
+          "completed": 1785107566970
+        },
+        "finish": "tool-calls",
+        "id": "msg_fa0b3bf77001NPPwp6ULdvgTUn",
+        "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K"
+      },
+      "parts": [
+        {
+          "snapshot": "52f7a96579d4c6a690520f0cfc994c80aa3b5425",
+          "type": "step-start",
+          "id": "prt_fa0b3c441001LrLKAZHPXPxJrV",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b3bf77001NPPwp6ULdvgTUn"
+        },
+        {
+          "type": "reasoning",
+          "text": "The ledger has only CA-1. I need to update it to have all 3 CAs. Let me update the ledger's matriz to include CA-2 and CA-3.",
+          "time": {
+            "start": 1785107563999,
+            "end": 1785107564480
+          },
+          "id": "prt_fa0b3c5df001e40lL3C9St0jUM",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b3bf77001NPPwp6ULdvgTUn"
+        },
+        {
+          "type": "text",
+          "text": "El ledger solo lista CA-1. Debo actualizarlo para reflejar los 3 criterios de aceptación.",
+          "time": {
+            "start": 1785107564484,
+            "end": 1785107565976
+          },
+          "id": "prt_fa0b3c7c40014hAatwqOVgMstY",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b3bf77001NPPwp6ULdvgTUn"
+        },
+        {
+          "type": "tool",
+          "tool": "edit",
+          "callID": "call_00_1EoLvymjt41TjBVd9Pxa8272",
+          "state": {
+            "status": "completed",
+            "input": {
+              "filePath": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.ledger.md",
+              "oldString": "| CA | Implementado (fichero) | Test (fichero/caso) | Verif. | Estado |\n|---|---|---|---|---|---|\n| CA-1 | | | | ❌ |",
+              "newString": "| CA | Implementado (fichero) | Test (fichero/caso) | Verif. | Estado |\n|---|---|---|---|---|---|\n| CA-1 | | | | ❌ |\n| CA-2 | | | | ❌ |\n| CA-3 | | | | ❌ |"
+            },
+            "output": "Edit applied successfully.",
+            "metadata": {
+              "diagnostics": {},
+              "diff": "Index: C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.ledger.md\n===================================================================\n--- C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.ledger.md\n+++ C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.ledger.md\n@@ -13,10 +13,12 @@\n <!-- Escritores: sdd-implementador rellena Implementado y Test; sdd-verificador rellena Verif. y Estado. Nunca al revés. -->\n <!-- Estados por CA: ✅ cerrado · ⚠️ parcial/con salvedad · 🚧 en curso · ❌ sin empezar · n-a -->\n <!-- Un CA está ✅ solo cuando Implementado + Test + Verif. aplicables están en verde. Una salvedad se marca ⚠️, nunca ✅. -->\n | CA | Implementado (fichero) | Test (fichero/caso) | Verif. | Estado |\n-|---|---|---|---|---|\n+|---|---|---|---|---|---|\n | CA-1 | | | | ❌ |\n+| CA-2 | | | | ❌ |\n+| CA-3 | | | | ❌ |\n \n ## Veredicto del verificador\n <!-- GREEN/RED + fecha + resumen. Lo escribe SOLO sdd-verificador. -->\n \n",
+              "filediff": {
+                "file": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.ledger.md",
+                "patch": "Index: C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.ledger.md\n===================================================================\n--- C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.ledger.md\n+++ C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.ledger.md\n@@ -13,10 +13,12 @@\n <!-- Escritores: sdd-implementador rellena Implementado y Test; sdd-verificador rellena Verif. y Estado. Nunca al revés. -->\n <!-- Estados por CA: ✅ cerrado · ⚠️ parcial/con salvedad · 🚧 en curso · ❌ sin empezar · n-a -->\n <!-- Un CA está ✅ solo cuando Implementado + Test + Verif. aplicables están en verde. Una salvedad se marca ⚠️, nunca ✅. -->\n | CA | Implementado (fichero) | Test (fichero/caso) | Verif. | Estado |\n-|---|---|---|---|---|\n+|---|---|---|---|---|---|\n | CA-1 | | | | ❌ |\n+| CA-2 | | | | ❌ |\n+| CA-3 | | | | ❌ |\n \n ## Veredicto del verificador\n <!-- GREEN/RED + fecha + resumen. Lo escribe SOLO sdd-verificador. -->\n \n",
+                "additions": 3,
+                "deletions": 1
+              },
+              "truncated": false
+            },
+            "title": "docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.ledger.md",
+            "time": {
+              "start": 1785107565930,
+              "end": 1785107565938
+            }
+          },
+          "id": "prt_fa0b3c8e5001GRYnwB6UmpM02x",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b3bf77001NPPwp6ULdvgTUn"
+        },
+        {
+          "reason": "tool-calls",
+          "snapshot": "d190f5a458f462d647d7b5c81b350f740f5912e3",
+          "type": "step-finish",
+          "tokens": {
+            "total": 20074,
+            "input": 674,
+            "output": 290,
+            "reasoning": 38,
+            "cache": {
+              "write": 0,
+              "read": 19072
+            }
+          },
+          "cost": 0,
+          "id": "prt_fa0b3cff4001Fj1sJEb8UXPWA1",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b3bf77001NPPwp6ULdvgTUn"
+        },
+        {
+          "type": "patch",
+          "hash": "52f7a96579d4c6a690520f0cfc994c80aa3b5425",
+          "files": [
+            "C:/Users/Albert/AppData/Local/Temp/claude/D--src-tremen-sdd/13be4f6f-d60c-4d5e-b0dc-b092cf834326/scratchpad/fixture-spec014/docs/epicas/EPIC-001-suma-de-dos-numeros/SPEC-001-funcion-suma-basica.ledger.md"
+          ],
+          "id": "prt_fa0b3d175001HDeWmHft5u753A",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b3bf77001NPPwp6ULdvgTUn"
+        }
+      ]
+    },
+    {
+      "info": {
+        "parentID": "msg_fa0b290f20015rR5thIzI6IhKC",
+        "role": "assistant",
+        "mode": "sdd-arquitecto",
+        "agent": "sdd-arquitecto",
+        "path": {
+          "cwd": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014",
+          "root": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014"
+        },
+        "cost": 0,
+        "tokens": {
+          "total": 20358,
+          "input": 121,
+          "output": 253,
+          "reasoning": 16,
+          "cache": {
+            "write": 0,
+            "read": 19968
+          }
+        },
+        "modelID": "deepseek-v4-flash-free",
+        "providerID": "opencode",
+        "time": {
+          "created": 1785107566976,
+          "completed": 1785107570912
+        },
+        "finish": "tool-calls",
+        "id": "msg_fa0b3d180001lckkRn2ZVSYHI4",
+        "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K"
+      },
+      "parts": [
+        {
+          "snapshot": "d190f5a458f462d647d7b5c81b350f740f5912e3",
+          "type": "step-start",
+          "id": "prt_fa0b3d6bd001uNEwe81lgnkL1T",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b3d180001lckkRn2ZVSYHI4"
+        },
+        {
+          "type": "reasoning",
+          "text": "Now let me verify the final state of all files to include in my report.",
+          "time": {
+            "start": 1785107568834,
+            "end": 1785107569074
+          },
+          "id": "prt_fa0b3d8c20011K4uAyqAFrYlTN",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b3d180001lckkRn2ZVSYHI4"
+        },
+        {
+          "type": "text",
+          "text": "Verifico el estado final de todos los artefactos generados.",
+          "time": {
+            "start": 1785107569077,
+            "end": 1785107570381
+          },
+          "id": "prt_fa0b3d9b5001m2qgmaDozaybcI",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b3d180001lckkRn2ZVSYHI4"
+        },
+        {
+          "type": "tool",
+          "tool": "read",
+          "callID": "call_00_HInOOk4IwHqgNupyN7UN4002",
+          "state": {
+            "status": "completed",
+            "input": {
+              "filePath": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\_epica.md"
+            },
+            "output": "<path>C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\_epica.md</path>\n<type>file</type>\n<content>\n1: ---\n2: id: EPIC-001\n3: tipo: epica\n4: estado: borrador\n5: historial:\n6:   - {estado: borrador, fecha: 2026-07-26, por: sdd-producto}\n7: ---\n8: # EPIC-001 — Suma de dos números\n9: \n10: ## Objetivo\n11: Proporcionar una función matemática básica de suma de dos números enteros,\n12: exportada como módulo ES, que sirva como primer bloque funcional del proyecto\n13: piloto fixture-suma. Esta épica establece el pipeline completo del estándar\n14: tremen-sdd (spec → implementación → verificación) sobre un caso trivial.\n15: \n16: ## Criterios de éxito\n17: 1. La función `suma(a, b)` está implementada en `src/suma.mjs` y se verifica\n18:    mediante tests automatizados que cubren enteros positivos y mezcla de signos.\n19: 2. La spec asociada (SPEC-001) se implementa y verifica con resultado GREEN.\n20: 3. El ledger de la spec contiene evidencia de verificación.\n21: \n22: ## Alcance\n23: - Dentro:\n24:   - Función `suma(a, b)` que recibe dos números enteros y devuelve su suma.\n25:   - Exportación nombrada (`export function suma`) desde un módulo ES.\n26:   - Tests unitarios que cubren los casos del CA.\n27: - Fuera (aparcado a propósito, no por descuido):\n28:   - Operaciones aritméticas: resta, multiplicación, división.\n29:   - Validación de tipos de entrada (no type-checking).\n30:   - Números fuera del rango seguro (`> Number.MAX_SAFE_INTEGER`).\n31:   - Soporte para más de dos operandos (variadic, arrays, etc.).\n32:   - CLI, interfaz web o cualquier otro punto de entrada que no sea la importación\n33:     del módulo.\n34: \n35: ## Specs\n36: <!-- El estado por spec vive en el frontmatter de cada spec; el tablero agregado se regenera con /sdd-tablero (docs/tablero.md). No mantengas listas de specs a mano aquí. -->\n37: \n38: ## Riesgos\n39: - Ninguno significativo para una función trivial. El principal riesgo es de\n40:   proceso: que el pipeline tremen-sdd se salte pasos al ser el primer\n41:   ejercicio. Se mitiga siguiendo el flujo estrictamente.\n\n(End of file - total 41 lines)\n</content>",
+            "metadata": {
+              "preview": "---\nid: EPIC-001\ntipo: epica\nestado: borrador\nhistorial:\n  - {estado: borrador, fecha: 2026-07-26, por: sdd-producto}\n---\n# EPIC-001 — Suma de dos números\n\n## Objetivo\nProporcionar una función matemática básica de suma de dos números enteros,\nexportada como módulo ES, que sirva como primer bloque funcional del proyecto\npiloto fixture-suma. Esta épica establece el pipeline completo del estándar\ntremen-sdd (spec → implementación → verificación) sobre un caso trivial.\n\n## Criterios de éxito\n1. La función `suma(a, b)` está implementada en `src/suma.mjs` y se verifica\n   mediante tests automatizados que cubren enteros positivos y mezcla de signos.\n2. La spec asociada (SPEC-001) se implementa y verifica con resultado GREEN.\n3. El ledger de la spec contiene evidencia de verificación.",
+              "truncated": false,
+              "loaded": [],
+              "display": {
+                "type": "file",
+                "path": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\_epica.md",
+                "text": "---\nid: EPIC-001\ntipo: epica\nestado: borrador\nhistorial:\n  - {estado: borrador, fecha: 2026-07-26, por: sdd-producto}\n---\n# EPIC-001 — Suma de dos números\n\n## Objetivo\nProporcionar una función matemática básica de suma de dos números enteros,\nexportada como módulo ES, que sirva como primer bloque funcional del proyecto\npiloto fixture-suma. Esta épica establece el pipeline completo del estándar\ntremen-sdd (spec → implementación → verificación) sobre un caso trivial.\n\n## Criterios de éxito\n1. La función `suma(a, b)` está implementada en `src/suma.mjs` y se verifica\n   mediante tests automatizados que cubren enteros positivos y mezcla de signos.\n2. La spec asociada (SPEC-001) se implementa y verifica con resultado GREEN.\n3. El ledger de la spec contiene evidencia de verificación.\n\n## Alcance\n- Dentro:\n  - Función `suma(a, b)` que recibe dos números enteros y devuelve su suma.\n  - Exportación nombrada (`export function suma`) desde un módulo ES.\n  - Tests unitarios que cubren los casos del CA.\n- Fuera (aparcado a propósito, no por descuido):\n  - Operaciones aritméticas: resta, multiplicación, división.\n  - Validación de tipos de entrada (no type-checking).\n  - Números fuera del rango seguro (`> Number.MAX_SAFE_INTEGER`).\n  - Soporte para más de dos operandos (variadic, arrays, etc.).\n  - CLI, interfaz web o cualquier otro punto de entrada que no sea la importación\n    del módulo.\n\n## Specs\n<!-- El estado por spec vive en el frontmatter de cada spec; el tablero agregado se regenera con /sdd-tablero (docs/tablero.md). No mantengas listas de specs a mano aquí. -->\n\n## Riesgos\n- Ninguno significativo para una función trivial. El principal riesgo es de\n  proceso: que el pipeline tremen-sdd se salte pasos al ser el primer\n  ejercicio. Se mitiga siguiendo el flujo estrictamente.",
+                "lineStart": 1,
+                "lineEnd": 41,
+                "totalLines": 41,
+                "truncated": false
+              }
+            },
+            "title": "docs\\epicas\\EPIC-001-suma-de-dos-numeros\\_epica.md",
+            "time": {
+              "start": 1785107569780,
+              "end": 1785107569805
+            }
+          },
+          "id": "prt_fa0b3da73001ex9K2ZIP7BZZoi",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b3d180001lckkRn2ZVSYHI4"
+        },
+        {
+          "type": "tool",
+          "tool": "read",
+          "callID": "call_01_GI0krjuXN8FyEWDprwDk5592",
+          "state": {
+            "status": "completed",
+            "input": {
+              "filePath": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.md"
+            },
+            "output": "<path>C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.md</path>\n<type>file</type>\n<content>\n1: ---\n2: id: SPEC-001\n3: tipo: spec\n4: epica: EPIC-001\n5: estado: borrador\n6: aprobada-por:\n7: historial:\n8:   - {estado: borrador, fecha: 2026-07-26, por: sdd-arquitecto}\n9: ---\n10: # SPEC-001 — Función suma básica\n11: \n12: ## Problema\n13: El proyecto fixture-suma necesita su primera función utilitaria: una operación\n14: de suma de dos números enteros. Sin ella no hay base sobre la que construir\n15: el resto de la funcionalidad piloto ni validar el pipeline tremen-sdd\n16: (spec → implementación → verificación).\n17: \n18: Afecta a cualquier desarrollador que necesite importar y usar la función\n19: `suma` desde módulos ES en `src/`.\n20: \n21: ## Usuarios / roles afectados\n22: - **Desarrolladores** que importan `suma(a, b)` desde `src/suma.mjs` para\n23:   realizar cálculos aritméticos básicos.\n24: - **sdd-implementador** y **sdd-verificador** como primeros consumidores del\n25:   pipeline tremen-sdd sobre esta spec.\n26: \n27: ## Criterios de aceptación\n28: \n29: - **CA-1**: Suma de dos enteros positivos\n30:   Dado dos números enteros positivos `a` y `b`,\n31:   cuando se invoca `suma(a, b)`,\n32:   entonces devuelve `a + b` como resultado correcto.\n33: \n34: - **CA-2**: Suma con signo mixto\n35:   Dado un número entero positivo `a` y un número entero negativo `b`,\n36:   cuando se invoca `suma(a, b)`,\n37:   entonces devuelve `a + b` como resultado correcto (que puede ser positivo,\n38:   negativo o cero según los operandos).\n39: \n40: - **CA-3**: Exportación como módulo ES\n41:   Dado que `src/suma.mjs` es un módulo ES,\n42:   cuando se importa mediante `import { suma } from './suma.mjs'`,\n43:   entonces `suma` está disponible como exportación nombrada.\n44: \n45: ## Entidades y reglas afectadas\n46: - **RN-01** (placeholder): no aplica directamente — el dominio de suma no\n47:   requiere reglas de negocio específicas más allá de la aritmética entera.\n48: - **Dominio**: ningún término nuevo; la operación `suma` se alinea con el\n49:   lenguaje ubicuo de \"suma de dos números\" del proyecto.\n50: - No hay ADR vigentes que afecten a esta spec.\n51: \n52: ## Fuera de alcance\n53: - Validación de tipos (p. ej., lanzar error si se pasa `string` o `null`).\n54: - Números fuera del rango seguro de JavaScript (`> Number.MAX_SAFE_INTEGER`\n55:   o `< Number.MIN_SAFE_INTEGER`).\n56: - Más de dos operandos (variadic, arrays, rest parameters).\n57: - Operaciones aritméticas distintas de la suma (resta, multiplicación,\n58:   división, módulo, etc.).\n59: - CLI, interfaz gráfica, API HTTP o cualquier punto de entrada que no sea\n60:   la importación directa del módulo ES.\n61: \n62: ## Notas para el gate humano\n63: - La función es **pura**: sin side effects, sin estado mutable, sin E/S.\n64: - La implementación es trivial (`a + b`), pero el valor de esta spec está en\n65:   validar el ciclo completo tremen-sdd sobre un caso mínimo.\n66: - Se espera que el implementador cree `src/suma.mjs` y su test siguiendo\n67:   TDD (rojo → verde).\n\n(End of file - total 67 lines)\n</content>",
+            "metadata": {
+              "preview": "---\nid: SPEC-001\ntipo: spec\nepica: EPIC-001\nestado: borrador\naprobada-por:\nhistorial:\n  - {estado: borrador, fecha: 2026-07-26, por: sdd-arquitecto}\n---\n# SPEC-001 — Función suma básica\n\n## Problema\nEl proyecto fixture-suma necesita su primera función utilitaria: una operación\nde suma de dos números enteros. Sin ella no hay base sobre la que construir\nel resto de la funcionalidad piloto ni validar el pipeline tremen-sdd\n(spec → implementación → verificación).\n\nAfecta a cualquier desarrollador que necesite importar y usar la función\n`suma` desde módulos ES en `src/`.\n",
+              "truncated": false,
+              "loaded": [],
+              "display": {
+                "type": "file",
+                "path": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.md",
+                "text": "---\nid: SPEC-001\ntipo: spec\nepica: EPIC-001\nestado: borrador\naprobada-por:\nhistorial:\n  - {estado: borrador, fecha: 2026-07-26, por: sdd-arquitecto}\n---\n# SPEC-001 — Función suma básica\n\n## Problema\nEl proyecto fixture-suma necesita su primera función utilitaria: una operación\nde suma de dos números enteros. Sin ella no hay base sobre la que construir\nel resto de la funcionalidad piloto ni validar el pipeline tremen-sdd\n(spec → implementación → verificación).\n\nAfecta a cualquier desarrollador que necesite importar y usar la función\n`suma` desde módulos ES en `src/`.\n\n## Usuarios / roles afectados\n- **Desarrolladores** que importan `suma(a, b)` desde `src/suma.mjs` para\n  realizar cálculos aritméticos básicos.\n- **sdd-implementador** y **sdd-verificador** como primeros consumidores del\n  pipeline tremen-sdd sobre esta spec.\n\n## Criterios de aceptación\n\n- **CA-1**: Suma de dos enteros positivos\n  Dado dos números enteros positivos `a` y `b`,\n  cuando se invoca `suma(a, b)`,\n  entonces devuelve `a + b` como resultado correcto.\n\n- **CA-2**: Suma con signo mixto\n  Dado un número entero positivo `a` y un número entero negativo `b`,\n  cuando se invoca `suma(a, b)`,\n  entonces devuelve `a + b` como resultado correcto (que puede ser positivo,\n  negativo o cero según los operandos).\n\n- **CA-3**: Exportación como módulo ES\n  Dado que `src/suma.mjs` es un módulo ES,\n  cuando se importa mediante `import { suma } from './suma.mjs'`,\n  entonces `suma` está disponible como exportación nombrada.\n\n## Entidades y reglas afectadas\n- **RN-01** (placeholder): no aplica directamente — el dominio de suma no\n  requiere reglas de negocio específicas más allá de la aritmética entera.\n- **Dominio**: ningún término nuevo; la operación `suma` se alinea con el\n  lenguaje ubicuo de \"suma de dos números\" del proyecto.\n- No hay ADR vigentes que afecten a esta spec.\n\n## Fuera de alcance\n- Validación de tipos (p. ej., lanzar error si se pasa `string` o `null`).\n- Números fuera del rango seguro de JavaScript (`> Number.MAX_SAFE_INTEGER`\n  o `< Number.MIN_SAFE_INTEGER`).\n- Más de dos operandos (variadic, arrays, rest parameters).\n- Operaciones aritméticas distintas de la suma (resta, multiplicación,\n  división, módulo, etc.).\n- CLI, interfaz gráfica, API HTTP o cualquier punto de entrada que no sea\n  la importación directa del módulo ES.\n\n## Notas para el gate humano\n- La función es **pura**: sin side effects, sin estado mutable, sin E/S.\n- La implementación es trivial (`a + b`), pero el valor de esta spec está en\n  validar el ciclo completo tremen-sdd sobre un caso mínimo.\n- Se espera que el implementador cree `src/suma.mjs` y su test siguiendo\n  TDD (rojo → verde).",
+                "lineStart": 1,
+                "lineEnd": 67,
+                "totalLines": 67,
+                "truncated": false
+              }
+            },
+            "title": "docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.md",
+            "time": {
+              "start": 1785107570266,
+              "end": 1785107570288
+            }
+          },
+          "id": "prt_fa0b3dc7d001FPaTAeQcR9h4w5",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b3d180001lckkRn2ZVSYHI4"
+        },
+        {
+          "reason": "tool-calls",
+          "snapshot": "d190f5a458f462d647d7b5c81b350f740f5912e3",
+          "type": "step-finish",
+          "tokens": {
+            "total": 20358,
+            "input": 121,
+            "output": 253,
+            "reasoning": 16,
+            "cache": {
+              "write": 0,
+              "read": 19968
+            }
+          },
+          "cost": 0,
+          "id": "prt_fa0b3dfc20010Sk55yHmX92aNU",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b3d180001lckkRn2ZVSYHI4"
+        }
+      ]
+    },
+    {
+      "info": {
+        "parentID": "msg_fa0b290f20015rR5thIzI6IhKC",
+        "role": "assistant",
+        "mode": "sdd-arquitecto",
+        "agent": "sdd-arquitecto",
+        "path": {
+          "cwd": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014",
+          "root": "C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014"
+        },
+        "cost": 0,
+        "tokens": {
+          "total": 23819,
+          "input": 1781,
+          "output": 1594,
+          "reasoning": 92,
+          "cache": {
+            "write": 0,
+            "read": 20352
+          }
+        },
+        "modelID": "deepseek-v4-flash-free",
+        "providerID": "opencode",
+        "time": {
+          "created": 1785107570921,
+          "completed": 1785107584038
+        },
+        "finish": "stop",
+        "id": "msg_fa0b3e0e9001Kapw9DnPB3OVOO",
+        "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K"
+      },
+      "parts": [
+        {
+          "snapshot": "d190f5a458f462d647d7b5c81b350f740f5912e3",
+          "type": "step-start",
+          "id": "prt_fa0b3e664001iuKl7dKDSjseO2",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b3e0e9001Kapw9DnPB3OVOO"
+        },
+        {
+          "type": "reasoning",
+          "text": "Everything looks good. Now I should prepare my final report summarizing everything that was created.\n\nLet me think about the structure of my report per the instructions:\n- IDs creados (épica y spec)\n- Rutas absolutas de los archivos generados\n- El contenido completo de la spec (incluyendo frontmatter con estado \"borrador\")\n- Cualquier decisión técnica que hayas tomado\n\nLet me compile the report now.",
+          "time": {
+            "start": 1785107572689,
+            "end": 1785107573439
+          },
+          "id": "prt_fa0b3e7d1001hR7q40VLMRQls7",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b3e0e9001Kapw9DnPB3OVOO"
+        },
+        {
+          "type": "text",
+          "text": "Todo está en orden. Presento el informe final.\n\n---\n\n## Informe de especificación — sdd-arquitecto\n\n### IDs creados\n\n| ID | Tipo | Título | Estado |\n|---|---|---|---|\n| **EPIC-001** | Épica | Suma de dos números | borrador |\n| **SPEC-001** | Spec | Función suma básica | borrador |\n\n### Rutas absolutas de los archivos generados\n\n| Archivo | Ruta |\n|---|---|\n| Épica | `C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\_epica.md` |\n| Spec | `C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.md` |\n| Ledger | `C:\\Users\\Albert\\AppData\\Local\\Temp\\claude\\D--src-tremen-sdd\\13be4f6f-d60c-4d5e-b0dc-b092cf834326\\scratchpad\\fixture-spec014\\docs\\epicas\\EPIC-001-suma-de-dos-numeros\\SPEC-001-funcion-suma-basica.ledger.md` |\n\n### Contenido completo de la spec\n\n```markdown\n---\nid: SPEC-001\ntipo: spec\nepica: EPIC-001\nestado: borrador\naprobada-por:\nhistorial:\n  - {estado: borrador, fecha: 2026-07-26, por: sdd-arquitecto}\n---\n# SPEC-001 — Función suma básica\n\n## Problema\nEl proyecto fixture-suma necesita su primera función utilitaria: una operación\nde suma de dos números enteros. Sin ella no hay base sobre la que construir\nel resto de la funcionalidad piloto ni validar el pipeline tremen-sdd\n(spec → implementación → verificación).\n\nAfecta a cualquier desarrollador que necesite importar y usar la función\n`suma` desde módulos ES en `src/`.\n\n## Usuarios / roles afectados\n- **Desarrolladores** que importan `suma(a, b)` desde `src/suma.mjs` para\n  realizar cálculos aritméticos básicos.\n- **sdd-implementador** y **sdd-verificador** como primeros consumidores del\n  pipeline tremen-sdd sobre esta spec.\n\n## Criterios de aceptación\n\n- **CA-1**: Suma de dos enteros positivos\n  Dado dos números enteros positivos `a` y `b`,\n  cuando se invoca `suma(a, b)`,\n  entonces devuelve `a + b` como resultado correcto.\n\n- **CA-2**: Suma con signo mixto\n  Dado un número entero positivo `a` y un número entero negativo `b`,\n  cuando se invoca `suma(a, b)`,\n  entonces devuelve `a + b` como resultado correcto (que puede ser positivo,\n  negativo o cero según los operandos).\n\n- **CA-3**: Exportación como módulo ES\n  Dado que `src/suma.mjs` es un módulo ES,\n  cuando se importa mediante `import { suma } from './suma.mjs'`,\n  entonces `suma` está disponible como exportación nombrada.\n\n## Entidades y reglas afectadas\n- **RN-01** (placeholder): no aplica directamente — el dominio de suma no\n  requiere reglas de negocio específicas más allá de la aritmética entera.\n- **Dominio**: ningún término nuevo; la operación `suma` se alinea con el\n  lenguaje ubicuo de \"suma de dos números\" del proyecto.\n- No hay ADR vigentes que afecten a esta spec.\n\n## Fuera de alcance\n- Validación de tipos (p. ej., lanzar error si se pasa `string` o `null`).\n- Números fuera del rango seguro de JavaScript (`> Number.MAX_SAFE_INTEGER`\n  o `< Number.MIN_SAFE_INTEGER`).\n- Más de dos operandos (variadic, arrays, rest parameters).\n- Operaciones aritméticas distintas de la suma (resta, multiplicación,\n  división, módulo, etc.).\n- CLI, interfaz gráfica, API HTTP o cualquier punto de entrada que no sea\n  la importación directa del módulo ES.\n\n## Notas para el gate humano\n- La función es **pura**: sin side effects, sin estado mutable, sin E/S.\n- La implementación es trivial (`a + b`), pero el valor de esta spec está en\n  validar el ciclo completo tremen-sdd sobre un caso mínimo.\n- Se espera que el implementador cree `src/suma.mjs` y su test siguiendo\n  TDD (rojo → verde).\n```\n\n### Decisiones técnicas tomadas\n\n1. **Lenguaje de la función**: el código usa inglés (`suma` como nombre de función). Aunque el dominio está en español y el proyecto es en español, el nombre `suma` es idéntico en ambos idiomas y se alinea con el lenguaje ubicuo del proyecto. No hay conflicto.\n\n2. **Módulo ES (`.mjs`)**: se eligió `.mjs` en lugar de `.js` con `\"type\": \"module\"` en package.json (que no existe aún). Esto hace que el módulo sea explícitamente ES sin depender de configuración del proyecto. Es la elección más segura para un proyecto que arranca.\n\n3. **Sin ADR**: no se registró ningún ADR porque no hay decisión técnica no trivial que constriña trabajo futuro. El stack es Node.js estándar, sin dependencias externas, sin integraciones, sin fronteras arquitectónicas. La elección del nombre `suma` es trivial y no requiere ADR.\n\n4. **Ledger actualizado**: se añadieron las filas CA-2 y CA-3 a la matriz de criterios de aceptación (el scaffold solo genera CA-1 por defecto).\n\n### Estado del pipeline\n\nLos artefactos están listos en estado **borrador**. El siguiente paso del orquestador debería ser:\n1. Revisión y aprobación por el gate humano (cambiar `estado` de borrador → aprobada y registrar aprobación en `aprobada-por`).\n2. Asignación a **sdd-implementador** para codificar `src/suma.mjs` y sus tests.\n3. Verificación con **sdd-verificador**.\n4. Cierre con **sdd-documentalista** (regenerar tablero, sync índices).",
+          "time": {
+            "start": 1785107573443,
+            "end": 1785107583432
+          },
+          "id": "prt_fa0b3eac3001hLkvbT69OWpZJz",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b3e0e9001Kapw9DnPB3OVOO"
+        },
+        {
+          "reason": "stop",
+          "snapshot": "d190f5a458f462d647d7b5c81b350f740f5912e3",
+          "type": "step-finish",
+          "tokens": {
+            "total": 23819,
+            "input": 1781,
+            "output": 1594,
+            "reasoning": 92,
+            "cache": {
+              "write": 0,
+              "read": 20352
+            }
+          },
+          "cost": 0,
+          "id": "prt_fa0b412d8001wn55ld9Kc4LUBz",
+          "sessionID": "ses_05f4d6f1bffeXzQXqRnoUwvb8K",
+          "messageID": "msg_fa0b3e0e9001Kapw9DnPB3OVOO"
+        }
+      ]
+    }
+  ]
+}
