@@ -21,22 +21,117 @@ epica: EPIC-004
 <!-- Un CA está ✅ solo cuando Implementado + Test + Verif. aplicables están en verde. Una salvedad se marca ⚠️, nunca ✅. -->
 | CA | Implementado (fichero) | Test (fichero/caso) | Verif. | Estado |
 |---|---|---|---|---|
-| CA-1 (versión única estampada) | `tools/build-adapter.mjs` (`procedencia()`, sello de `PROVENANCE.json` y de `version` en el `plugin.json` del artefacto); `tools/checks/version-unica.mjs`; cableado en `tools/check.mjs` (`PASOS`); `package.json` y `adapters/claude-code/.claude-plugin/plugin.json` a 0.5.0 | `tools/tests/provenance.test.mjs` (CA-1a ×2, CA-1b); `tools/tests/version-unica.test.mjs` (6 casos, incl. divergencia, ausencia y `version` en la entrada del marketplace, + cableado en el runner) | | ❌ |
-| CA-2 (build determinista, [H4]) | `tools/build-adapter.mjs`: la `fecha` es la del **commit de fuente en UTC**, no la hora de pared; sin git → `commit: null`, `sucio: true` | `tools/tests/provenance.test.mjs` (byte-identidad de dos corridas con PROVENANCE incluido; árbol limpio; árbol **sucio** sobre repo-fixture real; fuera de git); `tools/tests/build.test.mjs` (idempotencia previa, sigue verde) | | ❌ |
-| CA-3 (árbol publicable en local) | `tools/publica.mjs` (`ensambla`, `catalogo`, `readme`, `verificaLayout`, CLI `--dry-run --out`) | `tools/tests/publica.test.mjs` (layout exacto, árboles en la raíz, `source: "./claude-code"` sin `version`, PROVENANCE raíz + por harness, README generado, determinismo, fallo si falta el build, `.git` del worktree) + **CLI real**: `claude plugin validate .tmp/dry` → `✔ Validation passed`, **exit 0** | | ❌ |
-| CA-4 (contrato de la rama) | `tools/publica.mjs` (`publicaLocal`: worktree aparte, orphan, commit sin válvulas, tag `v<version>`, rechaza árbol sucio y tag repetido) | `tools/tests/publica.test.mjs` (CA-4b: los tres árboles publicados byte-idénticos a `dist/<harness>`) + ejercicio real **en local** (§Evidencia ejercida) | | ❌ |
-| CA-5 (L3 no se debilita) | `.github/workflows/ci.yml`: `push: branches-ignore: ['release']`, y **nada más** | `tools/tests/workflow.test.mjs` (4 tests nuevos: `branches-ignore` presente; sin `branches`/`paths`/`tags`; `pull_request` sin filtros; jobs sin `if`/`continue-on-error`) + **run ids reales** (§Evidencia ejercida) | | ❌ |
-| CA-6 (L2 y checks intactos) | ningún check modificado; `.sdd.json` intacto; `.claude-plugin/marketplace.json` de la raíz conserva `source: "./dist/claude-code"` | `tools/tests/publica.test.mjs` (ningún fichero publicado cae bajo `rutasVigiladas`; ninguno es artefacto SDD de `docs/`); `npm run check` verde sin tocar `fuente-unica`/`nucleo-aislado`/`manifiestos`; hook L2 ejercido (§Evidencia ejercida) | | ❌ |
-| CA-7 (Claude Code instala sin build) | — (no requiere código: es el consumo del ref publicado) | pendiente de la publicación remota; ejercicio **parcial** con el layout publicado desde directorio local (§Evidencia ejercida) | | ❌ |
-| CA-8 (opencode consume el mismo ref) | — | pendiente de la publicación remota; ejercido **contra transporte local** (`file://`) con el tag `v0.5.0` (§Evidencia ejercida) | | ❌ |
-| CA-9 (¿qué versión tengo?) | `PROVENANCE.json` dentro de cada árbol (llega a la cache instalada) | mitad de filesystem ejercida; la mitad de `gh release list` está pendiente de la publicación remota | | ❌ |
-| CA-10 (deuda conceptual escrita) | `docs/arquitectura.md` §"La rama de publicación `release` (as-built)" + §"El paso de build" actualizado; ADR-001 **sin tocar** (`git diff` vacío); RN-05 elevada abajo con redacción propuesta | `git log --oneline -- docs/adr/ADR-001*` sin commits nuevos en la rama; `npm run check` (`valida`) verde | | ❌ |
+| CA-1 (versión única estampada) | `tools/build-adapter.mjs` (`procedencia()`, sello de `PROVENANCE.json` y de `version` en el `plugin.json` del artefacto); `tools/checks/version-unica.mjs`; cableado en `tools/check.mjs` (`PASOS`); `package.json` y `adapters/claude-code/.claude-plugin/plugin.json` a 0.5.0 | `tools/tests/provenance.test.mjs` (CA-1a ×2, CA-1b); `tools/tests/version-unica.test.mjs` (6 casos, incl. divergencia, ausencia y `version` en la entrada del marketplace, + cableado en el runner) | **V-1**: leído el `PROVENANCE.json` de los 3 árboles tras `npm run build:all`: `version 0.5.0`, `commit 781b5b1e…8617` (SHA de 40 = `HEAD`), `harness` correcto, `fecha 2026-07-27T22:42:04.000Z` (ISO UTC), `sucio: false` (a). `dist/claude-code/.claude-plugin/plugin.json` → `"version": "0.5.0"` (b). (c) **ejercido por mí sobre fixture**: `checkVersionUnica` devuelve `ok:false` con divergencia 0.4.0/0.5.0 y con `version` en la entrada del marketplace; el paso `version-unica` corre dentro de `node tools/check.mjs` (exit 0, 10 checks) | ✅ |
+| CA-2 (build determinista, [H4]) | `tools/build-adapter.mjs`: la `fecha` es la del **commit de fuente en UTC**, no la hora de pared; sin git → `commit: null`, `sucio: true` | `tools/tests/provenance.test.mjs` (byte-identidad de dos corridas con PROVENANCE incluido; árbol limpio; árbol **sucio** sobre repo-fixture real; fuera de git); `tools/tests/build.test.mjs` (idempotencia previa, sigue verde) | **V-2**: `npm run build:all` ejecutado dos veces con el árbol limpio; sha256 de los **185** ficheros de `dist/` antes y después → **idénticos**, `PROVENANCE.json` incluido. Mitad "árbol sucio" cubierta por test no vacío sobre repo-fixture real (`repoFixture()` crea repo git, modifica un fichero y comprueba `sucio: true` sin que el build falle) | ✅ |
+| CA-3 (árbol publicable en local) | `tools/publica.mjs` (`ensambla`, `catalogo`, `readme`, `verificaLayout`, CLI `--dry-run --out`) | `tools/tests/publica.test.mjs` (layout exacto, árboles en la raíz, `source: "./claude-code"` sin `version`, PROVENANCE raíz + por harness, README generado, determinismo, fallo si falta el build, `.git` del worktree) + **CLI real**: `claude plugin validate .tmp/dry` → `✔ Validation passed`, **exit 0** | **V-3**: ejecutado por mí `node tools/publica.mjs --dry-run --out <scratch>/dry1` (exit 0). Raíz = **exactamente** `.claude-plugin PROVENANCE.json README.md claude-code kimi-code opencode`. Catálogo: `source: "./claude-code"`, **sin** `version` en la entrada. `PROVENANCE.json` en raíz + dentro de cada harness. README generado con "GENERADO / no se edita a mano". **CLI real re-ejercido**: `claude plugin validate` (CLI 2.1.220) → `✔ Validation passed`, **exit 0** | ✅ |
+| CA-4 (contrato de la rama) | `tools/publica.mjs` (`publicaLocal`: worktree aparte, orphan, commit sin válvulas, tag `v<version>`, rechaza árbol sucio y tag repetido) | `tools/tests/publica.test.mjs` (CA-4b: los tres árboles publicados byte-idénticos a `dist/<harness>`) + ejercicio real **en local** (§Evidencia ejercida) | **V-4 (parcial por la parada de publicación)**: (a) `git merge-base main release` → **sin salida, exit 1** = huérfana ✔; un solo commit `4b5eec6`, 188 ficheros, top-level exacto. (b) comparados **blob a blob** los 188 ficheros de `release` (`git cat-file blob` → sha256) contra un `--dry-run` recién ensamblado del mismo commit de fuente: **188/188 idénticos**, 0 diferencias ✔. (d) mensaje del commit cita `version: 0.5.0` y `commit: 781b5b1e…8617` ✔. (e) ver V-6. **(c) PENDIENTE**: rama, tag y Release no están en `origin` (comprobado, §Pendiente) | ⚠️ |
+| CA-5 (L3 no se debilita) | `.github/workflows/ci.yml`: `push: branches-ignore: ['release']`, y **nada más** | `tools/tests/workflow.test.mjs` (4 tests nuevos: `branches-ignore` presente; sin `branches`/`paths`/`tags`; `pull_request` sin filtros; jobs sin `if`/`continue-on-error`) + **run ids reales** (§Evidencia ejercida) | **V-5 (parcial por la parada)**: (c) `git diff main...HEAD -- .github/workflows/ci.yml` leído entero: el **único** cambio funcional es `branches-ignore: ['release']` bajo `push`; el resto es comentario. `pull_request:` **intacto y sin filtros**; sin `branches`/`paths`/`paths-ignore`/`tags`/`tags-ignore`; ningún job o paso gana `if:` ni `continue-on-error` ✔. (b, mitad `ft/**`) **verificados contra la API**: `gh run view` de los 4 run ids del ledger → todos reales, `event: push`, rama `ft/SPEC-016-publicar-rama-release`, `conclusion: success`, head SHAs coincidentes; **añado un 5.º** run `30311717348` sobre el `HEAD` actual `781b5b1`, también `success`. Los 5 son posteriores a `84d7d21`, que es el commit que introduce `branches-ignore` (verificado con `git log -S`). (d, alternativa admitida por el propio CA) `pull_request` sin filtros ✔ + el árbol de `release` no tiene `package.json` (`npm run check` ni arranca) ✔. **PENDIENTES: (a)** push a `release` → 0 runs; **(b, mitad `main`)** run de `push` en `main` tras el merge; **(d)** el PR real desde `release` | ⚠️ |
+| CA-6 (L2 y checks intactos) | ningún check modificado; `.sdd.json` intacto; `.claude-plugin/marketplace.json` de la raíz conserva `source: "./dist/claude-code"` | `tools/tests/publica.test.mjs` (ningún fichero publicado cae bajo `rutasVigiladas`; ninguno es artefacto SDD de `docs/`); `npm run check` verde sin tocar `fuente-unica`/`nucleo-aislado`/`manifiestos`; hook L2 ejercido (§Evidencia ejercida) | **V-6**: (a) **ejercido de verdad, con prueba de dos lados** en un worktree huérfano de usar y tirar con la misma config de hooks (`core.hooksPath` es absoluto y se comparte entre worktrees; `git rev-parse --git-path hooks` desde el worktree → `D:\src\tremen-sdd\tools\githooks`). **Negativa**: staged un `docs/SPEC-999-prueba.md` incoherente → `git commit` **BLOQUEADO** por `[pre-commit] … RN-07`, exit 1 → el hook **se dispara** ahí, no es que sea inalcanzable. **Positiva**: staged los **188** ficheros de la publicación → `git commit` **sin `--no-verify` y con `SDD_SKIP_GATE` sin definir` → exit 0, `188 files changed`. Worktree y rama temporal eliminados. (b) `npm test` **339/339**, `node tools/check.mjs` exit 0, `node core/scripts/valida.mjs` OK; `git diff main...HEAD` **no toca** `tools/checks/fuente-unica.mjs` ni `nucleo-aislado.mjs` ni `manifiestos.mjs`. (c) `git ls-files dist/` → **vacío**. (d) el `marketplace.json` de la raíz conserva `source: "./dist/claude-code"` y `[manifiestos] OK` ×3. (e) `git diff main...HEAD --name-only -- core/` → **vacío** | ✅ |
+| CA-7 (Claude Code instala sin build) | — (no requiere código: es el consumo del ref publicado) | pendiente de la publicación remota; ejercicio **parcial** con el layout publicado desde directorio local (§Evidencia ejercida) | **V-7 (PENDIENTE en su criterio de paso)**: reproducido por mí el ejercicio parcial, con `CLAUDE_CONFIG_DIR` aislado y **partiendo del clon del tag**, no del árbol de fuentes: `claude plugin marketplace add <clon>` → OK; `claude plugin install tremen-sdd@tremen-sdd` → OK; `claude plugin list` → **`Version: 0.5.0`, enabled**. El `source` relativo `./claude-code` **resuelve** y el `core/` viaja dentro: el agente instalado referencia `${CLAUDE_PLUGIN_ROOT}/core/roles/<idioma>/sdd-verificador.md` y el fichero existe en la cache. Config aislado borrado. **Lo que falta es lo que define el CA**: el transporte `https://…#v0.5.0` sobre el repo privado ([H1]), en entorno limpio verificable, y la medida de [H3] | ⚠️ |
+| CA-8 (opencode consume el mismo ref) | — | pendiente de la publicación remota; ejercido **contra transporte local** (`file://`) con el tag `v0.5.0` (§Evidencia ejercida) | **V-8 (parcial: transporte local)**: ejecutado por mí `git -c core.autocrlf=false clone --depth 1 --single-branch --branch v0.5.0 file://D:/src/tremen-sdd`. (a) el clon contiene **solo** el árbol publicado; `package.json`, `tools/`, `adapters/`, `core/` de raíz, `docs/`, `dist/`, `.github/`, `FOUNDATION.md` y `.sdd.json` **ausentes** ✔. (b) los tres árboles del clon **byte-idénticos** a `dist/<harness>` ✔. (c) el árbol `opencode/` publicado trae `opencode.json`, `agents/`, `commands/`, `skills/`, `core/` y `plugins/require-spec.mjs`; **no re-ejercí el CLI de opencode** (la mitad que decide el CA es el origen remoto). **PENDIENTE**: el mismo clon desde `https://github.com/tremen-dev/tremen-sdd.git` | ⚠️ |
+| CA-9 (¿qué versión tengo?) | `PROVENANCE.json` dentro de cada árbol (llega a la cache instalada) | mitad de filesystem ejercida; la mitad de `gh release list` está pendiente de la publicación remota | **V-9 (mitad ejercida)**: en mi instalación aislada, `…/plugins/cache/tremen-sdd/tremen-sdd/0.5.0/PROVENANCE.json` existe y declara `version 0.5.0`, `commit 781b5b1e…8617`, `fecha` y `sucio:false`: "¿qué versión tengo?" se responde sin leer fuente ni historial ✔. **PENDIENTE**: contrastar con `gh release list` / `gh release view v0.5.0` (no hay Release publicado) para cerrar el escenario de SPEC-012 | ⚠️ |
+| CA-10 (deuda conceptual escrita) | `docs/arquitectura.md` §"La rama de publicación `release` (as-built)" + §"El paso de build" actualizado; ADR-001 **sin tocar** (`git diff` vacío); RN-05 elevada abajo con redacción propuesta | `git log --oneline -- docs/adr/ADR-001*` sin commits nuevos en la rama; `npm run check` (`valida`) verde | **V-10**: (a) leída la sección nueva de `docs/arquitectura.md`: describe el as-built (rama huérfana, layout, procedimiento, "sin válvulas"), **qué parte de ADR-001 §5 sigue vigente** y el filtro de CI, **referenciando** ADR-010 sin duplicarlo ✔. (b) `git diff main...HEAD --name-only -- docs/adr/` → **vacío**: ni ADR-001 ni ADR-010 editados (RN-04) ✔. (c) F-SPEC-016-1 recoge el hallazgo de RN-05 con redacción propuesta y **`git diff main...HEAD --name-only -- docs/fundacion/ FOUNDATION.md` → vacío** ✔ | ✅ |
 
 ## Veredicto del verificador
 <!-- GREEN/RED + fecha + resumen. Lo escribe SOLO sdd-verificador. -->
 
+**GREEN — 2026-07-28 — sdd-verificador**, con los **cinco CA que dependen del
+remoto marcados ⚠️ y pendientes de la publicación real**, que el orquestador
+ordenó **detener** antes de empujar nada (un tag publicado no se re-publica: lo
+confirma una persona).
+
+**Comprobado por mí que la parada se respetó**: `git ls-remote --heads origin
+release` → **vacío**; `git ls-remote --tags origin` → solo `0.3.1`, `v0.1.0`,
+`v0.2.0`, **sin `v0.5.0`**. La rama `release` y el tag `v0.5.0` existen **solo en
+local**. No he empujado nada.
+
+**Mitad local: cumple entera, sin rebaja.** CA-1, CA-2, CA-3, CA-6 y CA-10 en ✅
+con evidencia re-ejercida por mí, no leída (ver columna Verif.). Gates mecánicos:
+`npm test` **339/339**, `node tools/check.mjs` **exit 0** (18 pasos, 10 checks),
+`node core/scripts/valida.mjs` **OK**.
+
+**Las fronteras duras aguantan**, verificadas una a una contra `main`:
+`git diff main...HEAD --name-only` no toca **ni un fichero bajo `core/`**, ni
+`docs/fundacion/**`, ni `FOUNDATION.md`, ni **ningún ADR** (ADR-001 y ADR-010
+intactos, RN-04). `git ls-files dist/` → vacío. Ningún check existente
+modificado. El **único** cambio en `.github/workflows/ci.yml` es
+`branches-ignore: ['release']` bajo `push`: `pull_request` sigue **sin filtros**
+—la protección que hace fallar un PR que intentara mezclar `release`— y el
+disparo no gana `branches`, `paths`, `tags` ni exclusiones de jobs. La garantía
+sobre `main` y `ft/**` **no se ha debilitado**.
+
+**El "publicar sin válvulas" lo ejercí, no lo leí.** Monté un worktree huérfano
+desechable con la misma configuración de hooks y probé **los dos lados**: con un
+artefacto SDD incoherente staged el commit queda **BLOQUEADO** por el pre-commit
+(exit 1) —prueba de que el hook **sí se dispara** desde un worktree de
+publicación, así que "no hizo falta la válvula" no es trivialmente cierto—, y con
+los **188** ficheros de la publicación staged el commit sale **exit 0** sin
+`--no-verify` y con `SDD_SKIP_GATE` sin definir. Worktree y rama temporal
+eliminados; el repo quedó limpio.
+
+**Evidencia inventada: no he encontrado ninguna.** Los cuatro run ids del ledger
+existen y son reales (`gh run view`): mismo repo, `event: push`, rama
+`ft/SPEC-016-publicar-rama-release`, `conclusion: success`, head SHAs
+coincidentes. Todo lo que no se pudo ejecutar sin publicar está declarado como
+pendiente, con su comando, y sin salidas fabricadas. El único desajuste, menor y
+en el lado conservador, es que la tabla de runs se escribió antes del último push
+y llama "estado final" a `b1a45d4`; el `HEAD` real es `781b5b1`, cuyo run
+**`30311717348`** también está en `success` (lo añado yo).
+
+**No es GREEN de la spec entera**: CA-4c, CA-5a, CA-5b (mitad `main`), CA-5d,
+CA-7, CA-8 (transporte remoto) y CA-9 (mitad `gh release`) siguen **sin
+observar**, y en particular **[H1] —el corazón de la spec— no está ejercido**:
+`claude plugin marketplace add` rechaza `file://` y `git://`, así que no hay
+atajo local. La lista con sus comandos está en §Lo que queda pendiente de la
+publicación remota y es lo que el humano debe cerrar al publicar.
+
 ## Evidencia visual
 <!-- Tabla CA → captura en _qa/SPEC-016/. Informe HTML opcional: _qa/SPEC-016/informe.html -->
+
+No aplica: SPEC-016 no tiene superficie de UI. La evidencia es salida de CLI y de
+git, recogida en la columna Verif. y en el veredicto.
+
+## Evidencia ejercida por el verificador (2026-07-28)
+
+Independiente de la del implementador; ejecutada por mí en `781b5b1` (`HEAD` de
+`ft/SPEC-016-publicar-rama-release`), con el árbol de trabajo limpio.
+
+```
+git ls-remote --heads origin release      -> (vacío)             # parada respetada
+git ls-remote --tags origin | grep v0.5.0 -> (sin coincidencias)
+npm test                                  -> 339/339
+node tools/check.mjs                      -> exit 0 (18 pasos, 10 checks)
+node core/scripts/valida.mjs              -> OK
+npm run build:all  (x2)  -> 185 ficheros de dist/, sha256 IDÉNTICOS          # CA-2
+node tools/publica.mjs --dry-run --out <scratch>/dry1  -> exit 0             # CA-3
+claude plugin validate <scratch>/dry1     -> ✔ Validation passed (exit 0)    # CA-3
+git merge-base main release               -> (vacío), exit 1                 # CA-4a
+188/188 blobs de release == --dry-run del mismo commit de fuente             # CA-4b
+gh run view 30310308149|30310657690|30311131688|30311546374  -> success      # CA-5b
+gh run list --branch ft/SPEC-016-…  -> +30311717348 (781b5b1) success        # CA-5b
+git ls-files dist/                        -> (vacío)                         # CA-6c
+git diff main...HEAD --name-only -- core/ docs/fundacion/ FOUNDATION.md docs/adr/
+                                          -> (vacío)                    # CA-6e, CA-10b
+worktree huérfano + pre-commit: BLOQUEA basura (exit 1) / PASA la publicación
+  de 188 ficheros sin --no-verify ni SDD_SKIP_GATE (exit 0)            # CA-4e/CA-6a
+git clone --depth 1 --single-branch --branch v0.5.0 file://…  -> sin fuente,
+  3 árboles byte-idénticos a dist/<harness>                            # CA-8a/CA-8b
+CLAUDE_CONFIG_DIR aislado: marketplace add <clon> + install -> Version: 0.5.0,
+  PROVENANCE.json en la cache instalada; core/roles resuelve       # CA-7 parcial/CA-9
+```
+
+**Fixture propio para CA-1c** (el check no se limita a estar cableado): sobre un
+repo sintético, `checkVersionUnica` devuelve `ok:false` con
+`plugin.json 0.4.0` vs `package.json 0.5.0`, y también cuando la entrada del
+marketplace declara `version`.
+
+**Sobre el conteo de pasos/checks (17→18, 9→10)**: el único check nuevo es
+`version-unica`, que **es** el CA-1c; no hay ningún check colado sin spec. El
+cambio en `tools/tests/check.test.mjs` (F-SPEC-016-6) lo doy por **no
+debilitante**: el pin de **orden** sigue siendo explícito y completo
+(`deepEqual` con los 18 nombres) y el conteo de checks pasa a **derivarse de
+`tools/checks/`**, lo que además detecta un check sin cablear — es más fuerte,
+no más flojo.
 
 ## Evidencia ejercida por el implementador (2026-07-28)
 
