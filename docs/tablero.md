@@ -43,7 +43,7 @@ Actualizado: 2026-07-27
 | Spec | Estado | Último cambio |
 |---|---|---|
 | SPEC-012 — protege-verdad-deniega-al-dueno-con-prefijo-de-plugin | hecho | 2026-07-25 (sdd-verificador) |
-| SPEC-017 — layout-generalizado-a-todos-los-adaptadores-y-prosa-del-runner-sin-drift | aprobada | 2026-07-27 (Alberto Fojo) |
+| SPEC-017 — layout-generalizado-a-todos-los-adaptadores-y-prosa-del-runner-sin-drift | hecho | 2026-07-27 (sdd-verificador) |
 
 ## ADRs
 
@@ -63,6 +63,6 @@ Actualizado: 2026-07-27
 
 ## Resumen
 
-- hecho: 14
+- hecho: 15
 - bloqueada: 1
-- aprobada: 2
+- aprobada: 1

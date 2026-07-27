@@ -5,6 +5,9 @@ import path from 'node:path';
 import os from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { PASOS, ejecuta } from '../check.mjs';
+// namespace: 'resumen' es la superficie nueva de SPEC-017 CA-8 y debe poder
+// comprobarse como ausente sin tumbar el resto del fichero.
+import * as runner from '../check.mjs';
 
 const REPO = path.dirname(path.dirname(path.dirname(fileURLToPath(import.meta.url))));
 
@@ -86,4 +89,68 @@ test('CA-6b: runner con valida sobre un árbol que viola RN-07 -> exit != 0', ()
   const dir = arbolDocs('borrador'); // estado 'aprobada' pero historial acaba en 'borrador'
   const code = ejecuta([{ nombre: 'valida', cmd: ['node', VALIDA, '--dir', path.join(dir, 'docs')] }], { cwd: REPO });
   assert.notEqual(code, 0);
+});
+
+// --- SPEC-017 bloque B: la prosa del runner se DERIVA de PASOS (RN-10) ---
+
+const FUENTE_RUNNER = fs.readFileSync(path.join(REPO, 'tools', 'check.mjs'), 'utf8');
+
+// cabecera = bloque de comentarios inicial, hasta la primera línea de código.
+function cabecera() {
+  const lineas = [];
+  for (const l of FUENTE_RUNNER.split('\n')) {
+    if (l.startsWith('#!')) continue;
+    if (!l.startsWith('//')) break;
+    lineas.push(l);
+  }
+  return lineas.join('\n');
+}
+
+test('SPEC-017 CA-8: resumen(PASOS) nombra los tres adaptadores que el runner construye', () => {
+  assert.equal(typeof runner.resumen, 'function', "check.mjs no exporta la función pura 'resumen'");
+  const texto = runner.resumen(PASOS);
+  for (const h of ['claude-code', 'kimi-code', 'opencode']) {
+    assert.ok(texto.includes(h), `el resumen no nombra ${h}: "${texto}"`);
+  }
+});
+
+test('SPEC-017 CA-8: resumen() se deriva de los pasos recibidos, no de una cadena fija', () => {
+  assert.equal(typeof runner.resumen, 'function', "check.mjs no exporta la función pura 'resumen'");
+  const texto = runner.resumen([
+    { nombre: 'build-x', cmd: ['node', 'tools/build-adapter.mjs', 'harness-x'] },
+    { nombre: 'foo', cmd: ['node', 'tools/checks/foo.mjs'] },
+  ]);
+  assert.ok(texto.includes('harness-x'), `el resumen ignora los pasos recibidos: "${texto}"`);
+  assert.ok(texto.includes('foo'), `el resumen ignora los checks recibidos: "${texto}"`);
+  for (const real of ['claude-code', 'kimi-code', 'opencode']) {
+    assert.ok(!texto.includes(real), `el resumen cuela adaptadores reales sobre pasos sintéticos: "${texto}"`);
+  }
+});
+
+test('SPEC-017 CA-9: la prosa de check.mjs no contradice a PASOS', () => {
+  assert.ok(!/seis/i.test(FUENTE_RUNNER), "check.mjs sigue diciendo 'SEIS' checks");
+  assert.ok(!/ambos adaptadores/i.test(FUENTE_RUNNER), "check.mjs sigue diciendo 'ambos adaptadores'");
+});
+
+test('SPEC-017 CA-9: la cabecera de check.mjs no repite el conteo de checks', () => {
+  assert.ok(!/\b(\d+|dos|tres|cuatro|cinco|seis|siete|ocho|nueve|diez)\s+checks\b/i.test(cabecera()),
+    'la cabecera declara un conteo de checks que puede envejecer; remite a PASOS');
+});
+
+test('SPEC-017 CA-9: PASOS referencia exactamente 9 scripts distintos de tools/checks/', () => {
+  const scripts = new Set(PASOS.map((p) => p.cmd[1]).filter((s) => s.includes('tools/checks/')));
+  assert.equal(scripts.size, 9);
+});
+
+test('SPEC-017 CA-10: el runner conserva sus 17 pasos, con layout como un solo paso', () => {
+  assert.equal(PASOS.length, 17);
+  assert.deepEqual(nombres(), [
+    'build', 'build-kimi', 'build-opencode',
+    'layout', 'nucleo-aislado', 'nucleo-agnostico', 'fuente-unica',
+    'referencias', 'referencias-kimi', 'referencias-opencode',
+    'roles-fuente-unica',
+    'manifiestos', 'manifiestos-kimi', 'manifiestos-opencode',
+    'descripcion-fuente-unica', 'prosa-gates', 'valida',
+  ]);
+  assert.equal(PASOS.filter((p) => p.cmd[1] === 'tools/checks/layout.mjs').length, 1);
 });

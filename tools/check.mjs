@@ -1,8 +1,13 @@
 #!/usr/bin/env node
-// Runner agregado (ADR-002): reproducible en local y en CI (L3). Encadena
-// build -> los SEIS checks de invariantes contra el árbol real -> valida sobre
-// docs. Cualquier paso con exit != 0 tumba el runner (fail-closed). No
-// reimplementa nada: invoca los scripts existentes de tools/ y core/.
+// Runner agregado (ADR-002): reproducible en local y en CI (L3). Encadena los
+// builds de los adaptadores -> los checks de invariantes contra el árbol real ->
+// valida sobre docs. Cualquier paso con exit != 0 tumba el runner (fail-closed).
+// No reimplementa nada: invoca los scripts existentes de tools/ y core/.
+//
+// PASOS es la única fuente de qué se construye y qué se comprueba (SPEC-017):
+// esta cabecera NO repite conteos ni listas de adaptadores —prosa fija que
+// envejece sola, RN-10— y el resumen de éxito se DERIVA de los pasos, ver
+// resumen().
 import { spawnSync } from 'node:child_process';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -33,6 +38,31 @@ export const PASOS = [
   { nombre: 'valida', cmd: ['node', 'core/scripts/valida.mjs', '--dir', 'docs'] },
 ];
 
+// Función pura: describe lo que los pasos recibidos hacen realmente (SPEC-017
+// CA-8). Al derivarse de PASOS es estructuralmente imposible que lo contradiga.
+export function resumen(pasos = PASOS) {
+  const adaptadores = [];
+  const checks = [];
+  let valida = false;
+  for (const p of pasos) {
+    const script = String(p.cmd?.[1] ?? '').replace(/\\/g, '/');
+    if (script.endsWith('tools/build-adapter.mjs')) {
+      const harness = p.cmd[2];
+      if (harness && !adaptadores.includes(harness)) adaptadores.push(harness);
+    } else if (script.includes('/checks/')) {
+      const nombre = path.basename(script, '.mjs');
+      if (!checks.includes(nombre)) checks.push(nombre);
+    } else if (script.endsWith('valida.mjs')) {
+      valida = true;
+    }
+  }
+  const partes = [];
+  if (adaptadores.length) partes.push(`build (${adaptadores.join(', ')})`);
+  if (checks.length) partes.push(`${checks.length} checks (${[...checks].sort().join(', ')})`);
+  if (valida) partes.push('valida');
+  return partes.length ? `${partes.join(' + ')} en verde` : 'todos los pasos en verde';
+}
+
 export function ejecuta(pasos = PASOS, { cwd = REPO } = {}) {
   for (const p of pasos) {
     const r = spawnSync(p.cmd[0], p.cmd.slice(1), { cwd, stdio: 'inherit' });
@@ -42,7 +72,7 @@ export function ejecuta(pasos = PASOS, { cwd = REPO } = {}) {
       return code;
     }
   }
-  console.log('[check] OK: build (claude+kimi) + checks (ambos adaptadores) + valida en verde.');
+  console.log(`[check] OK: ${resumen(pasos)}.`);
   return 0;
 }
 

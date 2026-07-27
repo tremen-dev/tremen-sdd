@@ -2,11 +2,14 @@
 id: SPEC-017
 tipo: spec
 epica: EPIC-FIX
-estado: aprobada
+estado: hecho
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-07-27, por: sdd-arquitecto}
   - {estado: aprobada, fecha: 2026-07-27, por: Alberto Fojo}
+  - {estado: en-progreso, fecha: 2026-07-27, por: sdd-implementador}
+  - {estado: en-revision, fecha: 2026-07-27, por: sdd-implementador}
+  - {estado: hecho, fecha: 2026-07-27, por: sdd-verificador}
 ---
 # SPEC-017 — layout generalizado a todos los adaptadores y prosa del runner sin drift
 
