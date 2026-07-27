@@ -2,12 +2,13 @@
 id: SPEC-016
 tipo: spec
 epica: EPIC-004
-estado: en-progreso
+estado: en-revision
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-07-27, por: sdd-arquitecto}
   - {estado: aprobada, fecha: 2026-07-27, por: Alberto Fojo}
   - {estado: en-progreso, fecha: 2026-07-27, por: sdd-implementador}
+  - {estado: en-revision, fecha: 2026-07-27, por: sdd-implementador}
 ---
 # SPEC-016 — Publicar el artefacto: rama de publicacion y primera version instalable sin clon
 
