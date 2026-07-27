@@ -36,6 +36,7 @@ Actualizado: 2026-07-27
 
 | Spec | Estado | Último cambio |
 |---|---|---|
+| SPEC-016 — publicar-el-artefacto-rama-de-publicacion-y-primera-version-instalable-sin-clon | aprobada | 2026-07-27 (Alberto Fojo) |
 
 ## EPIC-FIX (aprobada)
 
@@ -56,8 +57,10 @@ Actualizado: 2026-07-27
 | ADR-007 | aprobada | encaje-de-opencode-y-su-modelo-de-enforcement | 2026-07-22 (Alberto Fojo) |
 | ADR-008 | aprobada | politica-del-prefijo-de-plugin-en-la-identidad-de-rol-de-protege-verdad | 2026-07-25 (Alberto Fojo) |
 | ADR-009 | aprobada | politica-de-tools-del-verificador-no-escribe-fuentes-si-el-ledger-de-evidencia | 2026-07-25 (Alberto Fojo) |
+| ADR-010 | aprobada | mecanismo-de-publicacion-del-artefacto-rama-de-publicacion-en-el-repo-fuente | 2026-07-27 (Alberto Fojo) |
 
 ## Resumen
 
 - hecho: 14
 - bloqueada: 1
+- aprobada: 2
