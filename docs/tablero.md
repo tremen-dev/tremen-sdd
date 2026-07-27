@@ -30,7 +30,7 @@ Actualizado: 2026-07-27
 | SPEC-010 — adaptador-opencode-roles-y-comandos | hecho | 2026-07-22 (sdd-verificador) |
 | SPEC-011 — enforcement-en-harness-de-opencode-plugin-que-deniega | hecho | 2026-07-23 (sdd-verificador) |
 | SPEC-014 — cierre-ce-1-pipeline-sdd-completo-contra-el-cli-real-de-opencode | hecho | 2026-07-27 (sdd-verificador) |
-| SPEC-015 — guia-anadir-un-harness-2-pasada-opencode-y-sus-desviaciones | aprobada | 2026-07-27 (Alberto Fojo) |
+| SPEC-015 — guia-anadir-un-harness-2-pasada-opencode-y-sus-desviaciones | hecho | 2026-07-27 (sdd-verificador) |
 
 ## EPIC-004 — distribucion-del-artefacto-a-runtime (aprobada)
 
@@ -61,6 +61,6 @@ Actualizado: 2026-07-27
 
 ## Resumen
 
-- hecho: 13
+- hecho: 14
 - bloqueada: 1
 - aprobada: 2
