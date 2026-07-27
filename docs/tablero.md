@@ -14,7 +14,7 @@ Actualizado: 2026-07-27
 | SPEC-005 — fuente-unica-de-la-description-de-rol | hecho | 2026-07-21 (Alberto Fojo) |
 | SPEC-013 — cierre-ce-2-verificacion-end-to-end-contra-el-cli-real-de-kimi | bloqueada | 2026-07-26 (Alberto Fojo) |
 
-## EPIC-002 — higiene-del-proceso-y-tooling-del-metodo (aprobada)
+## EPIC-002 — higiene-del-proceso-y-tooling-del-metodo (hecho)
 
 | Spec | Estado | Último cambio |
 |---|---|---|
@@ -30,6 +30,12 @@ Actualizado: 2026-07-27
 | SPEC-010 — adaptador-opencode-roles-y-comandos | hecho | 2026-07-22 (sdd-verificador) |
 | SPEC-011 — enforcement-en-harness-de-opencode-plugin-que-deniega | hecho | 2026-07-23 (sdd-verificador) |
 | SPEC-014 — cierre-ce-1-pipeline-sdd-completo-contra-el-cli-real-de-opencode | hecho | 2026-07-27 (sdd-verificador) |
+| SPEC-015 — guia-anadir-un-harness-2-pasada-opencode-y-sus-desviaciones | aprobada | 2026-07-27 (Alberto Fojo) |
+
+## EPIC-004 — distribucion-del-artefacto-a-runtime (aprobada)
+
+| Spec | Estado | Último cambio |
+|---|---|---|
 
 ## EPIC-FIX (aprobada)
 
@@ -54,3 +60,5 @@ Actualizado: 2026-07-27
 ## Resumen
 
 - hecho: 13
+- bloqueada: 1
+- aprobada: 1
