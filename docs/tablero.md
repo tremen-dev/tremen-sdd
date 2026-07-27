@@ -43,6 +43,7 @@ Actualizado: 2026-07-27
 | Spec | Estado | Último cambio |
 |---|---|---|
 | SPEC-012 — protege-verdad-deniega-al-dueno-con-prefijo-de-plugin | hecho | 2026-07-25 (sdd-verificador) |
+| SPEC-017 — layout-generalizado-a-todos-los-adaptadores-y-prosa-del-runner-sin-drift | aprobada | 2026-07-27 (Alberto Fojo) |
 
 ## ADRs
 
@@ -58,6 +59,7 @@ Actualizado: 2026-07-27
 | ADR-008 | aprobada | politica-del-prefijo-de-plugin-en-la-identidad-de-rol-de-protege-verdad | 2026-07-25 (Alberto Fojo) |
 | ADR-009 | aprobada | politica-de-tools-del-verificador-no-escribe-fuentes-si-el-ledger-de-evidencia | 2026-07-25 (Alberto Fojo) |
 | ADR-010 | aprobada | mecanismo-de-publicacion-del-artefacto-rama-de-publicacion-en-el-repo-fuente | 2026-07-27 (Alberto Fojo) |
+| ADR-011 | aprobada | generalizacion-de-los-checks-de-invariantes-autodescubrimiento-vs-enumeracion | 2026-07-27 (Alberto Fojo) |
 
 ## Resumen
 
