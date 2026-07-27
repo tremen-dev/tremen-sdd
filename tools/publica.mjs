@@ -118,6 +118,21 @@ cp -r <tmp>/opencode/. <proyecto>/.opencode/
 
 No hace falta \`npm install\` ni \`npm run build\` en ningún punto: lo que se
 descarga ya está construido.
+
+## Comparar bytes con el build de origen
+
+Los árboles de este ref son byte-idénticos a los que produce
+\`npm run build:all\` en el commit de fuente de arriba. Para **comprobarlo** en
+Windows hay que desactivar la conversión de finales de línea al obtener el ref
+—\`core.autocrlf\` viene a \`true\` en la instalación estándar de Git para Windows
+y reescribiría los ficheros al checkout—:
+
+\`\`\`
+git -c core.autocrlf=false clone --depth 1 --single-branch --branch v${version} …
+\`\`\`
+
+Sin esa opción la instalación **funciona igual** (nada de lo publicado depende
+del final de línea), pero la comparación byte a byte no cuadra.
 `;
 }
 

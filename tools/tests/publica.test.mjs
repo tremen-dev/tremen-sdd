@@ -100,6 +100,12 @@ test('CA-3: el README.md es generado y declara que la rama no se edita a mano', 
   assert.match(readme, /generad/i, 'el README no declara que el ref es generado');
   assert.match(readme, /no se edita a mano/i, 'el README no declara que no se edita a mano');
   assert.ok(readme.includes(leeJson(path.join(OUT, 'PROVENANCE.json')).commit), 'el README no cita el commit de fuente');
+  // El ref es obligatorio: sin `#ref` se apunta a main, cuyo catálogo referencia
+  // una ruta de build inexistente en un clon (hazard conocido, ADR-010 §6).
+  assert.match(readme, /marketplace add [^\n]*#v/, 'el README documenta marketplace add sin #ref');
+  // Hallazgo ejercido: en Windows core.autocrlf reescribe el checkout y la
+  // comparación byte a byte deja de cuadrar si no se desactiva.
+  assert.match(readme, /core\.autocrlf=false/, 'el README no avisa de la conversión de finales de línea');
 });
 
 test('CA-4b: cada árbol publicado es byte-idéntico a su dist/<harness> del mismo commit', () => {
