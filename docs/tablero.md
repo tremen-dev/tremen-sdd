@@ -36,7 +36,7 @@ Actualizado: 2026-07-27
 
 | Spec | Estado | Último cambio |
 |---|---|---|
-| SPEC-016 — publicar-el-artefacto-rama-de-publicacion-y-primera-version-instalable-sin-clon | aprobada | 2026-07-27 (Alberto Fojo) |
+| SPEC-016 — publicar-el-artefacto-rama-de-publicacion-y-primera-version-instalable-sin-clon | hecho | 2026-07-27 (sdd-verificador) |
 
 ## EPIC-FIX (aprobada)
 
@@ -63,6 +63,5 @@ Actualizado: 2026-07-27
 
 ## Resumen
 
-- hecho: 15
+- hecho: 16
 - bloqueada: 1
-- aprobada: 1

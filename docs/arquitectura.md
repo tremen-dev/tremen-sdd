@@ -55,9 +55,19 @@ núcleo no puede quedar "al lado" del adaptador: hay que **empaquetarlo dentro**
 Así, dentro del artefacto, el núcleo se resuelve como **ruta interna** al plugin
 root (`${CLAUDE_PLUGIN_ROOT}/core/…`), sin ningún `../` que escape. El build es
 **determinista/idempotente** (dos corridas → árbol idéntico) y **cross-platform**
-(no usa symlinks). `dist/` está en `.gitignore`: `core/` sigue siendo la única
-copia versionada del método — nunca se comitea una copia del núcleo fuera de
-`core/` (lo guarda `tools/checks/fuente-unica.mjs`).
+(no usa symlinks). `dist/` está en `.gitignore` **en las ramas de fuente**:
+`core/` sigue siendo la única copia **editable** del método — nunca se comitea
+una copia del núcleo fuera de `core/` en una rama de fuente (lo guarda
+`tools/checks/fuente-unica.mjs`; el matiz "editable" y su alcance exacto, en
+[ADR-010 §7](adr/ADR-010-mecanismo-de-publicacion-del-artefacto-rama-de-publicacion-en-el-repo-fuente.md)).
+
+El build además **estampa la procedencia**: cada `dist/<harness>/` recibe un
+`PROVENANCE.json` con `version`, `commit` de fuente, `harness`, `fecha` y `sucio`,
+y el `plugin.json` del artefacto queda sellado con la versión de `package.json`
+—la **única** fuente de versión, que `tools/checks/version-unica.mjs` obliga a no
+divergir—. La `fecha` es la **del commit de fuente en UTC**, no la hora de build:
+con la hora de pared, dos corridas del mismo commit no serían byte-idénticas y se
+perdería el determinismo.
 
 ## Tests y checks
 
@@ -71,14 +81,18 @@ copia versionada del método — nunca se comitea una copia del núcleo fuera de
 | `npm run test:tools` | `build:all` + tests de `tools/` (build y checks) |
 | `npm run test:adapter` | `build:all` + tests de los tres adaptadores contra `dist/` |
 | `npm test` | `build:all` + las tres capas de una vez |
-| `npm run check` | runner agregado: los 3 builds → los 9 checks (algunos, una vez por adaptador) → `valida` (lo que corre CI) |
+| `npm run check` | runner agregado: los 3 builds → los checks (algunos, una vez por adaptador) → `valida` (lo que corre CI) |
+| `node tools/publica.mjs --dry-run --out <dir>` | ensambla el árbol publicable de la rama `release`, sin tocar git |
+| `node tools/publica.mjs --local` | + worktree, commit y tag **locales** (no empuja) |
 | `npm run hooks:install` | activa el pre-commit L2 (`git config core.hooksPath tools/githooks`) |
 
 Los tests del adaptador corren **contra el artefacto construido** (`dist/`),
 porque es ahí donde el núcleo vive por ruta interna. Los del núcleo corren
 directos y deben pasar **con `adapters/` y `dist/` ausentes** (aislamiento, CE-1).
 
-**Nueve** checks de invariantes en `tools/checks/` (cada uno con su test): `layout`
+Los checks de invariantes viven en `tools/checks/`, cada uno con su test, y
+`PASOS` de `tools/check.mjs` es la lista autoritativa —un test comprueba que no
+haya ninguno sin cablear—: `layout`
 (estructura del repo), `nucleo-aislado` (regla de dependencia), `nucleo-agnostico`
 (ningún token de harness bajo `core/`; solo `${SDD_*}` permitido), `referencias`
 (ninguna ruta escapa el artefacto; nada de `${CLAUDE_PLUGIN_ROOT}/../../` ni, en
@@ -90,7 +104,9 @@ opencode: `opencode.json` — bloque `agent` con `mode`, `permission.task` del p
 `fuente-unica` (sin copia de núcleo comiteada fuera de `core/`),
 `descripcion-fuente-unica` (la description de disparo de cada rol coincide entre la
 canónica en `core/roles/es/_descripciones.json` y las superficies de los adaptadores),
-`prosa-gates` (la prosa de `sdd-documentalista` prohíbe cerrar/proponer cerrar épicas — SPEC-006).
+`prosa-gates` (la prosa de `sdd-documentalista` prohíbe cerrar/proponer cerrar épicas — SPEC-006),
+`version-unica` (`package.json.version` es la única fuente de versión: ningún
+manifiesto del fuente diverge, y la entrada del marketplace no la declara — SPEC-016).
 Los checks `layout`, `referencias`, `roles-fuente-unica`, `manifiestos` y
 `descripcion-fuente-unica` están **generalizados a los tres adaptadores**
 (claude-code, kimi-code y opencode), pero **no por el mismo mecanismo**, y cuál toca
@@ -112,6 +128,57 @@ cerrada (ADR-011 §4), nunca derivada del FS. `nucleo-aislado`, `nucleo-agnostic
 `fuente-unica` y `prosa-gates` no se parametrizan por adaptador porque miran solo el
 núcleo o el árbol comiteado. El YAML de los agentes Kimi se parsea con un loader
 mínimo propio (`tools/checks/_yaml.mjs`), porque el núcleo no admite dependencias.
+
+## La rama de publicación `release` (as-built)
+
+El artefacto construido no se queda en `dist/`: se **publica** en una rama del
+propio repo llamada `release`. La decisión, sus alternativas y su coste están en
+[ADR-010](adr/ADR-010-mecanismo-de-publicacion-del-artefacto-rama-de-publicacion-en-el-repo-fuente.md);
+aquí solo queda **qué hay montado**.
+
+- **Qué es**: una rama **huérfana** (`git merge-base main release` no devuelve
+  nada) cuyo contenido es **100% generado** por `tools/publica.mjs`. Avanza con un
+  commit por publicación, sin force-push y sin reescribir historia. Nunca se
+  mergea con `main`, en ningún sentido.
+- **Qué contiene**, en la **raíz** (no bajo `dist/`, para que el `.gitignore` de
+  la fuente no interfiera): `.claude-plugin/marketplace.json` con el plugin
+  apuntando al hermano relativo `./claude-code`; `claude-code/`, `kimi-code/` y
+  `opencode/`; `PROVENANCE.json`; y un `README.md` generado. Cada árbol lleva
+  además **su propio** `PROVENANCE.json` dentro, así que llega a la cache del
+  harness instalado.
+- **Cómo se publica**: `npm run build:all` → `node tools/publica.mjs --local`
+  (ensambla sobre un **worktree aparte**, nunca conmutando el checkout de
+  desarrollo; commit + tag `v<version>` locales) → una persona empuja rama y tag y
+  crea el Release. El script **no empuja**: publicar es irreversible y el último
+  paso es humano.
+- **Sin válvulas**: el commit de publicación pasa el pre-commit L2 **sin**
+  `--no-verify` y **sin** `SDD_SKIP_GATE=1`. No es suerte: ningún fichero
+  publicado cae bajo las `rutasVigiladas` de `.sdd.json` ni es un artefacto SDD de
+  `docs/`, así que ninguna capa del gate se activa. Si algún día publicar
+  necesitara una válvula, el mecanismo estaría mal.
+
+**Qué parte de ADR-001 §5 sigue vigente.** ADR-010 §7 supersede **solo** la
+cláusula «jamás se comitea», y **solo** para la rama `release`. Sigue en pie todo
+lo demás: build determinista, salida a `dist/`, `dist/` gitignored en las ramas de
+fuente, nada de symlinks y la regla de dependencia adaptador→núcleo. La invariante
+se **reformula**, no se abandona: no existe ninguna copia **editable** del núcleo;
+`core/` es la única fuente, y cualquier otra copia en git es artefacto generado en
+una rama que no se edita a mano. `fuente-unica` lo verifica **igual que antes**,
+sin modificarlo, porque corre sobre el `git ls-files` del checkout y no ve otra
+rama.
+
+**Qué le pasa a CI.** `.github/workflows/ci.yml` ignora `release` en el evento
+`push` (`branches-ignore: ['release']`) y **nada más**: no gana `branches`,
+`paths` ni `tags`, ni los jobs ganan `if`/`continue-on-error`. La rama publicada
+no contiene fuente —sin `package.json`, sin `tools/`, sin `core/`— y un run sobre
+ella solo podría fallar. Como al declarar únicamente `branches-ignore` los pushes
+de **tag** dejan de disparar, la cobertura no se pierde: todo commit de fuente
+llega a CI por el push de su rama y por su PR, y un tag apunta a un commit ya
+validado. **`pull_request` no se filtra**, así que un PR que intentara mezclar
+`release` en una rama de fuente corre la suite completa y falla — que es la
+protección que se quiere. Es relevante porque la protección de rama que ADR-010
+recomendaba **no está disponible** en el plan actual de GitHub: el hallazgo y sus
+salidas están en [docs/operacion/proteger-la-rama-release.md](operacion/proteger-la-rama-release.md).
 
 ## Flujo de trabajo (y dogfooding)
 

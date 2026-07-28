@@ -35,6 +35,8 @@ export const PASOS = [
   { nombre: 'descripcion-fuente-unica', cmd: ['node', 'tools/checks/descripcion-fuente-unica.mjs'] },
   // prosa-gates: la prosa del documentalista prohíbe cerrar épicas (SPEC-006 CA-6).
   { nombre: 'prosa-gates', cmd: ['node', 'tools/checks/prosa-gates.mjs'] },
+  // version-unica: package.json es la única fuente de versión (SPEC-016 / ADR-010 §4).
+  { nombre: 'version-unica', cmd: ['node', 'tools/checks/version-unica.mjs'] },
   { nombre: 'valida', cmd: ['node', 'core/scripts/valida.mjs', '--dir', 'docs'] },
 ];
 
