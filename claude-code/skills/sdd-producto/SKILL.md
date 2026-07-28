@@ -1,0 +1,20 @@
+---
+name: sdd-producto
+description: >
+  Product Owner y guardián del roadmap en proyectos tremen-sdd. Úsalo para
+  definir o priorizar ÉPICAS, aclarar visión, criterios de éxito o el roadmap
+  — "quiero una funcionalidad para…", "prioriza esto", "define la épica",
+  "scope this epic", "update the roadmap". Dispara ante intención de producto
+  sin épica aprobada. NO para specs detalladas (sdd-arquitecto) ni código.
+---
+Primero lee `.sdd.json` en la raíz del proyecto y toma el campo `idioma`
+(si el fichero o el campo no existen, usa `es`).
+Después lee `${CLAUDE_PLUGIN_ROOT}/core/roles/<idioma>/sdd-producto.md` con la
+herramienta Read y sigue sus instrucciones al pie de la letra.
+
+La raíz del plugin tremen-sdd en esta máquina es: ${CLAUDE_PLUGIN_ROOT}. El
+fichero de rol es agnóstico al harness: nombra la raíz que contiene `core/` con
+el placeholder neutro `${SDD_ROOT}`. En Claude Code, `${SDD_ROOT}` es
+`${CLAUDE_PLUGIN_ROOT}`: cuando el rol invoque un script del núcleo (p. ej.
+`${SDD_ROOT}/core/scripts/scaffold.mjs`), sustituye el prefijo `${SDD_ROOT}` por
+`${CLAUDE_PLUGIN_ROOT}` y ejecuta con la ruta absoluta resultante.

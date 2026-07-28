@@ -1,0 +1,29 @@
+{
+  "sdd-producto": {
+    "larga": "Product Owner y guardián del roadmap en proyectos tremen-sdd. Úsalo para definir o priorizar ÉPICAS, aclarar visión, criterios de éxito o el roadmap — \"quiero una funcionalidad para…\", \"prioriza esto\", \"define la épica\", \"scope this epic\", \"update the roadmap\". Dispara ante intención de producto sin épica aprobada. NO para specs detalladas (sdd-arquitecto) ni código.",
+    "corta": "Product Owner y guardián del roadmap; define y prioriza ÉPICAS."
+  },
+  "sdd-arquitecto": {
+    "larga": "Única autora de SPECs y ADRs en proyectos tremen-sdd. Úsalo para convertir una épica o petición en una spec testable, registrar una decisión técnica (stack, datos, fronteras) como ADR, o refinar/mover una spec por su ciclo — \"especifica X\", \"escribe la spec\", \"¿Postgres o Turso?\", \"write the spec\", \"record this decision as an ADR\". NO para implementar (sdd-implementador).",
+    "corta": "Única autora de SPECs y ADRs; convierte una épica o petición en una spec testable."
+  },
+  "sdd-implementador": {
+    "larga": "Implementa UNA spec aprobada de un proyecto tremen-sdd, CA a CA con TDD, y mantiene su mitad del ledger — \"implementa SPEC-012\", \"codea esta spec\", \"implement the approved spec\", \"build this feature (ya especificada)\". Dispara solo con spec aprobada; sin spec, deriva a sdd-orquestador.",
+    "corta": "Implementa UNA spec aprobada CA a CA con TDD y mantiene su mitad del ledger."
+  },
+  "sdd-verificador": {
+    "larga": "Gate adversarial de proyectos tremen-sdd: verifica una implementación contra los CA de su spec (tests, lint, flujo real, Playwright para UI), rellena el ledger con evidencia y emite GREEN/RED — \"verifica SPEC-012\", \"¿cumple los criterios?\", \"QA esto\", \"verify this spec\". Dispara al terminar cualquier implementación y antes de cualquier PR. Nunca edita código.",
+    "corta": "Gate adversarial; verifica una implementación contra los CA y emite GREEN/RED."
+  },
+  "sdd-documentalista": {
+    "larga": "Cierre mecánico del ciclo tremen-sdd: regenera el tablero, valida artefactos, sincroniza índices y detecta drift docs↔código — \"cierra la spec\", \"archiva\", \"regenera índices\", \"tidy up the docs\". Dispara cuando una spec llega a hecho o los índices huelen a desactualizados. Tier barato (haiku).",
+    "corta": "Cierre mecánico del ciclo; regenera el tablero, valida artefactos y sincroniza índices."
+  },
+  "sdd-como-vamos": {
+    "larga": "Informe read-only del estado de un proyecto tremen-sdd: qué espera al humano, qué está en curso o bloqueado, y las specs \"cerradas con residual\" — \"¿cómo vamos?\", \"¿qué queda?\", \"estado del proyecto\", \"what's left\", \"project status\". No escribe nada: lee frontmatters, ledgers y roadmap, y reporta.",
+    "corta": "Informe read-only del estado del proyecto; no escribe nada."
+  },
+  "sdd-orquestador": {
+    "larga": "Entrada y router de todo trabajo en proyectos tremen-sdd. Úsalo al inicio de CUALQUIER petición de trabajo — \"construye X\", \"añade Y\", \"arregla Z\", \"haz la épica entera\", \"drive this epic/task\" — para clasificarla, localizar o encargar su spec y conducir el pipeline (producto → arquitecto → implementador → verificador) con sus gates humanos. Dispara siempre que llegue trabajo y no esté claro qué spec lo gobierna."
+  }
+}

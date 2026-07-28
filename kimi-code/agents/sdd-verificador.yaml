@@ -1,0 +1,13 @@
+# Subagente sdd-verificador. extend: default + system prompt referenciado (RN-06).
+version: 1
+extend: default
+agent:
+  name: sdd-verificador
+system_prompt_path: ./prompts/sdd-verificador.md
+# Read-only (CA-11c): NUNCA edita código. Lee y corre tests/lint por Bash; su
+# única escritura es el ledger de evidencia, no las fuentes vigiladas.
+allowed_tools:
+  - Read
+  - Grep
+  - Glob
+  - Bash

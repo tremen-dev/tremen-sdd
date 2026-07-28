@@ -1,0 +1,7 @@
+{ "cases": [
+  { "query": "escribe la spec del alta de facturas", "should_trigger": true },
+  { "query": "¿usamos Turso o Postgres? decídelo y déjalo registrado", "should_trigger": true },
+  { "query": "record this decision as an ADR", "should_trigger": true },
+  { "query": "implementa la spec aprobada", "should_trigger": false },
+  { "query": "¿qué queda pendiente?", "should_trigger": false }
+] }

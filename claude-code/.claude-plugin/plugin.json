@@ -1,0 +1,14 @@
+{
+  "name": "tremen-sdd",
+  "version": "0.5.0",
+  "description": "Estándar SDD unificado de tremen.dev: roles sdd-*, hooks de enforcement, scaffolding determinista y plantillas para specs, épicas, ADRs y ledgers de evidencia.",
+  "author": {
+    "name": "Alberto Fojo"
+  },
+  "agents": [
+    "./agents/sdd-arquitecto.md",
+    "./agents/sdd-implementador.md",
+    "./agents/sdd-verificador.md",
+    "./agents/sdd-documentalista.md"
+  ]
+}

@@ -1,0 +1,7 @@
+{ "cases": [
+  { "query": "implementa SPEC-012", "should_trigger": true },
+  { "query": "codea la spec de envío de emails, ya está aprobada", "should_trigger": true },
+  { "query": "implement the approved spec", "should_trigger": true },
+  { "query": "verifica SPEC-012", "should_trigger": false },
+  { "query": "define la épica de pagos", "should_trigger": false }
+] }

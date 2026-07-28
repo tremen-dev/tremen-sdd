@@ -1,0 +1,14 @@
+{
+  "name": "tremen-sdd",
+  "owner": {
+    "name": "Alberto Fojo"
+  },
+  "description": "Estándar SDD unificado de tremen.dev: roles sdd-*, gates de enforcement y plantillas para specs, épicas, ADRs y ledgers.",
+  "plugins": [
+    {
+      "name": "tremen-sdd",
+      "source": "./claude-code",
+      "description": "Estándar SDD unificado de tremen.dev (roles, hooks, scaffolding, plantillas)."
+    }
+  ]
+}

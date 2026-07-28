@@ -1,0 +1,34 @@
+# Agente RAÍZ del adaptador Kimi Code = el ORQUESTADOR (ADR-003, punto 7).
+# En Kimi solo el agente raíz puede despachar subagentes (guard role != "root");
+# por eso el orquestador ES el raíz y declara los seis sdd-* en su mapa subagents.
+# Se carga con `kimi --agent-file <ruta a este YAML dentro del artefacto>`.
+version: 1
+extend: default
+agent:
+  name: sdd-orquestador
+system_prompt_path: ./prompts/sdd-orquestador.md
+allowed_tools:
+  - Read
+  - Grep
+  - Glob
+  - Bash
+  - Agent
+subagents:
+  sdd-producto:
+    path: ./sdd-producto.yaml
+    description: Product Owner y guardián del roadmap; define y prioriza ÉPICAS.
+  sdd-arquitecto:
+    path: ./sdd-arquitecto.yaml
+    description: Única autora de SPECs y ADRs; convierte una épica o petición en una spec testable.
+  sdd-implementador:
+    path: ./sdd-implementador.yaml
+    description: Implementa UNA spec aprobada CA a CA con TDD y mantiene su mitad del ledger.
+  sdd-verificador:
+    path: ./sdd-verificador.yaml
+    description: Gate adversarial; verifica una implementación contra los CA y emite GREEN/RED.
+  sdd-documentalista:
+    path: ./sdd-documentalista.yaml
+    description: Cierre mecánico del ciclo; regenera el tablero, valida artefactos y sincroniza índices.
+  sdd-como-vamos:
+    path: ./sdd-como-vamos.yaml
+    description: Informe read-only del estado del proyecto; no escribe nada.
