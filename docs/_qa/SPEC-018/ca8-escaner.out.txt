@@ -1,0 +1,9 @@
+ 1 README.md:25 :: 7 roles
+ 2 README.md:126 :: seis checks
+ 3 README.md:141 :: 6 checks
+ 4 docs/fundacion/contexto.md:11 :: 7 roles
+ 5 docs/fundacion/contexto.md:24 :: dos adaptadores
+ 6 docs/fundacion/contexto.md:57 :: tres hooks del adaptador
+ 7 docs/fundacion/contexto.md:93 :: dos adaptadores
+ 8 docs/fundacion/dominio.md:23 :: 7 papeles
+TOTAL pares cardinal+sustantivo = 8

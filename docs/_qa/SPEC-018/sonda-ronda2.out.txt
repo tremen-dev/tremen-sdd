@@ -1,0 +1,54 @@
+=== 0. CONTROL: derivado vs declarado ===
+  25 casos, 0 desajustes
+  rojos declarados: 12 · verdes: 13
+
+=== A. añado adapters/cursor/ (adaptadores 3 -> 4) ===
+  M2-cifra-marcada-adaptadores-verde: verde -> rojo   [M2: la cifra escrita «tres** adaptadores» no cuadra con el inventario 'adaptadores' (4 en el árbol)]
+  M2-enumeracion-no-miembro-verde: verde -> rojo   [M2: al inventario 'harnesses' le falta el miembro 'cursor']
+  M2-enumeracion-tabla-verde: verde -> rojo   [M2: al inventario 'harnesses' le falta el miembro 'cursor' | M2: la cifra escrita «tres» no cuadra con el inventario 'adaptadores' (4 en el árbol)]
+
+=== B. añado RN-09 al contenido de reglas.md (reglas 8 -> 9) ===
+  M2-cifra-marcada-reglas-verde: verde -> rojo   [M2: la cifra escrita «ocho** reglas» no cuadra con el inventario 'reglas' (9 en el árbol)]
+
+=== C. quito docs/adr/ADR-012-*.md del árbol ===
+  M1-ruta-fragmento-verde: verde -> rojo   [M1: referencia colgada 'ADR-012']
+
+=== D. quito docs/fundacion/dominio.md del árbol ===
+  NO SE MOVIÓ NADA  <-- sospechoso
+
+=== E. borro adapters/claude-code/hooks/calidad.mjs pero dejo el manifiesto intacto ===
+  NO SE MOVIÓ NADA  <-- sospechoso
+
+=== F. ¿EL ÁRBOL ENRIQUECIDO SIGUE DISCRIMINANDO? ===
+  rojo  ADR inexistente en el árbol      M1: referencia colgada 'ADR-005'
+  rojo  RN inexistente en el árbol       M1: referencia colgada 'RN-10' | M1: referencia colgada 'RN-11'
+  rojo  SPEC inexistente en el árbol     M1: referencia colgada 'SPEC-013'
+  rojo  EPIC inexistente en el árbol     M1: referencia colgada 'EPIC-002'
+  rojo  ruta anclada inexistente         M1: ruta anclada inexistente 'core/scripts/publica.mjs'
+  verde ruta anclada existente           
+  verde artefactos existentes            
+  artefactos que el árbol materializa: ADR-001 ADR-010 ADR-011 ADR-012 EPIC-001 EPIC-003 EPIC-004 EPIC-005 RN-01 RN-02 RN-03 RN-04 RN-05 RN-06 RN-07 RN-08 SPEC-001 SPEC-002 SPEC-003 SPEC-014 SPEC-016 SPEC-017 SPEC-018
+
+=== G. ¿CIRCULARIDAD DESPLAZADA? muto los DATOS que alimentan al oráculo ===
+
+=== G1. quito gemini-cli del universo_de_miembros ===
+  M2-enumeracion-no-miembro-rojo: rojo -> verde
+
+=== G2. quito «en el roadmap» del léxico de volatilidad ===
+  M3-marca-volatil-cursor-rojo: rojo -> verde
+
+=== G3. quito «adaptadores» del mapa sustantivo -> inventario ===
+  M2-cifra-sin-marcar-rojo: rojo -> verde
+
+=== G4. cambio la cardinalidad DECLARADA de adaptadores a 99 en inventarios.json ===
+  NO SE MOVIÓ NADA  <-- sospechoso
+
+=== H. resolutores contra el ÁRBOL SIMULADO ===
+  adaptadores          = 3  ["claude-code","kimi-code","opencode"]
+  harnesses            = 3  ["claude-code","kimi-code","opencode"]
+  checks               = 3  ["layout","referencias","version-unica"]
+  roles                = 4  ["sdd-arquitecto","sdd-implementador","sdd-producto","sdd-verificador"]
+  reglas               = 8  ["N-01 ","N-02 ","N-03 ","N-04 ","N-05 ","N-06 ","N-07 ","N-08 "]
+  hooks-claude-code    = 3  ["calidad","protege-verdad","require-spec"]
+  hooks-kimi-code      = 2  ["protege-verdad","require-spec"]
+  hooks-opencode       = 1  ["require-spec"]
