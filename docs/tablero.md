@@ -1,7 +1,7 @@
 <!-- GENERADO por tremen-sdd (scripts/tablero.mjs). NO EDITAR A MANO. -->
 # Tablero
 
-Actualizado: 2026-07-27
+Actualizado: 2026-07-28
 
 ## EPIC-001 — tremen-sdd-multi-harness (hecho)
 
@@ -37,6 +37,11 @@ Actualizado: 2026-07-27
 | Spec | Estado | Último cambio |
 |---|---|---|
 | SPEC-016 — publicar-el-artefacto-rama-de-publicacion-y-primera-version-instalable-sin-clon | hecho | 2026-07-27 (sdd-verificador) |
+
+## EPIC-005 — fundacion-y-documentacion-sin-drift (aprobada)
+
+| Spec | Estado | Último cambio |
+|---|---|---|
 
 ## EPIC-FIX (aprobada)
 

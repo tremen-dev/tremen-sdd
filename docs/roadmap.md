@@ -16,6 +16,20 @@ tipo: roadmap
   `contexto.md` que no depende de terceros (SPEC-013 sí depende de la cuenta de
   Kimi). Audiencia decidida en el gate: **interna**; la apertura a terceros que
   la visión deja como puerta abierta no entra. Canal: GitHub de la organización.
+  **Estado (2026-07-28)**: SPEC-016 `hecho` — el mecanismo existe, `v0.5.0` está
+  construida y preparada, pendiente solo del push que la publica. Quedan las
+  specs de automatización en CI, procedimientos por harness y trazabilidad.
+- **EPIC-005 — Fundación y documentación sin drift**: que la fundación, el
+  glosario y la puerta de entrada digan lo que el repo es, y que dejar de
+  decirlo vuelva a costar trabajo. Entra en "Ahora" (2026-07-28) **junto a
+  EPIC-004, no por delante**: se alimenta de ella —CE-3 documenta la instalación
+  que EPIC-004 acaba de hacer posible— y llega ahora porque por primera vez va a
+  leer el README gente que no ha clonado el repo.
+  El diagnóstico lo produjeron EPIC-003 y EPIC-004 al ejercerse: quince
+  discrepancias localizadas con fichero y línea, tres de ellas en el glosario que
+  define los términos del método. La causa raíz es estructural y es lo que
+  convierte esto en épica y no en una tanda de correcciones: **`core/` tiene
+  nueve checks vigilándolo y la fundación no tiene ninguno**.
 
 ## Cerradas
 - **EPIC-003 — Adaptador opencode con paridad completa** — `hecho` 2026-07-27
