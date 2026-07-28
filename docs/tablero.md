@@ -42,6 +42,7 @@ Actualizado: 2026-07-28
 
 | Spec | Estado | Último cambio |
 |---|---|---|
+| SPEC-018 — que-puede-afirmar-un-documento-de-verdad-y-como-se-verifica | aprobada | 2026-07-28 (Alberto Fojo) |
 
 ## EPIC-FIX (aprobada)
 
@@ -65,8 +66,10 @@ Actualizado: 2026-07-28
 | ADR-009 | aprobada | politica-de-tools-del-verificador-no-escribe-fuentes-si-el-ledger-de-evidencia | 2026-07-25 (Alberto Fojo) |
 | ADR-010 | aprobada | mecanismo-de-publicacion-del-artefacto-rama-de-publicacion-en-el-repo-fuente | 2026-07-27 (Alberto Fojo) |
 | ADR-011 | aprobada | generalizacion-de-los-checks-de-invariantes-autodescubrimiento-vs-enumeracion | 2026-07-27 (Alberto Fojo) |
+| ADR-012 | aprobada | verificabilidad-mecanica-de-la-prosa-taxonomia-de-afirmaciones-y-mecanismos-de-comprobacion | 2026-07-28 (Alberto Fojo) |
 
 ## Resumen
 
 - hecho: 16
 - bloqueada: 1
+- aprobada: 1

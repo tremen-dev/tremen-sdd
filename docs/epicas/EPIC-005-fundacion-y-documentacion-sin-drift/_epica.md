@@ -26,7 +26,7 @@ menciona un *Gemini CLI* que no aparece en ningún roadmap vigente, y cita RN-08
 donde corresponde RN-01.
 
 **La causa raíz, y por eso esto es una épica y no una tanda de correcciones**:
-`core/` tiene nueve checks vigilándolo y la fundación no tiene ninguno. El
+`core/` tiene diez checks vigilándolo y la fundación no tiene ninguno. El
 método verifica su código con dureza y su constitución con nada. Por eso el
 drift no se detecta cuando se produce, sino meses después y por casualidad —
 `layout.mjs` mintió sobre su cobertura durante semanas, y la guía "Añadir un
@@ -63,11 +63,16 @@ hayan leído, no.
 
 ## Alcance
 - Dentro:
-  - **Inventario cerrado de discrepancias conocidas**, todas ya localizadas con
-    fichero y línea durante EPIC-003 y EPIC-004:
+  - **Inventario cerrado de discrepancias conocidas**, todas localizadas con
+    fichero y línea durante EPIC-003, EPIC-004 y el trabajo de SPEC-018:
     - `README.md`: un adaptador presentado donde hay tres; distribución
-      atribuida a EPIC-001; "6 checks" habiendo nueve; §Instalación describiendo
-      la vía por build local.
+      atribuida a EPIC-001; "6 checks" habiendo **diez**; §Instalación
+      describiendo la vía por build local.
+    - `FOUNDATION.md`: el adaptador en singular; los adaptadores de opencode y
+      Kimi declarados como "no se construyen ya" cuando EPIC-001 y EPIC-003
+      están cerradas; "hoy instalar exige [build local]".
+    - `docs/fundacion/vision.md`: "(por ahora) no resuelve la distribución para
+      usuarios finales", falso desde `v0.5.0`.
     - `docs/fundacion/contexto.md`: "dos adaptadores"; enforcement duro descrito
       como pendiente cuando SPEC-002 lo cerró.
     - `docs/fundacion/dominio.md`: fila `hook` (los dispara "Claude Code" y
@@ -75,6 +80,18 @@ hayan leído, no.
       y opencode como roadmap, más un *Gemini CLI* inexistente); fila
       `paso de build` ("obligatorio para instalar"); fila `rutas vigiladas`
       (cita RN-08 donde va RN-01).
+
+    > **Corregido en el gate del 2026-07-28 (Alberto Fojo).** La primera
+    > redacción hablaba de "quince discrepancias" cuando la lista enumeraba
+    > trece, y de "nueve checks" cuando `version-unica` ya había hecho diez al
+    > entrar con SPEC-016. Se deja escrito en vez de corregirlo en silencio,
+    > porque es **la propia tesis de la épica ocurriéndole a la épica**: una
+    > cifra envejeció en menos de una semana dentro del documento que denuncia
+    > cifras envejecidas, y nadie lo habría notado sin el trabajo de SPEC-018.
+    > El inventario se amplía además con `FOUNDATION.md` y `vision.md`, que CE-1
+    > nombra pero la lista original no cubría: sin esa ampliación, CE-1 era
+    > inalcanzable por construcción. **CA-3 de la spec #3 cierra contra la lista
+    > de arriba, no contra ningún número.**
   - **La verificación automática de CE-2**, que es la entrega de fondo de la
     épica. Su forma la decide el ADR: qué clase de afirmación se puede verificar
     y con qué mecanismo.

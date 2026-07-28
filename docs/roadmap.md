@@ -25,11 +25,12 @@ tipo: roadmap
   EPIC-004, no por delante**: se alimenta de ella —CE-3 documenta la instalación
   que EPIC-004 acaba de hacer posible— y llega ahora porque por primera vez va a
   leer el README gente que no ha clonado el repo.
-  El diagnóstico lo produjeron EPIC-003 y EPIC-004 al ejercerse: quince
-  discrepancias localizadas con fichero y línea, tres de ellas en el glosario que
-  define los términos del método. La causa raíz es estructural y es lo que
+  El diagnóstico lo produjeron EPIC-003 y EPIC-004 al ejercerse: un inventario
+  cerrado de discrepancias localizadas con fichero y línea, cinco de ellas en el
+  glosario que define los términos del método. La causa raíz es estructural y es
+  lo que
   convierte esto en épica y no en una tanda de correcciones: **`core/` tiene
-  nueve checks vigilándolo y la fundación no tiene ninguno**.
+  diez checks vigilándolo y la fundación no tiene ninguno**.
 
 ## Cerradas
 - **EPIC-003 — Adaptador opencode con paridad completa** — `hecho` 2026-07-27
