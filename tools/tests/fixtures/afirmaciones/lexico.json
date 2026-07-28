@@ -1,0 +1,77 @@
+{
+  "descripcion": "Léxicos CERRADOS del mecanismo, entregados como DATO (SPEC-018). Si no se entregan aquí, la spec #2 se los inventa y el criterio se pierde. Ninguno se deriva del árbol: ADR-011 §4 dice que el autodescubrimiento amplía cobertura, jamás prohibiciones.",
+
+  "volatilidad": {
+    "descripcion": "Léxico de M3. Lista corta y cerrada: una afirmación volátil redactada con otras palabras pasa, y se asume (ADR-012, Consecuencias). Ampliarlo es barato; hacerlo exhaustivo, imposible.",
+    "incondicionales": [
+      "aún no", "aun no", "todavía no", "por ahora", "de momento",
+      "pendiente", "en curso", "sin resolver", "no se construyen aún",
+      "migrará", "migrara", "en el roadmap"
+    ],
+    "condicionados": [
+      {
+        "token": "hoy",
+        "condicion": "token-de-estado-del-repo",
+        "motivo": "Decisión del gate del 2026-07-29 (Alberto Fojo): «hoy» solo cuenta como volátil si la frase contiene ADEMÁS un token de estado del repo — una ruta anclada, una cifra de inventario o un nombre del registro. Es determinista, sin heurística, conserva las capturas reales del inventario («hoy instalar exige [build local]», «hoy `adapters/claude-code/`») y no castiga la prosa honesta que data una medición («hoy, 2026-07-28, opencode 1.18.5»)."
+      }
+    ]
+  },
+
+  "inventarios_en_prosa": {
+    "descripcion": "Mapa sustantivo → inventario del registro (anexo D). Resuelve F-SPEC-018-3: el léxico que DISPARA la obligación de marcar es más ancho que el registro de nombres válidos DENTRO de un marcador. dominio.md dice «los 7 papeles del pipeline» y contexto.md «7 roles»: dos sustantivos, un inventario.",
+    "mapa": {
+      "adaptador": "adaptadores",
+      "adaptadores": "adaptadores",
+      "harness": "harnesses",
+      "harnesses": "harnesses",
+      "check": "checks",
+      "checks": "checks",
+      "rol": "roles",
+      "roles": "roles",
+      "papel": "roles",
+      "papeles": "roles",
+      "regla": "reglas",
+      "reglas": "reglas",
+      "hook": "hooks-<adaptador>",
+      "hooks": "hooks-<adaptador>"
+    }
+  },
+
+  "cardinales": {
+    "descripcion": "Anexo B regla 3: la cifra se lee en palabra o en dígito. Desde dos (ADR-012 §3: cardinal ≥ dos).",
+    "dos": 2, "tres": 3, "cuatro": 4, "cinco": 5, "seis": 6, "siete": 7,
+    "ocho": 8, "nueve": 9, "diez": 10, "once": 11, "doce": 12, "trece": 13,
+    "catorce": 14, "quince": 15
+  },
+
+  "anclas": {
+    "descripcion": "Anexo B / ADR-012 §2: una ruta es ANCLADA si empieza por uno de estos prefijos o es uno de estos ficheros de la raíz. Todo lo demás es fragmento y NO se persigue. Lista cerrada, no derivada del árbol: si se derivara, una ruta a un directorio de primer nivel que no existe dejaría de estar anclada y escaparía en silencio.",
+    "prefijos": ["core/", "adapters/", "tools/", "docs/", "site/", ".github/", ".claude-plugin/"],
+    "ficheros_raiz": ["FOUNDATION.md", "README.md", "CLAUDE.md", "package.json", ".sdd.json"]
+  },
+
+  "plantillas": {
+    "descripcion": "Anexo B: lo que se ignora por ser plantilla y no referencia, igual que ya hace tools/checks/referencias.mjs.",
+    "marcas": ["NNN", "<", "${", "*"]
+  },
+
+  "universo_de_miembros": {
+    "descripcion": "Nombres CONOCIDOS candidatos a miembro de un inventario. Es enumeración justificada (ADR-011 §2) y es lo que hace decidible la mitad «ningún no-miembro» de M2: los MIEMBROS salen del árbol, y un nombre de este universo que aparezca en un tramo marcado sin estar en el árbol es un NO-MIEMBRO. Sin esta lista, «ningún no-miembro» no es decidible sin heurística sobre la frase, que ADR-012 rechaza. Un inventario sin universo declarado solo comprueba la mitad «todos los miembros», y eso queda como residual declarado.",
+    "adaptadores": {
+      "claude-code": ["claude-code", "Claude Code"],
+      "kimi-code": ["kimi-code", "Kimi Code"],
+      "opencode": ["opencode", "OpenCode"],
+      "gemini-cli": ["gemini-cli", "Gemini CLI"],
+      "cursor": ["Cursor"],
+      "codex": ["Codex"]
+    },
+    "harnesses": {
+      "claude-code": ["claude-code", "Claude Code"],
+      "kimi-code": ["kimi-code", "Kimi Code"],
+      "opencode": ["opencode", "OpenCode"],
+      "gemini-cli": ["gemini-cli", "Gemini CLI"],
+      "cursor": ["Cursor"],
+      "codex": ["Codex"]
+    }
+  }
+}

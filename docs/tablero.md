@@ -42,7 +42,7 @@ Actualizado: 2026-07-28
 
 | Spec | Estado | Último cambio |
 |---|---|---|
-| SPEC-018 — que-puede-afirmar-un-documento-de-verdad-y-como-se-verifica | aprobada | 2026-07-28 (Alberto Fojo) |
+| SPEC-018 — que-puede-afirmar-un-documento-de-verdad-y-como-se-verifica | hecho | 2026-07-28 (sdd-verificador) |
 
 ## EPIC-FIX (aprobada)
 
@@ -70,6 +70,5 @@ Actualizado: 2026-07-28
 
 ## Resumen
 
-- hecho: 16
+- hecho: 17
 - bloqueada: 1
-- aprobada: 1

@@ -1,0 +1,73 @@
+[
+  {
+    "nombre": "adaptadores",
+    "resolutor": "directorios bajo adapters/",
+    "base": "adapters/",
+    "criterio": "directorios",
+    "exclusiones": [],
+    "cardinalidad": 3,
+    "medido": "2026-07-29",
+    "adr011": "autodescubrimiento",
+    "nota": "Medido contra el árbol real: claude-code, kimi-code, opencode."
+  },
+  {
+    "nombre": "harnesses",
+    "resolutor": "alias de 'adaptadores': un adaptador es un harness soportado (dominio.md)",
+    "base": "adapters/",
+    "criterio": "directorios",
+    "exclusiones": [],
+    "cardinalidad": 3,
+    "medido": "2026-07-29",
+    "adr011": "autodescubrimiento",
+    "nota": "Existe como nombre propio porque la prosa de la fundación habla de harnesses, no de adaptadores; el resolutor es el mismo."
+  },
+  {
+    "nombre": "checks",
+    "resolutor": "pasos de PASOS en tools/check.mjs cuyo script está bajo tools/checks/, deduplicados por nombre de fichero (es lo que ya deriva resumen())",
+    "base": "tools/check.mjs",
+    "criterio": "pasos-de-PASOS",
+    "exclusiones": [],
+    "cardinalidad": 10,
+    "medido": "2026-07-29",
+    "adr011": "enumeracion-justificada",
+    "nota": "ADR-011 §2: 'qué cuenta como check' no existe sin conocer la estructura del repo. Medido contra el árbol real: descripcion-fuente-unica, fuente-unica, layout, manifiestos, nucleo-agnostico, nucleo-aislado, prosa-gates, referencias, roles-fuente-unica, version-unica. Son DIEZ; EPIC-005 y ADR-011 dicen nueve porque version-unica entró con SPEC-016."
+  },
+  {
+    "nombre": "roles",
+    "resolutor": "ficheros .md de core/roles/es/, excluyendo los de prefijo _",
+    "base": "core/roles/es/",
+    "criterio": "ficheros",
+    "exclusiones": ["prefijo _", "extensión distinta de .md"],
+    "cardinalidad": 7,
+    "medido": "2026-07-29",
+    "adr011": "autodescubrimiento",
+    "nota": "Medido contra el árbol real: arquitecto, como-vamos, documentalista, implementador, orquestador, producto, verificador. La exclusión deja fuera _descripciones.json, que es dato canónico (RN-11), no un rol."
+  },
+  {
+    "nombre": "reglas",
+    "resolutor": "cabeceras '- **RN-NN —' de docs/fundacion/reglas.md",
+    "base": "docs/fundacion/reglas.md",
+    "criterio": "cabeceras",
+    "exclusiones": [],
+    "cardinalidad": 11,
+    "medido": "2026-07-29",
+    "adr011": "autodescubrimiento",
+    "nota": "RN-01..RN-11 el 2026-07-29. Serán 12 el día que el gate firme RN-12 (anexo A de SPEC-018), que a la fecha de esta medición NO está aplicada."
+  },
+  {
+    "nombre": "hooks-<adaptador>",
+    "patron": "^hooks-[a-z0-9-]+$",
+    "resolutor": "los hooks que DECLARA EL MANIFIESTO del adaptador: adapters/<adaptador>/hooks/hooks.json (Claude Code), adapters/<adaptador>/hooks/hooks.toml (Kimi Code) o adapters/<adaptador>/opencode.json → plugin[] (opencode), deduplicados por el script que invoca cada comando",
+    "base": "adapters/",
+    "criterio": "manifiesto",
+    "exclusiones": [],
+    "cardinalidad_por_parametro": {
+      "hooks-claude-code": 3,
+      "hooks-kimi-code": 2,
+      "hooks-opencode": 1
+    },
+    "medido": "2026-07-29",
+    "adr011": "enumeracion-justificada",
+    "nota": "DECISIÓN DEL GATE (Alberto Fojo, 2026-07-29), que corrige tanto el resolutor del anexo D como el que este corpus declaró en la ronda 1. El anexo D escribía 'ficheros .mjs bajo adapters/<adaptador>/hooks/': contar ficheros devuelve 4 para claude-code y 3 para kimi-code porque cuenta _comun.mjs, con lo que la prosa CORRECTA («los tres hooks») saldría roja. La ronda 1 propuso excluir el prefijo _; el gate lo rechazó porque depende de una convención de nombres que nadie verifica. Un hook es lo que el manifiesto declara, porque el manifiesto es la fuente de verdad de qué ES un hook. Efecto medido además sobre opencode: contar ficheros daba 0 (no tiene directorio hooks/); leer opencode.json da 1, el plugin require-spec. El número correcto solo aparece leyendo el manifiesto."
+  }
+]

@@ -1,0 +1,62 @@
+Experimentos de mutación sobre el corpus — sdd-verificador, RONDA 2, 2026-07-29
+==============================================================================
+Copia de los 4 módulos y del corpus a un temporal (el repo NO se toca):
+
+  cp tools/tests/_corpus-afirmaciones.mjs tools/tests/_oraculo-afirmaciones.mjs \
+     tools/tests/corpus-afirmaciones.test.mjs tools/tests/oraculo-afirmaciones.test.mjs \
+     tools/tests/fixtures  <temporal>/
+
+CONTROL
+-------
+  node --test
+  # tests 45 / # pass 45 / # fail 0
+
+E2 (ronda 1, repetido) — rompo un documento ROJO: «5 roles» -> «4 roles»
+------------------------------------------------------------------------
+  not ok 30 - CA-6: ... mensaje_esperado que aparece LITERALMENTE en su documento
+  not ok 31 - F-V-1: TODO veredicto declarado coincide con el derivado del árbol
+  not ok 33 - F-V-1: cada caso ROJO lo es por el motivo que declara
+  not ok 39 - E1: añadir un rol al árbol mueve el veredicto del caso de roles
+  # pass 41 / # fail 4        (en la ronda 1 fallaba 1 de 30)
+
+E3 (ronda 1, repetido) — quito el MARCADOR de un documento VERDE
+-----------------------------------------------------------------
+  sed -i '/sdd:cifra reglas/d' docs/M2-cifra-marcada-reglas-verde.md
+  not ok 31 - F-V-1: TODO veredicto declarado coincide con el derivado del árbol
+  not ok 32 - F-V-1: los casos VERDES sobreviven al check ENTERO
+  # pass 43 / # fail 2        (en la ronda 1 NO se enteraba nadie)
+
+E1 (ronda 1, repetido con OTRA mutación) — enriquezco el árbol: adapters/cursor/
+--------------------------------------------------------------------------------
+  not ok 31, 32, 35, 40, 41, 44
+  # pass 39 / # fail 6        (en la ronda 1 NO se enteraba nadie)
+
+G3 — ablando el LÉXICO en vez del árbol: quito 'adaptadores' del mapa
+     sustantivo -> inventario de lexico.json
+----------------------------------------------------------------------
+  not ok 31 - F-V-1: TODO veredicto declarado coincide con el derivado del árbol
+  not ok 33 - F-V-1: cada caso ROJO lo es por el motivo que declara
+  not ok 44 - E1: borrar el marcador de un documento verde lo pone en rojo
+  # pass 42 / # fail 3
+  -> El léxico es una entrada del oráculo, no una salida: no se puede ajustar en
+     silencio para que un caso pase.
+
+G5 — ablando el ORÁCULO: desactivo la comprobación M1 de referencias
+--------------------------------------------------------------------
+  not ok 31 - F-V-1: TODO veredicto declarado coincide con el derivado del árbol
+  not ok 33 - F-V-1: cada caso ROJO lo es por el motivo que declara
+  not ok 45 - E1: renombrar un artefacto del árbol cuelga la referencia que lo cita
+  # pass 42 / # fail 3
+  -> Recortar qué comprueba el oráculo tampoco cuela (ADR-011 §5).
+
+G4 — RESIDUAL: falseo la cardinalidad DECLARADA de inventarios.json
+-------------------------------------------------------------------
+  adaptadores.cardinalidad             3 -> 99
+  hooks-<adaptador>.hooks-opencode     1 -> 42
+  # tests 45 / # pass 45 / # fail 0        <-- NADA SE ENTERA
+
+  Esos campos son la medición contra el árbol REAL y ningún test los consume: el
+  oráculo deriva del árbol SIMULADO. Es la única cifra declarada que queda sin
+  mecanismo dentro de un corpus cuya tesis es que las cifras declaradas caducan.
+  Reproducidas a mano hoy (ver sonda-ronda2.out.txt y el ledger): 3 / 10 / 7 / 11
+  y hooks 3 / 2 / 1. Follow-up F-V-5.

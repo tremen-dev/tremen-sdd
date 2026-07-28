@@ -1,0 +1,44 @@
+Experimentos de mutación sobre el corpus — sdd-verificador, 2026-07-28
+======================================================================
+Copia del corpus y de sus dos módulos a un temporal (el repo NO se toca):
+
+  cp tools/tests/_corpus-afirmaciones.mjs \
+     tools/tests/corpus-afirmaciones.test.mjs \
+     tools/tests/fixtures  <temporal>/
+
+CONTROL
+-------
+  node --test corpus-afirmaciones.test.mjs
+  # tests 30 / # pass 30 / # fail 0
+
+E1 — muto el ÁRBOL SIMULADO para invertir la verdad de dos casos
+----------------------------------------------------------------
+  arbol.json:
+    + 'core/roles/es/sdd-orquestador.md'      roles: 4 -> 5
+    - 'adapters/opencode/**'                  adaptadores: 3 -> 2
+
+  Efecto sobre el terreno:
+    · 'M2-cifra-marcada-roles-rojo' dice «5 roles» y ahora hay 5 -> su prosa
+      pasa a ser CIERTA, pero el caso sigue declarando veredicto ROJO.
+    · 'M2-cifra-marcada-adaptadores-verde' dice «tres» y ahora hay 2 -> su
+      prosa pasa a ser FALSA, pero el caso sigue declarando veredicto VERDE.
+
+  node --test corpus-afirmaciones.test.mjs
+  # tests 30 / # pass 30 / # fail 0        <-- NADA SE ENTERA
+
+E2 — rompo un documento ROJO: «5 roles» -> «4 roles»
+----------------------------------------------------
+  node --test corpus-afirmaciones.test.mjs
+  not ok 30 - CA-6: cada caso rojo con marcador declara un mensaje_esperado
+              que aparece LITERALMENTE en su documento
+  # tests 30 / # pass 29 / # fail 1        <-- SÍ se entera (única protección)
+
+E3 — quito el MARCADOR de un documento VERDE que declara forma=cifra,
+     sintaxis=valida ('M2-cifra-marcada-adaptadores-verde.md')
+----------------------------------------------------------------------
+  sed -i '/sdd:cifra adaptadores/d' docs/M2-cifra-marcada-adaptadores-verde.md
+  node --test corpus-afirmaciones.test.mjs
+  # tests 30 / # pass 30 / # fail 0        <-- NADA SE ENTERA
+
+Lectura: el lado ROJO del corpus está protegido por el fragmento literal; el
+lado VERDE y toda la relación caso <-> árbol simulado no lo están.
