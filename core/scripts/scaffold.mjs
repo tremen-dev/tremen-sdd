@@ -5,6 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { esEntrypoint } from '../lib/entrypoint.mjs';
+import { hoy } from '../lib/fecha.mjs';
 
 const PLUGIN_ROOT = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const TPL = (name) => path.join(PLUGIN_ROOT, 'templates', 'artefactos', name);
@@ -50,7 +51,7 @@ function findEpicaDir(docsDir, epicaId) {
 export function createArtifact({ tipo, titulo, epica, docsDir, fecha, id }) {
   const cfg = TIPOS[tipo];
   if (!cfg) throw new Error(`Tipo desconocido: ${tipo}. Usa epica|spec|task|adr.`);
-  fecha ??= new Date().toISOString().slice(0, 10);
+  fecha ??= hoy();
   if (id !== undefined) {
     if (tipo !== 'epica') throw new Error('--id solo es válido para tipo epica (épicas bucket).');
     if (!EPICAS_BUCKET.includes(id)) {

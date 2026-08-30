@@ -4,6 +4,7 @@
 import fs from 'node:fs';
 import { parseFrontmatter, stringifyFrontmatter } from '../lib/frontmatter.mjs';
 import { esEntrypoint } from '../lib/entrypoint.mjs';
+import { hoy } from '../lib/fecha.mjs';
 
 export const TRANSITIONS = {
   borrador: ['aprobada', 'bloqueada'],
@@ -55,7 +56,7 @@ export function fueAprobadaPorHumano(data) {
 }
 
 export function transition(ruta, nuevoEstado, por, fecha) {
-  fecha ??= new Date().toISOString().slice(0, 10);
+  fecha ??= hoy();
   const { data, body } = parseFrontmatter(fs.readFileSync(ruta, 'utf8'));
   const actual = data.estado;
   if (!TRANSITIONS[actual]) throw new Error(`Estado actual desconocido: '${actual}'.`);
