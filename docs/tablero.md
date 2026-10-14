@@ -48,7 +48,7 @@ Actualizado: 2026-10-14
 
 | Spec | Estado | Último cambio |
 |---|---|---|
-| SPEC-019 — adaptador-antigravity-base | en-progreso | 2026-10-14 (sdd-implementador) |
+| SPEC-019 — adaptador-antigravity-base | hecho | 2026-10-14 (sdd-verificador) |
 
 ## EPIC-FIX (aprobada)
 
@@ -77,7 +77,6 @@ Actualizado: 2026-10-14
 
 ## Resumen
 
-- hecho: 16
+- hecho: 17
 - bloqueada: 1
 - aprobada: 1
-- en-progreso: 1
