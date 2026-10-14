@@ -1,11 +1,14 @@
 ---
 id: EPIC-006
 tipo: epica
-estado: aprobada
+estado: hecho
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-10-14, por: sdd-producto}
   - {estado: aprobada, fecha: 2026-10-14, por: Alberto Fojo}
+  - {estado: en-progreso, fecha: 2026-10-14, por: Alberto Fojo}
+  - {estado: en-revision, fecha: 2026-10-14, por: Alberto Fojo}
+  - {estado: hecho, fecha: 2026-10-14, por: Alberto Fojo}
 ---
 # EPIC-006 — Adaptador Antigravity con paridad completa
 

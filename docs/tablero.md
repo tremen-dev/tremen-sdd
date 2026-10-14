@@ -44,7 +44,7 @@ Actualizado: 2026-10-14
 |---|---|---|
 | SPEC-018 — que-puede-afirmar-un-documento-de-verdad-y-como-se-verifica | aprobada | 2026-07-28 (Alberto Fojo) |
 
-## EPIC-006 — adaptador-antigravity-con-paridad-completa (aprobada)
+## EPIC-006 — adaptador-antigravity-con-paridad-completa (hecho)
 
 | Spec | Estado | Último cambio |
 |---|---|---|
