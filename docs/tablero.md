@@ -50,6 +50,7 @@ Actualizado: 2026-10-14
 |---|---|---|
 | SPEC-019 — adaptador-antigravity-base | hecho | 2026-10-14 (sdd-verificador) |
 | SPEC-020 — enforcement-l1-en-antigravity-hooks | hecho | 2026-10-14 (sdd-verificador) |
+| SPEC-021 — integracion-de-checks-de-invariantes-y-runner | en-progreso | 2026-10-14 (sdd-implementador) |
 
 ## EPIC-FIX (aprobada)
 
@@ -81,3 +82,4 @@ Actualizado: 2026-10-14
 - hecho: 18
 - bloqueada: 1
 - aprobada: 1
+- en-progreso: 1
