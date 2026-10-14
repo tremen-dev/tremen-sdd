@@ -16,6 +16,7 @@ const SUPERFICIE = {
   'claude-code': ['agents', 'skills', 'tests', 'commands', 'hooks', '.claude-plugin'],
   'kimi-code': ['agents', 'skills', 'tests', 'hooks'],
   'opencode': ['agents', 'skills', 'tests', 'commands', 'plugins'],
+  'antigravity': ['agents', 'skills', 'tests', 'commands', 'hooks'],
 };
 
 function buenLayout() {
@@ -28,6 +29,7 @@ function buenLayout() {
   }
   fs.writeFileSync(path.join(dir, 'adapters/claude-code/.claude-plugin/plugin.json'), '{}');
   fs.writeFileSync(path.join(dir, 'adapters/opencode/opencode.json'), '{}');
+  fs.writeFileSync(path.join(dir, 'adapters/antigravity/plugin.json'), '{}');
   fs.mkdirSync(path.join(dir, '.claude-plugin'), { recursive: true });
   fs.writeFileSync(path.join(dir, '.claude-plugin/marketplace.json'), '{}');
   fs.writeFileSync(path.join(dir, 'tools/build-adapter.mjs'), '// x');

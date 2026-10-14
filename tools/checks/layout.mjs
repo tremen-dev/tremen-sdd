@@ -28,6 +28,7 @@ const EXTRAS_POR_HARNESS = {
   'claude-code': ['.claude-plugin/plugin.json', 'commands/', 'hooks/'],
   'kimi-code': ['hooks/'],
   'opencode': ['opencode.json', 'commands/', 'plugins/'],
+  'antigravity': ['plugin.json', 'commands/', 'hooks/'],
 };
 
 // Lista CERRADA de superficie de adaptador prohibida en la raíz del repo

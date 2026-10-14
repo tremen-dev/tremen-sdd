@@ -150,11 +150,11 @@ test('SPEC-017 CA-9 / SPEC-016: PASOS referencia exactamente los checks que exis
 // ORDEN es el pin explícito del encadenamiento: cambiarlo exige tocar este test a
 // propósito. La longitud se deriva de la propia lista, no de un número suelto.
 const ORDEN = [
-  'build', 'build-kimi', 'build-opencode',
+  'build', 'build-kimi', 'build-opencode', 'build-antigravity',
   'layout', 'nucleo-aislado', 'nucleo-agnostico', 'fuente-unica',
-  'referencias', 'referencias-kimi', 'referencias-opencode',
+  'referencias', 'referencias-kimi', 'referencias-opencode', 'referencias-antigravity',
   'roles-fuente-unica',
-  'manifiestos', 'manifiestos-kimi', 'manifiestos-opencode',
+  'manifiestos', 'manifiestos-kimi', 'manifiestos-opencode', 'manifiestos-antigravity',
   'descripcion-fuente-unica', 'prosa-gates', 'version-unica', 'valida',
 ];
 

@@ -19,6 +19,7 @@ export const PASOS = [
   { nombre: 'build', cmd: ['node', 'tools/build-adapter.mjs', 'claude-code'] },
   { nombre: 'build-kimi', cmd: ['node', 'tools/build-adapter.mjs', 'kimi-code'] },
   { nombre: 'build-opencode', cmd: ['node', 'tools/build-adapter.mjs', 'opencode'] },
+  { nombre: 'build-antigravity', cmd: ['node', 'tools/build-adapter.mjs', 'antigravity'] },
   { nombre: 'layout', cmd: ['node', 'tools/checks/layout.mjs'] },
   { nombre: 'nucleo-aislado', cmd: ['node', 'tools/checks/nucleo-aislado.mjs'] },
   { nombre: 'nucleo-agnostico', cmd: ['node', 'tools/checks/nucleo-agnostico.mjs'] },
@@ -26,11 +27,13 @@ export const PASOS = [
   { nombre: 'referencias', cmd: ['node', 'tools/checks/referencias.mjs'] },
   { nombre: 'referencias-kimi', cmd: ['node', 'tools/checks/referencias.mjs', 'kimi-code'] },
   { nombre: 'referencias-opencode', cmd: ['node', 'tools/checks/referencias.mjs', 'opencode'] },
+  { nombre: 'referencias-antigravity', cmd: ['node', 'tools/checks/referencias.mjs', 'antigravity'] },
   // roles-fuente-unica itera sobre TODOS los adaptadores (claude-code, kimi-code, opencode).
   { nombre: 'roles-fuente-unica', cmd: ['node', 'tools/checks/roles-fuente-unica.mjs'] },
   { nombre: 'manifiestos', cmd: ['node', 'tools/checks/manifiestos.mjs'] },
   { nombre: 'manifiestos-kimi', cmd: ['node', 'tools/checks/manifiestos.mjs', 'kimi-code'] },
   { nombre: 'manifiestos-opencode', cmd: ['node', 'tools/checks/manifiestos.mjs', 'opencode'] },
+  { nombre: 'manifiestos-antigravity', cmd: ['node', 'tools/checks/manifiestos.mjs', 'antigravity'] },
   // descripcion-fuente-unica itera sobre LOS TRES adaptadores (RN-11 / SPEC-005 / SPEC-010).
   { nombre: 'descripcion-fuente-unica', cmd: ['node', 'tools/checks/descripcion-fuente-unica.mjs'] },
   // prosa-gates: la prosa del documentalista prohíbe cerrar épicas (SPEC-006 CA-6).

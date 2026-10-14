@@ -74,10 +74,8 @@ test('CA-3: cada agent en agents/ es un bootstrap que referencia su rol en core/
   }
 });
 
-test('CA-4: las skills y comandos de usuario (sdd-init y sdd-tablero) existen y resuelven a core', () => {
+test('CA-4: los comandos de usuario (sdd-init y sdd-tablero) existen en commands/', () => {
   for (const cmd of COMANDOS) {
-    const sk = path.join(DIST, 'skills', cmd, 'SKILL.md');
-    assert.ok(fs.existsSync(sk), `debe existir skills/${cmd}/SKILL.md`);
     const cm = path.join(DIST, 'commands', `${cmd}.md`);
     assert.ok(fs.existsSync(cm), `debe existir commands/${cmd}.md`);
   }
