@@ -2,12 +2,14 @@
 id: SPEC-020
 tipo: spec
 epica: EPIC-006
-estado: en-progreso
+estado: hecho
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-10-14, por: sdd-arquitecto}
   - {estado: aprobada, fecha: 2026-10-14, por: Alberto Fojo}
   - {estado: en-progreso, fecha: 2026-10-14, por: sdd-implementador}
+  - {estado: en-revision, fecha: 2026-10-14, por: sdd-verificador}
+  - {estado: hecho, fecha: 2026-10-14, por: sdd-verificador}
 ---
 # SPEC-020 — Enforcement L1 en Antigravity hooks
 
