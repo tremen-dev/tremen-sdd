@@ -22,6 +22,7 @@ adapters/                  # ADAPTADORES por harness (simétricos, ninguno en la
   claude-code/             #   .claude-plugin/, agents/, skills/, commands/, hooks/, tests/
   kimi-code/               #   agents/ (YAML + prompts/), skills/, hooks/, tests/
   opencode/                #   opencode.json, agents/, skills/, commands/, plugins/, tests/
+  antigravity/             #   plugin.json, agents/, skills/, commands/, hooks/, tests/
 tools/                     # utillaje a nivel de repo (ni núcleo ni adaptador)
   build-adapter.mjs        #   ensamblador del artefacto instalable
   checks/                  #   checks de invariantes (los ejerce CI y los tests)
@@ -76,12 +77,13 @@ perdería el determinismo.
 | `npm run build` | ensambla `dist/claude-code/` |
 | `npm run build:kimi` | ensambla `dist/kimi-code/` |
 | `npm run build:opencode` | ensambla `dist/opencode/` |
-| `npm run build:all` | los **tres** adaptadores |
+| `npm run build:antigravity` | ensambla `dist/antigravity/` |
+| `npm run build:all` | los **cuatro** adaptadores |
 | `npm run test:core` | tests del núcleo, directos sobre `core/tests/` |
 | `npm run test:tools` | `build:all` + tests de `tools/` (build y checks) |
-| `npm run test:adapter` | `build:all` + tests de los tres adaptadores contra `dist/` |
+| `npm run test:adapter` | `build:all` + tests de los cuatro adaptadores contra `dist/` |
 | `npm test` | `build:all` + las tres capas de una vez |
-| `npm run check` | runner agregado: los 3 builds → los checks (algunos, una vez por adaptador) → `valida` (lo que corre CI) |
+| `npm run check` | runner agregado: los 4 builds → los checks (algunos, una vez por adaptador) → `valida` (lo que corre CI) |
 | `node tools/publica.mjs --dry-run --out <dir>` | ensambla el árbol publicable de la rama `release`, sin tocar git |
 | `node tools/publica.mjs --local` | + worktree, commit y tag **locales** (no empuja) |
 | `npm run hooks:install` | activa el pre-commit L2 (`git config core.hooksPath tools/githooks`) |
@@ -108,8 +110,8 @@ canónica en `core/roles/es/_descripciones.json` y las superficies de los adapta
 `version-unica` (`package.json.version` es la única fuente de versión: ningún
 manifiesto del fuente diverge, y la entrada del marketplace no la declara — SPEC-016).
 Los checks `layout`, `referencias`, `roles-fuente-unica`, `manifiestos` y
-`descripcion-fuente-unica` están **generalizados a los tres adaptadores**
-(claude-code, kimi-code y opencode), pero **no por el mismo mecanismo**, y cuál toca
+`descripcion-fuente-unica` están **generalizados a los cuatro adaptadores**
+(claude-code, kimi-code, opencode y antigravity), pero **no por el mismo mecanismo**, y cuál toca
 lo decide **ADR-011** (¿el invariante existe sin conocer el harness?):
 `referencias` y `manifiestos` **enumeran** —se invocan una vez por adaptador desde
 `PASOS` de `tools/check.mjs`— porque qué es un manifiesto o una referencia válida
@@ -120,7 +122,7 @@ nuevo queda cubierto el día que se crea su directorio. En `layout` el reparto e
 **mínimo común** exigido a todos (`agents/`, `skills/`, `tests/`) por
 autodescubrimiento, más **extras declarativos por harness** en una tabla dentro del
 check (claude-code: `.claude-plugin/plugin.json`, `commands/`, `hooks/`; kimi-code:
-`hooks/`; opencode: `opencode.json`, `commands/`, `plugins/`), porque las superficies
+`hooks/`; opencode: `opencode.json`, `commands/`, `plugins/`; antigravity: `plugin.json`, `commands/`, `hooks/`), porque las superficies
 difieren **por diseño** (ADR-003, ADR-007) y exigirlas a todos inventaría
 incumplimientos; un adaptador no declarado se juzga solo por el mínimo común. La
 lista de superficie de adaptador **prohibida en la raíz** sigue siendo una constante
@@ -142,8 +144,8 @@ aquí solo queda **qué hay montado**.
   mergea con `main`, en ningún sentido.
 - **Qué contiene**, en la **raíz** (no bajo `dist/`, para que el `.gitignore` de
   la fuente no interfiera): `.claude-plugin/marketplace.json` con el plugin
-  apuntando al hermano relativo `./claude-code`; `claude-code/`, `kimi-code/` y
-  `opencode/`; `PROVENANCE.json`; y un `README.md` generado. Cada árbol lleva
+  apuntando al hermano relativo `./claude-code`; `claude-code/`, `kimi-code/`,
+  `opencode/` y `antigravity/`; `PROVENANCE.json`; y un `README.md` generado. Cada árbol lleva
   además **su propio** `PROVENANCE.json` dentro, así que llega a la cache del
   harness instalado.
 - **Cómo se publica**: `npm run build:all` → `node tools/publica.mjs --local`
@@ -208,15 +210,16 @@ rol por `${CLAUDE_PLUGIN_ROOT}/core/roles/<idioma>/<rol>.md`.
 
 ## Añadir un harness
 
-Recetario **as-built**, con **dos casos trabajados**: el primer adaptador no-Claude
-(**Kimi Code**, SPEC-003, EPIC-001) y el tercero (**opencode**, EPIC-003). Las
+Recetario **as-built**, con **cuatro casos trabajados**: el primer adaptador no-Claude
+(**Kimi Code**, SPEC-003, EPIC-001), el tercero (**opencode**, EPIC-003) y el cuarto
+(**Google Antigravity**, EPIC-006, ADR-013). Las
 decisiones de empaquetado y resolución para harnesses **sin marketplace ni variable
 de plugin-root** están en
 [`ADR-003`](adr/ADR-003-empaquetado-y-resolucion-del-nucleo-para-el-adaptador-kimi-code.md)
 (Kimi) y [`ADR-007`](adr/ADR-007-encaje-de-opencode-y-su-modelo-de-enforcement.md)
 (opencode); aquí se describen las piezas, el trabajo que **no** cabe en el
 adaptador, los procedimientos de instalación y un procedimiento ordenado para
-quien aborde el **cuarto** harness.
+quien aborde un harness nuevo.
 
 > **Método de citación (requisito de EPIC-003).** Toda afirmación sobre el
 > comportamiento de un CLI externo va **anclada**, nunca escrita de memoria:
@@ -241,15 +244,15 @@ en `core/`). Eso es un invariante de **contenido**, y sigue siendo cierto en los
 tres adaptadores — pero **no** es el presupuesto de trabajo: lo que hay que tocar
 **fuera** del adaptador está en la segunda lista, más abajo.
 
-| Pieza | Claude Code | Kimi Code | opencode |
-|---|---|---|---|
-| **agents/** | **cuatro** `.md` (`sdd-arquitecto`, `sdd-documentalista`, `sdd-implementador`, `sdd-verificador`): frontmatter + prosa que referencia el rol. **No hay un agent por rol**: `sdd-orquestador`, `sdd-producto` y `sdd-como-vamos` se montan **solo como skill** y corren en el main-loop | el **YAML del agente raíz** (= orquestador) que declara los seis `sdd-*` en su mapa `subagents:`, un `.yaml` por subagente (`extend: default`, `allowed_tools` explícito), y `agents/prompts/<rol>.md` (bootstrap que referencia el núcleo por ruta interna) | `agents/<rol>.md` — **siete** ficheros; el cuerpo es un **bootstrap** (lee `.sdd.json`→idioma y hace `Read` de `../core/roles/<idioma>/<rol>.md`), no el cuerpo del rol. El orquestador es `mode: primary`; los seis `sdd-*`, `mode: subagent` (ADR-007 §Decisión 1 y 4) |
-| **skills/** | **siete** `sdd-*/SKILL.md`, con **dos montajes**: las cuatro con agent homónimo **despachan** vía `Agent(subagent_type: "tremen-sdd:<rol>")` (con el prefijo de plugin); las tres sin agent (`sdd-orquestador`, `sdd-producto`, `sdd-como-vamos`) **son** el rol — su cuerpo es el bootstrap que hace `Read` de `${CLAUDE_PLUGIN_ROOT}/core/roles/…` | `sdd-*/SKILL.md` que **instruyen al agente raíz** a delegar vía `Agent(subagent_type: sdd-<rol>)`, **sin** prefijo de plugin | `skills/<rol>/SKILL.md` — **seis** (uno por subagente) que instruyen al primary a despachar por la tool **`task`**, **sin** prefijo de plugin |
-| **hooks / plugin** | entrypoints `.mjs` + `hooks.json`. L1 **deniega**: `hooks/require-spec.mjs` emite `permissionDecision: 'deny'`; ante error interno, `catch { allow() }` → fail-open | entrypoints `.mjs` (shim que normaliza el payload de Kimi e invoca `core/lib/require-spec.mjs`) + fragmento `hooks.toml` (`[[hooks]]`). L1 se asume **fail-open** (avisa): su efecto en runtime no está verificado — ver el espectro más abajo | `plugins/require-spec.mjs` (hook `tool.execute.before`) + `plugins/_comun.mjs` (shim de payload). L1 **deniega de verdad**: el `throw` **aborta la tool** `[1.18.5 · 2026-07-27]`, acta [H2]. **Ojo**: hay que **registrarlo** en el manifiesto — el auto-descubrimiento solo toma `*.ts`/`*.js` |
-| **manifiesto** | `.claude-plugin/plugin.json` + entrada en `marketplace.json` | **ninguno**: Kimi no tiene marketplace ni `plugin.json` que transporte agents/skills/hooks | `opencode.json` — **sí hay manifiesto, no hay marketplace**. Registra `plugin` (rutas relativas al propio fichero de config), `permission` global y el bloque `agent` (los 7 con su `mode` y su `permission`) |
-| **commands/** | `sdd-init`, `sdd-tablero` (slash-commands) | **ninguno**: Kimi no tiene slash-commands de usuario por fichero; su equivalente es invocar los scripts de `core/` directamente o desde un skill | `commands/{sdd-init,sdd-tablero}.md` — **sí los hay**, comando-por-fichero como en Claude Code. **Asimetría explícita: sí en Claude Code y opencode, no en Kimi** |
-| **permisos declarativos** | **por agente, no por ruta**: el frontmatter del agent admite `tools` y `model`, y el adaptador lo usa hoy en `agents/sdd-documentalista.md` (`tools: Read, Grep, Glob, Bash`, `model: haiku`). **No** hay declaración por patrón de ruta; la política de tools del verificador (**ADR-009**) la sostienen la prosa del rol y los hooks L1 | **por rol, no por ruta**: lo más cercano es `allowed_tools` por rol en el `.yaml` del subagente (qué *tools*, no qué *rutas*) — p. ej. `agents/sdd-verificador.yaml` | **pieza propia**: `permission` en `opencode.json`, **por patrón de ruta** (global: `docs/tablero.md` y `dist/**` → `deny`, RN-05) **y por agente** (`edit`, `task`). Capa **estática y complementaria**, nunca la garantía (ADR-002); ver la trampa de precedencia en *Desviaciones* |
-| **tests/** | tests del adaptador contra `dist/` | ídem | ídem, contra `dist/opencode/` (`tests/{superficie,skills,enforcement}.test.mjs`) |
+| Pieza | Claude Code | Kimi Code | opencode | Google Antigravity |
+|---|---|---|---|---|
+| **agents/** | **cuatro** `.md` (`sdd-arquitecto`, `sdd-documentalista`, `sdd-implementador`, `sdd-verificador`): frontmatter + prosa que referencia el rol. **No hay un agent por rol**: `sdd-orquestador`, `sdd-producto` y `sdd-como-vamos` se montan **solo como skill** y corren en el main-loop | el **YAML del agente raíz** (= orquestador) que declara los seis `sdd-*` en su mapa `subagents:`, un `.yaml` por subagente (`extend: default`, `allowed_tools` explícito), y `agents/prompts/<rol>.md` (bootstrap que referencia el núcleo por ruta interna) | `agents/<rol>.md` — **siete** ficheros; el cuerpo es un **bootstrap** (lee `.sdd.json`→idioma y hace `Read` de `../core/roles/<idioma>/<rol>.md`), no el cuerpo del rol. El orquestador es `mode: primary`; los seis `sdd-*`, `mode: subagent` (ADR-007 §Decisión 1 y 4) | `agents/<rol>.md` — **siete** ficheros con frontmatter (`name`, `description`, `model`), con bootstrap que lee `.sdd.json` y hace `Read` de `../core/roles/<idioma>/<rol>.md` |
+| **skills/** | **siete** `sdd-*/SKILL.md`, con **dos montajes**: las cuatro con agent homónimo **despachan** vía `Agent(subagent_type: "tremen-sdd:<rol>")` (con el prefijo de plugin); las tres sin agent (`sdd-orquestador`, `sdd-producto`, `sdd-como-vamos`) **son** el rol — su cuerpo es el bootstrap que hace `Read` de `${CLAUDE_PLUGIN_ROOT}/core/roles/…` | `sdd-*/SKILL.md` que **instruyen al agente raíz** a delegar vía `Agent(subagent_type: sdd-<rol>)`, **sin** prefijo de plugin | `skills/<rol>/SKILL.md` — **seis** (uno por subagente) que instruyen al primary a despachar por la tool **`task`**, **sin** prefijo de plugin | `skills/<rol>/SKILL.md` — **siete** roles canónicos con frontmatter (`name`, `description`) y bootstrap que hace `Read` a `../../core/roles/<idioma>/<rol>.md` |
+| **hooks / plugin** | entrypoints `.mjs` + `hooks.json`. L1 **deniega**: `hooks/require-spec.mjs` emite `permissionDecision: 'deny'`; ante error interno, `catch { allow() }` → fail-open | entrypoints `.mjs` (shim que normaliza el payload de Kimi e invoca `core/lib/require-spec.mjs`) + fragmento `hooks.toml` (`[[hooks]]`). L1 se asume **fail-open** (avisa): su efecto en runtime no está verificado — ver el espectro más abajo | `plugins/require-spec.mjs` (hook `tool.execute.before`) + `plugins/_comun.mjs` (shim de payload). L1 **deniega de verdad**: el `throw` **aborta la tool** `[1.18.5 · 2026-07-27]`, acta [H2]. **Ojo**: hay que **registrarlo** en el manifiesto — el auto-descubrimiento solo toma `*.ts`/`*.js` | `hooks/hooks.json` + entrypoints `.mjs`. L1 **deniega de verdad**: `PreToolUse` responde `{"decision": "deny", "reason": "..."}` bloqueando la tool de edición |
+| **manifiesto** | `.claude-plugin/plugin.json` + entrada en `marketplace.json` | **ninguno**: Kimi no tiene marketplace ni `plugin.json` que transporte agents/skills/hooks | `opencode.json` — **sí hay manifiesto, no hay marketplace**. Registra `plugin` (rutas relativas al propio fichero de config), `permission` global y el bloque `agent` (los 7 con su `mode` y su `permission`) | `plugin.json` — **sí hay manifiesto**, declara plugin (`name`, `version`, `description`, `author`) |
+| **commands/** | `sdd-init`, `sdd-tablero` (slash-commands) | **ninguno**: Kimi no tiene slash-commands de usuario por fichero; su equivalente es invocar los scripts de `core/` directamente o desde un skill | `commands/{sdd-init,sdd-tablero}.md` — **sí los hay**, comando-por-fichero como en Claude Code. **Asimetría explícita: sí en Claude Code y opencode, no en Kimi** | `commands/{sdd-init,sdd-tablero}.md` — **sí los hay**, comandos por fichero en Markdown |
+| **permisos declarativos** | **por agente, no por ruta**: el frontmatter del agent admite `tools` y `model`, y el adaptador lo usa hoy en `agents/sdd-documentalista.md` (`tools: Read, Grep, Glob, Bash`, `model: haiku`). **No** hay declaración por patrón de ruta; la política de tools del verificador (**ADR-009**) la sostienen la prosa del rol y los hooks L1 | **por rol, no por ruta**: lo más cercano es `allowed_tools` por rol en el `.yaml` del subagente (qué *tools*, no qué *rutas*) — p. ej. `agents/sdd-verificador.yaml` | **pieza propia**: `permission` en `opencode.json`, **por patrón de ruta** (global: `docs/tablero.md` y `dist/**` → `deny`, RN-05) **y por agente** (`edit`, `task`). Capa **estática y complementaria**, nunca la garantía (ADR-002); ver la trampa de precedencia en *Desviaciones* | `PreToolUse` en `hooks/hooks.json` sobre `write_to_file|replace_file_content|multi_replace_file_content` |
+| **tests/** | tests del adaptador contra `dist/` | ídem | ídem, contra `dist/opencode/` (`tests/{superficie,skills,enforcement}.test.mjs`) | ídem, contra `dist/antigravity/` (`tests/{superficie,enforcement}.test.mjs`) |
 
 ### Lo que hay que tocar FUERA de `adapters/<harness>/`
 
@@ -361,6 +364,7 @@ hace su L1 cuando dice que no**, y el as-built da tres respuestas distintas:
 | **Claude Code** | **deniega**: el hook emite `permissionDecision: 'deny'` en `PreToolUse`; ante error interno hace `catch { allow() }` → fail-open | `adapters/claude-code/hooks/require-spec.mjs`; ADR-002 §L1 |
 | **Kimi Code** | **avisa** (asumido fail-open): el shim emite la misma decisión de deny, pero **que el CLI la honre no está verificado en este repo** — el smoke test de SPEC-003 valida formato, build y resolución **sin cuenta de Kimi**, y la operación end-to-end sigue pendiente (**F-SPEC-003-1**; SPEC-013 está `bloqueada`). **[hipótesis]** hasta que se ejerza | ADR-003 (el hook "degrada fail-open"); ledger SPEC-003 |
 | **opencode** | **deniega de verdad**: el `throw` en `tool.execute.before` **aborta** la tool — `write` y `edit` terminan en `status: "error"` con el mensaje del gate y el fichero **intacto** (hash idéntico) | `[1.18.5 · 2026-07-27]`, acta [H2]; `docs/_qa/SPEC-014/ca5-enforcement/` |
+| **Google Antigravity** | **deniega de verdad**: el hook `PreToolUse` en `hooks/hooks.json` intercepta tools de mutación de código y emite `{"decision": "deny", "reason": "..."}` en stdout, cancelando la tool | `adapters/antigravity/hooks/hooks.json` y `require-spec.mjs`; ADR-013 |
 
 **La constante, esté donde esté el harness en el espectro**: la garantía dura es
 **L2 (git pre-commit) + L3 (CI)**, independientes del harness (**ADR-002**, RN-03).
@@ -447,6 +451,35 @@ cp -r dist/opencode/. <proyecto>/.opencode/
 Igual que en Kimi: la garantía "nada se codea sin spec aprobada" **no** depende de
 que opencode cargue el plugin. Aquí L1 además deniega de verdad, pero la garantía
 sigue siendo git pre-commit (L2) y CI (L3), independientes del harness (**ADR-002**).
+
+### Procedimiento de instalación (Google Antigravity, modelo de plugins)
+
+Google Antigravity gestiona extensiones mediante el sistema de **plugins**, que agrupan
+agentes, skills y lifecycle hooks bajo un mismo manifiesto `plugin.json` (ADR-013).
+
+```bash
+npm run build:antigravity         # ensambla dist/antigravity/ (núcleo dentro)
+```
+
+Existen dos vías de instalación soportadas:
+
+1. **Instalación a nivel de workspace (recomendada por proyecto)**:
+   Copiar el artefacto autocontenido a la raíz de plugins del espacio de trabajo:
+   ```bash
+   mkdir -p <proyecto>/.agents/plugins/tremen-sdd
+   cp -r dist/antigravity/. <proyecto>/.agents/plugins/tremen-sdd/
+   ```
+2. **Instalación global (para todos los workspaces)**:
+   Copiar el artefacto al directorio de configuración global de Antigravity:
+   - En Linux/WSL/macOS: `~/.gemini/config/plugins/tremen-sdd/`
+   - En Windows: `%USERPROFILE%\.gemini\config\plugins\tremen-sdd\`
+   ```bash
+   mkdir -p ~/.gemini/config/plugins/tremen-sdd
+   cp -r dist/antigravity/. ~/.gemini/config/plugins/tremen-sdd/
+   ```
+
+Antigravity auto-descubre los agentes en `agents/`, las skills en `skills/`, los
+comandos en `commands/` y activa los hooks declarados en `hooks/hooks.json`.
 
 ### Conducción no interactiva del CLI (pieza del recetario)
 

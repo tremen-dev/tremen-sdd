@@ -97,3 +97,11 @@ test('CA-5: ninguna pieza del artefacto usa tokens de plugin-root', () => {
     }
   }
 });
+
+test('CA-6: sdd-init estampa AGENTS.md y la plantilla existe en core/templates/AGENTS.md', () => {
+  const initFile = path.join(DIST, 'commands', 'sdd-init.md');
+  const initText = fs.readFileSync(initFile, 'utf8');
+  assert.match(initText, /AGENTS\.md/, 'sdd-init.md debe instruir estampar AGENTS.md');
+  const tpl = path.join(DIST, 'core', 'templates', 'AGENTS.md');
+  assert.ok(fs.existsSync(tpl), 'core/templates/AGENTS.md debe viajar en el artefacto');
+});
