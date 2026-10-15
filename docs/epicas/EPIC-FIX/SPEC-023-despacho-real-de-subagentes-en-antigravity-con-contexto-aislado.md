@@ -2,13 +2,14 @@
 id: SPEC-023
 tipo: spec
 epica: EPIC-FIX
-estado: en-revision
+estado: hecho
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-10-15, por: sdd-arquitecto}
   - {estado: aprobada, fecha: 2026-10-15, por: Alberto Fojo}
   - {estado: en-progreso, fecha: 2026-10-15, por: sdd-orquestador}
   - {estado: en-revision, fecha: 2026-10-15, por: sdd-implementador}
+  - {estado: hecho, fecha: 2026-10-15, por: sdd-verificador}
 ---
 # SPEC-023 — Despacho real de subagentes en Antigravity con contexto aislado
 
