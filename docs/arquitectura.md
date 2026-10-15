@@ -22,7 +22,7 @@ adapters/                  # ADAPTADORES por harness (simétricos, ninguno en la
   claude-code/             #   .claude-plugin/, agents/, skills/, commands/, hooks/, tests/
   kimi-code/               #   agents/ (YAML + prompts/), skills/, hooks/, tests/
   opencode/                #   opencode.json, agents/, skills/, commands/, plugins/, tests/
-  antigravity/             #   plugin.json, agents/, skills/, commands/, hooks/, tests/
+  antigravity/             #   plugin.json, skills/, commands/, hooks/, tests/
 tools/                     # utillaje a nivel de repo (ni núcleo ni adaptador)
   build-adapter.mjs        #   ensamblador del artefacto instalable
   checks/                  #   checks de invariantes (los ejerce CI y los tests)
@@ -119,10 +119,10 @@ depende del harness; `descripcion-fuente-unica` enumera internamente las superfi
 de los tres; `roles-fuente-unica` y `layout` **se autodescubren**, iterando el
 directorio `adapters/` y aplicando la regla a lo que encuentren, así que un harness
 nuevo queda cubierto el día que se crea su directorio. En `layout` el reparto es:
-**mínimo común** exigido a todos (`agents/`, `skills/`, `tests/`) por
+**mínimo común** exigido a todos (`skills/`, `tests/`) por
 autodescubrimiento, más **extras declarativos por harness** en una tabla dentro del
-check (claude-code: `.claude-plugin/plugin.json`, `commands/`, `hooks/`; kimi-code:
-`hooks/`; opencode: `opencode.json`, `commands/`, `plugins/`; antigravity: `plugin.json`, `commands/`, `hooks/`), porque las superficies
+check (claude-code: `.claude-plugin/plugin.json`, `agents/`, `commands/`, `hooks/`; kimi-code:
+`agents/`, `hooks/`; opencode: `opencode.json`, `agents/`, `commands/`, `plugins/`; antigravity: `plugin.json`, `commands/`, `hooks/`), porque las superficies
 difieren **por diseño** (ADR-003, ADR-007) y exigirlas a todos inventaría
 incumplimientos; un adaptador no declarado se juzga solo por el mínimo común. La
 lista de superficie de adaptador **prohibida en la raíz** sigue siendo una constante
@@ -246,8 +246,8 @@ tres adaptadores — pero **no** es el presupuesto de trabajo: lo que hay que to
 
 | Pieza | Claude Code | Kimi Code | opencode | Google Antigravity |
 |---|---|---|---|---|
-| **agents/** | **cuatro** `.md` (`sdd-arquitecto`, `sdd-documentalista`, `sdd-implementador`, `sdd-verificador`): frontmatter + prosa que referencia el rol. **No hay un agent por rol**: `sdd-orquestador`, `sdd-producto` y `sdd-como-vamos` se montan **solo como skill** y corren en el main-loop | el **YAML del agente raíz** (= orquestador) que declara los seis `sdd-*` en su mapa `subagents:`, un `.yaml` por subagente (`extend: default`, `allowed_tools` explícito), y `agents/prompts/<rol>.md` (bootstrap que referencia el núcleo por ruta interna) | `agents/<rol>.md` — **siete** ficheros; el cuerpo es un **bootstrap** (lee `.sdd.json`→idioma y hace `Read` de `../core/roles/<idioma>/<rol>.md`), no el cuerpo del rol. El orquestador es `mode: primary`; los seis `sdd-*`, `mode: subagent` (ADR-007 §Decisión 1 y 4) | `agents/<rol>.md` — **siete** ficheros con frontmatter (`name`, `description`, `model`), con bootstrap que lee `.sdd.json` y hace `Read` de `../core/roles/<idioma>/<rol>.md` |
-| **skills/** | **siete** `sdd-*/SKILL.md`, con **dos montajes**: las cuatro con agent homónimo **despachan** vía `Agent(subagent_type: "tremen-sdd:<rol>")` (con el prefijo de plugin); las tres sin agent (`sdd-orquestador`, `sdd-producto`, `sdd-como-vamos`) **son** el rol — su cuerpo es el bootstrap que hace `Read` de `${CLAUDE_PLUGIN_ROOT}/core/roles/…` | `sdd-*/SKILL.md` que **instruyen al agente raíz** a delegar vía `Agent(subagent_type: sdd-<rol>)`, **sin** prefijo de plugin | `skills/<rol>/SKILL.md` — **seis** (uno por subagente) que instruyen al primary a despachar por la tool **`task`**, **sin** prefijo de plugin | `skills/<rol>/SKILL.md` — **siete** roles canónicos con frontmatter (`name`, `description`) y bootstrap que hace `Read` a `../../core/roles/<idioma>/<rol>.md` |
+| **agents/** | **cuatro** `.md` (`sdd-arquitecto`, `sdd-documentalista`, `sdd-implementador`, `sdd-verificador`): frontmatter + prosa que referencia el rol. **No hay un agent por rol**: `sdd-orquestador`, `sdd-producto` y `sdd-como-vamos` se montan **solo como skill** y corren en el main-loop | el **YAML del agente raíz** (= orquestador) que declara los seis `sdd-*` en su mapa `subagents:`, un `.yaml` por subagente (`extend: default`, `allowed_tools` explícito), y `agents/prompts/<rol>.md` (bootstrap que referencia el núcleo por ruta interna) | `agents/<rol>.md` — **siete** ficheros; el cuerpo es un **bootstrap** (lee `.sdd.json`→idioma y hace `Read` de `../core/roles/<idioma>/<rol>.md`), no el cuerpo del rol. El orquestador es `mode: primary`; los seis `sdd-*`, `mode: subagent` (ADR-007 §Decisión 1 y 4) | **ninguno**: Antigravity no descubre `agents/` en plugins (ADR-014); los roles pesados se despachan vía `skills/` con `invoke_subagent` (`TypeName: "self"`). |
+| **skills/** | **siete** `sdd-*/SKILL.md`, con **dos montajes**: las cuatro con agent homónimo **despachan** vía `Agent(subagent_type: "tremen-sdd:<rol>")` (con el prefijo de plugin); las tres sin agent (`sdd-orquestador`, `sdd-producto`, `sdd-como-vamos`) **son** el rol — su cuerpo es el bootstrap que hace `Read` de `${CLAUDE_PLUGIN_ROOT}/core/roles/…` | `sdd-*/SKILL.md` que **instruyen al agente raíz** a delegar vía `Agent(subagent_type: sdd-<rol>)`, **sin** prefijo de plugin | `skills/<rol>/SKILL.md` — **seis** (uno por subagente) que instruyen al primary a despachar por la tool **`task`**, **sin** prefijo de plugin | `skills/<rol>/SKILL.md` — **siete** roles canónicos con frontmatter (`name`, `description`). Las 4 skills de roles pesados (`sdd-arquitecto`, `sdd-implementador`, `sdd-verificador`, `sdd-documentalista`) prohíben autoejecutarse e instruyen a delegar vía `invoke_subagent` (`TypeName: "self"`). `sdd-orquestador` prescribe despacho con `invoke_subagent (self)`. Las 2 directas (`sdd-producto`, `sdd-como-vamos`) corren en el contexto principal y hacen bootstrap leyendo `../../core/roles/<idioma>/<rol>.md`. |
 | **hooks / plugin** | entrypoints `.mjs` + `hooks.json`. L1 **deniega**: `hooks/require-spec.mjs` emite `permissionDecision: 'deny'`; ante error interno, `catch { allow() }` → fail-open | entrypoints `.mjs` (shim que normaliza el payload de Kimi e invoca `core/lib/require-spec.mjs`) + fragmento `hooks.toml` (`[[hooks]]`). L1 se asume **fail-open** (avisa): su efecto en runtime no está verificado — ver el espectro más abajo | `plugins/require-spec.mjs` (hook `tool.execute.before`) + `plugins/_comun.mjs` (shim de payload). L1 **deniega de verdad**: el `throw` **aborta la tool** `[1.18.5 · 2026-07-27]`, acta [H2]. **Ojo**: hay que **registrarlo** en el manifiesto — el auto-descubrimiento solo toma `*.ts`/`*.js` | `hooks/hooks.json` + entrypoints `.mjs`. L1 **deniega de verdad**: `PreToolUse` responde `{"decision": "deny", "reason": "..."}` bloqueando la tool de edición |
 | **manifiesto** | `.claude-plugin/plugin.json` + entrada en `marketplace.json` | **ninguno**: Kimi no tiene marketplace ni `plugin.json` que transporte agents/skills/hooks | `opencode.json` — **sí hay manifiesto, no hay marketplace**. Registra `plugin` (rutas relativas al propio fichero de config), `permission` global y el bloque `agent` (los 7 con su `mode` y su `permission`) | `plugin.json` — **sí hay manifiesto**, declara plugin (`name`, `version`, `description`, `author`) |
 | **commands/** | `sdd-init`, `sdd-tablero` (slash-commands) | **ninguno**: Kimi no tiene slash-commands de usuario por fichero; su equivalente es invocar los scripts de `core/` directamente o desde un skill | `commands/{sdd-init,sdd-tablero}.md` — **sí los hay**, comando-por-fichero como en Claude Code. **Asimetría explícita: sí en Claude Code y opencode, no en Kimi** | `commands/{sdd-init,sdd-tablero}.md` — **sí los hay**, comandos por fichero en Markdown |
@@ -289,7 +289,7 @@ CA-9, SPEC-011 CA-7, SPEC-014 CA-8). Léase **EPIC-001 CE-5** así: *lista cerra
 piezas **del adaptador**, más esta segunda lista conocida de puntos de
 generalización, y **sin tocar el núcleo*** (RN-02).
 
-### La asimetría del orquestador: tres montajes, una prosa
+### La asimetría del orquestador: cuatro montajes, una prosa
 
 Es la **primera** decisión al abordar un harness, no una nota al pie: el mecanismo
 de despacho determina cómo se monta el orquestador y, en cascada, cómo se montan
@@ -307,8 +307,12 @@ las skills, los permisos y los gates.
   (**ADR-007 §Decisión punto 4**). Confirmado en runtime: el subagente **no tiene**
   la tool `task` en su set y el intento de anidar falla con "Model tried to call
   unavailable tool" `[1.18.5 · 2026-07-27]`, acta [H4].
+- **Google Antigravity — *skill en el main loop***: el orquestador corre en el main loop
+  y despacha los roles pesados de forma stateless e inmediata invocando la herramienta
+  `invoke_subagent` con `TypeName: "self"`, `Role: "sdd-<rol>"` y un prompt autosuficiente;
+  el subagente ejecuta en contexto aislado y reporta por `send_message` (**ADR-014**).
 
-En los tres, la **prosa del rol es la misma y vive una sola vez**, en
+En los cuatro, la **prosa del rol es la misma y vive una sola vez**, en
 `core/roles/<idioma>/sdd-orquestador.md` (**RN-06**, vigilado por
 `roles-fuente-unica`). Lo que cambia es el **mecanismo de despacho del harness**,
 no el rol.
@@ -478,8 +482,10 @@ Existen dos vías de instalación soportadas:
    cp -r dist/antigravity/. ~/.gemini/config/plugins/tremen-sdd/
    ```
 
-Antigravity auto-descubre los agentes en `agents/`, las skills en `skills/`, los
-comandos en `commands/` y activa los hooks declarados en `hooks/hooks.json`.
+Antigravity auto-descubre las skills en `skills/`, los comandos en `commands/` y activa
+los hooks declarados en `hooks/hooks.json`. No existe directorio `agents/` (ADR-014 enmienda
+a ADR-013): Antigravity no procesa `agents/` en plugins y los roles pesados se despachan
+exclusivamente como subagentes aislados vía `invoke_subagent` con `TypeName: "self"`.
 
 ### Conducción no interactiva del CLI (pieza del recetario)
 
