@@ -1,7 +1,7 @@
 <!-- GENERADO por tremen-sdd (scripts/tablero.mjs). NO EDITAR A MANO. -->
 # Tablero
 
-Actualizado: 2026-10-14
+Actualizado: 2026-10-15
 
 ## EPIC-001 — tremen-sdd-multi-harness (hecho)
 
@@ -59,6 +59,7 @@ Actualizado: 2026-10-14
 |---|---|---|
 | SPEC-012 — protege-verdad-deniega-al-dueno-con-prefijo-de-plugin | hecho | 2026-07-25 (sdd-verificador) |
 | SPEC-017 — layout-generalizado-a-todos-los-adaptadores-y-prosa-del-runner-sin-drift | hecho | 2026-07-27 (sdd-verificador) |
+| SPEC-023 — despacho-real-de-subagentes-en-antigravity-con-contexto-aislado | hecho | 2026-10-15 (sdd-verificador) |
 
 ## ADRs
 
@@ -77,9 +78,10 @@ Actualizado: 2026-10-14
 | ADR-011 | aprobada | generalizacion-de-los-checks-de-invariantes-autodescubrimiento-vs-enumeracion | 2026-07-27 (Alberto Fojo) |
 | ADR-012 | aprobada | verificabilidad-mecanica-de-la-prosa-taxonomia-de-afirmaciones-y-mecanismos-de-comprobacion | 2026-07-28 (Alberto Fojo) |
 | ADR-013 | aprobada | encaje-de-antigravity-modelo-de-plugins-skills-y-enforcement-pretooluse | 2026-10-14 (Alberto Fojo) |
+| ADR-014 | aprobada | despacho-de-subagentes-en-google-antigravity-con-invoke-subagent-self | 2026-10-15 (Alberto Fojo) |
 
 ## Resumen
 
-- hecho: 20
+- hecho: 21
 - bloqueada: 1
 - aprobada: 1
