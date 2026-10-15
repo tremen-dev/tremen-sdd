@@ -14,3 +14,19 @@ plugin (dos niveles por encima de este fichero, que vive en `skills/sdd-orquesta
 Cuando el rol invoque un script del núcleo (p. ej. `${SDD_ROOT}/core/scripts/estado.mjs`;
 también `scaffold.mjs`, `tablero.mjs`, `valida.mjs`, `informe-qa.mjs`), resuelve
 `${SDD_ROOT}` a esa raíz y ejecútalo con node por ruta relativa (`../../core/scripts/<script>.mjs`).
+
+En Google Antigravity, la delegación de los roles pesados (`sdd-arquitecto`, `sdd-implementador`,
+`sdd-verificador`, `sdd-documentalista`) se realiza EXCLUSIVAMENTE mediante la herramienta
+`invoke_subagent` con `TypeName: "self"`:
+
+    invoke_subagent({
+      "Subagents": [{
+        "TypeName": "self",
+        "Role": "sdd-<rol>",
+        "Prompt": "<encargo exhaustivo y autosuficiente: id de spec, rama, ficheros, expectativas>"
+      }]
+    })
+
+Espera el informe final del subagente mediante `send_message` antes de avanzar al siguiente
+paso del pipeline. Los roles dialógicos directos (`sdd-producto`, `sdd-como-vamos`) corren
+en este contexto principal.

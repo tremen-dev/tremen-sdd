@@ -61,8 +61,9 @@ export function enumeraSuperficies(repoRoot = REPO_ROOT) {
 
   // (1) agents markdown con description en frontmatter → larga. Claude y opencode
   //     definen un agente por fichero .md (top-level) con description; Kimi no
-  //     (sus agentes son YAML y sus prompts no llevan frontmatter de disparo).
-  for (const adaptador of ['claude-code', 'opencode', 'antigravity']) {
+  //     (sus agentes son YAML y sus prompts no llevan frontmatter de disparo);
+  //     Antigravity no tiene agents/ (ADR-014).
+  for (const adaptador of ['claude-code', 'opencode']) {
     const agentsDir = path.join(repoRoot, 'adapters', adaptador, 'agents');
     for (const f of listaDir(agentsDir, (e) => e.isFile() && e.name.endsWith('.md'))) {
       leerMd(path.join(agentsDir, f), { adaptador, tipo: 'agent', forma: 'larga', rol: f.replace(/\.md$/, '') });

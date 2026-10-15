@@ -256,7 +256,6 @@ export function checkManifiestosAntigravity(distDir) {
     if (!fs.existsSync(path.join(distDir, 'commands', `${cmd}.md`))) errores.push(`falta commands/${cmd}.md en el artefacto`);
   }
   for (const rol of ROLES_ANTIGRAVITY) {
-    if (!fs.existsSync(path.join(distDir, 'agents', `${rol}.md`))) errores.push(`falta agents/${rol}.md en el artefacto`);
     if (!fs.existsSync(path.join(distDir, 'skills', rol, 'SKILL.md'))) errores.push(`falta skills/${rol}/SKILL.md en el artefacto`);
   }
 
