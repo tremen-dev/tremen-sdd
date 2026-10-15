@@ -6,7 +6,7 @@ epica: EPIC-FIX
 # Ledger — SPEC-023 Despacho real de subagentes en Antigravity con contexto aislado
 
 ## Resumen
-- Fase: borrador
+- Fase: en-revision
 - Rama: `ft/SPEC-023-despacho-real-de-subagentes-en-antigravity-con-contexto-aislado`
 
 ## Matriz de criterios de aceptación
@@ -15,13 +15,13 @@ epica: EPIC-FIX
 <!-- Un CA está ✅ solo cuando Implementado + Test + Verif. aplicables están en verde. Una salvedad se marca ⚠️, nunca ✅. -->
 | CA | Implementado (fichero) | Test (fichero/caso) | Verif. | Estado |
 |---|---|---|---|---|
-| CA-1 | | | | ❌ |
-| CA-2 | | | | ❌ |
-| CA-3 | | | | ❌ |
-| CA-4 | | | | ❌ |
-| CA-5 | | | | ❌ |
-| CA-6 | | | | ❌ |
-| CA-7 | | | | ❌ |
+| CA-1 | `adapters/antigravity/skills/sdd-{arquitecto,implementador,verificador,documentalista}/SKILL.md` | `adapters/antigravity/tests/superficie.test.mjs` (roles pesados prohíben autoejecución y delegan invoke_subagent self) | | ❌ |
+| CA-2 | `adapters/antigravity/skills/sdd-orquestador/SKILL.md` | `adapters/antigravity/tests/superficie.test.mjs` (orquestador declara invoke_subagent self) | | ❌ |
+| CA-3 | `adapters/antigravity/agents/` (eliminado) | `adapters/antigravity/tests/superficie.test.mjs` (dist/antigravity/agents/ no existe) | | ❌ |
+| CA-4 | `tools/checks/{layout,manifiestos,descripcion-fuente-unica}.mjs` | `tools/tests/layout.test.mjs` (antigravity sin agents/) | | ❌ |
+| CA-5 | `adapters/antigravity/tests/superficie.test.mjs` | `adapters/antigravity/tests/superficie.test.mjs` (suite completa en verde) | | ❌ |
+| CA-6 | `core/roles/es/sdd-orquestador.md` | `tools/tests/{roles-fuente-unica,nucleo-agnostico}.test.mjs` | | ❌ |
+| CA-7 | `docs/arquitectura.md` | `tools/tests/layout.test.mjs` + `npm run check` | | ❌ |
 
 ## Veredicto del verificador
 <!-- GREEN/RED + fecha + resumen. Lo escribe SOLO sdd-verificador. -->
@@ -34,4 +34,4 @@ epica: EPIC-FIX
 
 ## Cómo retomar (handoff)
 <!-- Estado real del trabajo para la siguiente sesión: qué está hecho, qué falta, dónde seguir. -->
-Spec y ADR-014 redactados por sdd-arquitecto. Pendiente gate humano de aprobación por Alberto Fojo antes de iniciar implementación.
+Implementación completa de SPEC-023 finalizada por sdd-implementador cubriendo los 7 Criterios de Aceptación. Tests unitarios (357 tests) y los 10 checks de invariantes pasando en verde. Listo para verificación adversarial por sdd-verificador.
