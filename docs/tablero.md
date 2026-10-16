@@ -60,7 +60,7 @@ Actualizado: 2026-10-16
 | SPEC-012 — protege-verdad-deniega-al-dueno-con-prefijo-de-plugin | hecho | 2026-07-25 (sdd-verificador) |
 | SPEC-017 — layout-generalizado-a-todos-los-adaptadores-y-prosa-del-runner-sin-drift | hecho | 2026-07-27 (sdd-verificador) |
 | SPEC-023 — despacho-real-de-subagentes-en-antigravity-con-contexto-aislado | hecho | 2026-10-15 (sdd-verificador) |
-| SPEC-024 — guarda-de-activacion-por-sdd-json-en-skills-agentes-roles-y-cli-del-nucleo | en-revision | 2026-10-16 (sdd-implementador) |
+| SPEC-024 — guarda-de-activacion-por-sdd-json-en-skills-agentes-roles-y-cli-del-nucleo | hecho | 2026-10-16 (sdd-verificador) |
 
 ## ADRs
 
@@ -84,7 +84,6 @@ Actualizado: 2026-10-16
 
 ## Resumen
 
-- hecho: 21
+- hecho: 22
 - bloqueada: 1
 - aprobada: 1
-- en-revision: 1
