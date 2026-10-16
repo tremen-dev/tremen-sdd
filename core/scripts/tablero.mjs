@@ -5,13 +5,14 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { parseFrontmatter } from '../lib/frontmatter.mjs';
 import { esEntrypoint } from '../lib/entrypoint.mjs';
+import { hoy } from '../lib/fecha.mjs';
 
 function leer(ruta) {
   return parseFrontmatter(fs.readFileSync(ruta, 'utf8')).data;
 }
 
 export function renderBoard(docsDir, fecha) {
-  fecha ??= new Date().toISOString().slice(0, 10);
+  fecha ??= hoy();
   const base = path.join(docsDir, 'epicas');
   const lineas = [
     '<!-- GENERADO por tremen-sdd (scripts/tablero.mjs). NO EDITAR A MANO. -->',
