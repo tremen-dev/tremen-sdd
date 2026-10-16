@@ -5,6 +5,19 @@ Todas las novedades relevantes de este proyecto se documentan aquí.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/)
 y el proyecto se adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 
+## [Sin publicar] — 0.5.1
+
+### Corregido
+
+- **Despacho real de subagentes en Google Antigravity con contexto aislado** (SPEC-023,
+  EPIC-FIX, ADR-014). Resuelve el defecto arquitectónico por el cual los roles pesados
+  (`sdd-arquitecto`, `sdd-implementador`, `sdd-verificador`, `sdd-documentalista`) se
+  autoejecutaban en el hilo principal de conversación en Antigravity. Se adopta el despacho
+  nativo con `invoke_subagent` (`TypeName: "self"`), se suprime el directorio fantasma
+  `adapters/antigravity/agents/`, se adaptan las skills de roles pesados para delegar
+  formalmente a subagentes aislados y se generaliza la prosa de delegación en
+  `core/roles/es/sdd-orquestador.md`.
+
 ## [Sin publicar] — 0.5.0
 
 ### Añadido
