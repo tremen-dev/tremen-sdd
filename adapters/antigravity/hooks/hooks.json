@@ -1,0 +1,44 @@
+{
+  "tremen-sdd-require-spec": {
+    "PreToolUse": [
+      {
+        "matcher": "write_to_file|replace_file_content|multi_replace_file_content",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node hooks/require-spec.mjs",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  },
+  "tremen-sdd-protege-verdad": {
+    "PreToolUse": [
+      {
+        "matcher": "write_to_file|replace_file_content|multi_replace_file_content",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node hooks/protege-verdad.mjs",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  },
+  "tremen-sdd-calidad": {
+    "PostToolUse": [
+      {
+        "matcher": "write_to_file|replace_file_content|multi_replace_file_content",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node hooks/calidad.mjs",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}

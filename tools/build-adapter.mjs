@@ -85,6 +85,10 @@ export function buildAdapter(harness, { repoRoot = REPO_ROOT, outDir, proc } = {
   if (fs.existsSync(pluginJson)) {
     escribeJson(pluginJson, { ...leeJson(pluginJson), version: p.version });
   }
+  const rootPluginJson = path.join(outDir, 'plugin.json');
+  if (fs.existsSync(rootPluginJson)) {
+    escribeJson(rootPluginJson, { ...leeJson(rootPluginJson), version: p.version });
+  }
 
   return outDir;
 }

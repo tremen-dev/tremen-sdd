@@ -1,7 +1,7 @@
 <!-- GENERADO por tremen-sdd (scripts/tablero.mjs). NO EDITAR A MANO. -->
 # Tablero
 
-Actualizado: 2026-07-28
+Actualizado: 2026-10-15
 
 ## EPIC-001 — tremen-sdd-multi-harness (hecho)
 
@@ -44,12 +44,22 @@ Actualizado: 2026-07-28
 |---|---|---|
 | SPEC-018 — que-puede-afirmar-un-documento-de-verdad-y-como-se-verifica | aprobada | 2026-07-28 (Alberto Fojo) |
 
+## EPIC-006 — adaptador-antigravity-con-paridad-completa (hecho)
+
+| Spec | Estado | Último cambio |
+|---|---|---|
+| SPEC-019 — adaptador-antigravity-base | hecho | 2026-10-14 (sdd-verificador) |
+| SPEC-020 — enforcement-l1-en-antigravity-hooks | hecho | 2026-10-14 (sdd-verificador) |
+| SPEC-021 — integracion-de-checks-de-invariantes-y-runner | hecho | 2026-10-14 (sdd-verificador) |
+| SPEC-022 — scaffolding-con-agents-md-y-documentacion-de-antigravity | hecho | 2026-10-14 (sdd-verificador) |
+
 ## EPIC-FIX (aprobada)
 
 | Spec | Estado | Último cambio |
 |---|---|---|
 | SPEC-012 — protege-verdad-deniega-al-dueno-con-prefijo-de-plugin | hecho | 2026-07-25 (sdd-verificador) |
 | SPEC-017 — layout-generalizado-a-todos-los-adaptadores-y-prosa-del-runner-sin-drift | hecho | 2026-07-27 (sdd-verificador) |
+| SPEC-023 — despacho-real-de-subagentes-en-antigravity-con-contexto-aislado | hecho | 2026-10-15 (sdd-verificador) |
 
 ## ADRs
 
@@ -67,9 +77,11 @@ Actualizado: 2026-07-28
 | ADR-010 | aprobada | mecanismo-de-publicacion-del-artefacto-rama-de-publicacion-en-el-repo-fuente | 2026-07-27 (Alberto Fojo) |
 | ADR-011 | aprobada | generalizacion-de-los-checks-de-invariantes-autodescubrimiento-vs-enumeracion | 2026-07-27 (Alberto Fojo) |
 | ADR-012 | aprobada | verificabilidad-mecanica-de-la-prosa-taxonomia-de-afirmaciones-y-mecanismos-de-comprobacion | 2026-07-28 (Alberto Fojo) |
+| ADR-013 | aprobada | encaje-de-antigravity-modelo-de-plugins-skills-y-enforcement-pretooluse | 2026-10-14 (Alberto Fojo) |
+| ADR-014 | aprobada | despacho-de-subagentes-en-google-antigravity-con-invoke-subagent-self | 2026-10-15 (Alberto Fojo) |
 
 ## Resumen
 
-- hecho: 16
+- hecho: 21
 - bloqueada: 1
 - aprobada: 1
