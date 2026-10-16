@@ -21,4 +21,5 @@ Comprueba si el proyecto ya tiene estructura SDD:
 4. Muestra el flujo siguiente.
 
 ## Paso 2 — Modo migración
-Presenta un plan de migración paso a paso y pide aprobación humana antes de mover nada.
+1. Presenta un plan de migración paso a paso y pide aprobación humana antes de mover nada.
+2. Con aprobación, estampa primero `.sdd.json` (kit base del Paso 1.2) para respetar la barrera CLI de los scripts del núcleo, migra por lotes pequeños ejecutando `node "../core/scripts/valida.mjs"` tras cada lote, y termina completando el kit base restante y regenerando el tablero con `node "../core/scripts/tablero.mjs"`.

@@ -78,3 +78,51 @@ test('SPEC-024 CA-2: todas las skills de los 4 adaptadores declaran la precondic
     }
   }
 });
+
+// SPEC-024 CA-3: Guarda de precondición .sdd.json en todos los bootstraps de agentes y sdd-init.md
+test('SPEC-024 CA-3: todos los bootstraps de agentes (18) declaran precondición .sdd.json en arranque obligatorio y sdd-init estampa .sdd.json antes de valida.mjs', () => {
+  const adaptersDir = path.join(REPO_ROOT, 'adapters');
+  const agentes = [];
+
+  // Claude Code
+  const claudeAgentsDir = path.join(adaptersDir, 'claude-code', 'agents');
+  for (const f of fs.readdirSync(claudeAgentsDir).sort()) {
+    if (f.startsWith('sdd-') && f.endsWith('.md')) agentes.push(path.join(claudeAgentsDir, f));
+  }
+  // Kimi Code
+  const kimiAgentsDir = path.join(adaptersDir, 'kimi-code', 'agents', 'prompts');
+  for (const f of fs.readdirSync(kimiAgentsDir).sort()) {
+    if (f.startsWith('sdd-') && f.endsWith('.md')) agentes.push(path.join(kimiAgentsDir, f));
+  }
+  // Opencode
+  const opencodeAgentsDir = path.join(adaptersDir, 'opencode', 'agents');
+  for (const f of fs.readdirSync(opencodeAgentsDir).sort()) {
+    if (f.startsWith('sdd-') && f.endsWith('.md')) agentes.push(path.join(opencodeAgentsDir, f));
+  }
+
+  assert.equal(agentes.length, 18, 'debe haber exactamente 18 ficheros de agentes (4 claude + 7 kimi + 7 opencode)');
+
+  for (const a of agentes) {
+    const rel = path.relative(REPO_ROOT, a);
+    const contenido = fs.readFileSync(a, 'utf8');
+    assert.doesNotMatch(contenido, /si el fichero o el campo no existen/i, `${rel} no debe contener el antipatrón de fallback`);
+    assert.match(contenido, /## Arranque obligatorio/, `${rel} debe tener sección ## Arranque obligatorio`);
+    assert.match(contenido, /\.sdd\.json/, `${rel} debe mencionar .sdd.json`);
+    assert.match(contenido, /para(?:r)?\s+inmediatamente/i, `${rel} debe ordenar parar inmediatamente si no existe .sdd.json`);
+  }
+
+  // Comandos sdd-init en modo migración
+  const initFiles = [
+    path.join(adaptersDir, 'claude-code', 'commands', 'sdd-init.md'),
+    path.join(adaptersDir, 'opencode', 'commands', 'sdd-init.md'),
+    path.join(adaptersDir, 'antigravity', 'commands', 'sdd-init.md'),
+  ];
+  for (const f of initFiles) {
+    const rel = path.relative(REPO_ROOT, f);
+    const contenido = fs.readFileSync(f, 'utf8');
+    assert.match(contenido, /\.sdd\.json/, `${rel} debe mencionar .sdd.json en modo migración`);
+    // En modo migración (Paso 2), debe estampar .sdd.json antes de correr valida.mjs
+    const paso2 = contenido.slice(contenido.indexOf('## Paso 2'));
+    assert.match(paso2, /\.sdd\.json[\s\S]*?valida\.mjs/, `${rel} debe estampar .sdd.json antes de correr valida.mjs en Paso 2`);
+  }
+});
