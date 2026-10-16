@@ -2,7 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
-import { checkProsaGates, DOC_DOCUMENTALISTA, REGLAS_REQUERIDAS } from '../checks/prosa-gates.mjs';
+import os from 'node:os';
+import { spawnSync } from 'node:child_process';
+import { checkProsaGates, checkPrecondicionSdd, DOC_DOCUMENTALISTA, REGLAS_REQUERIDAS } from '../checks/prosa-gates.mjs';
 import { REPO_ROOT } from '../checks/_util.mjs';
 
 // SPEC-006 CA-6: check de PRESENCIA de la regla dura en la prosa canónica del
@@ -125,4 +127,59 @@ test('SPEC-024 CA-3: todos los bootstraps de agentes (18) declaran precondición
     const paso2 = contenido.slice(contenido.indexOf('## Paso 2'));
     assert.match(paso2, /\.sdd\.json[\s\S]*?valida\.mjs/, `${rel} debe estampar .sdd.json antes de correr valida.mjs en Paso 2`);
   }
+});
+
+// SPEC-024 CA-4: Check mecánico checkPrecondicionSdd
+test('SPEC-024 CA-4: checkPrecondicionSdd sobre fixtures sintéticos detecta antipatrón, omisión y falta de parada', () => {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'sdd-check-precondicion-'));
+  try {
+    const rolesDir = path.join(tmp, 'core', 'roles', 'es');
+    fs.mkdirSync(rolesDir, { recursive: true });
+
+    // Fixture con antipatrón
+    fs.writeFileSync(path.join(rolesDir, 'sdd-rol1.md'),
+      '# Rol 1\n## Reglas\nLee .sdd.json (si el fichero o el campo no existen, usa es). PARA inmediatamente.');
+    let res = checkPrecondicionSdd(tmp);
+    assert.equal(res.ok, false);
+    assert.ok(res.infractores.some((i) => /antipatrón|antipatron/i.test(i.motivo)));
+
+    // Fixture sin mención a .sdd.json
+    fs.writeFileSync(path.join(rolesDir, 'sdd-rol1.md'),
+      '# Rol 1\n## Reglas\nNo menciona el fichero de configuracion. PARA inmediatamente.');
+    res = checkPrecondicionSdd(tmp);
+    assert.equal(res.ok, false);
+    assert.ok(res.infractores.some((i) => /no menciona \.sdd\.json/i.test(i.motivo)));
+
+    // Fixture sin orden de parada
+    fs.writeFileSync(path.join(rolesDir, 'sdd-rol1.md'),
+      '# Rol 1\n## Reglas\nMenciona .sdd.json pero no ordena parar.');
+    res = checkPrecondicionSdd(tmp);
+    assert.equal(res.ok, false);
+    assert.ok(res.infractores.some((i) => /parada/i.test(i.motivo)));
+
+    // Fixture válido
+    fs.writeFileSync(path.join(rolesDir, 'sdd-rol1.md'),
+      '# Rol 1\n## Reglas\nSi no existe .sdd.json en la raiz, PARA inmediatamente: no ejecutes el rol.');
+    res = checkPrecondicionSdd(tmp);
+    assert.equal(res.ok, true);
+    assert.equal(res.infractores.length, 0);
+  } finally {
+    fs.rmSync(tmp, { recursive: true, force: true });
+  }
+});
+
+test('SPEC-024 CA-4: checkPrecondicionSdd sobre el árbol real pasa en verde y descubre 51 ficheros', () => {
+  const res = checkPrecondicionSdd(REPO_ROOT);
+  assert.equal(res.ok, true, `No debe haber infractores: ${JSON.stringify(res.infractores)}`);
+  assert.equal(res.infractores.length, 0);
+  assert.equal(res.ficheros.length, 51, 'debe descubrir 7 roles + 26 skills + 18 agentes = 51 ficheros');
+});
+
+test('SPEC-024 CA-4: CLI node tools/checks/prosa-gates.mjs sale con código 0', () => {
+  const r = spawnSync(process.execPath, [path.join(REPO_ROOT, 'tools', 'checks', 'prosa-gates.mjs')], {
+    cwd: REPO_ROOT,
+    encoding: 'utf8',
+  });
+  assert.equal(r.status, 0, `stderr: ${r.stderr}`);
+  assert.match(r.stdout, /\[prosa-gates\] OK/);
 });
