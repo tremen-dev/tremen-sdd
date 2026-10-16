@@ -16,7 +16,7 @@ epica: EPIC-FIX
 | CA | Implementado (fichero) | Test (fichero/caso) | Verif. | Estado |
 |---|---|---|---|---|
 | CA-1 | core/roles/es/sdd-*.md | tools/tests/prosa-gates.test.mjs ("SPEC-024 CA-1") | | ❌ |
-| CA-2 | | | | ❌ |
+| CA-2 | adapters/*/skills/sdd-*/SKILL.md | tools/tests/prosa-gates.test.mjs ("SPEC-024 CA-2") | | ❌ |
 | CA-3 | | | | ❌ |
 | CA-4 | | | | ❌ |
 | CA-5 | | | | ❌ |

@@ -12,6 +12,19 @@ razón de ser de este rol — si el verificador corriera en este contexto vería
 razonamiento de quien implementó, y un juez que ya sabe el veredicto no es un
 juez.
 
+Primero comprueba si existe `.sdd.json` en la raíz del proyecto:
+- Si `.sdd.json` NO existe: `tremen-sdd` no está activo en este repositorio.
+  PARA inmediatamente:
+  - Si esta skill se activó automáticamente ante una petición genérica (p. ej.
+    "verifica esto", "pasa los tests"), sal del flujo `tremen-sdd` y atiende
+    la petición de forma estándar sin mencionar ni aplicar `tremen-sdd`.
+  - Si el usuario invocó explícitamente un rol o comando de `tremen-sdd`, informa
+    de que no existe `.sdd.json` (`tremen-sdd` no está activado) y sugiere
+    ejecutar `/sdd-init`.
+  No lances ningún subagente, no leas roles ni ejecutes scripts del núcleo.
+- Si `.sdd.json` SÍ existe: toma el campo `idioma` (si no está definido en
+  `.sdd.json`, usa `es`) y procede con el despacho:
+
 Lanza el rol y no hagas nada más:
 
     Agent(subagent_type: "tremen-sdd:sdd-verificador",
