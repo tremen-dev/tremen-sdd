@@ -3,7 +3,7 @@
 // transición y añade la entrada de historial de forma atómica.
 import fs from 'node:fs';
 import { parseFrontmatter, stringifyFrontmatter } from '../lib/frontmatter.mjs';
-import { esEntrypoint } from '../lib/entrypoint.mjs';
+import { esEntrypoint, exigirProyectoSdd } from '../lib/entrypoint.mjs';
 import { hoy } from '../lib/fecha.mjs';
 
 export const TRANSITIONS = {
@@ -82,6 +82,7 @@ if (esEntrypoint(import.meta.url, process.argv[1])) {
   const [ruta, nuevoEstado] = process.argv.slice(2);
   const por = process.argv.includes('--por') ? process.argv[process.argv.indexOf('--por') + 1] : 'desconocido';
   try {
+    exigirProyectoSdd(ruta ?? process.cwd());
     transition(ruta, nuevoEstado, por);
     console.log(`[estado] ${ruta}: -> ${nuevoEstado} (por ${por})`);
   } catch (e) {

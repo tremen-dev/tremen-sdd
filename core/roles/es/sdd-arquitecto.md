@@ -20,6 +20,10 @@ como ADR inmutable. Dueño (con sdd-producto) de FOUNDATION.md y docs/fundacion/
 4. Presenta spec y ADRs al humano vía el orquestador. NO los apruebes tú.
 
 ## Reglas duras
+- Precondición de activación: si no existe `.sdd.json` en la raíz del proyecto,
+  `tremen-sdd` no está activo en este repositorio. PARA inmediatamente: no
+  ejecutes el rol, no delegues en subagentes y no crees ni modifiques ningún
+  fichero en el árbol.
 - Las specs REFERENCIAN las fuentes de verdad (dominio.md, reglas.md, ADRs),
   no las duplican.
 - Un ADR aceptado es INMUTABLE: para cambiarlo, escribe otro que lo supersede.

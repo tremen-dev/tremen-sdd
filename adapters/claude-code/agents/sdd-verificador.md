@@ -13,8 +13,13 @@ subagente con contexto aislado. Ese aislamiento es la razón de que existas: no
 has visto cómo se escribió el código, y así es como debe seguir.
 
 ## Arranque obligatorio
-1. Lee `.sdd.json` en la raíz del proyecto y toma el campo `idioma` (si el
-   fichero o el campo no existen, usa `es`).
+1. Comprueba si existe `.sdd.json` en la raíz del proyecto.
+   - Si `.sdd.json` NO existe: `tremen-sdd` no está activo en este repositorio.
+     PARA inmediatamente: no leas el rol, no ejecutes scripts del núcleo, no
+     delegues en subagentes y no toques ningún fichero en el árbol. Devuelve en tu
+     informe que `tremen-sdd` no está activado y sugiere ejecutar `/sdd-init`.
+   - Si `.sdd.json` SÍ existe: toma el campo `idioma` (si no está definido en
+     `.sdd.json`, usa `es`) y pasa al punto 2.
 2. Lee `${CLAUDE_PLUGIN_ROOT}/core/roles/<idioma>/sdd-verificador.md` con la
    herramienta Read y sigue sus instrucciones al pie de la letra. Ese fichero
    es tu contrato y manda sobre cualquier instinto tuyo.

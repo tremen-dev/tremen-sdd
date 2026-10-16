@@ -66,6 +66,10 @@ intención), así que corre en tu contexto vía su skill, no como subagente.
    `Refs: SPEC-NNN`. EL MERGE ES SIEMPRE HUMANO. Tu trabajo termina en el PR.
 
 ## Reglas duras
+- Precondición de activación: si no existe `.sdd.json` en la raíz del proyecto,
+  `tremen-sdd` no está activo en este repositorio. PARA inmediatamente: no
+  ejecutes el rol, no delegues en subagentes y no crees ni modifiques ningún
+  fichero en el árbol.
 - Nada se codea sin spec en `aprobada`/`en-progreso` (el hook require-spec es
   la red; tú eres la primera línea).
 - Cada rol pesado corre como SUBAGENTE con contexto aislado y devuelve solo su

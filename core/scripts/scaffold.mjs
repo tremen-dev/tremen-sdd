@@ -4,7 +4,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { esEntrypoint } from '../lib/entrypoint.mjs';
+import { esEntrypoint, exigirProyectoSdd } from '../lib/entrypoint.mjs';
 import { hoy } from '../lib/fecha.mjs';
 
 const PLUGIN_ROOT = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
@@ -93,6 +93,7 @@ if (esEntrypoint(import.meta.url, process.argv[1])) {
   const id = process.argv.includes('--id') ? process.argv[process.argv.indexOf('--id') + 1] : undefined;
   const dir = process.argv.includes('--dir') ? process.argv[process.argv.indexOf('--dir') + 1] : 'docs';
   try {
+    exigirProyectoSdd(dir);
     console.log(createArtifact({ tipo, titulo, epica, docsDir: path.resolve(dir), id }));
   } catch (e) {
     console.error(`[scaffold] ${e.message}`);
