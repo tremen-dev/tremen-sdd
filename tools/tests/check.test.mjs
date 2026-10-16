@@ -69,6 +69,7 @@ test('CA-6: el runner sale 0 cuando todos los pasos pasan', () => {
 
 function arbolDocs(estadoUltimoHistorial) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'sdd-chk-'));
+  fs.writeFileSync(path.join(dir, '.sdd.json'), '{}');
   const ep = path.join(dir, 'docs', 'epicas', 'EPIC-001-x');
   fs.mkdirSync(ep, { recursive: true });
   fs.writeFileSync(path.join(ep, 'SPEC-070-x.md'),

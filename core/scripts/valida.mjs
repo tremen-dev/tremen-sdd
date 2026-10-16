@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { parseFrontmatter } from '../lib/frontmatter.mjs';
 import { TRANSITIONS } from './estado.mjs';
-import { esEntrypoint } from '../lib/entrypoint.mjs';
+import { esEntrypoint, exigirProyectoSdd } from '../lib/entrypoint.mjs';
 
 const ID_RE = /^(EPIC|SPEC|TASK|ADR)-(\d{3}|FIX|INFRA|MANT|MEJORA)/;
 const ESTADOS = Object.keys(TRANSITIONS);
@@ -55,11 +55,17 @@ export function validate(docsDir) {
 }
 
 if (esEntrypoint(import.meta.url, process.argv[1])) {
-  const dir = process.argv.includes('--dir') ? process.argv[process.argv.indexOf('--dir') + 1] : 'docs';
-  const errores = validate(path.resolve(dir));
-  if (errores.length) {
-    console.error(`[valida] ${errores.length} error(es):\n` + errores.map((e) => ` - ${e}`).join('\n'));
+  try {
+    const dir = process.argv.includes('--dir') ? process.argv[process.argv.indexOf('--dir') + 1] : 'docs';
+    exigirProyectoSdd(path.resolve(dir));
+    const errores = validate(path.resolve(dir));
+    if (errores.length) {
+      console.error(`[valida] ${errores.length} error(es):\n` + errores.map((e) => ` - ${e}`).join('\n'));
+      process.exit(1);
+    }
+    console.log('[valida] OK');
+  } catch (e) {
+    console.error(`[valida] ${e.message}`);
     process.exit(1);
   }
-  console.log('[valida] OK');
 }

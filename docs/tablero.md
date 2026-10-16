@@ -1,7 +1,7 @@
 <!-- GENERADO por tremen-sdd (scripts/tablero.mjs). NO EDITAR A MANO. -->
 # Tablero
 
-Actualizado: 2026-10-15
+Actualizado: 2026-10-16
 
 ## EPIC-001 — tremen-sdd-multi-harness (hecho)
 
@@ -60,6 +60,7 @@ Actualizado: 2026-10-15
 | SPEC-012 — protege-verdad-deniega-al-dueno-con-prefijo-de-plugin | hecho | 2026-07-25 (sdd-verificador) |
 | SPEC-017 — layout-generalizado-a-todos-los-adaptadores-y-prosa-del-runner-sin-drift | hecho | 2026-07-27 (sdd-verificador) |
 | SPEC-023 — despacho-real-de-subagentes-en-antigravity-con-contexto-aislado | hecho | 2026-10-15 (sdd-verificador) |
+| SPEC-024 — guarda-de-activacion-por-sdd-json-en-skills-agentes-roles-y-cli-del-nucleo | en-revision | 2026-10-16 (sdd-implementador) |
 
 ## ADRs
 
@@ -79,9 +80,11 @@ Actualizado: 2026-10-15
 | ADR-012 | aprobada | verificabilidad-mecanica-de-la-prosa-taxonomia-de-afirmaciones-y-mecanismos-de-comprobacion | 2026-07-28 (Alberto Fojo) |
 | ADR-013 | aprobada | encaje-de-antigravity-modelo-de-plugins-skills-y-enforcement-pretooluse | 2026-10-14 (Alberto Fojo) |
 | ADR-014 | aprobada | despacho-de-subagentes-en-google-antigravity-con-invoke-subagent-self | 2026-10-15 (Alberto Fojo) |
+| ADR-015 | aprobada | activacion-opt-in-por-repositorio-mediante-sdd-json-en-prosa-y-cli-del-nucleo | 2026-10-16 (Alberto Fojo) |
 
 ## Resumen
 
 - hecho: 21
 - bloqueada: 1
 - aprobada: 1
+- en-revision: 1

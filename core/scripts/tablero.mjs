@@ -4,7 +4,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { parseFrontmatter } from '../lib/frontmatter.mjs';
-import { esEntrypoint } from '../lib/entrypoint.mjs';
+import { esEntrypoint, exigirProyectoSdd } from '../lib/entrypoint.mjs';
 import { hoy } from '../lib/fecha.mjs';
 
 function leer(ruta) {
@@ -57,7 +57,13 @@ export function renderBoard(docsDir, fecha) {
 }
 
 if (esEntrypoint(import.meta.url, process.argv[1])) {
-  const dir = path.resolve(process.argv.includes('--dir') ? process.argv[process.argv.indexOf('--dir') + 1] : 'docs');
-  fs.writeFileSync(path.join(dir, 'tablero.md'), renderBoard(dir));
-  console.log(`[tablero] regenerado ${path.join(dir, 'tablero.md')}`);
+  try {
+    const dir = path.resolve(process.argv.includes('--dir') ? process.argv[process.argv.indexOf('--dir') + 1] : 'docs');
+    exigirProyectoSdd(dir);
+    fs.writeFileSync(path.join(dir, 'tablero.md'), renderBoard(dir));
+    console.log(`[tablero] regenerado ${path.join(dir, 'tablero.md')}`);
+  } catch (e) {
+    console.error(`[tablero] ${e.message}`);
+    process.exit(1);
+  }
 }
