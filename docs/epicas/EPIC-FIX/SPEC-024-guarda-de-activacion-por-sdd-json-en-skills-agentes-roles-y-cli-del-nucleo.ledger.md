@@ -19,7 +19,7 @@ epica: EPIC-FIX
 | CA-2 | adapters/*/skills/sdd-*/SKILL.md | tools/tests/prosa-gates.test.mjs ("SPEC-024 CA-2") | | ❌ |
 | CA-3 | adapters/*/agents/**/*.md, adapters/*/commands/sdd-init.md | tools/tests/prosa-gates.test.mjs ("SPEC-024 CA-3") | | ❌ |
 | CA-4 | tools/checks/prosa-gates.mjs | tools/tests/prosa-gates.test.mjs ("SPEC-024 CA-4") | | ❌ |
-| CA-5 | | | | ❌ |
+| CA-5 | core/lib/entrypoint.mjs | core/tests/entrypoint.test.mjs ("SPEC-024 CA-5") | | ❌ |
 | CA-6 | | | | ❌ |
 
 ## Veredicto del verificador
