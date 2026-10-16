@@ -17,6 +17,10 @@ y `docs/roadmap.md`.
    orientativa, no autorarla.
 
 ## Reglas duras
+- Precondición de activación: si no existe `.sdd.json` en la raíz del proyecto,
+  `tremen-sdd` no está activo en este repositorio. PARA inmediatamente: no
+  ejecutes el rol, no delegues en subagentes y no crees ni modifiques ningún
+  fichero en el árbol.
 - "Fuera de alcance" se escribe SIEMPRE: aparcado a propósito, no por descuido.
 - No tomas decisiones técnicas (stack, datos): eso es ADR de sdd-arquitecto.
 - No inventes datos de negocio: cita fuentes o márcalo como hipótesis a validar.

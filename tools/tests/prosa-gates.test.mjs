@@ -34,3 +34,18 @@ test('CA-6: la normalización tolera acentos y marcas markdown', () => {
     + '`ni propones cerrar una épica`; el cierre de épica es un gate humano.';
   assert.equal(checkProsaGates(conMarkdown).ok, true);
 });
+
+// SPEC-024 CA-1: Guarda de precondición .sdd.json en los 7 roles del núcleo
+test('SPEC-024 CA-1: los 7 roles del núcleo bajo core/roles/es/ declaran la precondición .sdd.json y orden de parada', () => {
+  const rolesDir = path.join(REPO_ROOT, 'core', 'roles', 'es');
+  const roles = fs.readdirSync(rolesDir).filter((f) => f.startsWith('sdd-') && f.endsWith('.md')).sort();
+  assert.equal(roles.length, 7, 'debe haber exactamente 7 roles en core/roles/es');
+
+  for (const rol of roles) {
+    const contenido = fs.readFileSync(path.join(rolesDir, rol), 'utf8');
+    assert.doesNotMatch(contenido, /si el fichero o el campo no existen/i, `${rol} no debe contener el antipatrón de fallback`);
+    assert.match(contenido, /\.sdd\.json/, `${rol} debe mencionar .sdd.json`);
+    assert.match(contenido, /para(?:r)?\s+inmediatamente/i, `${rol} debe ordenar parar inmediatamente si no existe .sdd.json`);
+    assert.match(contenido, /no\s+ejecutes\s+el\s+rol/i, `${rol} debe prohibir ejecutar el rol sin .sdd.json`);
+  }
+});
