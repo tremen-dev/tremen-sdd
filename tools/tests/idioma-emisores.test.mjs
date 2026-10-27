@@ -5,15 +5,17 @@ import path from 'node:path';
 import os from 'node:os';
 import { REPO_ROOT, walk } from '../checks/_util.mjs';
 import { buildAdapter } from '../build-adapter.mjs';
-import { ejecutaCasos, ejecutaScaffold, VARIANTES } from './golden/_casos.mjs';
+import { ejecutaCasos, ejecutaScaffold, ejecutaBarrera, VARIANTES } from './golden/_casos.mjs';
 
-// SPEC-019 CA-5 — el idioma llega a cada emisor. Árbol temporal (nunca el real)
+// SPEC-025 CA-5 — el idioma llega a cada emisor. Árbol temporal (nunca el real)
 // con un idioma sintético `zz` en las tres raíces del núcleo y en los mensajes de
-// Claude Code y Kimi Code; cada texto `zz` es el `es` con el prefijo '[zz] '. Se
-// construyen los adaptadores de ese árbol y se recorre el MISMO golden de CA-3.
+// cada adaptador que los tiene (Claude Code, Kimi Code y antigravity); cada texto
+// `zz` es el `es` con el prefijo '[zz] '. Se construyen los cuatro adaptadores de
+// ese árbol y se recorre el MISMO golden de CA-3.
 const MARCA = '[zz] ';
-const HARNESSES = ['claude-code', 'kimi-code', 'opencode'];
+const HARNESSES = ['claude-code', 'kimi-code', 'opencode', 'antigravity'];
 const GOLDEN = JSON.parse(fs.readFileSync(path.join(REPO_ROOT, 'tools', 'tests', 'golden', 'es.json'), 'utf8'));
+const GOLDEN_BARRERA = JSON.parse(fs.readFileSync(path.join(REPO_ROOT, 'tools', 'tests', 'golden', 'barrera-es.json'), 'utf8'));
 const GOLDEN_SCAFFOLD = JSON.parse(fs.readFileSync(path.join(REPO_ROOT, 'tools', 'tests', 'golden', 'scaffold-es.json'), 'utf8'));
 
 const catalogoZz = (dirMensajes) => {
@@ -38,8 +40,11 @@ function arbolZz() {
     fs.writeFileSync(destino, fs.readFileSync(f, 'utf8').replace(/^# /m, `# ${MARCA}`));
   }
   catalogoZz(path.join(core, 'mensajes'));
-  catalogoZz(path.join(raiz, 'adapters', 'claude-code', 'mensajes'));
-  catalogoZz(path.join(raiz, 'adapters', 'kimi-code', 'mensajes'));
+  // Catálogos de adaptador, autodescubiertos (ADR-011): opencode no tiene.
+  for (const h of fs.readdirSync(path.join(raiz, 'adapters'))) {
+    const m = path.join(raiz, 'adapters', h, 'mensajes');
+    if (fs.existsSync(path.join(m, 'es'))) catalogoZz(m);
+  }
   const dist = {};
   for (const h of HARNESSES) {
     dist[h] = buildAdapter(h, {
@@ -67,24 +72,27 @@ test('CA-5(b): valida.mjs — errores en zz', () => {
   contiene('valida.varios', ` - ${MARCA}epicas/EPIC-001-x/SPEC-002-mal.md: id 'SPEC-003'`);
 });
 
-test('CA-5(c): motivo de require-spec en zz por Claude Code, Kimi Code y opencode', () => {
+test('CA-5(c): motivo de require-spec en zz por Claude Code, Kimi Code, antigravity y opencode', () => {
   for (const n of ['sin-rama', 'inexistente', 'borrador']) {
     contiene(`require-spec.lib.${n}`, MARCA);
     assert.ok(r[`require-spec.claude.${n}`].startsWith(`deny: ${MARCA}`), n);
     assert.ok(r[`require-spec.kimi.${n}`].startsWith(`deny: ${MARCA}`), n);
+    assert.ok(r[`require-spec.antigravity.${n}`].startsWith(`deny: ${MARCA}`), n);
     assert.ok(r[`require-spec.opencode.${n}`].startsWith(`throw: ${MARCA}`), n);
   }
 });
 
-test('CA-5(d): las dos denegaciones de protege-verdad en zz, en Claude Code y Kimi Code', () => {
+test('CA-5(d): las denegaciones de protege-verdad en zz: dos en Claude Code y Kimi Code, una en antigravity', () => {
   for (const h of ['claude', 'kimi']) {
     assert.ok(r[`protege-verdad.${h}.tablero`].startsWith(`deny: ${MARCA}docs/tablero.md es GENERADO`), h);
     assert.ok(r[`protege-verdad.${h}.verdad`].startsWith(`deny: ${MARCA}'FOUNDATION.md' es un documento de verdad`), h);
   }
+  assert.ok(r['protege-verdad.antigravity.tablero'].startsWith(`deny: ${MARCA}docs/tablero.md es GENERADO`));
 });
 
-test('CA-5(e): el prefijo de calidad en zz', () => {
+test('CA-5(e): el prefijo de calidad en zz, en Claude Code y en antigravity', () => {
   contiene('calidad.artefacto', `${MARCA}[sdd-calidad] Artefacto inconsistente:`);
+  contiene('calidad.antigravity.artefacto', `${MARCA}[sdd-calidad] Artefacto inconsistente:`);
   contiene('calidad.linter', `${MARCA}[sdd-calidad] ruff encontró problemas:`);
 });
 
@@ -110,7 +118,12 @@ test('CA-5(h): scaffold toma los artefactos de core/templates/zz/artefactos/', a
   }
 });
 
-test('CA-5: quitando la marca zz, cada salida es el golden es (solo cambia el texto; ADR-013 §4)', () => {
+test('CA-5(i): en el árbol zz, los cinco CLI sin .sdd.json emiten la barrera en es, idéntica al golden', () => {
+  const b = ejecutaBarrera({ coreDir: core });
+  assert.deepEqual(b, GOLDEN_BARRERA);
+});
+
+test('CA-5: quitando la marca zz, cada salida es el golden es (solo cambia el texto; ADR-016 §4)', () => {
   for (const [caso, esperado] of Object.entries(GOLDEN)) {
     const sinMarca = r[caso].replaceAll(MARCA, '').replace('<html lang="zz">', '<html lang="es">');
     assert.equal(sinMarca, esperado, caso);
