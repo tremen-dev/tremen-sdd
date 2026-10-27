@@ -5,9 +5,17 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { esEntrypoint } from '../lib/entrypoint.mjs';
+import { idiomaDesde, IDIOMA_ORIGEN } from '../lib/idioma.mjs';
+import { mensajesNucleo } from '../lib/mensajes.mjs';
 
 const PLUGIN_ROOT = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
-const TPL = (name) => path.join(PLUGIN_ROOT, 'templates', 'artefactos', name);
+// Plantillas por idioma (ADR-013 §1): core/templates/<idioma>/artefactos/. Si el
+// conjunto del idioma no trae la plantilla, se usa la de `es` (como el fallback
+// por clave de los catálogos); en CI eso no ocurre, lo impide la paridad.
+const TPL = (name, idioma) => {
+  const propia = path.join(PLUGIN_ROOT, 'templates', idioma, 'artefactos', name);
+  return fs.existsSync(propia) ? propia : path.join(PLUGIN_ROOT, 'templates', IDIOMA_ORIGEN, 'artefactos', name);
+};
 const TIPOS = {
   epica: { prefijo: 'EPIC', plantilla: '_epica.md' },
   spec: { prefijo: 'SPEC', plantilla: 'SPEC.md' },
@@ -48,13 +56,15 @@ function findEpicaDir(docsDir, epicaId) {
 }
 
 export function createArtifact({ tipo, titulo, epica, docsDir, fecha, id }) {
+  const idioma = idiomaDesde(docsDir);
+  const t = mensajesNucleo(idioma);
   const cfg = TIPOS[tipo];
-  if (!cfg) throw new Error(`Tipo desconocido: ${tipo}. Usa epica|spec|task|adr.`);
+  if (!cfg) throw new Error(t('scaffold.tipo-desconocido', { tipo }));
   fecha ??= new Date().toISOString().slice(0, 10);
   if (id !== undefined) {
-    if (tipo !== 'epica') throw new Error('--id solo es válido para tipo epica (épicas bucket).');
+    if (tipo !== 'epica') throw new Error(t('scaffold.id-solo-epica'));
     if (!EPICAS_BUCKET.includes(id)) {
-      throw new Error(`--id inválido: ${id}. Debe ser una de las épicas bucket sancionadas: ${EPICAS_BUCKET.join(', ')}.`);
+      throw new Error(t('scaffold.id-invalido', { id, buckets: EPICAS_BUCKET.join(', ') }));
     }
   }
   const idFinal = id ?? nextId(docsDir, cfg.prefijo);
@@ -72,15 +82,15 @@ export function createArtifact({ tipo, titulo, epica, docsDir, fecha, id }) {
     fs.mkdirSync(path.join(docsDir, 'adr'), { recursive: true });
     destino = path.join(docsDir, 'adr', `${idFinal}-${slug}.md`);
   } else {
-    if (!epica) throw new Error(`Un ${tipo} necesita --epica EPIC-NNN.`);
+    if (!epica) throw new Error(t('scaffold.necesita-epica', { tipo }));
     const epicaDir = findEpicaDir(docsDir, epica);
-    if (!epicaDir) throw new Error(`No existe la épica ${epica} bajo ${docsDir}/epicas.`);
+    if (!epicaDir) throw new Error(t('scaffold.epica-inexistente', { epica, docsDir }));
     destino = path.join(epicaDir, `${idFinal}-${slug}.md`);
   }
-  fs.writeFileSync(destino, rellena(fs.readFileSync(TPL(cfg.plantilla), 'utf8')));
+  fs.writeFileSync(destino, rellena(fs.readFileSync(TPL(cfg.plantilla, idioma), 'utf8')));
   if (tipo === 'spec') {
     fs.writeFileSync(destino.replace(/\.md$/, '.ledger.md'),
-      rellena(fs.readFileSync(TPL('SPEC.ledger.md'), 'utf8')));
+      rellena(fs.readFileSync(TPL('SPEC.ledger.md', idioma), 'utf8')));
   }
   return destino;
 }
