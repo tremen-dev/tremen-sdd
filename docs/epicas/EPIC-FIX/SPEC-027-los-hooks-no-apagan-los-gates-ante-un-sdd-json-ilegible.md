@@ -2,10 +2,11 @@
 id: SPEC-027
 tipo: spec
 epica: EPIC-FIX
-estado: borrador
-aprobada-por:
+estado: aprobada
+aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-10-27, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-10-27, por: Alberto Fojo}
 ---
 # SPEC-027 — Los hooks no apagan los gates ante un sdd-json ilegible
 

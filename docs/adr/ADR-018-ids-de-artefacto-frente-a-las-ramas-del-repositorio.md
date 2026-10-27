@@ -1,9 +1,11 @@
 ---
 id: ADR-018
 tipo: adr
-estado: borrador
+estado: aprobada
 historial:
   - {estado: borrador, fecha: 2026-10-27, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-10-27, por: Alberto Fojo}
+aprobada-por: Alberto Fojo
 ---
 # ADR-018: Ids de artefacto frente a las ramas del repositorio
 

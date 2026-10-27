@@ -1,9 +1,11 @@
 ---
 id: ADR-017
 tipo: adr
-estado: borrador
+estado: aprobada
 historial:
   - {estado: borrador, fecha: 2026-10-27, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-10-27, por: Alberto Fojo}
+aprobada-por: Alberto Fojo
 ---
 # ADR-017: Un sdd-json ilegible cierra los gates en lugar de apagarlos
 
