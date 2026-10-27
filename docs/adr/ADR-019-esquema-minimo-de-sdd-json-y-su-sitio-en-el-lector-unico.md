@@ -89,6 +89,22 @@ su comprobación de `.sdd.json`, así que CI ve los mismos errores que los hooks
 - Cuando hay errores de esquema, `valida.mjs` los informa todos, y también el `idioma`
   no soportado si lo hay.
 
+### 5. `sdd-init` avisa en migración
+
+Lo decidió Alberto Fojo el 2026-10-27, en el gate de SPEC-029. En modo migración, si el
+proyecto ya trae un `.sdd.json`, los `sdd-init` que existen (claude-code, opencode y
+antigravity; Kimi Code no tiene) comprueban su esquema antes de copiar plantillas o mover
+ficheros. Si falla, enseñan al humano los campos que fallan y paran. Es el mismo patrón
+que SPEC-025 CA-7(c) aplica a un `idioma` no soportado.
+
+La comprobación se hace ejecutando `valida.mjs`, que usa el lector (§3). La prosa no
+repite la tabla de §1, de modo que el esquema sigue teniendo una sola fuente.
+
+En el mismo gate, el humano confirmó también:
+- la salida uniforme de §2, `linter` incluido;
+- la lista cerrada de `linter`;
+- que para los proyectos existentes basta con avisar en el CHANGELOG.
+
 ## Consecuencias
 ### Positivas
 - Ningún campo mal tipado de los que lee el método termina en fail-open, ni en un error

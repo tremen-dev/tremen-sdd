@@ -21,6 +21,7 @@ epica: EPIC-FIX
 | CA-4 | | | | ❌ |
 | CA-5 | | | | ❌ |
 | CA-6 | | | | ❌ |
+| CA-7 | | | | ❌ |
 
 ## Veredicto del verificador
 <!-- GREEN/RED + fecha + resumen. Lo escribe SOLO sdd-verificador. -->

@@ -128,6 +128,31 @@ Convenciones de los tests:
   3. `CHANGELOG.md` tiene una entrada que dice qué `.sdd.json` antes aceptados pasan a
      cerrar los gates, desde qué versión, y cómo se arreglan (CE-FIX-2).
 
+### CA-7 — `sdd-init` avisa en migración de un esquema inválido antes de copiar plantillas
+- **Given**: los comandos `sdd-init` de los tres adaptadores que lo tienen:
+  `adapters/claude-code/commands/sdd-init.md`, `adapters/opencode/commands/sdd-init.md`
+  y `adapters/antigravity/commands/sdd-init.md`. Kimi Code no tiene `sdd-init`.
+- **When**: se inspecciona el Paso 2 (modo migración) de cada uno, y un test de
+  `tools/tests/` lo comprueba sobre el texto de los tres.
+- **Then**: el Paso 2 de los tres ordena, en este orden:
+  1. si el proyecto ya tiene un `.sdd.json`, comprobar su esquema **antes de copiar
+     plantillas o mover ficheros**, ejecutando el CLI de `valida.mjs` y mirando sus errores
+     de `.sdd.json` (salen antes que los de artefactos, en el orden de SPEC-025 CA-6);
+  2. si hay errores de esquema, enseñarle al humano los campos que fallan, tal como los
+     da `valida.mjs`, y no copiar ni mover nada hasta que el `.sdd.json` se corrija o el
+     humano decida otra cosa de forma explícita;
+  3. no sobrescribir el `.sdd.json` existente con la plantilla para salir del error.
+
+  Además:
+  - ninguno de los tres repite en prosa la tabla de tipos de ADR-019 §1: el esquema
+    tiene una sola fuente, que es el lector;
+  - se mantiene lo que exigen SPEC-024 CA-3.3 (estampar `.sdd.json` antes de llamar a
+    los scripts cuando no existe) y SPEC-025 CA-7(c) (avisar de un `idioma` no
+    soportado);
+  - el test falla, nombrando el fichero, si a alguno de los tres le falta la
+    comprobación previa a la copia o la parada ante errores;
+  - `checkPrecondicionSdd`, `referencias` y `manifiestos` siguen en verde.
+
 ## Entidades y reglas afectadas
 
 - **RN-01**: un campo mal tipado deja de abrir un hueco en el carril de la spec.
@@ -144,9 +169,6 @@ Convenciones de los tests:
 
 - **La semántica de las rutas**: rutas absolutas, con `..` o que no existen en disco. El
   esquema solo mira tipos.
-- **`sdd-init`**: que señale en migración un `.sdd.json` existente con esquema inválido,
-  como SPEC-025 CA-7(c) hace con `idioma`. Lo cubre en parte la barrera de esta spec,
-  porque `valida.mjs` falla tras el primer lote. Ver la nota 4.
 - **Validar que un `linter` explícito esté instalado**. Hoy ya degrada fail-open, por
   diseño de `calidad` (README).
 - **Traducir los mensajes**: entran por el catálogo de SPEC-025 y SPEC-026.
@@ -161,16 +183,14 @@ Convenciones de los tests:
    Su rama se crea desde `origin/main` con SPEC-025 y SPEC-027 dentro. Con SPEC-026 y
    SPEC-028 no hay conflicto de ficheros, salvo la clave nueva en el catálogo si SPEC-026
    ya exige paridad.
-2. **Decisiones a mirar con lupa**:
-   - **Esquema inválido = `ilegible`, no un cuarto estado** (ADR-019 §2). Todos los
-     consumidores harían lo mismo con un cuarto estado, y uno más es una rama más donde
-     equivocarse.
-   - **Salida uniforme**: un `linter` mal escrito deniega las escrituras igual que un
-     `rutasVigiladas` roto. La alternativa es degradar por campo (solo apagar `calidad`),
-     que ADR-019 rechaza porque reintroduce fail-open selectivo.
-   - **`linter` como lista cerrada**. `"biome"` pasa de ignorarse en silencio a bloquear.
-3. **Proyectos ya existentes**: un `.sdd.json` con un tipo mal que hoy "funciona" se
-   cierra al actualizar el plugin. CA-6.3 exige decirlo en el CHANGELOG (CE-FIX-2).
-4. **Pregunta, `sdd-init` en migración**: ¿quieres que señale un esquema inválido antes
-   de copiar plantillas, como SPEC-025 CA-7(c) hace con `idioma`? Si es que sí, añado un
-   CA de prosa a esta spec. Si no, basta con que `valida.mjs` falle tras el primer lote.
+2. **Decisiones del humano (Alberto Fojo, 2026-10-27)**, ya incorporadas:
+   - **Salida uniforme**: un `linter` mal escrito bloquea igual que cualquier otro campo
+     (ADR-019 §2).
+   - **`linter` es una lista cerrada**: `"biome"` bloquea.
+   - **`sdd-init` avisa en migración** de un esquema inválido antes de copiar
+     plantillas (CA-7, ADR-019 §5).
+   - **Proyectos ya existentes**: basta con avisarlo en el CHANGELOG (CA-6.3, CE-FIX-2).
+3. **Sigue abierto a revisión**: que un esquema inválido sea `ilegible` y no un cuarto
+   estado (ADR-019 §2).
+4. **CA-7 se verifica sobre prosa**: `sdd-init` lo ejecuta un modelo. El test comprueba
+   que la instrucción está escrita; no comprueba que el modelo la siga.
