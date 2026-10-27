@@ -31,6 +31,18 @@ tipo: roadmap
   lo que
   convierte esto en épica y no en una tanda de correcciones: **`core/` tiene
   diez checks vigilándolo y la fundación no tiene ninguno**.
+- **EPIC-006 — Multi-idioma: galego y catala** (`aprobada` 2026-10-26): que un proyecto
+  trabaje con tremen-sdd entero en gl o en ca, con roles, plantillas y mensajes
+  de scripts y hooks en su idioma, y que CI bloquee si las traducciones se
+  desalinean del español. Entra en "Ahora" (2026-10-26) **en paralelo** a
+  EPIC-004/005, por decisión del humano: lo pide un proyecto real. Galego va
+  primero; català entra después como prueba de que añadir un idioma es barato.
+  Levanta un aparcamiento de FOUNDATION ("multi-idioma de roles, solo `es`"),
+  así que la primera spec trae un ADR.
+  **Tensión que hay que vigilar**: EPIC-005 todavía está corrigiendo la prosa en
+  es. Lo que se traduzca antes de que cierre habrá que corregirlo tres veces.
+  Conviene que la traducción de roles vaya detrás de las correcciones de
+  EPIC-005 que toquen roles, aunque el mecanismo pueda empezar ya.
 
 ## Cerradas
 - **EPIC-003 — Adaptador opencode con paridad completa** — `hecho` 2026-07-27
