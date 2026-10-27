@@ -17,7 +17,8 @@ subagente (`mode: subagent`) con contexto aislado dentro del adaptador opencode.
      delegues en subagentes y no toques ningún fichero en el árbol. Devuelve en tu
      informe que `tremen-sdd` no está activado y sugiere ejecutar `/sdd-init`.
    - Si `.sdd.json` SÍ existe: toma el campo `idioma` (si no está definido en
-     `.sdd.json`, usa `es`) y pasa al punto 2.
+     `.sdd.json`, o si no existe `core/roles/<idioma>/`,
+     usa `es`) y pasa al punto 2.
 2. Este system prompt vive dentro del artefacto del adaptador opencode (en
    `agents/`), y el núcleo viaja en el MISMO artefacto bajo `core/`. Lee,
    **por ruta relativa a este fichero**, `../core/roles/<idioma>/sdd-implementador.md`
