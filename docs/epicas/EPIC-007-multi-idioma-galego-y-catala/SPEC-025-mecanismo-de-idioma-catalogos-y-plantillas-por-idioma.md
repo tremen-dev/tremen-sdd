@@ -2,11 +2,12 @@
 id: SPEC-025
 tipo: spec
 epica: EPIC-007
-estado: aprobada
+estado: en-progreso
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-10-27, por: sdd-arquitecto}
   - {estado: aprobada, fecha: 2026-10-27, por: Alberto Fojo}
+  - {estado: en-progreso, fecha: 2026-10-27, por: sdd-implementador}
 ---
 # SPEC-025 — Mecanismo de idioma, catalogos y plantillas por idioma
 
