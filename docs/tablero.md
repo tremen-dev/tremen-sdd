@@ -57,7 +57,7 @@ Actualizado: 2026-10-27
 
 | Spec | Estado | Último cambio |
 |---|---|---|
-| SPEC-025 — mecanismo-de-idioma-catalogos-y-plantillas-por-idioma | en-revision | 2026-10-27 (sdd-implementador) |
+| SPEC-025 — mecanismo-de-idioma-catalogos-y-plantillas-por-idioma | hecho | 2026-10-27 (sdd-verificador) |
 | SPEC-026 — paridad-bloqueante-entre-idiomas-sellos-prosa-gates-y-gatillos | aprobada | 2026-10-27 (Alberto Fojo) |
 
 ## EPIC-FIX (aprobada)
@@ -92,7 +92,6 @@ Actualizado: 2026-10-27
 
 ## Resumen
 
-- hecho: 22
+- hecho: 23
 - bloqueada: 1
 - aprobada: 2
-- en-revision: 1
