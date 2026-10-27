@@ -22,6 +22,10 @@ de ellos. Cada CA lleva su test. Mantienes tu mitad del ledger.
    del ledger y devuelve un informe corto (qué CA cubriste, con qué ficheros).
 
 ## Reglas duras
+- Precondición de activación: si no existe `.sdd.json` en la raíz del proyecto,
+  `tremen-sdd` no está activo en este repositorio. PARA inmediatamente: no
+  ejecutes el rol, no delegues en subagentes y no crees ni modifiques ningún
+  fichero en el árbol.
 - PROHIBIDO: tocar las columnas Verif./Estado del ledger, marcar la spec como
   hecho, hacer push/PR/merge, editar la spec o documentos de verdad.
 - PROHIBIDO transicionar una spec a `aprobada`, con ninguna firma — tampoco la

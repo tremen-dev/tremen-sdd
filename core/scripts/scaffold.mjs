@@ -4,7 +4,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { esEntrypoint } from '../lib/entrypoint.mjs';
+import { esEntrypoint, exigirProyectoSdd } from '../lib/entrypoint.mjs';
+import { hoy } from '../lib/fecha.mjs';
 import { idiomaDesde, IDIOMA_ORIGEN } from '../lib/idioma.mjs';
 import { mensajesNucleo } from '../lib/mensajes.mjs';
 
@@ -60,7 +61,7 @@ export function createArtifact({ tipo, titulo, epica, docsDir, fecha, id }) {
   const t = mensajesNucleo(idioma);
   const cfg = TIPOS[tipo];
   if (!cfg) throw new Error(t('scaffold.tipo-desconocido', { tipo }));
-  fecha ??= new Date().toISOString().slice(0, 10);
+  fecha ??= hoy();
   if (id !== undefined) {
     if (tipo !== 'epica') throw new Error(t('scaffold.id-solo-epica'));
     if (!EPICAS_BUCKET.includes(id)) {
@@ -102,6 +103,7 @@ if (esEntrypoint(import.meta.url, process.argv[1])) {
   const id = process.argv.includes('--id') ? process.argv[process.argv.indexOf('--id') + 1] : undefined;
   const dir = process.argv.includes('--dir') ? process.argv[process.argv.indexOf('--dir') + 1] : 'docs';
   try {
+    exigirProyectoSdd(dir);
     console.log(createArtifact({ tipo, titulo, epica, docsDir: path.resolve(dir), id }));
   } catch (e) {
     console.error(`[scaffold] ${e.message}`);

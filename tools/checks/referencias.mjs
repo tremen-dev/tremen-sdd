@@ -53,6 +53,7 @@ export function checkReferencias(distDir) {
   //    del núcleo es por ruta INTERNA relativa al fichero (CA-4 / SPEC-010 CA-5).
   if (esKimi(distDir)) errores.push(...referenciasKimi(distDir));
   else if (esOpencode(distDir)) errores.push(...referenciasOpencode(distDir));
+  else if (esAntigravity(distDir)) errores.push(...referenciasAntigravity(distDir));
 
   return { ok: errores.length === 0, errores };
 }
@@ -66,6 +67,14 @@ function esKimi(distDir) {
 // ¿el artefacto es de opencode? (manifiesto opencode.json en la raíz).
 function esOpencode(distDir) {
   return fs.existsSync(path.join(distDir, 'opencode.json'));
+}
+
+function esAntigravity(distDir) {
+  return fs.existsSync(path.join(distDir, 'plugin.json')) && !fs.existsSync(path.join(distDir, '.claude-plugin'));
+}
+
+function referenciasAntigravity(distDir) {
+  return referenciasInternas(distDir, (n) => /\.(md|json)$/.test(n), 'antigravity');
 }
 
 const RE_SPP = /^\s*system_prompt_path:\s*(.+?)\s*$/m;

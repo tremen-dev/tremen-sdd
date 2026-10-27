@@ -44,12 +44,21 @@ Actualizado: 2026-10-27
 |---|---|---|
 | SPEC-018 — que-puede-afirmar-un-documento-de-verdad-y-como-se-verifica | aprobada | 2026-07-28 (Alberto Fojo) |
 
+## EPIC-006 — adaptador-antigravity-con-paridad-completa (hecho)
+
+| Spec | Estado | Último cambio |
+|---|---|---|
+| SPEC-019 — adaptador-antigravity-base | hecho | 2026-10-14 (sdd-verificador) |
+| SPEC-020 — enforcement-l1-en-antigravity-hooks | hecho | 2026-10-14 (sdd-verificador) |
+| SPEC-021 — integracion-de-checks-de-invariantes-y-runner | hecho | 2026-10-14 (sdd-verificador) |
+| SPEC-022 — scaffolding-con-agents-md-y-documentacion-de-antigravity | hecho | 2026-10-14 (sdd-verificador) |
+
 ## EPIC-007 — multi-idioma-galego-y-catala (aprobada)
 
 | Spec | Estado | Último cambio |
 |---|---|---|
-| SPEC-025 — mecanismo-de-idioma-catalogos-y-plantillas-por-idioma | borrador | 2026-10-27 (sdd-arquitecto) |
-| SPEC-026 — paridad-bloqueante-entre-idiomas-sellos-prosa-gates-y-gatillos | borrador | 2026-10-27 (sdd-arquitecto) |
+| SPEC-025 — mecanismo-de-idioma-catalogos-y-plantillas-por-idioma | aprobada | 2026-10-27 (Alberto Fojo) |
+| SPEC-026 — paridad-bloqueante-entre-idiomas-sellos-prosa-gates-y-gatillos | aprobada | 2026-10-27 (Alberto Fojo) |
 
 ## EPIC-FIX (aprobada)
 
@@ -57,6 +66,8 @@ Actualizado: 2026-10-27
 |---|---|---|
 | SPEC-012 — protege-verdad-deniega-al-dueno-con-prefijo-de-plugin | hecho | 2026-07-25 (sdd-verificador) |
 | SPEC-017 — layout-generalizado-a-todos-los-adaptadores-y-prosa-del-runner-sin-drift | hecho | 2026-07-27 (sdd-verificador) |
+| SPEC-023 — despacho-real-de-subagentes-en-antigravity-con-contexto-aislado | hecho | 2026-10-15 (sdd-verificador) |
+| SPEC-024 — guarda-de-activacion-por-sdd-json-en-skills-agentes-roles-y-cli-del-nucleo | hecho | 2026-10-16 (sdd-verificador) |
 
 ## ADRs
 
@@ -74,11 +85,13 @@ Actualizado: 2026-10-27
 | ADR-010 | aprobada | mecanismo-de-publicacion-del-artefacto-rama-de-publicacion-en-el-repo-fuente | 2026-07-27 (Alberto Fojo) |
 | ADR-011 | aprobada | generalizacion-de-los-checks-de-invariantes-autodescubrimiento-vs-enumeracion | 2026-07-27 (Alberto Fojo) |
 | ADR-012 | aprobada | verificabilidad-mecanica-de-la-prosa-taxonomia-de-afirmaciones-y-mecanismos-de-comprobacion | 2026-07-28 (Alberto Fojo) |
-| ADR-016 | borrador | multi-idioma-del-metodo-resolucion-por-proyecto-catalogos-identificadores-fijos-y-paridad-sellada | 2026-10-27 (sdd-arquitecto) |
+| ADR-013 | aprobada | encaje-de-antigravity-modelo-de-plugins-skills-y-enforcement-pretooluse | 2026-10-14 (Alberto Fojo) |
+| ADR-014 | aprobada | despacho-de-subagentes-en-google-antigravity-con-invoke-subagent-self | 2026-10-15 (Alberto Fojo) |
+| ADR-015 | aprobada | activacion-opt-in-por-repositorio-mediante-sdd-json-en-prosa-y-cli-del-nucleo | 2026-10-16 (Alberto Fojo) |
+| ADR-016 | aprobada | multi-idioma-del-metodo-resolucion-por-proyecto-catalogos-identificadores-fijos-y-paridad-sellada | 2026-10-27 (Alberto Fojo) |
 
 ## Resumen
 
-- hecho: 16
+- hecho: 22
 - bloqueada: 1
-- aprobada: 1
-- borrador: 2
+- aprobada: 3

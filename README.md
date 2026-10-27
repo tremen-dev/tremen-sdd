@@ -12,10 +12,7 @@ proyecto reimplementa a su manera.
 
 Está organizado como un **núcleo agnóstico** (`core/`: scripts, plantillas,
 máquina de estados, prosa de roles) y **adaptadores por harness** de agentes
-(`adapters/<harness>/`). Hoy existe el adaptador de **Claude Code**; el soporte
-multi-harness (Kimi Code y otros) está en curso — ver `EPIC-001` y
-[`docs/arquitectura.md`](docs/arquitectura.md) para el mapa del repo, el paso de
-build y cómo se ejerce el dogfooding.
+(`adapters/<harness>/`). Cuenta con adaptadores para **Claude Code**, **Kimi Code**, **opencode** y **Google Antigravity** — ver [`docs/arquitectura.md`](docs/arquitectura.md) para el mapa del repo, el paso de build y cómo se ejerce el dogfooding.
 
 **Documentación visual** (`site/`, con el design system de tremen.dev):
 
@@ -27,18 +24,33 @@ build y cómo se ejerce el dogfooding.
 
 ## Instalación
 
-El adaptador instalable se **construye** desde el núcleo (el artefacto vive en
-`dist/`, gitignored), así que hoy la instalación pasa por un build local:
+Los adaptadores instalables se **construyen** desde el núcleo (el artefacto vive en
+`dist/`, gitignored), requiriendo un paso de build previo a su uso:
 
 ```bash
 npm install
-npm run build          # ensambla dist/claude-code/ con el núcleo empaquetado dentro
+```
+
+### Claude Code
+```bash
+npm run build          # ensambla dist/claude-code/ con el núcleo dentro
 claude plugin marketplace add D:\ruta\a\tremen-sdd
 claude plugin install tremen-sdd@tremen-sdd
 ```
 
-El `marketplace.json` de la raíz apunta a `./dist/claude-code`, por eso el build
-es previo a instalar. La **distribución para usuarios finales** (publicar el
+### Google Antigravity
+```bash
+npm run build:antigravity  # ensambla dist/antigravity/ con el núcleo dentro
+
+# Opción A: a nivel de workspace (.agents/plugins/ en tu proyecto)
+mkdir -p <proyecto>/.agents/plugins/tremen-sdd
+cp -r dist/antigravity/. <proyecto>/.agents/plugins/tremen-sdd/
+
+# Opción B: instalación global
+cp -r dist/antigravity/. ~/.gemini/config/plugins/tremen-sdd/
+```
+
+Para Kimi Code y opencode, ver los procedimientos detallados en [`docs/arquitectura.md`](docs/arquitectura.md). La **distribución para usuarios finales** (publicar el
 artefacto construido o un registro remoto) aún no está resuelta: es trabajo de
 `EPIC-001`. Detalles del build y del dogfooding en
 [`docs/arquitectura.md`](docs/arquitectura.md).
@@ -146,7 +158,8 @@ npm run check             # build → 6 checks → valida (lo mismo que corre CI
 ```
 .sdd.json                  # config: idioma, rutasVigiladas, gates activos
 FOUNDATION.md              # documento de verdad de alto nivel
-CLAUDE.md                  # bloque tremen-sdd (no pisa un CLAUDE.md existente)
+CLAUDE.md                  # bloque tremen-sdd para Claude Code (no pisa el existente)
+AGENTS.md                  # bloque tremen-sdd para Antigravity y agentes compatibles
 docs/
   roadmap.md
   tablero.md                # GENERADO — solo por core/scripts/tablero.mjs
@@ -164,7 +177,7 @@ docs/
     ADR-NNN-slug.md
 ```
 
-Las plantillas de origen viven en `core/templates/` (`FOUNDATION.md`, `CLAUDE.md`,
+Las plantillas de origen viven en `core/templates/` (`FOUNDATION.md`, `CLAUDE.md`, `AGENTS.md`,
 `sdd.json`, `roadmap.md`, `fundacion/*`, `artefactos/{_epica,SPEC,SPEC.ledger,TASK,ADR}.md`)
 y `templates/rol-dominio.md` para generar roles de dominio a demanda.
 

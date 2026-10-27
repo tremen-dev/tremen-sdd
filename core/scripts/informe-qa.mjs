@@ -4,7 +4,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { parseFrontmatter } from '../lib/frontmatter.mjs';
-import { esEntrypoint } from '../lib/entrypoint.mjs';
+import { esEntrypoint, exigirProyectoSdd } from '../lib/entrypoint.mjs';
 import { idiomaDesde } from '../lib/idioma.mjs';
 import { mensajesNucleo } from '../lib/mensajes.mjs';
 
@@ -40,7 +40,12 @@ pre{background:#f6f6f6;padding:1rem;overflow-x:auto;white-space:pre-wrap}</style
 
 if (esEntrypoint(import.meta.url, process.argv[1])) {
   try {
-    const { html, out } = renderReport(path.resolve(process.argv[2]));
+    const ruta = process.argv[2] ? path.resolve(process.argv[2]) : process.cwd();
+    exigirProyectoSdd(ruta);
+    if (!process.argv[2]) {
+      throw new Error('Uso: informe-qa.mjs <ruta-a-SPEC-NNN.ledger.md>');
+    }
+    const { html, out } = renderReport(ruta);
     fs.writeFileSync(out, html);
     console.log(`[informe-qa] ${out}`);
   } catch (e) {

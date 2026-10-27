@@ -4,7 +4,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { parseFrontmatter } from '../lib/frontmatter.mjs';
-import { esEntrypoint } from '../lib/entrypoint.mjs';
+import { esEntrypoint, exigirProyectoSdd } from '../lib/entrypoint.mjs';
+import { hoy } from '../lib/fecha.mjs';
 import { idiomaDesde } from '../lib/idioma.mjs';
 import { mensajesNucleo } from '../lib/mensajes.mjs';
 
@@ -13,7 +14,7 @@ function leer(ruta) {
 }
 
 export function renderBoard(docsDir, fecha) {
-  fecha ??= new Date().toISOString().slice(0, 10);
+  fecha ??= hoy();
   // Etiquetas en el idioma del proyecto; los identificadores (estados, IDs) no
   // se traducen (ADR-013 §4).
   const t = mensajesNucleo(idiomaDesde(docsDir));
@@ -61,7 +62,13 @@ export function renderBoard(docsDir, fecha) {
 }
 
 if (esEntrypoint(import.meta.url, process.argv[1])) {
-  const dir = path.resolve(process.argv.includes('--dir') ? process.argv[process.argv.indexOf('--dir') + 1] : 'docs');
-  fs.writeFileSync(path.join(dir, 'tablero.md'), renderBoard(dir));
-  console.log(mensajesNucleo(idiomaDesde(dir))('tablero.cli-regenerado', { ruta: path.join(dir, 'tablero.md') }));
+  try {
+    const dir = path.resolve(process.argv.includes('--dir') ? process.argv[process.argv.indexOf('--dir') + 1] : 'docs');
+    exigirProyectoSdd(dir);
+    fs.writeFileSync(path.join(dir, 'tablero.md'), renderBoard(dir));
+    console.log(mensajesNucleo(idiomaDesde(dir))('tablero.cli-regenerado', { ruta: path.join(dir, 'tablero.md') }));
+  } catch (e) {
+    console.error(`[tablero] ${e.message}`);
+    process.exit(1);
+  }
 }

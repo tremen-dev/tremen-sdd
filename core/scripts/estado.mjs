@@ -4,7 +4,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { parseFrontmatter, stringifyFrontmatter } from '../lib/frontmatter.mjs';
-import { esEntrypoint } from '../lib/entrypoint.mjs';
+import { esEntrypoint, exigirProyectoSdd } from '../lib/entrypoint.mjs';
+import { hoy } from '../lib/fecha.mjs';
 import { idiomaDesde } from '../lib/idioma.mjs';
 import { mensajesNucleo } from '../lib/mensajes.mjs';
 
@@ -57,7 +58,7 @@ export function fueAprobadaPorHumano(data) {
 }
 
 export function transition(ruta, nuevoEstado, por, fecha) {
-  fecha ??= new Date().toISOString().slice(0, 10);
+  fecha ??= hoy();
   const { data, body } = parseFrontmatter(fs.readFileSync(ruta, 'utf8'));
   const t = mensajesNucleo(idiomaDesde(path.dirname(path.resolve(ruta))));
   const actual = data.estado;
@@ -86,6 +87,7 @@ if (esEntrypoint(import.meta.url, process.argv[1])) {
   const [ruta, nuevoEstado] = process.argv.slice(2);
   const por = process.argv.includes('--por') ? process.argv[process.argv.indexOf('--por') + 1] : 'desconocido';
   try {
+    exigirProyectoSdd(ruta ?? process.cwd());
     transition(ruta, nuevoEstado, por);
     const t = mensajesNucleo(idiomaDesde(path.dirname(path.resolve(ruta))));
     console.log(t('estado.cli-exito', { ruta, nuevo: nuevoEstado, por }));

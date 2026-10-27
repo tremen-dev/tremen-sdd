@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { parseFrontmatter } from '../lib/frontmatter.mjs';
 import { TRANSITIONS } from './estado.mjs';
-import { esEntrypoint } from '../lib/entrypoint.mjs';
+import { esEntrypoint, exigirProyectoSdd } from '../lib/entrypoint.mjs';
 import { idiomaDesde, idiomasSoportados, leerIdiomaDeclarado, buscarRaizProyecto } from '../lib/idioma.mjs';
 import { mensajesNucleo } from '../lib/mensajes.mjs';
 
@@ -72,14 +72,20 @@ export function validate(docsDir) {
 }
 
 if (esEntrypoint(import.meta.url, process.argv[1])) {
-  const dir = process.argv.includes('--dir') ? process.argv[process.argv.indexOf('--dir') + 1] : 'docs';
-  const docsDir = path.resolve(dir);
-  const t = mensajesNucleo(idiomaDesde(docsDir));
-  const errIdioma = errorIdioma(docsDir);
-  const errores = [...(errIdioma ? [errIdioma] : []), ...validate(docsDir)];
-  if (errores.length) {
-    console.error(t('valida.cli-errores', { n: errores.length }) + '\n' + errores.map((e) => ` - ${e}`).join('\n'));
+  try {
+    const dir = process.argv.includes('--dir') ? process.argv[process.argv.indexOf('--dir') + 1] : 'docs';
+    const docsDir = path.resolve(dir);
+    exigirProyectoSdd(docsDir);
+    const t = mensajesNucleo(idiomaDesde(docsDir));
+    const errIdioma = errorIdioma(docsDir);
+    const errores = [...(errIdioma ? [errIdioma] : []), ...validate(docsDir)];
+    if (errores.length) {
+      console.error(t('valida.cli-errores', { n: errores.length }) + '\n' + errores.map((e) => ` - ${e}`).join('\n'));
+      process.exit(1);
+    }
+    console.log(t('valida.cli-ok'));
+  } catch (e) {
+    console.error(`[valida] ${e.message}`);
     process.exit(1);
   }
-  console.log(t('valida.cli-ok'));
 }
