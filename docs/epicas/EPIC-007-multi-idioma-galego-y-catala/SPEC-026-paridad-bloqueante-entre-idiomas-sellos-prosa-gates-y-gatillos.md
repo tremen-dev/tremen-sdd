@@ -1,25 +1,36 @@
 ---
-id: SPEC-020
+id: SPEC-026
 tipo: spec
-epica: EPIC-006
-estado: aprobada
-aprobada-por: Alberto Fojo
+epica: EPIC-007
+estado: borrador
+aprobada-por:
 historial:
-  - {estado: borrador, fecha: 2026-10-26, por: sdd-arquitecto}
-  - {estado: aprobada, fecha: 2026-10-27, por: Alberto Fojo}
+  - {estado: borrador, fecha: 2026-10-27, por: sdd-arquitecto}
 ---
-# SPEC-020 — Paridad bloqueante entre idiomas: sellos, prosa-gates y gatillos
+# SPEC-026 — Paridad bloqueante entre idiomas: sellos, prosa-gates y gatillos
+
+> **Procedencia (renumeración, 2026-10-27).** Esta spec se aprobó primero como
+> **SPEC-020** en la rama `ft/SPEC-019-mecanismo-de-idioma-catalogos-y-plantillas-por-idioma`:
+> `borrador` el 2026-10-26 y `aprobada` el 2026-10-27, firmada por Alberto Fojo.
+> No llegó a implementarse.
+>
+> `main` asignó después SPEC-020 a antigravity. Se renumera como artefacto nuevo en
+> `borrador`, creado con `scaffold.mjs`, porque su texto cambia:
+> - el cuarto adaptador;
+> - la guarda `.sdd.json` de ADR-015 dentro de `prosa-gates` por idioma (CA-4).
+>
+> El historial de SPEC-020 no se reescribe: sigue en git.
 
 ## Problema
 
-Tras SPEC-019 ya hay dónde poner una traducción, pero nada impide que se desalinee. Si
+Tras SPEC-025 ya hay dónde poner una traducción, pero nada impide que se desalinee. Si
 en `es` se corrige un rol y en `gl` no, todo sigue en verde. Lo mismo si una traducción
 convierte `` `borrador` `` en `` `rascuño` `` y rompe el contrato con los scripts. Y
 `prosa-gates` verifica con expresiones regulares en castellano la regla de seguridad del
 documentalista, así que en otro idioma esa garantía desaparece sin avisar. El humano
-decidió en el gate de EPIC-006 que la paridad **la bloquea CI**, no que solo avise.
+decidió en el gate de EPIC-007 que la paridad **la bloquea CI**, no que solo avise.
 
-Esta spec implementa ADR-013 §3 y §5:
+Esta spec implementa ADR-016 §3 y §5:
 - el check de paridad, que exige inventario, invariantes estructurales y sello de origen;
 - el script de resellado explícito;
 - `prosa-gates` por idioma;
@@ -31,7 +42,7 @@ además la **prueba anticipada de CE-2**: añadir un idioma no toca lógica. **N
 nada.**
 
 Reglas citadas:
-- **RN-01 y RN-10**: el trabajo va en una rama `ft/SPEC-020-…`.
+- **RN-01 y RN-10**: el trabajo va en una rama `ft/SPEC-026-…`.
 - **RN-03**: el check corre en pre-commit y en CI sin harness.
 - **RN-06**: el cuerpo de cada rol sigue teniendo una fuente única por idioma.
 - **RN-11**: la canónica de la description queda intacta.
@@ -47,12 +58,12 @@ Reglas citadas:
 ## Criterios de aceptación
 
 Convenciones de los tests:
-- Se usan las de SPEC-019 (fixture `zz` en un árbol temporal, nunca en el árbol real).
+- Se usan las de SPEC-025 (fixture `zz` en un árbol temporal, nunca en el árbol real).
 - La fixture `zz` **alineada y sellada** es una copia de cada conjunto `es` con la prosa
   marcada fuera de las invariantes, más su `_sellos.json` generado con el script de
   resellado.
 
-### Check de paridad (CE-3, ADR-013 §5)
+### Check de paridad (CE-3, ADR-016 §5)
 
 - **CA-1 — Inventario.** Dada la fixture `zz` alineada y sellada, el check pasa. A partir
   de ella, se aplica por separado cada una de estas mutaciones:
@@ -95,19 +106,27 @@ Convenciones de los tests:
   - (e) un fichero `es` que solo cambia los saltos de línea (CRLF en lugar de LF) no
     rompe el sello.
 
-### Verificaciones que dependen del idioma (ADR-013 §3 y §5)
+### Verificaciones que dependen del idioma (ADR-016 §3 y §5)
 
-- **CA-4 — `prosa-gates` por idioma.** Dado el árbol tras el cambio:
+- **CA-4 — `prosa-gates` por idioma, también para la guarda `.sdd.json`.** Dado el
+  árbol tras el cambio:
   - Los patrones de `prosa-gates` viven en `core/roles/es/_prosa-gates.json`, con los
-    mismos tres ids de regla de hoy.
+    tres ids de regla de hoy para el documentalista, más los patrones de antipatrón y
+    de parada que usa `checkPrecondicionSdd` (ADR-015 §2.4).
   - El check pasa sobre el árbol real, y `tools/tests/prosa-gates.test.mjs` no pierde
-    ninguna aserción.
+    ninguna aserción (incluidas las de SPEC-024).
+  - `checkPrecondicionSdd` recorre los roles de **cada** idioma soportado con los
+    patrones de ese idioma. Las skills y los agents de los adaptadores, que están en
+    castellano (ADR-016 §3), siguen verificándose con los patrones `es`.
 
   Con la fixture `zz`, el check sale en rojo y nombra el idioma en cada uno de estos
   casos:
   - (a) falta `_prosa-gates.json`;
   - (b) falta un id de regla;
-  - (c) un patrón no casa con `core/roles/zz/sdd-documentalista.md`.
+  - (c) un patrón no casa con `core/roles/zz/sdd-documentalista.md`;
+  - (d) a un rol `zz` le falta la orden de parada sin `.sdd.json`, según el patrón de
+    parada de `zz`;
+  - (e) un rol `zz` contiene el antipatrón de fallback de `zz`.
 - **CA-5 — Gatillos de la description.** Dado el árbol tras el cambio:
   - Existe `core/roles/es/_gatillos.json`, con una lista no vacía de frases para cada
     rol de `core/roles/es/`.
@@ -129,7 +148,8 @@ Convenciones de los tests:
 - **CA-7 — Añadir un idioma no toca lógica (CE-2 anticipado).** Se parte de una copia
   temporal del repo y se añade la fixture `zz` **solo** bajo rutas de conjunto de
   idioma: `core/roles/zz/`, `core/templates/zz/`, `core/mensajes/zz/` y
-  `adapters/*/mensajes/zz/`. Los gatillos `zz` se eligen entre frases que ya están en
+  `adapters/*/mensajes/zz/`, para cada adaptador que tenga catálogo propio
+  (claude-code, kimi-code y antigravity). Los gatillos `zz` se eligen entre frases que ya están en
   las `larga` actuales. Entonces:
   - todos los pasos de `tools/check.mjs` y la suite completa pasan;
   - un proyecto con `"idioma": "zz"` resuelve a `zz`, y `valida.mjs` lo acepta;
@@ -142,22 +162,24 @@ Convenciones de los tests:
 
 ## Entidades y reglas afectadas
 
-- **ADR-013**: esta spec implementa §3 (gatillos) y §5 (paridad y `prosa-gates`).
+- **ADR-016**: esta spec implementa §3 (gatillos) y §5 (paridad y `prosa-gates`).
 - **ADR-005 / RN-11**: la canónica sigue en `core/roles/es/_descripciones.json`. Los
   gatillos son un dato nuevo que la complementa; no la sustituye.
 - **ADR-011**: las raíces del núcleo se enumeran y las de adaptador se autodescubren; el
   verde dice qué miró; el check no se ablanda.
+- **ADR-015** (SPEC-024): `checkPrecondicionSdd` pasa a ser por idioma en los roles,
+  sin cambiar su regla.
 - **ADR-012**: los marcadores `<!-- sdd:… -->` son invariante de paridad.
 - Términos de `docs/fundacion/dominio.md`: rol, fuente única, hook, adaptador. Los
   términos nuevos van en el Anexo B.
 
 ## Dependencias y coordinación
 
-- **Depende de SPEC-019.** Necesita el formato de catálogo, la disposición de conjuntos
+- **Depende de SPEC-025.** Necesita el formato de catálogo, la disposición de conjuntos
   (`core/templates/<idioma>/`, `core/mensajes/<idioma>/`, `adapters/*/mensajes/<idioma>/`),
   la función de idiomas soportados y el rechazo de `valida.mjs` ante un idioma no
   soportado (en CA-7). La spec puede aprobarse en paralelo, pero no pasa a `en-progreso`
-  hasta que SPEC-019 esté en `hecho`.
+  hasta que SPEC-025 esté en `hecho`.
 - **`tools/check.mjs` (`PASOS`)**: la spec #2 de EPIC-005 también añade un paso. Es un
   conflicto de merge trivial, y lo resuelve quien llegue segundo.
 - **Documentos de verdad**: esta spec no los toca. La RN y los términos del Anexo se
@@ -167,9 +189,9 @@ Convenciones de los tests:
 
 - Cualquier contenido gl o ca, incluida la tabla de terminología.
 - El RED de CE-3 sobre un PR real: lo hace la spec de contenido gl.
-- Exenciones a las invariantes: en la primera versión no hay ninguna (ADR-013,
+- Exenciones a las invariantes: en la primera versión no hay ninguna (ADR-016,
   Consecuencias).
-- Localizar las descriptions más allá de los gatillos (ADR-013 §3, aceptado en el gate).
+- Localizar las descriptions más allá de los gatillos (ADR-016 §3, aceptado en el gate).
 
 ## Notas para el gate humano
 
@@ -178,7 +200,7 @@ Convenciones de los tests:
 2. El sello certifica que alguien declaró la traducción al día, no que lo esté. El
    resellado es explícito y fichero a fichero, y queda visible en el diff. Contra un
    resellado sin traducir, la defensa es la revisión humana (CE-5).
-3. El desglose del resto de la épica está en ADR-013 §7.
+3. El desglose del resto de la épica está en ADR-016 §7.
 
 ## Anexo A — RN propuesta (texto para el gate; NO se aplica sin firma)
 
@@ -196,7 +218,7 @@ Convenciones de los tests:
 > prefijos de id, nombres `sdd-*`, disposición de ficheros, rama y flags.
 >
 > Verificable: el check de paridad falla nombrando idioma, raíz y fichero o clave.
-> Fijada por ADR-013.
+> Fijada por ADR-016.
 
 Numeración: el siguiente RN libre después de la RN-12 de SPEC-018.
 

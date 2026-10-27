@@ -1,41 +1,54 @@
 ---
-id: ADR-013
+id: ADR-016
 tipo: adr
-estado: aprobada
+estado: borrador
 historial:
-  - {estado: borrador, fecha: 2026-10-26, por: sdd-arquitecto}
-  - {estado: aprobada, fecha: 2026-10-27, por: Alberto Fojo}
-aprobada-por: Alberto Fojo
+  - {estado: borrador, fecha: 2026-10-27, por: sdd-arquitecto}
 ---
-# ADR-013: Multi-idioma del metodo: resolucion por proyecto, catalogos, identificadores fijos y paridad sellada
+# ADR-016: Multi-idioma del metodo: resolucion por proyecto, catalogos, identificadores fijos y paridad sellada
 
+- **Procedencia (renumeración, 2026-10-27).** Este ADR se escribió y se aprobó como
+  **ADR-013** en la rama `ft/SPEC-019-mecanismo-de-idioma-catalogos-y-plantillas-por-idioma`:
+  - borrador el 2026-10-26;
+  - `aprobada` por Alberto Fojo el 2026-10-27 (último estado en el commit `dc66b00`).
+
+  La rama no llegó a mergearse. Mientras tanto, `main` asignó ADR-013 a *encaje de
+  antigravity* y ocupó ADR-014 y ADR-015. Por decisión del humano (2026-10-27), se
+  renumera a ADR-016 como **artefacto nuevo en `borrador`**: su contenido cambia frente a
+  `main` (cuarto adaptador, raíz unificada con ADR-015), así que la aprobación anterior no
+  cubre este texto. El historial del ADR-013 de la rama no se reescribe: sigue en git.
+  Todo "ADR-013" que aparezca abajo es el de `main` (antigravity).
 - Deciders: propone sdd-arquitecto; aprueba el humano (Alberto Fojo, pendiente de
-  aprobación formal). El 2026-10-27, Alberto Fojo revisó el borrador y fijó cinco
-  decisiones, que este texto ya incorpora:
+  aprobación formal de este texto). El 2026-10-27, Alberto Fojo revisó el borrador
+  anterior y fijó cinco decisiones, que este texto mantiene:
   1. acepta el recorte de §3;
-  2. parte la spec en SPEC-019 y SPEC-020;
+  2. parte la spec en SPEC-025 y SPEC-026;
   3. el texto de FOUNDATION/vision y las dos citas de rutas de plantilla son de la
      spec #3 de EPIC-005;
   4. `valida.mjs` y `sdd-init` rechazan un `idioma` no soportado (§2);
   5. la tabla de terminología gl la firma solo él (§6, §7).
 
-  Restricciones de partida fijadas por el humano en el gate de EPIC-006
+  Restricciones de partida fijadas por el humano en el gate de EPIC-007
   (2026-10-26), que este ADR no reabre: el alcance es "todo" (roles, plantillas,
-  mensajes de scripts del núcleo y de los hooks de los tres adaptadores); la paridad
+  mensajes de scripts del núcleo y de los hooks de todos los adaptadores, que hoy son
+  cuatro: claude-code, kimi-code, opencode y antigravity); la paridad
   es-gl-ca la **bloquea** CI; galego primero y català después como prueba de que
   añadir un idioma no toca lógica; en paralelo a EPIC-004 y EPIC-005; la calidad
   lingüística la valida Alberto Fojo.
-- Specs relacionadas (EPIC-006):
-  - **SPEC-019** implementa §1 y §2: mecanismo de idioma, catálogos, plantillas por
+- Specs relacionadas (EPIC-007):
+  - **SPEC-025** implementa §1 y §2: mecanismo de idioma, catálogos, plantillas por
     idioma y rechazo del idioma no soportado.
-  - **SPEC-020** implementa §3 y §5: check de paridad, sellos, `prosa-gates` por idioma
-    y gatillos. Depende de SPEC-019.
+  - **SPEC-026** implementa §3 y §5: check de paridad, sellos, `prosa-gates` por idioma
+    y gatillos. Depende de SPEC-025.
   - Las specs de contenido gl y ca lo consumen.
   **Reinterpreta** el Alcance de `FOUNDATION.md` ("Fuera: el multi-idioma de roles
   (solo `es`)") y la línea equivalente de `docs/fundacion/vision.md`. **Complementa**
   ADR-004 (núcleo agnóstico, `${SDD_ROOT}`), ADR-005 (canónica única de la
-  `description`), ADR-011 (autodescubrimiento frente a enumeración) y ADR-012 (qué
-  puede afirmar un documento de verdad). **No supersede** a ninguno (RN-04).
+  `description`), ADR-011 (autodescubrimiento frente a enumeración), ADR-012 (qué
+  puede afirmar un documento de verdad), ADR-013 (encaje de antigravity: sus hooks son
+  emisores más) y **ADR-015** (activación opt-in por `.sdd.json`). De ADR-015 toma la
+  raíz del proyecto y la barrera de los CLI, y matiza un caso que ADR-015 no trata: el
+  `idioma` declarado pero no soportado (§2). **No supersede** a ninguno (RN-04).
 
 ## Contexto
 
@@ -52,14 +65,23 @@ cambiarlo:
   `<html lang="es">`) y `core/lib/require-spec.mjs`, cuyo `motivo` es lo que el humano
   y el agente leen cuando un hook o el pre-commit deniega. Medido el 2026-10-26: del
   orden de 45 sitios de emisión en 12 ficheros, sumando los hooks.
-- **Mensajes propios de los hooks de adaptador**: `protege-verdad` de Claude Code y de
-  Kimi Code (redactados distinto entre sí), el prefijo de `calidad`. opencode no emite
-  texto propio: reenvía el `motivo` del núcleo.
+- **Mensajes propios de los hooks de adaptador**:
+  - `protege-verdad` de Claude Code y de Kimi Code, con redacciones distintas entre sí;
+  - `protege-verdad` de antigravity, que solo protege el tablero y usa el mismo texto
+    que Claude Code;
+  - el prefijo de `calidad` en Claude Code y en antigravity. En antigravity va a stderr
+    y sale siempre con código 0.
+
+  opencode no emite texto propio: reenvía el `motivo` del núcleo. El `require-spec` de
+  los cuatro adaptadores reenvía ese mismo `motivo`.
+- **La barrera fail-closed de ADR-015** (`exigirProyectoSdd` en
+  `core/lib/entrypoint.mjs`) emite un mensaje propio cuando falta `.sdd.json`. Lo emite
+  justo cuando no hay ningún idioma que leer.
 - **Plantillas** en `core/templates/` sin dimensión de idioma: `scaffold.mjs` las lee
   de una ruta fija y `sdd-init` las copia de otra.
 - **La description de disparo** (RN-11, ADR-005): canónica en
   `core/roles/es/_descripciones.json`, copiada y verificada en las superficies de los
-  tres adaptadores. El harness la lee **literal al instalar el plugin**, una sola vez
+  cuatro adaptadores. El harness la lee **literal al instalar el plugin**, una sola vez
   por máquina, no por proyecto. Un dato que conviene no perder: la forma `larga` ya es
   **bilingüe** (es + en: "write the spec", "record this decision as an ADR").
 - **Checks que dependen del idioma**: `prosa-gates.mjs` verifica con expresiones
@@ -95,7 +117,7 @@ puede reinterpretarlas").
 EPIC-005**, con este ADR aprobado como respaldo (gate, 2026-10-27). Esas mismas frases
 están en su inventario de discrepancias, y así se editan una sola vez, aplicando a la vez
 este ADR y RN-12: sin "por ahora" ni "solo `es`", que son de la clase P de ADR-012.
-Ninguna spec de EPIC-006 edita documentos de verdad.
+Ninguna spec de EPIC-007 edita documentos de verdad.
 
 ### 1. Qué es un idioma soportado: conjuntos de idioma autodescubiertos
 
@@ -114,16 +136,45 @@ conjunto no se deriva sin conocer la estructura, autodescubrimiento donde sí).
   fichero de código enumera idiomas, así que la pasada de català no tiene dónde tocar
   lógica (CE-2).
 - **Las plantillas pasan a `core/templates/<idioma>/`**, y las de hoy se mueven a
-  `core/templates/es/`, en simetría con `core/roles/<idioma>/`. Se queda fuera de los
+  `core/templates/es/`, en simetría con `core/roles/<idioma>/`. Eso incluye
+  `AGENTS.md`, la plantilla que añadió el adaptador antigravity. Se queda fuera de los
   conjuntos `core/templates/sdd.json`, que es configuración y no prosa.
 
 ### 2. (a) Cómo resuelven el idioma scripts y hooks: catálogo de mensajes con fallback a `es`
 
 - **Resolución, una sola función del núcleo** (`core/lib/`): lee `idioma` de `.sdd.json`
-  en la raíz del proyecto. Si falta el fichero, falta el campo o el valor no es un idioma
-  soportado, devuelve `es`. Esta resolución **no avisa**: los hooks son fail-open y
-  silenciosos, y un aviso en cada salida sería ruido. El idioma es **uno por proyecto**
-  y vale para todo: no hay resolución por fichero ni por rol.
+  en la raíz del proyecto. Si falta el fichero, falta el campo, el JSON es ilegible o el
+  valor no es un idioma soportado, devuelve `es`. Esta resolución **no avisa**: los hooks
+  son fail-open y silenciosos, y un aviso en cada salida sería ruido. El idioma es **uno
+  por proyecto** y vale para todo: no hay resolución por fichero ni por rol.
+- **La raíz del proyecto es la de ADR-015, sin duplicarla.** La resolución del idioma
+  localiza la raíz con `buscarRaizSdd` (`core/lib/entrypoint.mjs`, ADR-015 §3.1): sube
+  desde la ruta objetivo y corta en `.git`. No existe una segunda búsqueda de raíz.
+  - Los CLI del núcleo ya obtienen esa raíz de `exigirProyectoSdd` y se la pasan a la
+    resolución.
+  - Los hooks, que trabajan sobre el `cwd` del payload, usan la misma función desde ese
+    `cwd`.
+- **Cómo encaja con la barrera de ADR-015**, caso por caso:
+  - **Sin `.sdd.json`**: los CLI se paran en la barrera antes de que el idioma importe, y
+    los hooks permiten en silencio, como hoy. El mensaje de la barrera entra en el
+    catálogo del núcleo, pero se emite **siempre en `es`**, porque sin `.sdd.json` no hay
+    idioma que leer. Solo la API programática (los tests) llega a resolver con raíz nula,
+    y obtiene `es`.
+  - **`.sdd.json` sin `idioma`**: `es`. Coincide con ADR-015 §2.
+  - **`idioma` no soportado**: la barrera deja pasar, porque el fichero existe. Hooks y
+    scripts hablan `es` y `valida.mjs` falla (ver abajo). Este es el caso que ADR-015 no
+    trata, y aquí se fija también para la prosa: los bootstraps de skills y agents de los
+    cuatro adaptadores usan `es` cuando no existe `core/roles/<idioma>/`. La redacción
+    debe esquivar el antipatrón que caza `checkPrecondicionSdd`: la ausencia de
+    `.sdd.json` sigue siendo una parada, nunca un fallback.
+  - **`.sdd.json` ilegible** (JSON corrupto): la barrera deja pasar y el resolutor da
+    `es`. Pero los hooks de los cuatro adaptadores tratan un `readConfig` nulo como
+    "proyecto sin SDD" y **permiten todo**, así que el proyecto se declara activo y tiene
+    todos los gates L1 apagados. Es el estado más peligroso de los cuatro. Por eso
+    `valida.mjs` **falla** también ante un `.sdd.json` ilegible, con un error que nombra el
+    fichero y dice que los hooks lo tratan como ausente. Esto sustituye el "trátalo como
+    sin fichero" de la ronda anterior (F-SPEC-019-10). Este ADR no cambia el fail-open de
+    los hooks (ADR-002).
 - **Un `idioma` no soportado se señala en dos sitios, y solo en esos dos** (gate,
   2026-10-27):
   - **`valida.mjs` falla**: código de salida distinto de 0, con un error que nombra el
@@ -138,11 +189,12 @@ conjunto no se deriva sin conocer la estructura, autodescubrimiento donde sí).
       proyecto bien creado.
 
     El fallo vive en el CLI de `valida.mjs`, no en `validateFile`: el hook `calidad` y el
-    pre-commit no cambian, y los hooks siguen sin hablar del idioma. Si falta el campo o
-    falta el fichero, no hay error (CE-4).
+    pre-commit no cambian, y los hooks siguen sin hablar del idioma. Si falta el campo, no
+    hay error (CE-4). Si falta el fichero, se aplica la barrera de ADR-015, que ya existía.
   - **`sdd-init` se niega**: ofrece como idiomas los subdirectorios de `core/roles/`, no
     acepta ni escribe otro valor, y en migración señala un `idioma` no soportado ya
-    existente antes de copiar plantillas.
+    existente antes de copiar plantillas. Aplica a los tres adaptadores que tienen
+    `sdd-init`: claude-code, opencode y antigravity. Kimi Code no lo tiene.
 - **Catálogo por idioma**: `core/mensajes/<idioma>/mensajes.json`, un objeto plano
   `clave → plantilla`. La clave lleva el espacio del emisor (`estado.transicion-no-permitida`,
   `require-spec.rama-no-es-de-spec`, `tablero.cabecera`) y nunca nombra un harness. La
@@ -156,8 +208,9 @@ conjunto no se deriva sin conocer la estructura, autodescubrimiento donde sí).
   `adapters/<harness>/mensajes/<idioma>/mensajes.json`, con el mismo formato y la misma
   función del núcleo, a la que el adaptador pasa su propio directorio (dependencia
   adaptador → núcleo, RN-02). Meterlos en el catálogo del núcleo exigiría claves por
-  harness dentro de `core/`, o unificar las dos redacciones de `protege-verdad`, que
-  cambiaría el texto de hoy (CE-4).
+  harness dentro de `core/`, o unificar las redacciones de `protege-verdad`, que
+  cambiaría el texto de hoy (CE-4). Hoy tienen catálogo propio claude-code, kimi-code y
+  antigravity. opencode no lo necesita.
 - **`es` byte a byte**: el catálogo `es` reproduce **literalmente** los textos actuales.
   Extraer a catálogo es un refactor sin cambio observable para un proyecto `es` o sin
   `idioma`.
@@ -188,7 +241,7 @@ Por eso:
   instrucciones, no le llegan al usuario como salida del método. El rol que carga el
   bootstrap sí está en el idioma del proyecto.
 - **Esto rebaja el alcance de la épica, y el recorte está aceptado.** El Alcance de
-  EPIC-006 dice "los 7 roles en gl/ca, *incluidas sus descriptions de disparo*". Aquí eso
+  EPIC-007 dice "los 7 roles en gl/ca, *incluidas sus descriptions de disparo*". Aquí eso
   queda en "incluidos sus **gatillos**". Lo que el usuario ve en el listado de skills del
   harness sigue en castellano, más los gatillos de su idioma. La épica ya avisaba de que
   esto podía recortar CE-1.
@@ -259,8 +312,19 @@ ADR-012.
 Cada conjunto de roles declara los suyos en `core/roles/<idioma>/_prosa-gates.json`, con
 los **mismos ids de regla** en todos los idiomas (los ids los fija el check, los patrones
 los pone cada idioma). El check falla si un idioma soportado no tiene el fichero o le
-falta una regla. Sin esto, una traducción podría perder la regla de seguridad del
-documentalista sin que nada avisara.
+falta una regla.
+
+Esto vale para **las dos** verificaciones de `prosa-gates`:
+- la regla del documentalista;
+- la guarda de precondición `.sdd.json` de ADR-015 (`checkPrecondicionSdd`). Hoy solo
+  recorre `core/roles/es/` y busca expresiones en castellano: el antipatrón de fallback
+  y la orden de "parar inmediatamente".
+
+Con este cambio, cada idioma soportado declara sus patrones de antipatrón y de parada,
+y el check recorre `core/roles/<idioma>/` para todos. Las skills y los agents de los
+adaptadores siguen en castellano (§3) y conservan los patrones `es`. Sin esto, una
+traducción podría perder la regla de seguridad del documentalista o la parada sin
+`.sdd.json` sin que nada avisara.
 
 El check se cablea en `tools/check.mjs` y, por tanto, en el pre-commit (L2) y en CI (L3).
 Con solo `es` presente pasa en verde y su mensaje de éxito dice que no ha comparado nada
@@ -291,30 +355,30 @@ código. La tensión que anota el roadmap ("traducir antes de que EPIC-005 cierr
 corregir tres veces") no existe para roles ni plantillas por esa vía. Además, el sello
 hace que cualquier corrección posterior en `es` se vea, en vez de esconderse.
 
-- **Puede empezar ya**: SPEC-019 entera, SPEC-020 en cuanto SPEC-019 esté en `hecho`, y
+- **Puede empezar ya**: SPEC-025 entera, SPEC-026 en cuanto SPEC-025 esté en `hecho`, y
   la tabla de terminología gl.
 - **Puntos de contacto reales**: todos se resuelven del lado de EPIC-005 (gate,
-  2026-10-27), y ninguna spec de EPIC-006 toca documentos de verdad.
+  2026-10-27), y ninguna spec de EPIC-007 toca documentos de verdad.
   1. **El texto de `FOUNDATION.md` y `vision.md`** (§0): lo reescribe la spec #3 de
      EPIC-005.
   2. **Dos rutas de plantilla citadas en documentos del inventario de EPIC-005.** Mover
-     las plantillas (SPEC-019) cambia la fila `tarea` de `docs/fundacion/dominio.md` y
+     las plantillas (SPEC-025) cambia la fila `tarea` de `docs/fundacion/dominio.md` y
      `README.md` §plantillas. También las actualiza la spec #3 de EPIC-005.
      - Hasta entonces, esas citas apuntan a la ruta antigua.
      - Si el check M1 de EPIC-005 (su spec #2) entra antes que su spec #3, la cita de
        `dominio.md` le dará un rojo legítimo, y el orden de merge debe tenerlo en cuenta.
-  3. **`tools/check.mjs` (`PASOS`)**: SPEC-020 y la spec #2 de EPIC-005 añaden cada una
+  3. **`tools/check.mjs` (`PASOS`)**: SPEC-026 y la spec #2 de EPIC-005 añaden cada una
      un paso. Es un conflicto de merge trivial.
 - **Conviene esperar**: traducir roles en masa debería ir detrás de cualquier spec
   **abierta** que reescriba prosa de `core/roles/es/`. No es por EPIC-005: es para no
   pagar el resellado dos veces.
 
-**Desglose de EPIC-006 resultante** (sustituye al orientativo de la épica):
+**Desglose de EPIC-007 resultante** (sustituye al orientativo de la épica):
 
 | # | Spec | Cubre |
 |---|---|---|
-| 1 | SPEC-019 — mecanismo de idioma, catálogos y plantillas por idioma | CE-4 |
-| 2 | SPEC-020 — paridad bloqueante: sellos, `prosa-gates` y gatillos | CE-3 (con fixtures), CE-2 anticipado |
+| 1 | SPEC-025 — mecanismo de idioma, catálogos y plantillas por idioma | CE-4 |
+| 2 | SPEC-026 — paridad bloqueante: sellos, `prosa-gates` y gatillos | CE-3 (con fixtures), CE-2 anticipado |
 | 3 | Terminología y contenido gl. Primer entregable: la tabla de terminología gl, firmada solo por Alberto Fojo antes de traducir en masa y sin segundo revisor nativo. Después: roles, plantillas, catálogos y gatillos gl, y el RED de CE-3 en un PR real. | CE-3 (cierre), CE-5 (gl) |
 | 4 | Pipeline real en gl | CE-1 |
 | 5 | Contenido ca y pipeline real en ca, con el diff de rutas como criterio | CE-2, CE-5 (ca) |
@@ -347,11 +411,11 @@ hace que cualquier corrección posterior en `es` se vea, en vez de esconderse.
   castellano y listado de skills en castellano. Revisable si un harness llegara a permitir
   descriptions por proyecto.
 - **Las plantillas cambian de ruta** (`core/templates/` → `core/templates/es/`). Hay que
-  actualizar `scaffold.mjs`, los dos `sdd-init` y los tests (SPEC-019). Hay además dos
+  actualizar `scaffold.mjs`, los tres `sdd-init` y los tests (SPEC-025). Hay además dos
   citas en documentos del inventario de EPIC-005, que quedan desfasadas hasta que su
   spec #3 las corrija (§7).
 - **RN nueva**: el invariante de paridad debe ser citable igual que RN-11. Se propone en
-  SPEC-020 (anexo), sin aplicar, y se numera con el siguiente RN libre cuando entre la
+  SPEC-026 (anexo), sin aplicar, y se numera con el siguiente RN libre cuando entre la
   RN-12 de SPEC-018. Los términos nuevos (*idioma soportado*, *conjunto de idioma*,
   *catálogo de mensajes*, *sello de origen*) deben entrar en `dominio.md` antes de usarse
   en la fundación.
@@ -378,6 +442,15 @@ hace que cualquier corrección posterior en `es` se vea, en vez de esconderse.
 - **(a) Meter el fallo en `validateFile`**, para que salga también en `calidad` y en el
   pre-commit. Rechazada: haría hablar a los hooks del idioma y bloquearía commits por una
   cuestión de configuración que no tiene que ver con el artefacto.
+- **(a) Que el resolutor tenga su propia búsqueda de raíz** (la de la ronda anterior:
+  primer ancestro con `.sdd.json`, sin corte en `.git`). Rechazada: habría dos
+  definiciones de "raíz del proyecto" que divergen con repos anidados. Un script podría
+  pasar la barrera con una raíz y leer el idioma de otra, y se rompería la simetría que
+  fija ADR-015.
+- **(a) Tratar un `.sdd.json` ilegible como "sin fichero" en `valida.mjs`** (código 0,
+  como en la ronda anterior). Rechazada: con ADR-015, un fichero que existe pero no se
+  puede leer significa que el proyecto se declara activo y tiene los gates L1 apagados.
+  Callarlo esconde justo el estado más peligroso.
 - **(b) Un build por idioma** (`dist/claude-code-gl`). Rechazada: multiplica los artefactos
   publicados de EPIC-004, obliga a elegir idioma al instalar y choca con que el idioma sea
   del proyecto: la misma máquina tiene proyectos es y gl con un solo plugin instalado.

@@ -1,5 +1,5 @@
 ---
-id: EPIC-006
+id: EPIC-007
 tipo: epica
 estado: aprobada
 historial:
@@ -7,7 +7,7 @@ historial:
   - {estado: aprobada, fecha: 2026-10-26, por: Alberto Fojo}
 aprobada-por: Alberto Fojo
 ---
-# EPIC-006 — Multi-idioma: galego y catala
+# EPIC-007 — Multi-idioma: galego y catala
 
 ## Objetivo
 Que un proyecto pueda trabajar con tremen-sdd **entero en galego o en català**:
@@ -26,6 +26,11 @@ sdd-arquitecto. Esta épica lo encarga, no lo decide.
 **Orden**: galego primero. Con gl se construye el mecanismo; català entra como
 segunda pasada. Esa segunda pasada demuestra lo que de verdad se promete: que
 añadir un idioma es traducir, no reconstruir.
+
+**Renumeración (2026-10-27)**: se aprobó como EPIC-006 en una rama sin
+mergear. Al integrar `main`, ese id ya lo tenía la épica del adaptador
+antigravity, así que esta pasa a EPIC-007. "Todos los adaptadores" incluye ya
+antigravity.
 
 ## Criterios de éxito
 - **CE-1 — Pipeline completo en galego.** Con `"idioma": "gl"` en `.sdd.json`,
@@ -53,7 +58,7 @@ añadir un idioma es traducir, no reconstruir.
     descriptions de disparo.
   - Las plantillas de `core/templates/` en gl/ca: FOUNDATION, fundación, roadmap,
     artefactos y CLAUDE.md.
-  - Los mensajes que escriben los scripts del núcleo y los hooks de los tres
+  - Los mensajes que escriben los scripts del núcleo y los hooks de todos los
     adaptadores (estado.mjs, tablero, scaffold, valida, require-spec,
     protege-verdad, calidad…).
   - `sdd-init` ofrece y acepta `gl` y `ca`.

@@ -31,7 +31,7 @@ tipo: roadmap
   lo que
   convierte esto en épica y no en una tanda de correcciones: **`core/` tiene
   diez checks vigilándolo y la fundación no tiene ninguno**.
-- **EPIC-006 — Multi-idioma: galego y catala** (`aprobada` 2026-10-26): que un proyecto
+- **EPIC-007 — Multi-idioma: galego y catala** (`aprobada` 2026-10-26): que un proyecto
   trabaje con tremen-sdd entero en gl o en ca, con roles, plantillas y mensajes
   de scripts y hooks en su idioma, y que CI bloquee si las traducciones se
   desalinean del español. Entra en "Ahora" (2026-10-26) **en paralelo** a

@@ -44,12 +44,12 @@ Actualizado: 2026-10-27
 |---|---|---|
 | SPEC-018 — que-puede-afirmar-un-documento-de-verdad-y-como-se-verifica | aprobada | 2026-07-28 (Alberto Fojo) |
 
-## EPIC-006 — multi-idioma-galego-y-catala (aprobada)
+## EPIC-007 — multi-idioma-galego-y-catala (aprobada)
 
 | Spec | Estado | Último cambio |
 |---|---|---|
-| SPEC-019 — mecanismo-de-idioma-catalogos-y-plantillas-por-idioma | hecho | 2026-10-27 (sdd-verificador) |
-| SPEC-020 — paridad-bloqueante-entre-idiomas-sellos-prosa-gates-y-gatillos | aprobada | 2026-10-27 (Alberto Fojo) |
+| SPEC-025 — mecanismo-de-idioma-catalogos-y-plantillas-por-idioma | borrador | 2026-10-27 (sdd-arquitecto) |
+| SPEC-026 — paridad-bloqueante-entre-idiomas-sellos-prosa-gates-y-gatillos | borrador | 2026-10-27 (sdd-arquitecto) |
 
 ## EPIC-FIX (aprobada)
 
@@ -74,10 +74,11 @@ Actualizado: 2026-10-27
 | ADR-010 | aprobada | mecanismo-de-publicacion-del-artefacto-rama-de-publicacion-en-el-repo-fuente | 2026-07-27 (Alberto Fojo) |
 | ADR-011 | aprobada | generalizacion-de-los-checks-de-invariantes-autodescubrimiento-vs-enumeracion | 2026-07-27 (Alberto Fojo) |
 | ADR-012 | aprobada | verificabilidad-mecanica-de-la-prosa-taxonomia-de-afirmaciones-y-mecanismos-de-comprobacion | 2026-07-28 (Alberto Fojo) |
-| ADR-013 | aprobada | multi-idioma-del-metodo-resolucion-por-proyecto-catalogos-identificadores-fijos-y-paridad-sellada | 2026-10-27 (Alberto Fojo) |
+| ADR-016 | borrador | multi-idioma-del-metodo-resolucion-por-proyecto-catalogos-identificadores-fijos-y-paridad-sellada | 2026-10-27 (sdd-arquitecto) |
 
 ## Resumen
 
-- hecho: 17
+- hecho: 16
 - bloqueada: 1
-- aprobada: 2
+- aprobada: 1
+- borrador: 2

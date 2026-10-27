@@ -1,13 +1,14 @@
 ---
-id: SPEC-020
+id: SPEC-026
 tipo: ledger
-epica: EPIC-006
+epica: EPIC-007
 ---
-# Ledger — SPEC-020 Paridad bloqueante entre idiomas: sellos, prosa-gates y gatillos
+# Ledger — SPEC-026 Paridad bloqueante entre idiomas: sellos, prosa-gates y gatillos
 
 ## Resumen
 - Fase: <!-- refleja el estado de la spec; la fuente de verdad es el frontmatter de la spec -->
-- Rama: `ft/SPEC-020-paridad-bloqueante-entre-idiomas-sellos-prosa-gates-y-gatillos`
+- Rama: `ft/SPEC-026-paridad-bloqueante-entre-idiomas-sellos-prosa-gates-y-gatillos` (todavía no existe).
+- **Procedencia**: antes era SPEC-020 (aprobada el 2026-10-27, sin implementar). Su ledger estaba vacío y no se hereda nada.
 
 ## Matriz de criterios de aceptación
 <!-- Escritores: sdd-implementador rellena Implementado y Test; sdd-verificador rellena Verif. y Estado. Nunca al revés. -->
@@ -21,10 +22,10 @@ epica: EPIC-006
 <!-- GREEN/RED + fecha + resumen. Lo escribe SOLO sdd-verificador. -->
 
 ## Evidencia visual
-<!-- Tabla CA → captura en _qa/SPEC-020/. Informe HTML opcional: _qa/SPEC-020/informe.html -->
+<!-- Tabla CA → captura en _qa/SPEC-026/. Informe HTML opcional: _qa/SPEC-026/informe.html -->
 
 ## Salvedades / follow-ups
-<!-- IDs F-SPEC-020-1, F-SPEC-020-2… con destino (spec futura o EPIC-MEJORA). -->
+<!-- IDs F-SPEC-026-1, F-SPEC-026-2… con destino (spec futura o EPIC-MEJORA). -->
 
 ## Cómo retomar (handoff)
 <!-- Estado real del trabajo para la siguiente sesión: qué está hecho, qué falta, dónde seguir. -->
