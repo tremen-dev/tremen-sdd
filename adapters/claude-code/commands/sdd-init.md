@@ -48,7 +48,7 @@ Comprueba si el proyecto ya tiene estructura SDD de alguna variante conocida:
    EPIC/SPEC/ADR-NNN, movimientos a docs/epicas y docs/adr, mapeo de estados
    antiguos a los canónicos, frontmatters a añadir) y los riesgos.
 3. NO MUEVAS NADA sin aprobación explícita del humano. Con aprobación, estampa
-   primero `.sdd.json` (kit base del Paso 1.2) para respetar la barrera CLI de los
+   primero `.sdd.json` (kit base del Paso 1.2, con un `idioma` soportado) para respetar la barrera CLI de los
    scripts del núcleo, migra por lotes pequeños ejecutando
    `node "${CLAUDE_PLUGIN_ROOT}/core/scripts/valida.mjs"` tras cada lote, y
    termina completando el kit base restante y regenerando el tablero con

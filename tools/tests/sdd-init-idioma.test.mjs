@@ -5,9 +5,9 @@ import path from 'node:path';
 import { REPO_ROOT } from '../checks/_util.mjs';
 import { idiomasSoportados } from '../../core/lib/idioma.mjs';
 
-// SPEC-019 CA-7 — sdd-init no acepta ni genera un `idioma` no soportado
-// (ADR-013 §2). sdd-init lo ejecuta un LLM: se verifica sobre su prosa.
-const INITS = [['claude-code', '${CLAUDE_PLUGIN_ROOT}/core'], ['opencode', '../core']];
+// SPEC-025 CA-7 — sdd-init no acepta ni genera un `idioma` no soportado
+// (ADR-016 §2). sdd-init lo ejecuta un LLM: se verifica sobre su prosa.
+const INITS = [['claude-code', '${CLAUDE_PLUGIN_ROOT}/core'], ['opencode', '../core'], ['antigravity', '../core']];
 const lee = (h) => fs.readFileSync(path.join(REPO_ROOT, 'adapters', h, 'commands', 'sdd-init.md'), 'utf8');
 const seccion = (s, titulo) => {
   const i = s.indexOf(titulo);
@@ -35,10 +35,20 @@ for (const [h, raiz] of INITS) {
     const p2 = seccion(lee(h), '## Paso 2');
     const paso0 = p2.indexOf('0. Si ya existe `.sdd.json`, comprueba su `idioma` antes de nada.');
     assert.ok(paso0 >= 0, 'el paso 0 de migración revisa el idioma');
-    assert.ok(paso0 < p2.indexOf('1. Inventaría'), 'la revisión va antes que nada más');
-    const texto = p2.slice(paso0, p2.indexOf('1. Inventaría'));
+    const paso1 = p2.indexOf('\n1. ', paso0);
+    assert.ok(paso1 > paso0, 'la revisión va antes que nada más');
+    const texto = p2.slice(paso0, paso1);
     assert.match(texto, /idioma no soportado/);
     assert.match(texto, /pide\s+que elija uno antes de copiar plantillas/);
+  });
+
+  test(`CA-7(d) ${h}: en migración estampa .sdd.json, ya con un idioma soportado, antes de llamar a los scripts`, () => {
+    const p2 = seccion(lee(h), '## Paso 2');
+    const estampa = p2.indexOf('estampa');
+    assert.ok(estampa >= 0);
+    const resto = p2.slice(estampa);
+    assert.match(resto, /^estampa\s+primero `\.sdd\.json` \(kit base del Paso 1\.2, con un `idioma` soportado\)/);
+    assert.ok(resto.indexOf('.sdd.json') < resto.indexOf('valida.mjs'), 'estampa .sdd.json antes de valida.mjs');
   });
 }
 
