@@ -12,6 +12,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { mensajesNucleo, IDIOMA_ORIGEN } from './mensajes.mjs';
 
 // ¿El módulo cuyo import.meta.url es `importMetaUrl` se ejecutó como entrypoint
 // (`node <argv1>`)? Devuelve false si no hay argv1 (módulo sólo importado).
@@ -52,10 +53,8 @@ export function buscarRaizSdd(desde = process.cwd()) {
 export function exigirProyectoSdd(desde = process.cwd()) {
   const raiz = buscarRaizSdd(desde);
   if (!raiz) {
-    throw new Error(
-      `No se encontró '.sdd.json' en ${path.resolve(desde)} ni en sus ancestros. ` +
-      `tremen-sdd no está activo en este proyecto. Ejecuta '/sdd-init' para inicializarlo.`
-    );
+    // Sin .sdd.json no hay idioma que leer: la barrera habla siempre `es` (ADR-016 §2).
+    throw new Error(mensajesNucleo(IDIOMA_ORIGEN)('entrypoint.sin-sdd-json', { ruta: path.resolve(desde) }));
   }
   return raiz;
 }

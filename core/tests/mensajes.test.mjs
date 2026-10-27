@@ -6,7 +6,7 @@ import os from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { traductor, interpola } from '../lib/mensajes.mjs';
 
-// SPEC-019 CA-2 — catálogo de mensajes con fallback por clave (ADR-013 §2).
+// SPEC-025 CA-2 — catálogo de mensajes con fallback por clave (ADR-016 §2).
 const CORE = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 
 function catalogos() {

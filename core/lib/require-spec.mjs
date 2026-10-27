@@ -6,7 +6,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { parseFrontmatter } from './frontmatter.mjs';
-import { resolverIdioma } from './idioma.mjs';
+import { idiomaDesde } from './idioma.mjs';
 import { mensajesNucleo } from './mensajes.mjs';
 
 const RAMA_SPEC_RE = /^ft\/(SPEC-\d{3})-/;
@@ -35,7 +35,7 @@ export function buscarSpec(cwd, id) {
 // { permitido: boolean, motivo?: string, specId?: string, spec?: string }.
 // motivo explica por qué se deniega (para el mensaje del gate).
 export function evaluarRequireSpec({ rama, cwd }) {
-  const t = mensajesNucleo(resolverIdioma(cwd));
+  const t = mensajesNucleo(idiomaDesde(cwd));
   const specId = parseSpecId(rama);
   if (!specId) {
     return {

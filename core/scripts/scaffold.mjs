@@ -10,7 +10,7 @@ import { idiomaDesde, IDIOMA_ORIGEN } from '../lib/idioma.mjs';
 import { mensajesNucleo } from '../lib/mensajes.mjs';
 
 const PLUGIN_ROOT = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
-// Plantillas por idioma (ADR-013 §1): core/templates/<idioma>/artefactos/. Si el
+// Plantillas por idioma (ADR-016 §1): core/templates/<idioma>/artefactos/. Si el
 // conjunto del idioma no trae la plantilla, se usa la de `es` (como el fallback
 // por clave de los catálogos); en CI eso no ocurre, lo impide la paridad.
 const TPL = (name, idioma) => {

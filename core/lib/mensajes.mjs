@@ -1,4 +1,4 @@
-// Catálogos de mensajes por idioma (ADR-013 §2). Un catálogo es
+// Catálogos de mensajes por idioma (ADR-016 §2). Un catálogo es
 // <dir>/<idioma>/mensajes.json: un objeto plano `clave -> plantilla`, con
 // interpolación `{nombre}` (nunca `${…}`, reservado bajo core/ a `${SDD_*}`,
 // ADR-004). La MISMA función sirve al núcleo (core/mensajes/) y a cada
@@ -8,9 +8,13 @@
 // la de `es`. Una clave que no existe ni en `es` es un error de programación.
 import fs from 'node:fs';
 import path from 'node:path';
-import { CORE_DIR, IDIOMA_ORIGEN } from './idioma.mjs';
+import { fileURLToPath } from 'node:url';
 
-export const MENSAJES_NUCLEO = path.join(CORE_DIR, 'mensajes');
+// `es` es el idioma origen (ADR-016 §1). Vive aquí, y idioma.mjs lo reexporta,
+// para que entrypoint.mjs (barrera de ADR-015) lea el catálogo sin un ciclo de
+// módulos: mensajes.mjs no importa nada del núcleo.
+export const IDIOMA_ORIGEN = 'es';
+export const MENSAJES_NUCLEO = path.join(path.dirname(path.dirname(fileURLToPath(import.meta.url))), 'mensajes');
 
 function leeCatalogo(dir, idioma) {
   try {

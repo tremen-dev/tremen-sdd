@@ -5,7 +5,7 @@ import path from 'node:path';
 import { parseFrontmatter } from '../lib/frontmatter.mjs';
 import { TRANSITIONS } from './estado.mjs';
 import { esEntrypoint, exigirProyectoSdd } from '../lib/entrypoint.mjs';
-import { idiomaDesde, idiomasSoportados, leerIdiomaDeclarado, buscarRaizProyecto } from '../lib/idioma.mjs';
+import { idiomaDesde, idiomasSoportados, leerIdiomaDeclarado, resolverIdioma } from '../lib/idioma.mjs';
 import { mensajesNucleo } from '../lib/mensajes.mjs';
 
 const ID_RE = /^(EPIC|SPEC|TASK|ADR)-(\d{3}|FIX|INFRA|MANT|MEJORA)/;
@@ -41,16 +41,19 @@ export function validateFile(ruta, docsDir) {
   return errores;
 }
 
-// Error si el .sdd.json del proyecto declara un `idioma` no soportado (ADR-013
-// §2), o null. Solo lo usa el CLI: validateFile no cambia y los hooks siguen sin
-// hablar del idioma. Sin fichero o sin campo, no hay error (CE-4).
-export function errorIdioma(docsDir) {
-  const raiz = buscarRaizProyecto(docsDir);
+// Error si el .sdd.json de `raiz` (la de buscarRaizSdd / exigirProyectoSdd) es
+// ilegible o declara un `idioma` no soportado (ADR-016 §2), o null. Solo lo usa
+// el CLI: validateFile no cambia y los hooks siguen sin hablar del idioma. Sin
+// campo `idioma`, no hay error (CE-4); sin fichero, actúa antes la barrera.
+export function errorIdioma(raiz) {
   if (!raiz) return null;
-  const { declarado, valor } = leerIdiomaDeclarado(raiz);
+  const { existe, fichero, declarado, valor } = leerIdiomaDeclarado(raiz);
+  const t = mensajesNucleo(resolverIdioma(raiz));
+  // Ilegible: los hooks lo tratan como ausente y apagan todos los gates.
+  if (existe && !fichero) return t('valida.sdd-json-ilegible');
   const soportados = idiomasSoportados();
   if (!declarado || (typeof valor === 'string' && soportados.includes(valor))) return null;
-  return mensajesNucleo(idiomaDesde(docsDir))('valida.idioma-no-soportado', {
+  return t('valida.idioma-no-soportado', {
     valor: JSON.stringify(valor) ?? String(valor), soportados: soportados.join(', '),
   });
 }
@@ -75,9 +78,10 @@ if (esEntrypoint(import.meta.url, process.argv[1])) {
   try {
     const dir = process.argv.includes('--dir') ? process.argv[process.argv.indexOf('--dir') + 1] : 'docs';
     const docsDir = path.resolve(dir);
-    exigirProyectoSdd(docsDir);
-    const t = mensajesNucleo(idiomaDesde(docsDir));
-    const errIdioma = errorIdioma(docsDir);
+    // Orden (SPEC-025 CA-6): barrera de ADR-015, después .sdd.json, después artefactos.
+    const raiz = exigirProyectoSdd(docsDir);
+    const t = mensajesNucleo(resolverIdioma(raiz));
+    const errIdioma = errorIdioma(raiz);
     const errores = [...(errIdioma ? [errIdioma] : []), ...validate(docsDir)];
     if (errores.length) {
       console.error(t('valida.cli-errores', { n: errores.length }) + '\n' + errores.map((e) => ` - ${e}`).join('\n'));

@@ -1,4 +1,5 @@
 {
+  "entrypoint.sin-sdd-json": "No se encontró '.sdd.json' en {ruta} ni en sus ancestros. tremen-sdd no está activo en este proyecto. Ejecuta '/sdd-init' para inicializarlo.",
   "estado.desconocido": "Estado actual desconocido: '{actual}'.",
   "estado.transicion-no-permitida": "Transición no permitida: {actual} -> {nuevo}. Permitidas: {permitidas}.",
   "estado.ninguna-terminal": "(ninguna, estado terminal)",
@@ -14,6 +15,7 @@
   "valida.historial-no-coincide": "{rel}: la última entrada de historial no coincide con estado '{estado}'. Usa scripts/estado.mjs para transicionar.",
   "valida.epica-inexistente": "{rel}: referencia a épica inexistente '{epica}'",
   "valida.idioma-no-soportado": ".sdd.json: `idioma` no soportado: {valor}. Idiomas soportados: {soportados}.",
+  "valida.sdd-json-ilegible": ".sdd.json: no es un JSON legible. Los hooks lo tratan como ausente: el proyecto parece activo, pero todos los gates están apagados.",
   "valida.cli-errores": "[valida] {n} error(es):",
   "valida.cli-ok": "[valida] OK",
   "scaffold.tipo-desconocido": "Tipo desconocido: {tipo}. Usa epica|spec|task|adr.",
@@ -30,6 +32,7 @@
   "tablero.titulo-resumen": "## Resumen",
   "tablero.cli-regenerado": "[tablero] regenerado {ruta}",
   "informe-qa.sin-qa": "No existe {qaDir} (_qa/{id}). Ejecuta primero la verificación con capturas.",
+  "informe-qa.uso": "Uso: informe-qa.mjs <ruta-a-SPEC-NNN.ledger.md>",
   "informe-qa.titulo": "Informe QA — {id}",
   "informe-qa.encabezado": "Informe de verificación — {id}",
   "informe-qa.generado": "Generado por tremen-sdd (informe-qa.mjs). Épica: {epica}.",

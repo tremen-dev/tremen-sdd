@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { parseFrontmatter } from '../lib/frontmatter.mjs';
 import { esEntrypoint, exigirProyectoSdd } from '../lib/entrypoint.mjs';
-import { idiomaDesde } from '../lib/idioma.mjs';
+import { idiomaDesde, resolverIdioma } from '../lib/idioma.mjs';
 import { mensajesNucleo } from '../lib/mensajes.mjs';
 
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -41,9 +41,9 @@ pre{background:#f6f6f6;padding:1rem;overflow-x:auto;white-space:pre-wrap}</style
 if (esEntrypoint(import.meta.url, process.argv[1])) {
   try {
     const ruta = process.argv[2] ? path.resolve(process.argv[2]) : process.cwd();
-    exigirProyectoSdd(ruta);
+    const raiz = exigirProyectoSdd(ruta);
     if (!process.argv[2]) {
-      throw new Error('Uso: informe-qa.mjs <ruta-a-SPEC-NNN.ledger.md>');
+      throw new Error(mensajesNucleo(resolverIdioma(raiz))('informe-qa.uso'));
     }
     const { html, out } = renderReport(ruta);
     fs.writeFileSync(out, html);

@@ -21,9 +21,10 @@ export function coreRelPaths(files) {
   return files.filter((p) => p.startsWith('core/')).map((p) => p.slice('core/'.length));
 }
 
-// Catálogo de mensajes propio de un adaptador (ADR-013 §2, SPEC-019): comparte
+// Catálogo de mensajes propio de un adaptador (ADR-016 §2, SPEC-025): comparte
 // por diseño el nombre relativo del catálogo del núcleo (mensajes/<idioma>/
-// mensajes.json) y no es copia suya. Exención cerrada a esa única forma.
+// mensajes.json) y no es copia suya. Exención cerrada a esa única forma, para
+// cualquier adaptador (claude-code, kimi-code, antigravity…): es por forma, no por harness.
 const CATALOGO_ADAPTADOR = /^adapters\/[^/]+\/mensajes\/[^/]+\/mensajes\.json$/;
 
 export function checkFuenteUnica(files, coreRel = coreRelPaths(files)) {
