@@ -1,7 +1,7 @@
 <!-- GENERADO por tremen-sdd (scripts/tablero.mjs). NO EDITAR A MANO. -->
 # Tablero
 
-Actualizado: 2026-07-28
+Actualizado: 2026-10-27
 
 ## EPIC-001 — tremen-sdd-multi-harness (hecho)
 
@@ -44,6 +44,13 @@ Actualizado: 2026-07-28
 |---|---|---|
 | SPEC-018 — que-puede-afirmar-un-documento-de-verdad-y-como-se-verifica | aprobada | 2026-07-28 (Alberto Fojo) |
 
+## EPIC-006 — multi-idioma-galego-y-catala (aprobada)
+
+| Spec | Estado | Último cambio |
+|---|---|---|
+| SPEC-019 — mecanismo-de-idioma-catalogos-y-plantillas-por-idioma | hecho | 2026-10-27 (sdd-verificador) |
+| SPEC-020 — paridad-bloqueante-entre-idiomas-sellos-prosa-gates-y-gatillos | aprobada | 2026-10-27 (Alberto Fojo) |
+
 ## EPIC-FIX (aprobada)
 
 | Spec | Estado | Último cambio |
@@ -67,9 +74,10 @@ Actualizado: 2026-07-28
 | ADR-010 | aprobada | mecanismo-de-publicacion-del-artefacto-rama-de-publicacion-en-el-repo-fuente | 2026-07-27 (Alberto Fojo) |
 | ADR-011 | aprobada | generalizacion-de-los-checks-de-invariantes-autodescubrimiento-vs-enumeracion | 2026-07-27 (Alberto Fojo) |
 | ADR-012 | aprobada | verificabilidad-mecanica-de-la-prosa-taxonomia-de-afirmaciones-y-mecanismos-de-comprobacion | 2026-07-28 (Alberto Fojo) |
+| ADR-013 | aprobada | multi-idioma-del-metodo-resolucion-por-proyecto-catalogos-identificadores-fijos-y-paridad-sellada | 2026-10-27 (Alberto Fojo) |
 
 ## Resumen
 
-- hecho: 16
+- hecho: 17
 - bloqueada: 1
-- aprobada: 1
+- aprobada: 2
