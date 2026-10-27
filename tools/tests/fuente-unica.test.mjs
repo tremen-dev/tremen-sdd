@@ -15,6 +15,25 @@ test('CA-9(b): assets que solo comparten nombre de carpeta (roles/) no son falso
   assert.equal(checkFuenteUnica(files).ok, true);
 });
 
+// SPEC-019 (ADR-013 §2): el catálogo propio de un adaptador vive en
+// adapters/<harness>/mensajes/<idioma>/mensajes.json, mismo nombre relativo que
+// el del núcleo POR DISEÑO. No es copia del núcleo; nada más queda exento.
+test('SPEC-019: el catálogo de mensajes de un adaptador no es una copia del núcleo', () => {
+  const files = [
+    'core/mensajes/es/mensajes.json',
+    'adapters/claude-code/mensajes/es/mensajes.json',
+    'adapters/kimi-code/mensajes/gl/mensajes.json',
+  ];
+  assert.equal(checkFuenteUnica(files).ok, true);
+});
+
+test('SPEC-019: la exención es solo para el catálogo del adaptador, no para otras rutas', () => {
+  for (const copia of ['tools/mensajes/es/mensajes.json', 'adapters/claude-code/hooks/mensajes/es/mensajes.json']) {
+    const { ok } = checkFuenteUnica(['core/mensajes/es/mensajes.json', copia]);
+    assert.equal(ok, false, copia);
+  }
+});
+
 test('CA-9(b): un fichero trackeado bajo dist/ hace fallar el check', () => {
   const files = ['core/scripts/estado.mjs', 'dist/claude-code/core/scripts/estado.mjs'];
   const { ok, infractores } = checkFuenteUnica(files);

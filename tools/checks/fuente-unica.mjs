@@ -21,6 +21,11 @@ export function coreRelPaths(files) {
   return files.filter((p) => p.startsWith('core/')).map((p) => p.slice('core/'.length));
 }
 
+// Catálogo de mensajes propio de un adaptador (ADR-013 §2, SPEC-019): comparte
+// por diseño el nombre relativo del catálogo del núcleo (mensajes/<idioma>/
+// mensajes.json) y no es copia suya. Exención cerrada a esa única forma.
+const CATALOGO_ADAPTADOR = /^adapters\/[^/]+\/mensajes\/[^/]+\/mensajes\.json$/;
+
 export function checkFuenteUnica(files, coreRel = coreRelPaths(files)) {
   const infractores = [];
   const rel = new Set(coreRel);
@@ -29,6 +34,7 @@ export function checkFuenteUnica(files, coreRel = coreRelPaths(files)) {
     if (p === 'dist' || p.startsWith('dist/')) { infractores.push({ fichero: p, motivo: 'dist/ no debe estar trackeado (gitignored)' }); continue; }
     if (p.includes('/core/')) { infractores.push({ fichero: p, motivo: "copia del núcleo en un directorio 'core/' anidado fuera de core/" }); continue; }
     if (p.startsWith('core/')) continue; // el propio núcleo
+    if (CATALOGO_ADAPTADOR.test(p)) continue; // catálogo propio del adaptador
     // ¿replica exacta de un fichero del núcleo, colocada fuera de core/?
     for (const cr of rel) {
       if (p === cr || p.endsWith('/' + cr)) { infractores.push({ fichero: p, motivo: `copia del fichero de núcleo core/${cr} fuera de core/` }); break; }
