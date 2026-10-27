@@ -6,6 +6,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { parseFrontmatter } from './frontmatter.mjs';
+import { resolverIdioma } from './idioma.mjs';
+import { mensajesNucleo } from './mensajes.mjs';
 
 const RAMA_SPEC_RE = /^ft\/(SPEC-\d{3})-/;
 const ESTADOS_CODEABLES = ['aprobada', 'en-progreso'];
@@ -33,16 +35,17 @@ export function buscarSpec(cwd, id) {
 // { permitido: boolean, motivo?: string, specId?: string, spec?: string }.
 // motivo explica por qué se deniega (para el mensaje del gate).
 export function evaluarRequireSpec({ rama, cwd }) {
+  const t = mensajesNucleo(resolverIdioma(cwd));
   const specId = parseSpecId(rama);
   if (!specId) {
     return {
       permitido: false,
-      motivo: `La rama '${rama}' no es una rama de spec (ft/SPEC-NNN-slug). Crea o aprueba la spec con sdd-arquitecto y trabaja en su rama.`,
+      motivo: t('require-spec.rama-no-es-de-spec', { rama }),
     };
   }
   const spec = buscarSpec(cwd, specId);
   if (!spec) {
-    return { permitido: false, specId, motivo: `No existe ${specId} bajo docs/epicas/. Créala con sdd-arquitecto.` };
+    return { permitido: false, specId, motivo: t('require-spec.spec-inexistente', { specId }) };
   }
   const { data } = parseFrontmatter(fs.readFileSync(spec, 'utf8'));
   if (!ESTADOS_CODEABLES.includes(data.estado)) {
@@ -50,7 +53,7 @@ export function evaluarRequireSpec({ rama, cwd }) {
       permitido: false,
       specId,
       spec,
-      motivo: `${specId} está en estado '${data.estado}'; para codear necesita 'aprobada' o 'en-progreso'. Pide la aprobación humana o transiciona con scripts/estado.mjs.`,
+      motivo: t('require-spec.estado-no-codeable', { specId, estado: data.estado }),
     };
   }
   return { permitido: true, specId, spec };

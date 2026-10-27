@@ -2,7 +2,7 @@
 // Los documentos de verdad tienen dueño único. Los demás roles PROPONEN el
 // cambio en su informe; no lo escriben. El tablero solo lo escribe su script.
 import path from 'node:path';
-import { readPayload, readConfig, deny, allow, normalizaRol } from './_comun.mjs';
+import { readPayload, readConfig, deny, allow, normalizaRol, mensajes } from './_comun.mjs';
 
 const DUENOS_FUNDACION = ['main', 'sdd-arquitecto', 'sdd-producto'];
 
@@ -17,11 +17,11 @@ try {
   const rel = path.relative(cwd, path.resolve(cwd, fichero)).replaceAll('\\', '/');
   const rol = normalizaRol(payload.agent_type ?? payload.agent_name ?? 'main');
   if (rel === 'docs/tablero.md') {
-    deny('docs/tablero.md es GENERADO: regenéralo con /sdd-tablero (scripts/tablero.mjs); no se edita a mano.');
+    deny(mensajes(cwd)('protege-verdad.tablero-generado'));
   }
   const esVerdad = rel === 'FOUNDATION.md' || rel.startsWith('docs/fundacion/');
   if (esVerdad && !DUENOS_FUNDACION.includes(rol)) {
-    deny(`'${rel}' es un documento de verdad (dueños: sdd-arquitecto, sdd-producto). Propón el cambio en tu informe en vez de escribirlo.`);
+    deny(mensajes(cwd)('protege-verdad.documento-de-verdad', { rel }));
   }
   allow();
 } catch { allow(); }

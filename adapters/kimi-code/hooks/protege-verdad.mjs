@@ -5,7 +5,7 @@
 // dueño, así que permite y deja la garantía a git/CI (L2/L3). La regla del tablero
 // generado NO necesita identidad y se aplica siempre.
 import path from 'node:path';
-import { readPayload, readConfig, normaliza, rolDe, deny, allow } from './_comun.mjs';
+import { readPayload, readConfig, normaliza, rolDe, deny, allow, mensajes } from './_comun.mjs';
 
 const DUENOS_FUNDACION = ['main', 'sdd-arquitecto', 'sdd-producto'];
 const sinPrefijo = (r) => (r == null ? r : r.slice(r.lastIndexOf(':') + 1));
@@ -19,14 +19,14 @@ try {
   if (!filePath) allow();
   const rel = path.relative(cwd, path.resolve(cwd, filePath)).replaceAll('\\', '/');
   if (rel === 'docs/tablero.md') {
-    deny('docs/tablero.md es GENERADO: regenéralo con su script (core/scripts/tablero.mjs); no se edita a mano.');
+    deny(mensajes(cwd)('protege-verdad.tablero-generado'));
   }
   const esVerdad = rel === 'FOUNDATION.md' || rel.startsWith('docs/fundacion/');
   if (esVerdad) {
     const rol = sinPrefijo(rolDe(payload));
     if (rol == null) allow(); // Kimi no aporta identidad: degrada fail-open.
     if (!DUENOS_FUNDACION.includes(rol)) {
-      deny(`'${rel}' es un documento de verdad (dueños: sdd-arquitecto, sdd-producto). Propón el cambio en tu informe en vez de escribirlo.`);
+      deny(mensajes(cwd)('protege-verdad.documento-de-verdad', { rel }));
     }
   }
   allow();

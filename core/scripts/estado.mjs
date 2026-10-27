@@ -2,8 +2,11 @@
 // Única vía sancionada para cambiar el estado de un artefacto: valida la
 // transición y añade la entrada de historial de forma atómica.
 import fs from 'node:fs';
+import path from 'node:path';
 import { parseFrontmatter, stringifyFrontmatter } from '../lib/frontmatter.mjs';
 import { esEntrypoint } from '../lib/entrypoint.mjs';
+import { idiomaDesde } from '../lib/idioma.mjs';
+import { mensajesNucleo } from '../lib/mensajes.mjs';
 
 export const TRANSITIONS = {
   borrador: ['aprobada', 'bloqueada'],
@@ -34,11 +37,10 @@ export const FIRMANTES = {
   hecho: (por, tipo) => (tipo === 'epica' ? esPersona(por) : /^sdd-verificador$/i.test(por)),
 };
 
+// Clave de catálogo (core/mensajes/<idioma>/) con el motivo de cada firma inválida.
 const MOTIVO_FIRMA = {
-  aprobada: () => "'aprobada' es el gate humano: lo firma una persona con --por, y ningún rol sdd-* puede firmarlo. Presenta la spec y espera el OK explícito del humano.",
-  hecho: (tipo) => (tipo === 'epica'
-    ? "cerrar una épica ('hecho') es un gate humano: es un milestone del humano, lo firma una persona con --por, y ningún rol sdd-* (incluidos sdd-verificador y sdd-documentalista) puede cerrarla."
-    : "'hecho' lo firma SOLO sdd-verificador, tras su veredicto GREEN con evidencia en el ledger. Nadie certifica su propio trabajo."),
+  aprobada: () => 'estado.motivo-firma-aprobada',
+  hecho: (tipo) => (tipo === 'epica' ? 'estado.motivo-firma-hecho-epica' : 'estado.motivo-firma-hecho'),
 };
 
 // Estados que implican que ya se está construyendo. El gate humano no es un
@@ -57,17 +59,20 @@ export function fueAprobadaPorHumano(data) {
 export function transition(ruta, nuevoEstado, por, fecha) {
   fecha ??= new Date().toISOString().slice(0, 10);
   const { data, body } = parseFrontmatter(fs.readFileSync(ruta, 'utf8'));
+  const t = mensajesNucleo(idiomaDesde(path.dirname(path.resolve(ruta))));
   const actual = data.estado;
-  if (!TRANSITIONS[actual]) throw new Error(`Estado actual desconocido: '${actual}'.`);
+  if (!TRANSITIONS[actual]) throw new Error(t('estado.desconocido', { actual }));
   if (!TRANSITIONS[actual].includes(nuevoEstado)) {
-    throw new Error(`Transición no permitida: ${actual} -> ${nuevoEstado}. Permitidas: ${TRANSITIONS[actual].join(', ') || '(ninguna, estado terminal)'}.`);
+    const permitidas = TRANSITIONS[actual].join(', ') || t('estado.ninguna-terminal');
+    throw new Error(t('estado.transicion-no-permitida', { actual, nuevo: nuevoEstado, permitidas }));
   }
   const firmaValida = FIRMANTES[nuevoEstado];
   if (firmaValida && !firmaValida((por ?? '').trim(), data.tipo)) {
-    throw new Error(`Firma inválida para '${nuevoEstado}' (--por '${por ?? ''}'). ${MOTIVO_FIRMA[nuevoEstado](data.tipo)}`);
+    const motivo = t(MOTIVO_FIRMA[nuevoEstado](data.tipo));
+    throw new Error(t('estado.firma-invalida', { nuevo: nuevoEstado, por: por ?? '', motivo }));
   }
   if (REQUIEREN_APROBACION.includes(nuevoEstado) && !fueAprobadaPorHumano(data)) {
-    throw new Error(`'${nuevoEstado}' exige una aprobación humana previa, y el historial de esta spec no tiene ninguna entrada 'aprobada' firmada por una persona. El gate no se rodea por 'bloqueada': pide el OK del humano.`);
+    throw new Error(t('estado.sin-aprobacion-humana', { nuevo: nuevoEstado }));
   }
   data.estado = nuevoEstado;
   // La plantilla de spec tiene el campo y nadie lo rellenaba: la aprobación
@@ -82,7 +87,8 @@ if (esEntrypoint(import.meta.url, process.argv[1])) {
   const por = process.argv.includes('--por') ? process.argv[process.argv.indexOf('--por') + 1] : 'desconocido';
   try {
     transition(ruta, nuevoEstado, por);
-    console.log(`[estado] ${ruta}: -> ${nuevoEstado} (por ${por})`);
+    const t = mensajesNucleo(idiomaDesde(path.dirname(path.resolve(ruta))));
+    console.log(t('estado.cli-exito', { ruta, nuevo: nuevoEstado, por }));
   } catch (e) {
     console.error(`[estado] ${e.message}`);
     process.exit(1);
