@@ -1,9 +1,11 @@
 ---
 id: ADR-019
 tipo: adr
-estado: borrador
+estado: aprobada
 historial:
   - {estado: borrador, fecha: 2026-10-27, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-10-27, por: Alberto Fojo}
+aprobada-por: Alberto Fojo
 ---
 # ADR-019: Esquema minimo de sdd-json y su sitio en el lector unico
 
