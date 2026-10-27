@@ -1,5 +1,16 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { idiomaDesde } from '../core/lib/idioma.mjs';
+import { traductor } from '../core/lib/mensajes.mjs';
+
+// Catálogo propio del adaptador (ADR-016 §2): <adaptador>/mensajes/<idioma>/,
+// leído con la función del núcleo en el idioma del proyecto (raíz de ADR-015
+// desde el cwd del payload).
+const MENSAJES = path.join(path.dirname(path.dirname(fileURLToPath(import.meta.url))), 'mensajes');
+export function mensajes(cwd) {
+  return traductor(MENSAJES, idiomaDesde(cwd));
+}
 
 export function readPayload() {
   try { return JSON.parse(fs.readFileSync(0, 'utf8') || '{}'); } catch { return {}; }

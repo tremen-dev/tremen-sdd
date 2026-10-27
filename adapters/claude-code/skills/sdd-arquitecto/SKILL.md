@@ -21,7 +21,8 @@ Primero comprueba si existe `.sdd.json` en la raíz del proyecto:
     ejecutar `/sdd-init`.
   No lances ningún subagente, no leas roles ni ejecutes scripts del núcleo.
 - Si `.sdd.json` SÍ existe: toma el campo `idioma` (si no está definido en
-  `.sdd.json`, usa `es`) y procede con el despacho:
+  `.sdd.json`, o si no existe `core/roles/<idioma>/`,
+  usa `es`) y procede con el despacho:
 
 Lanza el rol y no hagas nada más:
 

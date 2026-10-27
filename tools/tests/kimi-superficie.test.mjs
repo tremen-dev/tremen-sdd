@@ -28,7 +28,8 @@ test('CA-1: NO hay commands/ (Kimi no tiene slash-commands por fichero)', () => 
 });
 
 test('CA-1: los directorios de primer nivel están en la lista cerrada', () => {
-  const permitidos = new Set(['agents', 'skills', 'hooks', 'tests']);
+  // mensajes/: catálogo de mensajes propio del adaptador (ADR-016 §2, SPEC-025).
+  const permitidos = new Set(['agents', 'skills', 'hooks', 'tests', 'mensajes']);
   for (const e of fs.readdirSync(KIMI, { withFileTypes: true })) {
     if (e.isDirectory()) assert.ok(permitidos.has(e.name), `directorio inesperado en la superficie: ${e.name}`);
   }
