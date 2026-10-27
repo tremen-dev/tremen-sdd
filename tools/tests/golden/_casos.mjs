@@ -1,7 +1,9 @@
-// SPEC-019 CA-3/CA-5: ejecutor de los casos golden de mensajes. Recorre UNA rama
-// de error o de éxito por cada texto que emiten hoy los scripts del núcleo, la
-// lib require-spec, los hooks de Claude Code y de Kimi Code y el plugin de
-// opencode, y devuelve { caso: salida }.
+// SPEC-025 CA-3/CA-5: ejecutor de los casos golden de mensajes. Recorre UNA rama
+// de error o de éxito por cada texto que emite el código base (origin/main en el
+// punto de integración, ver el ledger): los scripts del núcleo, la lib
+// require-spec, los hooks de Claude Code, de Kimi Code y de antigravity y el
+// plugin de opencode, y devuelve { caso: salida }. `ejecutaBarrera` recorre
+// aparte el mensaje de la barrera de ADR-015 (CLI sin .sdd.json).
 //
 // Es parametrizable por árbol (núcleo + adaptadores construidos) y por el
 // contenido de `.sdd.json`, para que el MISMO recorrido sirva al golden `es`
@@ -68,7 +70,11 @@ function hook(script, cwd, payload, env = {}) {
   const r = spawnSync('node', [script], { input: JSON.stringify({ cwd, ...payload }), encoding: 'utf8', env: { ...process.env, ...env } });
   const out = r.stdout.trim();
   let razon = null;
-  try { razon = JSON.parse(out).hookSpecificOutput.permissionDecisionReason; } catch { /* no es deny */ }
+  try {
+    const j = JSON.parse(out);
+    // Claude Code / Kimi Code: hookSpecificOutput; antigravity: { decision, reason } (ADR-013).
+    razon = j.hookSpecificOutput?.permissionDecisionReason ?? (j.decision === 'deny' ? j.reason : null) ?? null;
+  } catch { /* no es deny */ }
   return normaliza(razon !== null ? `deny: ${razon}` : `exit=${r.status}\n--stdout--\n${r.stdout}--stderr--\n${r.stderr}`, cwd);
 }
 
@@ -101,7 +107,7 @@ function proyectosRequireSpec(sddJson) {
 /**
  * @param {object} o
  * @param {string} o.coreDir   núcleo cuyos scripts se ejecutan.
- * @param {object} o.dist      { 'claude-code', 'kimi-code', opencode } -> raíz del artefacto construido.
+ * @param {object} o.dist      { 'claude-code', 'kimi-code', opencode, antigravity } -> raíz del artefacto construido.
  * @param {object|null} o.sddJson  contenido de .sdd.json de los proyectos (null = sin fichero).
  */
 export async function ejecutaCasos({ coreDir, dist, sddJson }) {
@@ -193,6 +199,7 @@ export async function ejecutaCasos({ coreDir, dist, sddJson }) {
     r['informe-qa.cli-exito'] = cli(S('informe-qa.mjs'), ['docs/epicas/EPIC-001-x/SPEC-001-alta.ledger.md'], dir);
     escribe(dir, 'docs/epicas/EPIC-001-x/SPEC-002-x.ledger.md', '---\nid: SPEC-002\ntipo: ledger\n---\n# L\n');
     r['informe-qa.cli-sin-qa'] = cli(S('informe-qa.mjs'), ['docs/epicas/EPIC-001-x/SPEC-002-x.ledger.md'], dir);
+    r['informe-qa.cli-sin-args'] = cli(S('informe-qa.mjs'), [], dir);
   }
 
   // --- core/lib/require-spec.mjs y sus tres consumidores L1 ---
@@ -206,6 +213,8 @@ export async function ejecutaCasos({ coreDir, dist, sddJson }) {
       const payload = { tool_name: 'Edit', tool_input: { file_path: path.join(dir, 'src', 'app.ts') } };
       r[`require-spec.claude.${n}`] = hook(path.join(dist['claude-code'], 'hooks', 'require-spec.mjs'), dir, payload);
       r[`require-spec.kimi.${n}`] = hook(path.join(dist['kimi-code'], 'hooks', 'require-spec.mjs'), dir, payload);
+      r[`require-spec.antigravity.${n}`] = hook(path.join(dist.antigravity, 'hooks', 'require-spec.mjs'), dir,
+        { toolCall: { args: { TargetFile: path.join(dir, 'src', 'app.ts') } } });
       const mod = await import(pathToFileURL(path.join(dist.opencode, 'plugins', 'require-spec.mjs')).href);
       const before = (await mod.RequireSpecPlugin({ directory: dir, worktree: dir }))['tool.execute.before'];
       let txt = 'permitido';
@@ -220,11 +229,15 @@ export async function ejecutaCasos({ coreDir, dist, sddJson }) {
       r[`protege-verdad.${n}.tablero`] = hook(pv, dir, { tool_name: 'Edit', agent_type: 'main', tool_input: { file_path: path.join(dir, 'docs', 'tablero.md') } });
       r[`protege-verdad.${n}.verdad`] = hook(pv, dir, { tool_name: 'Edit', agent_type: 'sdd-implementador', tool_input: { file_path: path.join(dir, 'FOUNDATION.md') } });
     }
+    r['protege-verdad.antigravity.tablero'] = hook(path.join(dist.antigravity, 'hooks', 'protege-verdad.mjs'), dir,
+      { toolCall: { args: { TargetFile: path.join(dir, 'docs', 'tablero.md') } } });
 
     // --- calidad (Claude Code): artefacto inconsistente + linter con problemas ---
     const calidad = path.join(dist['claude-code'], 'hooks', 'calidad.mjs');
     const mal = escribe(dir, 'docs/epicas/EPIC-001-x/SPEC-001-mal.md', spec({ estado: 'aprobada', historial: ['borrador'] }));
     r['calidad.artefacto'] = hook(calidad, dir, { tool_name: 'Edit', tool_input: { file_path: mal } });
+    r['calidad.antigravity.artefacto'] = hook(path.join(dist.antigravity, 'hooks', 'calidad.mjs'), dir,
+      { toolCall: { args: { TargetFile: mal } } });
     const dirLint = nuevoProyecto({ ...sddJson, linter: 'ruff' });
     const py = escribe(dirLint, 'src/app.py', 'x=1\n');
     const stub = stubRuff();
@@ -234,7 +247,29 @@ export async function ejecutaCasos({ coreDir, dist, sddJson }) {
   return r;
 }
 
-// SPEC-019 CA-4/CA-5(h): artefactos que scaffold.mjs crea con argumentos y fecha
+// SPEC-025 CA-3/CA-5(i) y CA-6(e): el CLI de cada uno de los cinco scripts del
+// núcleo lanzado en un directorio sin .sdd.json (ni .git en el temporal) se para
+// en la barrera de ADR-015. Devuelve { caso: salida }.
+export function ejecutaBarrera({ coreDir }) {
+  const r = {};
+  const S = (n) => path.join(coreDir, 'scripts', n);
+  const CASOS = [
+    ['barrera.estado', 'estado.mjs', ['docs/epicas/EPIC-001-x/SPEC-001-alta.md', 'aprobada', '--por', 'Alberto']],
+    ['barrera.valida', 'valida.mjs', ['--dir', 'docs']],
+    ['barrera.tablero', 'tablero.mjs', ['--dir', 'docs']],
+    ['barrera.scaffold', 'scaffold.mjs', ['spec', 'X', '--epica', 'EPIC-001', '--dir', 'docs']],
+    ['barrera.informe-qa', 'informe-qa.mjs', ['docs/epicas/EPIC-001-x/SPEC-001-alta.ledger.md']],
+  ];
+  for (const [caso, script, args] of CASOS) {
+    const dir = nuevoProyecto(null);
+    escribe(dir, 'docs/epicas/EPIC-001-x/SPEC-001-alta.md', spec({ estado: 'borrador' }));
+    escribe(dir, 'docs/epicas/EPIC-001-x/SPEC-001-alta.ledger.md', '---\nid: SPEC-001\ntipo: ledger\n---\n# L\n');
+    r[caso] = cli(S(script), args, dir);
+  }
+  return r;
+}
+
+// SPEC-025 CA-4/CA-5(h): artefactos que scaffold.mjs crea con argumentos y fecha
 // fijos (épica, spec + ledger, task y ADR). Devuelve { ruta relativa: contenido }.
 export async function ejecutaScaffold({ coreDir, sddJson }) {
   const dir = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'sdd-golden-sc-')));

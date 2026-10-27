@@ -1,0 +1,7 @@
+{
+  "barrera.estado": "exit=1\n--stdout--\n--stderr--\n[estado] No se encontró '.sdd.json' en <PROY>/docs/epicas/EPIC-001-x/SPEC-001-alta.md ni en sus ancestros. tremen-sdd no está activo en este proyecto. Ejecuta '/sdd-init' para inicializarlo.\n",
+  "barrera.valida": "exit=1\n--stdout--\n--stderr--\n[valida] No se encontró '.sdd.json' en <PROY>/docs ni en sus ancestros. tremen-sdd no está activo en este proyecto. Ejecuta '/sdd-init' para inicializarlo.\n",
+  "barrera.tablero": "exit=1\n--stdout--\n--stderr--\n[tablero] No se encontró '.sdd.json' en <PROY>/docs ni en sus ancestros. tremen-sdd no está activo en este proyecto. Ejecuta '/sdd-init' para inicializarlo.\n",
+  "barrera.scaffold": "exit=1\n--stdout--\n--stderr--\n[scaffold] No se encontró '.sdd.json' en <PROY>/docs ni en sus ancestros. tremen-sdd no está activo en este proyecto. Ejecuta '/sdd-init' para inicializarlo.\n",
+  "barrera.informe-qa": "exit=1\n--stdout--\n--stderr--\n[informe-qa] No se encontró '.sdd.json' en <PROY>/docs/epicas/EPIC-001-x/SPEC-001-alta.ledger.md ni en sus ancestros. tremen-sdd no está activo en este proyecto. Ejecuta '/sdd-init' para inicializarlo.\n"
+}
