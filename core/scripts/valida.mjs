@@ -41,6 +41,20 @@ export function validateFile(ruta, docsDir) {
   return errores;
 }
 
+// Error si el .sdd.json del proyecto declara un `idioma` no soportado (ADR-013
+// §2), o null. Solo lo usa el CLI: validateFile no cambia y los hooks siguen sin
+// hablar del idioma. Sin fichero o sin campo, no hay error (CE-4).
+export function errorIdioma(docsDir) {
+  const raiz = buscarRaizProyecto(docsDir);
+  if (!raiz) return null;
+  const { declarado, valor } = leerIdiomaDeclarado(raiz);
+  const soportados = idiomasSoportados();
+  if (!declarado || (typeof valor === 'string' && soportados.includes(valor))) return null;
+  return mensajesNucleo(idiomaDesde(docsDir))('valida.idioma-no-soportado', {
+    valor: JSON.stringify(valor) ?? String(valor), soportados: soportados.join(', '),
+  });
+}
+
 export function validate(docsDir) {
   const errores = [];
   const stack = [docsDir];
@@ -61,7 +75,8 @@ if (esEntrypoint(import.meta.url, process.argv[1])) {
   const dir = process.argv.includes('--dir') ? process.argv[process.argv.indexOf('--dir') + 1] : 'docs';
   const docsDir = path.resolve(dir);
   const t = mensajesNucleo(idiomaDesde(docsDir));
-  const errores = validate(docsDir);
+  const errIdioma = errorIdioma(docsDir);
+  const errores = [...(errIdioma ? [errIdioma] : []), ...validate(docsDir)];
   if (errores.length) {
     console.error(t('valida.cli-errores', { n: errores.length }) + '\n' + errores.map((e) => ` - ${e}`).join('\n'));
     process.exit(1);

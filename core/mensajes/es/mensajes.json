@@ -13,6 +13,7 @@
   "valida.estado-no-valido": "{rel}: estado '{estado}' no válido ({estados})",
   "valida.historial-no-coincide": "{rel}: la última entrada de historial no coincide con estado '{estado}'. Usa scripts/estado.mjs para transicionar.",
   "valida.epica-inexistente": "{rel}: referencia a épica inexistente '{epica}'",
+  "valida.idioma-no-soportado": ".sdd.json: `idioma` no soportado: {valor}. Idiomas soportados: {soportados}.",
   "valida.cli-errores": "[valida] {n} error(es):",
   "valida.cli-ok": "[valida] OK",
   "scaffold.tipo-desconocido": "Tipo desconocido: {tipo}. Usa epica|spec|task|adr.",
