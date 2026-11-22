@@ -33,11 +33,13 @@ test('CA-6(a): idioma "eu" -> exit != 0, nombra el valor y los soportados', () =
   assert.match(r.stderr, /Idiomas soportados: es\./);
 });
 
-test('CA-6(b): idioma 5 (no es una cadena) -> exit != 0, nombra el valor', () => {
+// SPEC-029 CA-4(c) cambia este caso: un `idioma` que no es string es un error de
+// esquema de .sdd.json (ADR-019 §4), no el de idioma no soportado.
+test('CA-6(b) / SPEC-029 CA-4(c): idioma 5 (no es una cadena) -> exit != 0, nombra el valor como error de esquema', () => {
   const r = corre(proyecto({ idioma: 5 }));
   assert.notEqual(r.status, 0);
-  assert.match(r.stderr, /no soportado: 5\./);
-  assert.match(r.stderr, /Idiomas soportados: es\./);
+  assert.match(r.stderr, /`idioma`: se esperaba un string, se encontró 5/);
+  assert.doesNotMatch(r.stderr, /no soportado/);
 });
 
 test('CA-6(a): con errores de artefactos, se informan todos en la misma ejecución', () => {
