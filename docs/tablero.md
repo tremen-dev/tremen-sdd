@@ -69,7 +69,7 @@ Actualizado: 2026-11-23
 | SPEC-023 — despacho-real-de-subagentes-en-antigravity-con-contexto-aislado | hecho | 2026-10-15 (sdd-verificador) |
 | SPEC-024 — guarda-de-activacion-por-sdd-json-en-skills-agentes-roles-y-cli-del-nucleo | hecho | 2026-10-16 (sdd-verificador) |
 | SPEC-027 — los-hooks-no-apagan-los-gates-ante-un-sdd-json-ilegible | hecho | 2026-11-23 (sdd-verificador) |
-| SPEC-028 — trabajar-sobre-la-base-remota | aprobada | 2026-10-27 (Alberto Fojo) |
+| SPEC-028 — trabajar-sobre-la-base-remota | hecho | 2026-11-23 (sdd-verificador) |
 | SPEC-029 — esquema-de-sdd-json-un-campo-mal-tipado-no-apaga-los-gates | aprobada | 2026-10-27 (Alberto Fojo) |
 
 ## ADRs
@@ -98,6 +98,6 @@ Actualizado: 2026-11-23
 
 ## Resumen
 
-- hecho: 24
+- hecho: 25
 - bloqueada: 1
-- aprobada: 4
+- aprobada: 3
