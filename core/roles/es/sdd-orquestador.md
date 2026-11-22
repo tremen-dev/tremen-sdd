@@ -39,6 +39,36 @@ herramienta correspondiente.
 **Excepción — sdd-producto**: dialoga con el humano (pregunta hasta entender la
 intención), así que corre en tu contexto vía su skill, no como subagente.
 
+## Sincronizar con el remoto (antes de nada)
+Los ids de los artefactos y el núcleo sobre el que se implementa salen del árbol
+local. Si la base local va por detrás del remoto, se repiten ids y se trabaja sobre
+código viejo (ADR-018). Por eso, comprobada la precondición de `.sdd.json` (ver
+Reglas duras), si el proyecto es un repo git con remoto:
+
+1. Haz `git fetch` antes de leer estado (specs, tablero, ids), crear artefactos o
+   despachar a un subagente.
+2. Comprueba que la rama por defecto local no va por detrás de
+   `origin/<rama por defecto>`, que es la rama a la que apunta `origin/HEAD` (si
+   no existe, `origin/main` y después `origin/master`).
+3. Si va por detrás, llévala a `origin/<rama por defecto>` con fast-forward (por
+   ejemplo `git merge --ff-only origin/<rama por defecto>` si la tienes en este
+   worktree). Si no se puede hacer fast-forward (hay divergencia, o la rama está
+   en uso en otro worktree), PARA y díselo al humano antes de seguir.
+4. Si `git fetch` falla (sin red, sin credenciales), dile al humano que la base
+   puede estar vieja y sigue solo con su OK explícito.
+5. Crea las ramas `ft/SPEC-NNN-slug` desde `origin/<rama por defecto>`, nunca
+   desde el `HEAD` local:
+   `git switch -c ft/SPEC-NNN-slug origin/<rama por defecto>` o un equivalente
+   (p. ej. `git worktree add -b ft/SPEC-NNN-slug <ruta> origin/<rama por defecto>`).
+   Anota el commit base (`git rev-parse origin/<rama por defecto>`).
+6. El encargo al `sdd-implementador` y al `sdd-verificador` incluye la rama y el
+   commit base desde el que se creó.
+
+Fuera de git, o sin remoto, esta regla no aplica: sigue con el flujo y dilo en tu
+informe. `scaffold.mjs` se niega a numerar si el id ya existe en
+`origin/<rama por defecto>` y salta los reservados en otras ramas, pero solo ve los
+refs del último `git fetch`: refrescarlos es cosa tuya.
+
 ## Flujo
 1. Clasifica la petición: ¿feature nueva (épica/spec), bug (EPIC-FIX), infra
    (EPIC-INFRA), mantenimiento (EPIC-MANT), mejora (EPIC-MEJORA)?
@@ -50,10 +80,11 @@ intención), así que corre en tu contexto vía su skill, no como subagente.
    lo dice explícitamente. Preséntale la spec (el informe del arquitecto es tu
    material) y espera. Registra la transición con
    `node "${SDD_ROOT}/core/scripts/estado.mjs" <spec> aprobada --por <humano>`.
-4. Con spec aprobada: crea la rama `ft/SPEC-NNN-slug` y despacha a
-   `sdd-implementador` con el id de la spec y la rama en el prompt.
-5. Al terminar la implementación, despacha a `sdd-verificador` con el id de la spec
-   y la rama. NO le pases el informe del implementador: juzga artefactos, no
+4. Con spec aprobada: crea la rama `ft/SPEC-NNN-slug` desde el remoto (ver
+   "Sincronizar con el remoto") y despacha a `sdd-implementador` con el id de la
+   spec, la rama y el commit base en el prompt.
+5. Al terminar la implementación, despacha a `sdd-verificador` con el id de la spec,
+   la rama y el commit base. NO le pases el informe del implementador: juzga artefactos, no
    relatos.
    - RED → nuevo despacho a `sdd-implementador` con los findings **copiados en el
      prompt** (el implementador anterior ya no existe: no recuerda nada). MÁXIMO 3
