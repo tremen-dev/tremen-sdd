@@ -1,7 +1,7 @@
 <!-- GENERADO por tremen-sdd (scripts/tablero.mjs). NO EDITAR A MANO. -->
 # Tablero
 
-Actualizado: 2026-11-22
+Actualizado: 2026-11-23
 
 ## EPIC-001 — tremen-sdd-multi-harness (hecho)
 
@@ -68,7 +68,7 @@ Actualizado: 2026-11-22
 | SPEC-017 — layout-generalizado-a-todos-los-adaptadores-y-prosa-del-runner-sin-drift | hecho | 2026-07-27 (sdd-verificador) |
 | SPEC-023 — despacho-real-de-subagentes-en-antigravity-con-contexto-aislado | hecho | 2026-10-15 (sdd-verificador) |
 | SPEC-024 — guarda-de-activacion-por-sdd-json-en-skills-agentes-roles-y-cli-del-nucleo | hecho | 2026-10-16 (sdd-verificador) |
-| SPEC-027 — los-hooks-no-apagan-los-gates-ante-un-sdd-json-ilegible | aprobada | 2026-10-27 (Alberto Fojo) |
+| SPEC-027 — los-hooks-no-apagan-los-gates-ante-un-sdd-json-ilegible | hecho | 2026-11-23 (sdd-verificador) |
 | SPEC-028 — trabajar-sobre-la-base-remota | aprobada | 2026-10-27 (Alberto Fojo) |
 | SPEC-029 — esquema-de-sdd-json-un-campo-mal-tipado-no-apaga-los-gates | aprobada | 2026-10-27 (Alberto Fojo) |
 
@@ -98,6 +98,6 @@ Actualizado: 2026-11-22
 
 ## Resumen
 
-- hecho: 23
+- hecho: 24
 - bloqueada: 1
-- aprobada: 5
+- aprobada: 4

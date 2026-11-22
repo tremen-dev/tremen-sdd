@@ -2,8 +2,11 @@
 // opencode (nombre de tool + filePath + cwd) al contrato de la lógica compartida del
 // núcleo. NO reimplementa ninguna decisión de require-spec: eso vive SOLO en
 // core/lib/require-spec.mjs (RN-01/RN-03). Análogo al _comun.mjs de Kimi.
-import fs from 'node:fs';
 import path from 'node:path';
+import { leerSddJson, esSddJsonDe } from '../core/lib/sdd-json.mjs';
+import { mensajeSddJsonIlegible } from '../core/lib/sdd-json-mensaje.mjs';
+
+export { esSddJsonDe, mensajeSddJsonIlegible };
 
 // Tools de ESCRITURA que el gate vigila. En opencode la categoría de permiso `edit`
 // cubre edit/write/patch (opencode.ai/docs/permissions, 2026-07-23); a nivel de
@@ -17,9 +20,10 @@ export class SddGateError extends Error {
   constructor(motivo) { super(motivo); this.name = 'SddGateError'; }
 }
 
-// Lee .sdd.json del proyecto (o null si no hay: entonces el gate se abstiene).
+// Estado de .sdd.json en `cwd` con el lector único del núcleo (ADR-017 §1):
+// { estado: 'ausente' | 'valida' | 'ilegible', ruta, config?, motivo? }.
 export function readConfig(cwd) {
-  try { return JSON.parse(fs.readFileSync(path.join(cwd, '.sdd.json'), 'utf8')); } catch { return null; }
+  return leerSddJson(cwd);
 }
 
 // ¿el fichero (relativo al cwd) cae bajo una ruta vigilada de .sdd.json?

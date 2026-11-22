@@ -2,7 +2,7 @@
 // PostToolUse: valida coherencia de frontmatters en artefactos SDD editados.
 import fs from 'node:fs';
 import path from 'node:path';
-import { readPayload, readConfig, extractFilePath, extractCwd, mensajes } from './_comun.mjs';
+import { readPayload, readConfig, extractFilePath, extractCwd, mensajes, mensajeSddJsonIlegible } from './_comun.mjs';
 import { validateFile } from '../core/scripts/valida.mjs';
 
 const ES_ARTEFACTO = /(^|[\\/])((SPEC|TASK|ADR)-[^\\/]+\.md|_epica\.md)$/;
@@ -10,8 +10,14 @@ const ES_ARTEFACTO = /(^|[\\/])((SPEC|TASK|ADR)-[^\\/]+\.md|_epica\.md)$/;
 try {
   const payload = readPayload();
   const cwd = extractCwd(payload);
-  const cfg = readConfig(cwd);
-  if (!cfg || cfg.gates?.calidad === false) process.exit(0);
+  const lectura = readConfig(cwd);
+  if (lectura.estado === 'ilegible') {
+    // .sdd.json sigue ilegible (ADR-017 §2): avisa sin bloquear, como con los artefactos.
+    console.error(mensajeSddJsonIlegible(lectura));
+    console.log(JSON.stringify({}));
+    process.exit(0);
+  }
+  if (lectura.estado === 'ausente' || lectura.config.gates?.calidad === false) process.exit(0);
   const fichero = extractFilePath(payload);
   if (!fichero) process.exit(0);
   const ruta = path.resolve(cwd, fichero);

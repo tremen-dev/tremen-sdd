@@ -10,15 +10,13 @@ import path from 'node:path';
 import { execSync } from 'node:child_process';
 import { evaluarRequireSpec } from '../../core/lib/require-spec.mjs';
 import { validateFile } from '../../core/scripts/valida.mjs';
+import { leerSddJson } from '../../core/lib/sdd-json.mjs';
+import { mensajeSddJsonIlegible } from '../../core/lib/sdd-json-mensaje.mjs';
 
 if (process.env.SDD_SKIP_GATE === '1') process.exit(0);
 
 function git(args, cwd) {
   return execSync(`git ${args}`, { cwd, stdio: ['pipe', 'pipe', 'ignore'] }).toString().trim();
-}
-
-function leerConfig(root) {
-  try { return JSON.parse(fs.readFileSync(path.join(root, '.sdd.json'), 'utf8')); } catch { return null; }
 }
 
 function esArtefactoSdd(rel) {
@@ -36,7 +34,12 @@ function bloquear(msg) {
 
 try {
   const repoRoot = git('rev-parse --show-toplevel', process.cwd());
-  const cfg = leerConfig(repoRoot);
+  // Lector único de .sdd.json (ADR-017 §1). Ilegible no es "sin configuración":
+  // el proyecto se declara activo y sus gates no se pueden evaluar, así que
+  // se bloquea (ADR-017 §2). Ausente sigue siendo proyecto sin tremen-sdd.
+  const lectura = leerSddJson(repoRoot);
+  if (lectura.estado === 'ilegible') bloquear(mensajeSddJsonIlegible(lectura));
+  const cfg = lectura.estado === 'valida' ? lectura.config : null;
   const staged = git('diff --cached --name-only --diff-filter=ACMR', repoRoot)
     .split(/\r?\n/).map((s) => s.trim()).filter(Boolean);
   if (staged.length === 0) process.exit(0);

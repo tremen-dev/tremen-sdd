@@ -15,7 +15,7 @@
   "valida.historial-no-coincide": "{rel}: la última entrada de historial no coincide con estado '{estado}'. Usa scripts/estado.mjs para transicionar.",
   "valida.epica-inexistente": "{rel}: referencia a épica inexistente '{epica}'",
   "valida.idioma-no-soportado": ".sdd.json: `idioma` no soportado: {valor}. Idiomas soportados: {soportados}.",
-  "valida.sdd-json-ilegible": ".sdd.json: no es un JSON legible. Los hooks lo tratan como ausente: el proyecto parece activo, pero todos los gates están apagados.",
+  "sdd-json.ilegible": "'{ruta}' existe pero no se puede leer: {motivo}. Los gates no se pueden evaluar mientras el fichero sea ilegible, así que se deniegan las escrituras (salvo la del propio .sdd.json, para arreglarlo) y los commits. Corrige el JSON tomando como referencia la plantilla core/templates/sdd.json del plugin, o ejecuta '/sdd-init' en modo migración. Válvula de emergencia: SDD_SKIP_GATE=1.",
   "valida.cli-errores": "[valida] {n} error(es):",
   "valida.cli-ok": "[valida] OK",
   "scaffold.tipo-desconocido": "Tipo desconocido: {tipo}. Usa epica|spec|task|adr.",

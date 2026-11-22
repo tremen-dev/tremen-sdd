@@ -10,8 +10,10 @@ try {
   if (process.env.SDD_SKIP_GATE === '1') allow();
   const payload = readPayload();
   const cwd = payload.cwd || process.cwd();
-  const cfg = readConfig(cwd);
-  if (!cfg || cfg.gates?.protegeVerdad === false) allow();
+  const lectura = readConfig(cwd);
+  if (lectura.estado === 'ausente') allow(); // proyecto sin tremen-sdd (ADR-015)
+  // Ilegible: el interruptor no se puede leer, así que no cuenta (ADR-017 §2).
+  if (lectura.estado === 'valida' && lectura.config.gates?.protegeVerdad === false) allow();
   const fichero = payload.tool_input?.file_path ?? '';
   if (!fichero) allow();
   const rel = path.relative(cwd, path.resolve(cwd, fichero)).replaceAll('\\', '/');
