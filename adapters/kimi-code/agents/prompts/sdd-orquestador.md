@@ -13,7 +13,8 @@ subagentes, así que el orquestador eres tú.
      informa de que no existe `.sdd.json` (`tremen-sdd` no está activado) y
      sugiere `/sdd-init`.
    - Si `.sdd.json` SÍ existe: toma el campo `idioma` (si no está definido en
-     `.sdd.json`, usa `es`) y pasa al punto 2.
+     `.sdd.json`, o si no existe `core/roles/<idioma>/`,
+     usa `es`) y pasa al punto 2.
 2. Este system prompt vive dentro del artefacto del adaptador (en
    `agents/prompts/`), y el núcleo viaja en el MISMO artefacto bajo `core/`. Lee,
    **por ruta relativa a este fichero**, `../../core/roles/<idioma>/sdd-orquestador.md`

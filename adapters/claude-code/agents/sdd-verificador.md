@@ -19,7 +19,8 @@ has visto cómo se escribió el código, y así es como debe seguir.
      delegues en subagentes y no toques ningún fichero en el árbol. Devuelve en tu
      informe que `tremen-sdd` no está activado y sugiere ejecutar `/sdd-init`.
    - Si `.sdd.json` SÍ existe: toma el campo `idioma` (si no está definido en
-     `.sdd.json`, usa `es`) y pasa al punto 2.
+     `.sdd.json`, o si no existe `core/roles/<idioma>/`,
+     usa `es`) y pasa al punto 2.
 2. Lee `${CLAUDE_PLUGIN_ROOT}/core/roles/<idioma>/sdd-verificador.md` con la
    herramienta Read y sigue sus instrucciones al pie de la letra. Ese fichero
    es tu contrato y manda sobre cualquier instinto tuyo.

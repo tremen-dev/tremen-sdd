@@ -1,7 +1,7 @@
 <!-- GENERADO por tremen-sdd (scripts/tablero.mjs). NO EDITAR A MANO. -->
 # Tablero
 
-Actualizado: 2026-10-16
+Actualizado: 2026-10-27
 
 ## EPIC-001 — tremen-sdd-multi-harness (hecho)
 
@@ -53,6 +53,13 @@ Actualizado: 2026-10-16
 | SPEC-021 — integracion-de-checks-de-invariantes-y-runner | hecho | 2026-10-14 (sdd-verificador) |
 | SPEC-022 — scaffolding-con-agents-md-y-documentacion-de-antigravity | hecho | 2026-10-14 (sdd-verificador) |
 
+## EPIC-007 — multi-idioma-galego-y-catala (aprobada)
+
+| Spec | Estado | Último cambio |
+|---|---|---|
+| SPEC-025 — mecanismo-de-idioma-catalogos-y-plantillas-por-idioma | hecho | 2026-10-27 (sdd-verificador) |
+| SPEC-026 — paridad-bloqueante-entre-idiomas-sellos-prosa-gates-y-gatillos | aprobada | 2026-10-27 (Alberto Fojo) |
+
 ## EPIC-FIX (aprobada)
 
 | Spec | Estado | Último cambio |
@@ -81,9 +88,10 @@ Actualizado: 2026-10-16
 | ADR-013 | aprobada | encaje-de-antigravity-modelo-de-plugins-skills-y-enforcement-pretooluse | 2026-10-14 (Alberto Fojo) |
 | ADR-014 | aprobada | despacho-de-subagentes-en-google-antigravity-con-invoke-subagent-self | 2026-10-15 (Alberto Fojo) |
 | ADR-015 | aprobada | activacion-opt-in-por-repositorio-mediante-sdd-json-en-prosa-y-cli-del-nucleo | 2026-10-16 (Alberto Fojo) |
+| ADR-016 | aprobada | multi-idioma-del-metodo-resolucion-por-proyecto-catalogos-identificadores-fijos-y-paridad-sellada | 2026-10-27 (Alberto Fojo) |
 
 ## Resumen
 
-- hecho: 22
+- hecho: 23
 - bloqueada: 1
-- aprobada: 1
+- aprobada: 2

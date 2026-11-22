@@ -6,6 +6,8 @@ import path from 'node:path';
 import { parseFrontmatter } from '../lib/frontmatter.mjs';
 import { esEntrypoint, exigirProyectoSdd } from '../lib/entrypoint.mjs';
 import { hoy } from '../lib/fecha.mjs';
+import { idiomaDesde, resolverIdioma } from '../lib/idioma.mjs';
+import { mensajesNucleo } from '../lib/mensajes.mjs';
 
 function leer(ruta) {
   return parseFrontmatter(fs.readFileSync(ruta, 'utf8')).data;
@@ -13,10 +15,13 @@ function leer(ruta) {
 
 export function renderBoard(docsDir, fecha) {
   fecha ??= hoy();
+  // Etiquetas en el idioma del proyecto; los identificadores (estados, IDs) no
+  // se traducen (ADR-016 §4).
+  const t = mensajesNucleo(idiomaDesde(docsDir));
   const base = path.join(docsDir, 'epicas');
   const lineas = [
-    '<!-- GENERADO por tremen-sdd (scripts/tablero.mjs). NO EDITAR A MANO. -->',
-    `# Tablero`, '', `Actualizado: ${fecha}`, '',
+    t('tablero.aviso-generado'),
+    t('tablero.titulo'), '', t('tablero.actualizado', { fecha }), '',
   ];
   const recuento = {};
   for (const epDir of (fs.existsSync(base) ? fs.readdirSync(base).sort() : [])) {
@@ -26,7 +31,7 @@ export function renderBoard(docsDir, fecha) {
     const slugDir = epDir.replace(/^EPIC-[^-]+-?/, '');
     const titulo = slugDir ? `${epica.id} — ${slugDir}` : epica.id;
     lineas.push(`## ${titulo} (${epica.estado})`, '');
-    lineas.push('| Spec | Estado | Último cambio |', '|---|---|---|');
+    lineas.push(t('tablero.cabecera-specs'), '|---|---|---|');
     for (const f of fs.readdirSync(dir).filter((n) => /^SPEC-.*\.md$/.test(n) && !n.endsWith('.ledger.md')).sort()) {
       const d = leer(path.join(dir, f));
       recuento[d.estado] = (recuento[d.estado] ?? 0) + 1;
@@ -42,8 +47,8 @@ export function renderBoard(docsDir, fecha) {
   const adrs = (fs.existsSync(adrDir) ? fs.readdirSync(adrDir) : [])
     .filter((n) => /^ADR-.*\.md$/.test(n)).sort();
   if (adrs.length) {
-    lineas.push('## ADRs', '');
-    lineas.push('| ADR | Estado | Título | Último cambio |', '|---|---|---|---|');
+    lineas.push(t('tablero.titulo-adrs'), '');
+    lineas.push(t('tablero.cabecera-adrs'), '|---|---|---|---|');
     for (const f of adrs) {
       const d = leer(path.join(adrDir, f));
       const titulo = f.replace(/^ADR-\d{3}-/, '').replace(/\.md$/, '');
@@ -52,16 +57,16 @@ export function renderBoard(docsDir, fecha) {
     }
     lineas.push('');
   }
-  lineas.push('## Resumen', '', ...Object.entries(recuento).map(([e, n]) => `- ${e}: ${n}`), '');
+  lineas.push(t('tablero.titulo-resumen'), '',...Object.entries(recuento).map(([e, n]) => `- ${e}: ${n}`), '');
   return lineas.join('\n');
 }
 
 if (esEntrypoint(import.meta.url, process.argv[1])) {
   try {
     const dir = path.resolve(process.argv.includes('--dir') ? process.argv[process.argv.indexOf('--dir') + 1] : 'docs');
-    exigirProyectoSdd(dir);
+    const raiz = exigirProyectoSdd(dir);
     fs.writeFileSync(path.join(dir, 'tablero.md'), renderBoard(dir));
-    console.log(`[tablero] regenerado ${path.join(dir, 'tablero.md')}`);
+    console.log(mensajesNucleo(resolverIdioma(raiz))('tablero.cli-regenerado', { ruta: path.join(dir, 'tablero.md') }));
   } catch (e) {
     console.error(`[tablero] ${e.message}`);
     process.exit(1);

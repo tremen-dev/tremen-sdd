@@ -2,7 +2,7 @@
 // PostToolUse: valida coherencia de frontmatters en artefactos SDD editados.
 import fs from 'node:fs';
 import path from 'node:path';
-import { readPayload, readConfig, extractFilePath, extractCwd } from './_comun.mjs';
+import { readPayload, readConfig, extractFilePath, extractCwd, mensajes } from './_comun.mjs';
 import { validateFile } from '../core/scripts/valida.mjs';
 
 const ES_ARTEFACTO = /(^|[\\/])((SPEC|TASK|ADR)-[^\\/]+\.md|_epica\.md)$/;
@@ -20,7 +20,7 @@ try {
   if (ES_ARTEFACTO.test(ruta) && !ruta.endsWith('.ledger.md')) {
     const errores = validateFile(ruta, path.join(cwd, 'docs'));
     if (errores.length) {
-      console.error(`[sdd-calidad] Artefacto inconsistente:\n` + errores.map((e) => ` - ${e}`).join('\n'));
+      console.error(mensajes(cwd)('calidad.artefacto-inconsistente') + '\n' + errores.map((e) => ` - ${e}`).join('\n'));
     }
   }
   console.log(JSON.stringify({}));

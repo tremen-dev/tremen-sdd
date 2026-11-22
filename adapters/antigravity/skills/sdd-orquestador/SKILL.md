@@ -14,7 +14,8 @@ Primero comprueba si existe `.sdd.json` en la raíz del proyecto:
     ejecutar `/sdd-init`.
   No leas el rol, no ejecutes scripts ni lances subagentes.
 - Si `.sdd.json` SÍ existe: toma el campo `idioma` (si no está definido en
-  `.sdd.json`, usa `es`). Después lee
+  `.sdd.json`, o si no existe `core/roles/<idioma>/`,
+  usa `es`). Después lee
   `../../core/roles/<idioma>/sdd-orquestador.md` con la herramienta de lectura
   de ficheros y sigue sus instrucciones al pie de la letra.
 
