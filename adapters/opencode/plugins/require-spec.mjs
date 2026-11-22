@@ -12,7 +12,7 @@
 // Claude/Kimi y el pre-commit L2. Este módulo es solo un SHIM: normaliza el payload
 // de opencode e invoca esa lógica; no reimplementa el parseo de rama ni de estado.
 import { execSync } from 'node:child_process';
-import { readConfig, esRutaVigilada, TOOLS_ESCRITURA, SddGateError } from './_comun.mjs';
+import { readConfig, esRutaVigilada, TOOLS_ESCRITURA, SddGateError, esSddJsonDe, mensajeSddJsonIlegible } from './_comun.mjs';
 import { evaluarRequireSpec } from '../core/lib/require-spec.mjs';
 
 // Factory de plugin de opencode: named async export que recibe el contexto
@@ -33,8 +33,16 @@ export const RequireSpecPlugin = async ({ directory, worktree } = {}) => {
         if (!TOOLS_ESCRITURA.includes(tool)) return; // read u otras: no se deniega
         const filePath = output?.args?.filePath ?? '';
         if (!filePath) return;
-        const cfg = readConfig(cwd);
-        if (!cfg || cfg.gates?.requireSpec === false) return; // gate desactivado
+        const lectura = readConfig(cwd);
+        if (lectura.estado === 'ausente') return; // proyecto sin tremen-sdd (ADR-015)
+        if (lectura.estado === 'ilegible') {
+          // Configuración ilegible: estado determinado, no fallo (ADR-017 §2).
+          // Deniega toda escritura salvo la del propio .sdd.json.
+          if (esSddJsonDe(cwd, filePath)) return;
+          throw new SddGateError(mensajeSddJsonIlegible(lectura));
+        }
+        const cfg = lectura.config;
+        if (cfg.gates?.requireSpec === false) return; // gate desactivado
         if (!esRutaVigilada(cfg, cwd, filePath)) return; // ruta no vigilada
         const rama = execSync('git rev-parse --abbrev-ref HEAD', { cwd, stdio: ['pipe', 'pipe', 'ignore'] }).toString().trim();
         const { permitido, motivo } = evaluarRequireSpec({ rama, cwd });
