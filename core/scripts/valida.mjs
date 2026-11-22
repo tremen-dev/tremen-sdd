@@ -7,6 +7,7 @@ import { TRANSITIONS } from './estado.mjs';
 import { esEntrypoint, exigirProyectoSdd } from '../lib/entrypoint.mjs';
 import { idiomaDesde, idiomasSoportados, leerIdiomaDeclarado, resolverIdioma } from '../lib/idioma.mjs';
 import { mensajesNucleo } from '../lib/mensajes.mjs';
+import { mensajeSddJsonIlegible } from '../lib/sdd-json-mensaje.mjs';
 
 const ID_RE = /^(EPIC|SPEC|TASK|ADR)-(\d{3}|FIX|INFRA|MANT|MEJORA)/;
 const ESTADOS = Object.keys(TRANSITIONS);
@@ -47,10 +48,11 @@ export function validateFile(ruta, docsDir) {
 // campo `idioma`, no hay error (CE-4); sin fichero, actúa antes la barrera.
 export function errorIdioma(raiz) {
   if (!raiz) return null;
-  const { existe, fichero, declarado, valor } = leerIdiomaDeclarado(raiz);
+  const { existe, fichero, declarado, valor, lectura } = leerIdiomaDeclarado(raiz);
   const t = mensajesNucleo(resolverIdioma(raiz));
-  // Ilegible: los hooks lo tratan como ausente y apagan todos los gates.
-  if (existe && !fichero) return t('valida.sdd-json-ilegible');
+  // Ilegible: el mismo texto que emiten los hooks y el pre-commit, que lo tratan
+  // como gates cerrados (ADR-017 §3, SPEC-027 CA-7).
+  if (existe && !fichero) return mensajeSddJsonIlegible(lectura);
   const soportados = idiomasSoportados();
   if (!declarado || (typeof valor === 'string' && soportados.includes(valor))) return null;
   return t('valida.idioma-no-soportado', {
