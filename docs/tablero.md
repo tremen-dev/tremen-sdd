@@ -70,7 +70,7 @@ Actualizado: 2026-11-23
 | SPEC-024 — guarda-de-activacion-por-sdd-json-en-skills-agentes-roles-y-cli-del-nucleo | hecho | 2026-10-16 (sdd-verificador) |
 | SPEC-027 — los-hooks-no-apagan-los-gates-ante-un-sdd-json-ilegible | hecho | 2026-11-23 (sdd-verificador) |
 | SPEC-028 — trabajar-sobre-la-base-remota | aprobada | 2026-10-27 (Alberto Fojo) |
-| SPEC-029 — esquema-de-sdd-json-un-campo-mal-tipado-no-apaga-los-gates | aprobada | 2026-10-27 (Alberto Fojo) |
+| SPEC-029 — esquema-de-sdd-json-un-campo-mal-tipado-no-apaga-los-gates | en-revision | 2026-11-23 (sdd-implementador) |
 
 ## ADRs
 
@@ -100,4 +100,5 @@ Actualizado: 2026-11-23
 
 - hecho: 24
 - bloqueada: 1
-- aprobada: 4
+- aprobada: 3
+- en-revision: 1
