@@ -183,3 +183,84 @@ test('SPEC-024 CA-4: CLI node tools/checks/prosa-gates.mjs sale con código 0', 
   assert.equal(r.status, 0, `stderr: ${r.stderr}`);
   assert.match(r.stdout, /\[prosa-gates\] OK/);
 });
+
+// SPEC-028 CA-1/CA-2 (ADR-018 §1, ADR-012): la prosa del orquestador sincroniza
+// con el remoto antes de trabajar y ramifica desde origin/<rama por defecto>.
+import { checkProsaOrquestador, DOC_ORQUESTADOR, REGLAS_ORQUESTADOR, normalizaProsa } from '../checks/prosa-gates.mjs';
+
+const ORQ = fs.readFileSync(path.join(REPO_ROOT, DOC_ORQUESTADOR), 'utf8');
+const ORQ_N = normalizaProsa(ORQ);
+
+test('SPEC-028 CA-2: los cuatro marcadores de la regla están definidos', () => {
+  assert.deepEqual(REGLAS_ORQUESTADOR.map((r) => r.id),
+    ['fetch-antes-de-leer', 'rama-por-defecto-frente-a-origin', 'parada-ante-divergencia', 'rama-desde-origin']);
+});
+
+test('SPEC-028 CA-2.1: la prosa real del orquestador pasa el check', () => {
+  const r = checkProsaOrquestador(ORQ);
+  assert.equal(r.ok, true, JSON.stringify(r.faltan));
+});
+
+test('SPEC-028 CA-1: el rol fija las condiciones de la sincronización', () => {
+  // 1. git fetch antes de leer estado, crear artefactos o despachar subagentes.
+  assert.match(ORQ_N, /git fetch antes de leer estado \(specs, tablero, ids\), crear artefactos o despachar a un subagente/);
+  // origin/<rama por defecto> es la que apunta origin/HEAD.
+  assert.match(ORQ_N, /origin\/head/);
+  // 2. fast-forward; si no se puede (divergencia o rama en otro worktree), PARA.
+  assert.match(ORQ_N, /fast-forward/);
+  assert.match(ORQ_N, /en uso en otro worktree/);
+  // 3. fetch fallido: decirlo al humano y seguir solo con su OK explícito.
+  assert.match(ORQ_N, /si git fetch falla[^.]*dile al humano[^.]*sigue solo con su ok explicito/);
+  // 4. la rama, desde origin/<rama por defecto>, nunca desde el HEAD local.
+  assert.match(ORQ_N, /git switch -c ft\/spec-nnn-slug origin\/<rama por defecto>/);
+  assert.match(ORQ_N, /nunca desde el head local/);
+  // 5. el encargo lleva rama y commit base, al implementador y al verificador.
+  assert.match(ORQ_N, /commit base/);
+  assert.match(ORQ_N, /sdd-implementador[^.]*rama y el commit base/);
+  assert.match(ORQ_N, /sdd-verificador[^.]*rama y el commit base/);
+  // 6. fuera de git o sin remoto, la regla no aplica.
+  assert.match(ORQ_N, /fuera de git, o sin remoto, esta regla no aplica/);
+});
+
+test('SPEC-028 CA-1: el rol conserva la precondición .sdd.json y la prohibición de editar', () => {
+  assert.match(ORQ, /no existe `\.sdd\.json` en la raíz del proyecto/);
+  assert.match(ORQ, /PARA inmediatamente: no\s+ejecutes el rol/);
+  assert.match(ORQ, /No edites specs, código ni documentos de verdad/);
+  // La sincronización va después de la precondición: con .sdd.json ausente no se toca git.
+  assert.ok(ORQ.indexOf('.sdd.json') < ORQ.indexOf('git fetch'));
+});
+
+for (const regla of REGLAS_ORQUESTADOR) {
+  test(`SPEC-028 CA-2.2: sin el marcador '${regla.id}' el check falla y lo nombra`, () => {
+    const sin = ORQ_N.replace(regla.re, '');
+    assert.notEqual(sin, ORQ_N, 'el fixture debe quitar el marcador');
+    const r = checkProsaOrquestador(sin);
+    assert.equal(r.ok, false);
+    assert.deepEqual(r.faltan.map((f) => f.id), [regla.id]);
+
+    // El CLI sobre un árbol fixture (solo core/roles/es) sale con != 0 y lo nombra.
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'sdd-prosa-orq-'));
+    try {
+      const roles = path.join(tmp, 'core', 'roles', 'es');
+      fs.cpSync(path.join(REPO_ROOT, 'core', 'roles', 'es'), roles, { recursive: true });
+      fs.writeFileSync(path.join(roles, 'sdd-orquestador.md'), sin);
+      const cli = spawnSync(process.execPath, [path.join(REPO_ROOT, 'tools', 'checks', 'prosa-gates.mjs'), '--raiz', tmp], { encoding: 'utf8' });
+      assert.notEqual(cli.status, 0, cli.stdout);
+      assert.ok(cli.stderr.includes(regla.que), cli.stderr);
+      assert.ok(cli.stderr.includes(regla.id), cli.stderr);
+    } finally {
+      fs.rmSync(tmp, { recursive: true, force: true });
+    }
+  });
+}
+
+test('SPEC-028 CA-2.2: el CLI con --raiz sobre una copia intacta sale con 0', () => {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'sdd-prosa-orq-'));
+  try {
+    fs.cpSync(path.join(REPO_ROOT, 'core', 'roles', 'es'), path.join(tmp, 'core', 'roles', 'es'), { recursive: true });
+    const cli = spawnSync(process.execPath, [path.join(REPO_ROOT, 'tools', 'checks', 'prosa-gates.mjs'), '--raiz', tmp], { encoding: 'utf8' });
+    assert.equal(cli.status, 0, cli.stderr);
+  } finally {
+    fs.rmSync(tmp, { recursive: true, force: true });
+  }
+});
