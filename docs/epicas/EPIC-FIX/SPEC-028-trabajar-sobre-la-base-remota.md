@@ -28,7 +28,8 @@ vuelve a dar SPEC-025 y ADR-016, reservados en la rama sin mergear `ft/SPEC-025-
 
 Ni el rol `sdd-orquestador` (`core/roles/es/sdd-orquestador.md`) ni scaffold miran el
 remoto. Esto rompe:
-- RN-07 en la práctica: dos artefactos distintos con el mismo id;
+- la unicidad de los ids: dos artefactos distintos con el mismo id (ninguna RN de
+  `docs/fundacion/reglas.md` la codifica);
 - la promesa de que la numeración la hace el script y no el LLM, porque hoy evitarlo
   exige numerar a mano.
 
@@ -186,7 +187,8 @@ Convenciones de los tests:
 - **RN-03**: la barrera de scaffold no depende del harness.
 - **RN-06**: la regla nueva vive solo en el cuerpo de `core/roles/es/sdd-orquestador.md`.
   Los bootstraps de los adaptadores no la copian.
-- **RN-07**: se evita que dos artefactos distintos compartan id.
+- **Unicidad de ids** (sin RN propia; la sostiene `scaffold.mjs`, que numera en vez
+  del LLM): se evita que dos artefactos distintos compartan id.
 - **RN-09**: la spec y ADR-018 quedan en `borrador`.
 - **RN-10**: `core/scripts/` y `core/lib/` son rutas vigiladas, así que el trabajo va en
   `ft/SPEC-028-…`.
@@ -231,3 +233,8 @@ Convenciones de los tests:
    `main` y no molestan.
 5. **CA-1.3, seguir sin red con OK del humano**: ¿lo quieres así, o prefieres que el
    orquestador siga sin preguntar y solo lo diga en su informe?
+
+> **Fe de erratas (2026-11-23)**: el problema y "Entidades y reglas afectadas" citaban
+> RN-07 para la unicidad de ids, pero RN-07 trata de las transiciones de estado y
+> ninguna RN de `docs/fundacion/reglas.md` codifica esa unicidad. Solo cambia la
+> cita; CA, alcance y estado no se tocan.

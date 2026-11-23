@@ -30,7 +30,7 @@ Es un defecto del método, no una mejora:
 - viola RN-01 (nada se codea sin spec aprobada) en el carril que debería guardarlo;
 - viola el modo fail-closed de L2 (ADR-002).
 
-ADR-016 (rama `ft/SPEC-025-…`) ya hace fallar `valida.mjs` en este caso. Su mensaje dice
+ADR-016 (SPEC-025, ya en `main`) ya hace fallar `valida.mjs` en este caso. Su mensaje dice
 que los hooks lo tratan como ausente, y deja fuera de alcance cambiar los hooks. Esta
 spec cierra esa parte siguiendo **ADR-017**.
 
@@ -219,3 +219,7 @@ Convenciones de los tests:
    fallo" que merece supersesión formal, dilo y lo reescribo.
 6. **Follow-up sin destino fijado**: la validación de esquema de `.sdd.json` (fuera de
    alcance). ¿Spec propia en EPIC-FIX, o la llevas a EPIC-MEJORA?
+
+> **Fe de erratas (2026-11-23)**: el problema describía ADR-016 como "(rama
+> `ft/SPEC-025-…`)"; SPEC-025 y ADR-016 ya están en `main`. Solo cambia esa cita;
+> CA, alcance y estado no se tocan.

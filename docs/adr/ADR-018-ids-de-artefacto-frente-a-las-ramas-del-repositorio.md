@@ -9,8 +9,8 @@ aprobada-por: Alberto Fojo
 ---
 # ADR-018: Ids de artefacto frente a las ramas del repositorio
 
-- Deciders: propone sdd-arquitecto; aprueba Alberto Fojo (pendiente, gate humano de
-  SPEC-028). Lo pidió Alberto Fojo el 2026-10-27.
+- Deciders: propone sdd-arquitecto; aprobó Alberto Fojo el 2026-10-27 en el gate humano
+  de SPEC-028. Lo pidió Alberto Fojo el 2026-10-27.
 - Specs relacionadas: **SPEC-028** (EPIC-FIX) lo materializa.
   - Respeta **ADR-004**: el núcleo es agnóstico al harness. Git no es un harness, pero el
     núcleo tiene que funcionar sin él.
@@ -133,5 +133,9 @@ comprueban: compartirlos entre ramas es lo esperado.
 - **Consultar solo `origin/<rama por defecto>`.** Rechazada: no ve la causa 2, que se
   dio el mismo día.
 - **Añadir un `--id` libre para specs y ADR.** Rechazada: abre la numeración al LLM.
+
+> **Fe de erratas (2026-11-23)**: la línea `Deciders` decía "(pendiente, gate humano
+> de …)" aunque el ADR está aprobado desde el 2026-10-27 (ver `historial`). Solo se
+> corrige esa errata; la decisión no cambia (RN-04).
 
 <!-- REGLA: un ADR aceptado es INMUTABLE. Para cambiar la decisión, escribe otro ADR que lo supersede (estado del viejo -> bloqueada + nota "superseded por ADR-NNN"). -->

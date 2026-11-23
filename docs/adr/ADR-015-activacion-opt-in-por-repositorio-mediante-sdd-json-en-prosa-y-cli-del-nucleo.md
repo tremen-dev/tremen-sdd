@@ -9,7 +9,7 @@ aprobada-por: Alberto Fojo
 ---
 # ADR-015: Activacion opt-in por repositorio mediante sdd-json en prosa y CLI del nucleo
 
-- Deciders: propone sdd-arquitecto; aprueba Alberto Fojo (pendiente, gate humano de SPEC-024).
+- Deciders: propone sdd-arquitecto; aprobó Alberto Fojo el 2026-10-16 en el gate humano de SPEC-024.
 - Specs relacionadas: **SPEC-024** (EPIC-FIX). Complementa **ADR-002** (modelo de enforcement en
   capas: extiende la semántica opt-in por proyecto de `.sdd.json` desde los hooks L1 hacia la
   superficie de skills/agentes/roles y el CLI del núcleo), **ADR-011** (autodescubrimiento en
@@ -171,5 +171,9 @@ e invoca directamente un script del núcleo por CLI:
   directorio destino, y a la inversa fallaría si el comando se lanza desde un subdirectorio del
   propio proyecto SDD. Resolver ascendiendo desde la ruta objetivo (con corte en `.git`) cubre
   ambos casos con precisión.
+
+> **Fe de erratas (2026-11-23)**: la línea `Deciders` decía "(pendiente, gate humano
+> de …)" aunque el ADR está aprobado desde el 2026-10-16 (ver `historial`). Solo se
+> corrige esa errata; la decisión no cambia (RN-04).
 
 <!-- REGLA: un ADR aceptado es INMUTABLE. Para cambiar la decisión, escribe otro ADR que lo supersede (estado del viejo -> bloqueada + nota "superseded por ADR-NNN"). -->
