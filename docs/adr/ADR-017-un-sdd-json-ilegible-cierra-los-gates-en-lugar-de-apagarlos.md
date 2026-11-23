@@ -9,8 +9,8 @@ aprobada-por: Alberto Fojo
 ---
 # ADR-017: Un sdd-json ilegible cierra los gates en lugar de apagarlos
 
-- Deciders: propone sdd-arquitecto; aprueba Alberto Fojo (pendiente, gate humano de
-  SPEC-027). Lo pidió Alberto Fojo el 2026-10-27.
+- Deciders: propone sdd-arquitecto; aprobó Alberto Fojo el 2026-10-27 en el gate humano
+  de SPEC-027. Lo pidió Alberto Fojo el 2026-10-27.
 - Specs relacionadas: **SPEC-027** (EPIC-FIX) lo materializa.
   - Complementa **ADR-002** (enforcement en capas) y **ADR-015** (activación opt-in por
     `.sdd.json`).
@@ -157,5 +157,9 @@ deniega por la misma vía que ya existe para las violaciones de require-spec (po
   lectores y cinco mensajes que divergen. Es el patrón que este ADR elimina.
 - **Validar el esquema completo de `.sdd.json`.** Aplazada: cambia más superficie que el
   fix y abre la discusión de qué campos son obligatorios. Ver follow-up.
+
+> **Fe de erratas (2026-11-23)**: la línea `Deciders` decía "(pendiente, gate humano
+> de …)" aunque el ADR está aprobado desde el 2026-10-27 (ver `historial`). Solo se
+> corrige esa errata; la decisión no cambia (RN-04).
 
 <!-- REGLA: un ADR aceptado es INMUTABLE. Para cambiar la decisión, escribe otro ADR que lo supersede (estado del viejo -> bloqueada + nota "superseded por ADR-NNN"). -->

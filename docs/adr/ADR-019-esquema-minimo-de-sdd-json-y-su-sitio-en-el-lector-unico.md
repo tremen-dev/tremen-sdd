@@ -9,8 +9,8 @@ aprobada-por: Alberto Fojo
 ---
 # ADR-019: Esquema minimo de sdd-json y su sitio en el lector unico
 
-- Deciders: propone sdd-arquitecto; aprueba Alberto Fojo (pendiente, gate humano de
-  SPEC-029). El 2026-10-27, en el gate de SPEC-027, Alberto Fojo pidió una spec propia
+- Deciders: propone sdd-arquitecto; aprobó Alberto Fojo el 2026-10-27 en el gate humano
+  de SPEC-029. El 2026-10-27, en el gate de SPEC-027, Alberto Fojo pidió una spec propia
   para el esquema.
 - Specs relacionadas: **SPEC-029** (EPIC-FIX) lo materializa. Construye sobre:
   - **ADR-017**, aprobado: el lector único con tres estados. ADR-017 matiza ADR-002 y no
@@ -136,5 +136,9 @@ En el mismo gate, el humano confirmó también:
   dependencias, y cuatro campos no la justifican.
 - **Validar solo `rutasVigiladas`, el caso conocido.** Rechazada: `linter` tiene el
   mismo fail-open, e `idioma` y `gates` la misma clase de silencio.
+
+> **Fe de erratas (2026-11-23)**: la línea `Deciders` decía "(pendiente, gate humano
+> de …)" aunque el ADR está aprobado desde el 2026-10-27 (ver `historial`). Solo se
+> corrige esa errata; la decisión no cambia (RN-04).
 
 <!-- REGLA: un ADR aceptado es INMUTABLE. Para cambiar la decisión, escribe otro ADR que lo supersede (estado del viejo -> bloqueada + nota "superseded por ADR-NNN"). -->
