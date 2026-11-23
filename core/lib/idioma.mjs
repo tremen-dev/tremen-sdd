@@ -9,7 +9,7 @@
 // - La resolución NO avisa ni lanza: sin .sdd.json, sin campo `idioma`, con un
 //   valor no soportado o con JSON corrupto devuelve `es`. El único sitio que
 //   señala un `idioma` no soportado o un .sdd.json ilegible es el CLI de
-//   valida.mjs (leerIdiomaDeclarado).
+//   valida.mjs (erroresSddJson, con el lector único de .sdd.json).
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';

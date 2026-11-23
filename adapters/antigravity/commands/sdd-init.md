@@ -28,9 +28,17 @@ Comprueba si el proyecto ya tiene estructura SDD:
 
 ## Paso 2 — Modo migración
 0. Si ya existe `.sdd.json`, comprueba su `idioma` antes de nada. Si declara un
-   idioma no soportado (no es uno de los subdirectorios de `../core/roles/`, o
-   no es una cadena), señálalo al humano, muestra la lista de soportados y pide
+   idioma no soportado (no es uno de los subdirectorios de `../core/roles/`),
+   señálalo al humano, muestra la lista de soportados y pide
    que elija uno antes de copiar plantillas; corrige `.sdd.json` con el elegido.
    Sin campo `idioma`, el proyecto es `es`.
+   Comprueba también su esquema, antes de copiar plantillas o mover ficheros:
+   ejecuta `node "../core/scripts/valida.mjs" --dir <directorio de la
+   variante detectada>` y mira sus errores de `.sdd.json`, que salen antes que
+   los de artefactos (los de artefactos de la variante aún no cuentan). Si hay
+   errores de esquema, enséñale al humano los campos que fallan, tal como los
+   da `valida.mjs`, y no copies ni muevas nada hasta que el `.sdd.json` se
+   corrija o el humano decida otra cosa de forma explícita. No sobrescribas el
+   `.sdd.json` existente con la plantilla para salir del error.
 1. Presenta un plan de migración paso a paso y pide aprobación humana antes de mover nada.
 2. Con aprobación, estampa primero `.sdd.json` (kit base del Paso 1.2, con un `idioma` soportado) para respetar la barrera CLI de los scripts del núcleo, migra por lotes pequeños ejecutando `node "../core/scripts/valida.mjs"` tras cada lote, y termina completando el kit base restante y regenerando el tablero con `node "../core/scripts/tablero.mjs"`.
