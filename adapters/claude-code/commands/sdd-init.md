@@ -2,7 +2,10 @@
 description: Inicializa (o migra) un proyecto al estándar tremen-sdd
 ---
 Vas a adoptar el estándar tremen-sdd en este proyecto. Los hooks del plugin ya
-están activos (fail-open: no hacen nada hasta que exista `.sdd.json`).
+están activos, pero no hacen nada hasta que exista `.sdd.json`. Ojo: un
+`.sdd.json` ilegible o con un campo mal tipado no cuenta como ausente, sino que
+cierra los gates (ADR-017, ADR-019); si lo escribes, que sea JSON válido según la
+plantilla.
 
 ## Paso 0 — Detección
 Comprueba si el proyecto ya tiene estructura SDD de alguna variante conocida:
