@@ -8,6 +8,8 @@ import { esEntrypoint, exigirProyectoSdd } from '../lib/entrypoint.mjs';
 import { hoy } from '../lib/fecha.mjs';
 import { idiomaDesde, resolverIdioma } from '../lib/idioma.mjs';
 import { mensajesNucleo } from '../lib/mensajes.mjs';
+import { esPersona } from '../lib/persona.mjs';
+import { leerCAs, esSpecDelModelo, leerMatriz, bloqueosHecho } from '../lib/ca-manual.mjs';
 
 export const TRANSITIONS = {
   borrador: ['aprobada', 'bloqueada'],
@@ -23,9 +25,9 @@ export const TRANSITIONS = {
 // mensaje de una transición fallida lista 'aprobada' entre las permitidas, y un
 // agente que quiera desbloquearse lee esa lista como una invitación. La prosa
 // del rol no le detiene; esto sí.
-// Una persona: firma no vacía, no el default del CLI ('desconocido') y no un
-// rol del método (namespace cerrado 'sdd-*'). Es el predicado de todo gate humano.
-const esPersona = (por) => Boolean(por) && por !== 'desconocido' && !/^sdd-/i.test(por);
+// Una persona: el predicado de todo gate humano (ADR-006). Vive en una fuente
+// única, core/lib/persona.mjs, porque también lo usan los calificadores
+// `salvedad` y `confirmado` del ledger (ADR-020 §4).
 
 // La firma es una política por (tipo, estado destino), no una regla global: por
 // eso los firmantes de 'hecho' leen data.tipo (ADR-006).
