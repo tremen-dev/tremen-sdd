@@ -1,0 +1,159 @@
+[
+  {
+    "n": 1,
+    "donde": "README.md",
+    "afirmacion": "«Hoy existe el adaptador de Claude Code» — hay tres adaptadores.",
+    "clase": "V2",
+    "mecanismo": "M2",
+    "caso": "M2-enumeracion-miembro-que-falta-rojo",
+    "nota": "Enumeración implícita de un solo miembro. Solo se caza si el enunciado se marca (las enumeraciones son opt-in, ADR-012 §3)."
+  },
+  {
+    "n": 2,
+    "donde": "README.md",
+    "afirmacion": "La distribución «aún no está resuelta: es trabajo de EPIC-001».",
+    "clase": "P",
+    "mecanismo": "M3",
+    "caso": "M3-marca-volatil-rojo",
+    "nota": "Doble drift: la marca de volatilidad y la atribución a una épica cerrada. M3 caza la marca; la atribución la cierra la spec #4."
+  },
+  {
+    "n": 3,
+    "donde": "README.md",
+    "afirmacion": "«los seis checks» / «6 checks» — hay diez.",
+    "clase": "V2",
+    "mecanismo": "M2",
+    "caso": "M2-cifra-sin-marcar-rojo",
+    "nota": "Cifra sin marcador, y de marcado OBLIGATORIO. La corrección de la spec #4 no es 6→9 sino 6→10, y con marcador."
+  },
+  {
+    "n": 4,
+    "donde": "README.md",
+    "afirmacion": "§Instalación: «hoy la instalación pasa por un build local».",
+    "clase": "P",
+    "mecanismo": "M3",
+    "caso": "M3-marca-volatil-rojo",
+    "nota": "M3 caza la FRASE. El procedimiento que la sigue (los comandos del bloque bash) no lo caza ningún mecanismo: eso es CE-3 y la spec #4."
+  },
+  {
+    "n": 5,
+    "donde": "docs/fundacion/contexto.md",
+    "afirmacion": "«existen dos adaptadores».",
+    "clase": "V2",
+    "mecanismo": "M2",
+    "caso": "M2-cifra-sin-marcar-rojo",
+    "nota": "Cifra sin marcador, de marcado obligatorio. Aparece dos veces en el fichero (§Stack y §Riesgos)."
+  },
+  {
+    "n": 6,
+    "donde": "docs/fundacion/contexto.md",
+    "afirmacion": "«El destino … es git pre-commit + CI, aún no implementado» — SPEC-002 lo cerró.",
+    "clase": "P",
+    "mecanismo": "M3",
+    "caso": "M3-marca-volatil-rojo",
+    "nota": "El ejemplo canónico de la fundación usada como informe de estado: la afirmación caducó el día que SPEC-002 pasó a hecho y nada lo señaló."
+  },
+  {
+    "n": 7,
+    "donde": "docs/fundacion/dominio.md",
+    "afirmacion": "fila `hook`: «que Claude Code dispara» — los tres harnesses tienen los suyos.",
+    "clase": "V2",
+    "mecanismo": "M2",
+    "caso": "M2-enumeracion-miembro-que-falta-rojo",
+    "nota": "Opt-in: solo se caza si la fila se marca. Es el hueco declarado de ADR-012 §3."
+  },
+  {
+    "n": 8,
+    "donde": "docs/fundacion/dominio.md",
+    "afirmacion": "fila `hook`: «el enforcement duro migrará a git+CI» — ya migró (RN-03, SPEC-002).",
+    "clase": "P",
+    "mecanismo": "M3",
+    "caso": "M3-marca-volatil-rojo",
+    "nota": "Futuro en un glosario. La forma R es citar RN-03 y dejar el estado en SPEC-002."
+  },
+  {
+    "n": 9,
+    "donde": "docs/fundacion/dominio.md",
+    "afirmacion": "fila `adaptador`: «Existen `adapters/claude-code/` y `adapters/kimi-code/`» — falta opencode.",
+    "clase": "V2",
+    "mecanismo": "M2",
+    "caso": "M2-enumeracion-miembro-que-falta-rojo",
+    "nota": "Enumeración explícita a la que le falta un miembro. Es el caso más limpio de M2-enumeración."
+  },
+  {
+    "n": 10,
+    "donde": "docs/fundacion/dominio.md",
+    "afirmacion": "fila `harness`: Kimi y opencode «en el roadmap» — ambos construidos (EPIC-001, EPIC-003).",
+    "clase": "P",
+    "mecanismo": "M3",
+    "caso": "M3-marca-volatil-rojo",
+    "nota": "«en el roadmap» es léxico de volatilidad puro: caducó al cerrarse las épicas y el glosario no se enteró."
+  },
+  {
+    "n": 11,
+    "donde": "docs/fundacion/dominio.md",
+    "afirmacion": "fila `harness`: «…Gemini CLI…» — no existe en ningún roadmap vigente.",
+    "clase": "V2",
+    "mecanismo": "M2",
+    "caso": "M2-enumeracion-no-miembro-rojo",
+    "nota": "El no-miembro. Justifica que M2 compruebe también «ningún no-miembro» y no solo la cardinalidad: contar habría dado el número correcto con el miembro equivocado."
+  },
+  {
+    "n": 12,
+    "donde": "docs/fundacion/dominio.md",
+    "afirmacion": "fila `paso de build`: «Obligatorio para instalar/dogfoodear» — EPIC-004 publicó una vía sin build.",
+    "clase": "fuera",
+    "mecanismo": "ninguno",
+    "caso": null,
+    "residual": true,
+    "motivo_residual": "Es un PROCEDIMIENTO, no una afirmación decidible leyendo el árbol: nada del repo dice si instalar exige o no un build. ADR-012 deja el procedimiento fuera de la taxonomía y nunca lo verifica. Solo lo cierra un par de ojos ejercitando la instalación (CE-3, spec #4).",
+    "nota": "Residual DECLARADO, no olvido."
+  },
+  {
+    "n": 13,
+    "donde": "docs/fundacion/dominio.md",
+    "afirmacion": "fila `rutas vigiladas`: cita RN-08 donde corresponde RN-01.",
+    "clase": "V1",
+    "mecanismo": "ninguno",
+    "caso": null,
+    "residual": true,
+    "motivo_residual": "M1 comprueba EXISTENCIA, no PERTINENCIA (ADR-012 §2): RN-08 existe, así que la referencia resuelve y ningún mecanismo la marca. Es la discrepancia que demuestra que «validar referencias cruzadas» no era la entrega. Solo la cierra un par de ojos, en la spec #3.",
+    "nota": "Residual DECLARADO. Es también la respuesta a la tentación de creer que M1 cubre este caso."
+  },
+  {
+    "n": 14,
+    "donde": "FOUNDATION.md",
+    "afirmacion": "§Alcance: «el adaptador de Claude Code» en singular — hay tres.",
+    "clase": "V2",
+    "mecanismo": "M2",
+    "caso": "M2-enumeracion-miembro-que-falta-rojo",
+    "nota": "Hallazgo de la medición del 2026-07-28, NO presente en la primera redacción del inventario. El gate amplió el inventario para incluirlo: sin esa ampliación CE-1 era inalcanzable, porque CE-1 nombra FOUNDATION.md explícitamente."
+  },
+  {
+    "n": 15,
+    "donde": "FOUNDATION.md",
+    "afirmacion": "§Alcance: «construir ya los adaptadores de Gemini CLI / opencode / Cursor / Codex … no se construyen aún» — opencode está construido (EPIC-003).",
+    "clase": "P",
+    "mecanismo": "M3",
+    "caso": "M3-marca-volatil-rojo",
+    "nota": "Hallazgo de la medición del 2026-07-28. Es P por «aún» y además arrastra un no-miembro (Gemini CLI) en una enumeración sin marcar: M3 caza la marca; el no-miembro solo se cazaría si el enunciado se marcase."
+  },
+  {
+    "n": 16,
+    "donde": "FOUNDATION.md",
+    "afirmacion": "§Alcance: «hoy instalar exige build local» — EPIC-004 publicó la vía instalable.",
+    "clase": "P",
+    "mecanismo": "M3",
+    "caso": "M3-marca-volatil-rojo",
+    "nota": "Hallazgo de la medición del 2026-07-28. «hoy» es presente sin datar: caduca sin que ningún cambio del repo pueda señalarlo."
+  },
+  {
+    "n": 17,
+    "donde": "docs/fundacion/vision.md",
+    "afirmacion": "«(Por ahora) no resuelve la distribución para usuarios finales» — falso desde v0.5.0.",
+    "clase": "P",
+    "mecanismo": "M3",
+    "caso": "M3-marca-volatil-rojo",
+    "nota": "Hallazgo de la medición del 2026-07-28. Está en el documento MENOS verificable de la fundación (visión = juicio e intención) y aun así es P pura: «por ahora» es léxico de volatilidad, no juicio."
+  }
+]
