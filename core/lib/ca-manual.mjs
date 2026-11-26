@@ -509,3 +509,53 @@ export function enRegistro(texto, idSpec, idCa) {
   const reCa = palabra(idCa);
   return texto.split(/\r?\n/).some((l) => reSpec.test(l) && reCa.test(l));
 }
+
+// --- Ronda acotada (ADR-020 §6, §7; SPEC-032 CA-7) ---
+
+const esPendiente = (celda) => analizarEstado(celda).base === '⏳';
+const mismasCeldas = (a, b) => a.length === b.length && a.every((c, i) => c === b[i]);
+
+// Compara la matriz y la evidencia del ledger en el commit verificado V (`enV`)
+// con las del ledger de trabajo (`hoy`), los dos de leerLedger. Devuelve
+//   { motivos: [{ codigo, ...vars }], pendientes: [ids en ⏳ en V], nuevas: [filas de evidencia nuevas] }.
+// No mira git: qué commit es cada fila nueva lo comprueba quien llama.
+export function compararRonda(cas, enV, hoy) {
+  const motivos = [];
+  for (const [nombre, l] of [['V', enV], ['hoy', hoy]]) {
+    for (const e of l.errores) motivos.push({ codigo: 'ledger', donde: nombre, error: e.codigo, ...e.vars });
+  }
+  if (!enV.matriz || !hoy.matriz) return { motivos, pendientes: [], nuevas: [] };
+
+  // En V, la forma de un PARCIAL (ADR-020 §6): todo CA bloqueante cerrado salvo
+  // los manuales en ⏳, y al menos un CA en ⏳.
+  const pendientes = enV.matriz.filas.filter((f) => esPendiente(f.celda)).map((f) => f.id);
+  if (!pendientes.length) motivos.push({ codigo: 'nada-pendiente' });
+  for (const c of cas.filter((x) => x.bloqueaHecho)) {
+    const filas = filasDe(enV, c.id);
+    const celda = filas[0]?.celda ?? null;
+    if (filas.length === 1 && (estadoCierra(celda) || (c.manual && esPendiente(celda)))) continue;
+    motivos.push({ codigo: 'no-parcial', ca: c.id, celda: celda ?? '' });
+  }
+
+  // La matriz: mismas filas, y las que no estaban en ⏳, idénticas.
+  const idsV = enV.matriz.filas.map((f) => f.id);
+  const idsHoy = hoy.matriz.filas.map((f) => f.id);
+  for (const f of enV.matriz.filas) {
+    const ahora = filasDe(hoy, f.id);
+    if (!ahora.length) motivos.push({ codigo: 'fila-borrada', ca: f.id });
+    else if (!esPendiente(f.celda) && !mismasCeldas(f.celdas, ahora[0].celdas)) {
+      motivos.push({ codigo: 'fila-cambiada', ca: f.id, antes: f.celdas.join(' | '), ahora: ahora[0].celdas.join(' | ') });
+    }
+  }
+  for (const id of idsHoy.filter((x) => !idsV.includes(x))) motivos.push({ codigo: 'fila-nueva', ca: id });
+
+  // La evidencia: las filas de V, iguales y en el mismo orden, delante de las nuevas.
+  const filasV = enV.evidencia?.filas ?? [];
+  const filasHoy = hoy.evidencia?.filas ?? [];
+  filasV.forEach((f, i) => {
+    if (!filasHoy[i] || !mismasCeldas(f.celdas, filasHoy[i].celdas)) {
+      motivos.push({ codigo: 'evidencia-cambiada', ca: f.ca, fila: f.celdas.join(' | ') });
+    }
+  });
+  return { motivos, pendientes, nuevas: filasHoy.slice(filasV.length) };
+}
