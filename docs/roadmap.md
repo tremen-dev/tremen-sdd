@@ -70,9 +70,9 @@ tipo: roadmap
   - **Publicar 0.5.1**: las entradas 47 y 49 (los roles se disparan en
     proyectos sin `.sdd.json`) ya están resueltas en el fuente por SPEC-024,
     pero el runtime 0.5.0 instalado sigue con el fallback a `es`.
-  - La entrada más repetida (13, numeración entre ramas, 6 veces) la cubren
-    SPEC-027, SPEC-028 y SPEC-029 de EPIC-FIX, ya aprobadas y en
-    implementación en otra sesión.
+  - La entrada más repetida (13, numeración entre ramas, 6 veces) la cubrió
+    SPEC-028 (EPIC-FIX, ADR-018), en `hecho` y fusionada en `main` (PR #30),
+    junto a SPEC-027 y SPEC-029 de la misma ola (PR #29 y #31).
 
 ## Cerradas
 - **EPIC-003 — Adaptador opencode con paridad completa** — `hecho` 2026-07-27
@@ -124,8 +124,9 @@ tipo: roadmap
   - Qué cubre: el tablero en conflicto (5 de 5 integraciones), suites pesadas
     que se tumban entre sí (3 veces), la integración tras el GREEN sin dueño,
     renumerar a mano y el orden de fusión de una ola.
-  - **Va detrás de SPEC-028** (scaffold consulta los refs, ADR-018). Si cambia
-    el contrato de `scaffold.mjs`, el CE-4 de esta épica se rehace.
+  - **Dependía de SPEC-028** (scaffold consulta los refs, ADR-018), ya en
+    `hecho`. Antes de aprobarla hay que comprobar que su CE-4 encaja con el
+    contrato de `scaffold.mjs` que dejó SPEC-028.
 - **EPIC-010 — Dueños y artefactos sin drift** (`borrador` 2026-11-23): que cada
   fichero y cada acción tengan un dueño escrito, y que los artefactos cerrados
   no digan cosas falsas.
