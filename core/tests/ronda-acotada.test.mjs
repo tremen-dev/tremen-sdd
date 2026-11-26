@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
+import os from 'node:os';
 import {
   proyecto, ledgerSecciones, filaEvidencia, repo, commitTodo, escribe, git, ronda,
 } from './_evidencia-fixtures.mjs';
@@ -255,4 +256,57 @@ test('CA-7 (i): se añade la fila de un CA nuevo: no admisible', () => {
   const { p, V } = base();
   ledgerHoy(p, { matriz: { ...PARCIAL, 'CA-4': '✅' }, evidencia: [] });
   noAdmisible(ronda(p, V), /CA-4/);
+});
+
+// --- F-V-1: un renombrado de código a la frontera borra código fuera de ella ---
+// `git diff` detecta renombrados por defecto y `--name-only` solo lista el
+// destino; el origen (borrado) tiene que contar como fichero fuera de la frontera.
+const MOVIDO = 'docs/_qa/SPEC-001/x.mjs';
+function mueveCodigoAQa(p) {
+  fs.mkdirSync(path.join(p.raiz, 'docs/_qa/SPEC-001'), { recursive: true });
+  fs.renameSync(path.join(p.raiz, 'core/lib/x.mjs'), path.join(p.raiz, MOVIDO));
+}
+
+test('CA-6 (F-V-1): mover core/lib/x.mjs a _qa/SPEC-001/ en un commit: no admisible y nombra el origen', () => {
+  const { p, V } = base();
+  ledgerHoy(p, { matriz: PARCIAL, evidencia: [fila('CA-2', V)] });
+  mueveCodigoAQa(p);
+  commitTodo(p.raiz, 'evidencia y movimiento');
+  noAdmisible(ronda(p, V), /core\/lib\/x\.mjs/);
+});
+
+test('CA-6 (F-V-1): `git mv` a _qa/SPEC-001/ en el índice sin commitear: no admisible y nombra el origen', () => {
+  const { p, V } = base();
+  casoA(p, V);
+  fs.mkdirSync(path.join(p.raiz, 'docs/_qa/SPEC-001'), { recursive: true });
+  git(p.raiz, 'mv', 'core/lib/x.mjs', MOVIDO);
+  noAdmisible(ronda(p, V), /core\/lib\/x\.mjs/);
+});
+
+test('CA-7 (F-V-1): fila nueva con Commit W que renombra core/lib/x.mjs a _qa/SPEC-001/: no admisible', () => {
+  const { p, V } = base();
+  mueveCodigoAQa(p);
+  const W = commitTodo(p.raiz, 'movimiento');
+  ledgerHoy(p, { matriz: PARCIAL, evidencia: [fila('CA-2', W)] });
+  commitTodo(p.raiz, 'evidencia');
+  // El motivo de CA-7.4, no solo el de la frontera de V..HEAD: el Commit W difiere de V fuera de ella.
+  noAdmisible(ronda(p, V), new RegExp(`otro código: el Commit ${W}[^\\n]*core/lib/x\\.mjs`));
+});
+
+test('CA-6 (F-V-1, misma familia): con `diff.relative` y el proyecto en un subdirectorio del repo, un cambio fuera del subdirectorio cuenta', () => {
+  const p0 = proyecto(SPEC, { estado: 'en-revision', ledger: ledgerSecciones({ matriz: PARCIAL, evidencia: [] }) });
+  const raizGit = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'sdd-ronda-sub-')));
+  const sub = path.join(raizGit, 'sub');
+  fs.cpSync(p0.raiz, sub, { recursive: true });
+  escribe(raizGit, 'lib/x.mjs', 'export const x = 1;\n');
+  const V = repo(raizGit);
+  git(raizGit, 'config', 'diff.relative', 'true');
+  const p = { raiz: sub, spec: path.join(sub, path.relative(p0.raiz, p0.spec)), ledger: path.join(sub, path.relative(p0.raiz, p0.ledger)) };
+  ledgerHoy(p, { matriz: PARCIAL, evidencia: [fila('CA-2', V)] });
+  escribe(raizGit, 'lib/x.mjs', 'export const x = 2;\n');
+  commitTodo(raizGit, 'evidencia y código fuera del proyecto');
+  const r = ronda(p, V);
+  noAdmisible(r, /lib\/x\.mjs/);
+  // El ledger sigue dentro de la frontera: el único motivo es lib/x.mjs.
+  assert.doesNotMatch(r.out, /SPEC-001-x\.ledger\.md cambió/);
 });

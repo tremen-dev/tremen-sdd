@@ -6,8 +6,8 @@
 //
 // La frontera es mecánica: el ledger de la spec, `_qa/<id>/` bajo el directorio
 // de docs y el fichero de `registroManuales`, si está declarado. Los ficheros
-// cambiados son los de `git diff --name-only <V>..HEAD` más los seguidos con
-// cambios sin commitear. Lo que dice el ledger (secciones, filas, Estado) lo lee
+// cambiados son los de `git diff --name-only --no-renames <V>..HEAD` más los
+// seguidos con cambios sin commitear; un renombrado cuenta origen y destino. Lo que dice el ledger (secciones, filas, Estado) lo lee
 // el lector único, core/lib/ca-manual.mjs; aquí solo hay git y rutas.
 import fs from 'node:fs';
 import path from 'node:path';
@@ -37,6 +37,12 @@ function git(args, cwd) {
   return { ok: !r.error && r.status === 0, out: r.stdout ?? '' };
 }
 const nombres = (r) => r.out.split('\0').filter(Boolean);
+// Ficheros que cambian entre dos árboles, con rutas desde la raíz del repo git.
+// `--no-renames` (F-V-1): con la detección de renombrados (por defecto o por
+// `diff.renames`), `--name-only` solo lista el destino y el origen borrado
+// escaparía de la frontera. `--no-relative`: con `diff.relative` y el proyecto
+// en un subdirectorio del repo, git callaría lo de fuera del subdirectorio.
+const ficherosCambiados = (cwd, ...refs) => nombres(git(['diff', '--name-only', '-z', '--no-renames', '--no-relative', ...refs], cwd));
 const commitDe = (ref, cwd) => {
   if (!ref || ref.startsWith('-')) return null;
   const r = git(['rev-parse', '--verify', '-q', `${ref}^{commit}`], cwd);
@@ -92,8 +98,8 @@ export function evaluarRonda(rutaSpec, desde) {
   else {
     resultado.desde = v;
     const cambiados = new Set([
-      ...nombres(git(['diff', '--name-only', '-z', v, 'HEAD'], raiz)),
-      ...nombres(git(['diff', '--name-only', '-z', 'HEAD'], raiz)),
+      ...ficherosCambiados(raiz, v, 'HEAD'),
+      ...ficherosCambiados(raiz, 'HEAD'),
     ]);
     for (const f of [...cambiados].sort()) if (!enFrontera(f)) motivos.push({ codigo: 'fuera-de-frontera', fichero: f });
 
@@ -110,7 +116,7 @@ export function evaluarRonda(rutaSpec, desde) {
       for (const fila of r.nuevas) {
         const c = SHA.test(fila.commit) ? commitDe(fila.commit, raiz) : null;
         if (!c) { motivos.push({ codigo: 'commit-inexistente', ca: fila.ca, commit: fila.commit, linea: fila.linea }); continue; }
-        const fuera = nombres(git(['diff', '--name-only', '-z', v, c], raiz)).filter((f) => !enFrontera(f));
+        const fuera = ficherosCambiados(raiz, v, c).filter((f) => !enFrontera(f));
         if (fuera.length) motivos.push({ codigo: 'commit-otro-codigo', ca: fila.ca, commit: fila.commit, linea: fila.linea, ficheros: fuera.join(', ') });
       }
     }
