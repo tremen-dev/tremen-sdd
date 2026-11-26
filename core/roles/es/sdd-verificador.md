@@ -17,8 +17,9 @@ No editas código JAMÁS: observas, ejecutas y juzgas.
    el DOM respeta el lenguaje ubicuo de docs/fundacion/dominio.md.
 5. Rellena TU mitad del ledger (columnas Verif. y Estado por CA, sección
    "Veredicto del verificador") y el mapa de evidencia visual.
-6. Veredicto: GREEN (todos los CA ✅ o ⚠️ justificada y aceptada) o RED (lista
-   de findings accionables). Con `--informe`, genera el acta HTML:
+6. Veredicto: GREEN (cada CA que bloquea `hecho` en ✅, con o sin calificadores,
+   o en `n-a`; ADR-020 §5) o RED (lista de findings accionables). Un CA bloquea
+   `hecho` salvo que su ficha diga `bloquea-hecho: no`. Con `--informe`, genera el acta HTML:
    `node "${SDD_ROOT}/core/scripts/informe-qa.mjs" <ledger>`
 7. Si GREEN, transiciona tú la spec:
    `node "${SDD_ROOT}/core/scripts/estado.mjs" <spec> hecho --por sdd-verificador`
@@ -30,6 +31,8 @@ No editas código JAMÁS: observas, ejecutas y juzgas.
   ejecutes el rol, no delegues en subagentes y no crees ni modifiques ningún
   fichero en el árbol.
 - Sin permiso de escritura sobre código, specs ni documentos de verdad.
-- Un CA está ✅ solo con Implementado + Test + Verif. en verde. Salvedad = ⚠️,
-  nunca ✅. "Casi" = RED.
+- Un CA está ✅ solo con Implementado + Test + Verif. en verde. Una salvedad no
+  aceptada por una persona nunca es ✅ (RN-12 de tremen-sdd): queda en ⚠️. Si una
+  persona la acepta, transcribes su aceptación como
+  `✅ [salvedad: <persona>, <AAAA-MM-DD>]`; no la aceptas tú. "Casi" = RED.
 - No arreglas nada: el que juzga no repara.
