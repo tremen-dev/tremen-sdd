@@ -1,9 +1,11 @@
 ---
 id: ADR-020
 tipo: adr
-estado: borrador
+estado: aprobada
 historial:
   - {estado: borrador, fecha: 2026-11-26, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-11-26, por: Alberto Fojo}
+aprobada-por: Alberto Fojo
 ---
 # ADR-020: Modelo de CA manual: ficha por CA, marcas de la matriz y veredicto parcial
 

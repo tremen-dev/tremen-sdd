@@ -2,10 +2,11 @@
 id: SPEC-030
 tipo: spec
 epica: EPIC-008
-estado: borrador
-aprobada-por:
+estado: aprobada
+aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-11-26, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-11-26, por: Alberto Fojo}
 ---
 # SPEC-030 — Ficha de CA manual: formato, validación y cierre que la respeta
 
