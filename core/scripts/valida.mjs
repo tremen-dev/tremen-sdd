@@ -5,8 +5,10 @@ import path from 'node:path';
 import { parseFrontmatter } from '../lib/frontmatter.mjs';
 import { TRANSITIONS } from './estado.mjs';
 import { esEntrypoint, exigirProyectoSdd } from '../lib/entrypoint.mjs';
-import { idiomaDesde, idiomasSoportados, leerIdiomaDeclarado, resolverIdioma } from '../lib/idioma.mjs';
+import { idiomaDesde, idiomasSoportados, resolverIdioma } from '../lib/idioma.mjs';
 import { mensajesNucleo } from '../lib/mensajes.mjs';
+import { leerSddJson } from '../lib/sdd-json.mjs';
+import { mensajeSddJsonIlegible } from '../lib/sdd-json-mensaje.mjs';
 
 const ID_RE = /^(EPIC|SPEC|TASK|ADR)-(\d{3}|FIX|INFRA|MANT|MEJORA)/;
 const ESTADOS = Object.keys(TRANSITIONS);
@@ -41,21 +43,42 @@ export function validateFile(ruta, docsDir) {
   return errores;
 }
 
-// Error si el .sdd.json de `raiz` (la de buscarRaizSdd / exigirProyectoSdd) es
-// ilegible o declara un `idioma` no soportado (ADR-016 §2), o null. Solo lo usa
-// el CLI: validateFile no cambia y los hooks siguen sin hablar del idioma. Sin
-// campo `idioma`, no hay error (CE-4); sin fichero, actúa antes la barrera.
-export function errorIdioma(raiz) {
-  if (!raiz) return null;
-  const { existe, fichero, declarado, valor } = leerIdiomaDeclarado(raiz);
-  const t = mensajesNucleo(resolverIdioma(raiz));
-  // Ilegible: los hooks lo tratan como ausente y apagan todos los gates.
-  if (existe && !fichero) return t('valida.sdd-json-ilegible');
+// Errores del .sdd.json de `raiz` (la de buscarRaizSdd / exigirProyectoSdd), en
+// orden: el de ilegible (incluido un esquema inválido, ADR-019 §2) y el de un
+// `idioma` no soportado (ADR-016 §2). Lee con el lector único (ADR-019 §3), así
+// que CI ve lo mismo que los hooks. Solo lo usa el CLI: validateFile no cambia y
+// los hooks siguen sin hablar del idioma. Sin campo `idioma`, no hay error de
+// idioma (CE-4); sin fichero, actúa antes la barrera.
+export function erroresSddJson(raiz) {
+  if (!raiz) return [];
+  const lectura = leerSddJson(raiz);
+  if (lectura.estado === 'ausente') return [];
+  const errores = [];
+  let declarado = false;
+  let valor;
+  if (lectura.estado === 'ilegible') {
+    // El mismo texto que emiten los hooks y el pre-commit, que lo tratan como
+    // gates cerrados (ADR-017 §3, SPEC-027 CA-7).
+    errores.push(mensajeSddJsonIlegible(lectura));
+    // Con el esquema inválido por otros campos, un `idioma` string no soportado
+    // también se informa (ADR-019 §4). Si `idioma` es el campo mal tipado, su
+    // error es el de esquema y no el de no soportado.
+    const idiomaMalTipado = lectura.errores?.some((e) => e.campo === 'idioma');
+    if (lectura.leido && !idiomaMalTipado && Object.hasOwn(lectura.leido, 'idioma')) {
+      declarado = true;
+      valor = lectura.leido.idioma;
+    }
+  } else if (Object.hasOwn(lectura.config, 'idioma')) {
+    declarado = true;
+    valor = lectura.config.idioma;
+  }
   const soportados = idiomasSoportados();
-  if (!declarado || (typeof valor === 'string' && soportados.includes(valor))) return null;
-  return t('valida.idioma-no-soportado', {
-    valor: JSON.stringify(valor) ?? String(valor), soportados: soportados.join(', '),
-  });
+  if (declarado && !soportados.includes(valor)) {
+    errores.push(mensajesNucleo(resolverIdioma(raiz))('valida.idioma-no-soportado', {
+      valor: JSON.stringify(valor) ?? String(valor), soportados: soportados.join(', '),
+    }));
+  }
+  return errores;
 }
 
 export function validate(docsDir) {
@@ -81,8 +104,7 @@ if (esEntrypoint(import.meta.url, process.argv[1])) {
     // Orden (SPEC-025 CA-6): barrera de ADR-015, después .sdd.json, después artefactos.
     const raiz = exigirProyectoSdd(docsDir);
     const t = mensajesNucleo(resolverIdioma(raiz));
-    const errIdioma = errorIdioma(raiz);
-    const errores = [...(errIdioma ? [errIdioma] : []), ...validate(docsDir)];
+    const errores = [...erroresSddJson(raiz), ...validate(docsDir)];
     if (errores.length) {
       console.error(t('valida.cli-errores', { n: errores.length }) + '\n' + errores.map((e) => ` - ${e}`).join('\n'));
       process.exit(1);

@@ -9,12 +9,13 @@
 // - La resolución NO avisa ni lanza: sin .sdd.json, sin campo `idioma`, con un
 //   valor no soportado o con JSON corrupto devuelve `es`. El único sitio que
 //   señala un `idioma` no soportado o un .sdd.json ilegible es el CLI de
-//   valida.mjs (leerIdiomaDeclarado).
+//   valida.mjs (erroresSddJson, con el lector único de .sdd.json).
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buscarRaizSdd } from './entrypoint.mjs';
 import { IDIOMA_ORIGEN } from './mensajes.mjs';
+import { leerSddJson } from './sdd-json.mjs';
 
 export { IDIOMA_ORIGEN };
 export const CORE_DIR = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
@@ -31,16 +32,15 @@ export function idiomasSoportados(coreDir = CORE_DIR) {
 
 // Lo que declara el .sdd.json de `raiz`, sin interpretarlo:
 // { existe: hay fichero, fichero: es JSON legible, declarado: tiene campo idioma, valor }.
+// Lee con el lector único de .sdd.json (ADR-017 §1): fichero = estado 'valida'
+// (con BOM incluido); `lectura` lleva el resultado completo para quien lo necesite.
 export function leerIdiomaDeclarado(raiz) {
-  const ruta = path.join(raiz, '.sdd.json');
-  let cfg;
-  try {
-    cfg = JSON.parse(fs.readFileSync(ruta, 'utf8'));
-  } catch {
-    return { existe: fs.existsSync(ruta), fichero: false, declarado: false, valor: undefined };
+  const lectura = leerSddJson(raiz);
+  if (lectura.estado !== 'valida') {
+    return { existe: lectura.estado !== 'ausente', fichero: false, declarado: false, valor: undefined, lectura };
   }
-  const declarado = cfg !== null && typeof cfg === 'object' && Object.hasOwn(cfg, 'idioma');
-  return { existe: true, fichero: true, declarado, valor: declarado ? cfg.idioma : undefined };
+  const declarado = Object.hasOwn(lectura.config, 'idioma');
+  return { existe: true, fichero: true, declarado, valor: declarado ? lectura.config.idioma : undefined, lectura };
 }
 
 // Idioma efectivo del proyecto cuya raíz es `raiz` (la que contiene .sdd.json,

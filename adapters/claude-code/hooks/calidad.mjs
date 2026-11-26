@@ -5,7 +5,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
-import { readPayload, readConfig, mensajes } from './_comun.mjs';
+import { readPayload, readConfig, mensajes, mensajeSddJsonIlegible } from './_comun.mjs';
 import { validateFile } from '../core/scripts/valida.mjs';
 
 const ES_ARTEFACTO = /(^|[\\/])((SPEC|TASK|ADR)-[^\\/]+\.md|_epica\.md)$/;
@@ -13,8 +13,14 @@ const ES_ARTEFACTO = /(^|[\\/])((SPEC|TASK|ADR)-[^\\/]+\.md|_epica\.md)$/;
 try {
   const payload = readPayload();
   const cwd = payload.cwd || process.cwd();
-  const cfg = readConfig(cwd);
-  if (!cfg || cfg.gates?.calidad === false) process.exit(0);
+  const lectura = readConfig(cwd);
+  if (lectura.estado === 'ausente') process.exit(0); // proyecto sin tremen-sdd (ADR-015)
+  if (lectura.estado === 'ilegible') { // .sdd.json sigue ilegible (ADR-017 §2)
+    console.error(mensajeSddJsonIlegible(lectura));
+    process.exit(2);
+  }
+  const cfg = lectura.config;
+  if (cfg.gates?.calidad === false) process.exit(0);
   const fichero = payload.tool_input?.file_path ?? '';
   if (!fichero) process.exit(0);
   const ruta = path.resolve(cwd, fichero);

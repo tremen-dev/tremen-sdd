@@ -64,8 +64,9 @@ artefacto construido o un registro remoto) aún no está resuelta: es trabajo de
 pipeline            → sdd-arquitecto (spec) → sdd-implementador (TDD) → sdd-verificador (GREEN/RED)
 ```
 
-Los hooks son fail-open: no bloquean nada hasta que exista `.sdd.json` en la
-raíz del proyecto (lo crea `/sdd-init`).
+Los hooks no bloquean nada hasta que exista `.sdd.json` en la raíz del proyecto
+(lo crea `/sdd-init`). Si existe pero es ilegible o no cumple el esquema mínimo,
+los gates se cierran en vez de apagarse (ver [Hooks](#hooks)).
 
 ## Skills
 
@@ -114,9 +115,19 @@ entrada del historial coincide con el `estado` declarado.
 | `protege-verdad.mjs` | `PreToolUse` (Edit\|Write\|MultiEdit) | Deniega escribir a mano documentos generados (`docs/tablero.md`) o documentos de verdad (`FOUNDATION.md`, `docs/fundacion/`) fuera de sus dueños (`sdd-arquitecto`, `sdd-producto`, `main`). |
 | `calidad.mjs` | `PostToolUse` (Edit\|Write\|MultiEdit) | Valida coherencia frontmatter/estado/historial de artefactos SDD, o lanza el linter del proyecto sobre código (con `linter:auto`, solo si el linter tiene config presente en el proyecto); `exit 2` devuelve el problema como feedback accionable. |
 
-Los tres son **fail-open**: ante cualquier duda (fichero no vigilado,
-`.sdd.json` ausente, linter no instalado o sin su config presente...) permiten la operación en vez de
-bloquear.
+Ante lo que no les toca (fichero no vigilado, `.sdd.json` ausente, linter no
+instalado o sin su config presente...) permiten la operación en vez de bloquear.
+Ante un **error interno** del propio hook (git ausente, payload raro) son
+**fail-open**: permiten.
+
+Un `.sdd.json` que existe pero es **ilegible** (JSON roto, no es un objeto) o
+tiene un campo con **tipo inválido** para el esquema mínimo no se trata como
+ausente: el proyecto se declara activo y su configuración no se puede aplicar,
+así que los gates se **cierran** (ADR-017, ADR-019). `require-spec` deniega toda
+escritura salvo la del propio `.sdd.json`, `protege-verdad` aplica sus reglas
+aunque la config diga apagarlo, `calidad` avisa de que sigue ilegible y el
+pre-commit L2 bloquea el commit. La salida es arreglar el fichero (o
+`/sdd-init` en modo migración); la válvula de abajo sigue funcionando.
 
 **Válvula de escape**: `SDD_SKIP_GATE=1` desactiva `require-spec.mjs` y
 `protege-verdad.mjs` (no `calidad.mjs`, que solo informa). Uso puntual —
@@ -125,7 +136,7 @@ detecta activa.
 
 ## Enforcement en capas (git + CI)
 
-Los hooks del harness (L1) son *feedback* fail-open. La **garantía** dura vive en
+Los hooks del harness (L1) son *feedback* (fail-open ante error interno). La **garantía** dura vive en
 dos capas fail-closed, independientes del harness (ADR-002):
 
 - **L2 — git pre-commit** (`tools/githooks/pre-commit`): bloquea el commit

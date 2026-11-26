@@ -1,7 +1,7 @@
 <!-- GENERADO por tremen-sdd (scripts/tablero.mjs). NO EDITAR A MANO. -->
 # Tablero
 
-Actualizado: 2026-10-27
+Actualizado: 2026-11-23
 
 ## EPIC-001 — tremen-sdd-multi-harness (hecho)
 
@@ -68,6 +68,9 @@ Actualizado: 2026-10-27
 | SPEC-017 — layout-generalizado-a-todos-los-adaptadores-y-prosa-del-runner-sin-drift | hecho | 2026-07-27 (sdd-verificador) |
 | SPEC-023 — despacho-real-de-subagentes-en-antigravity-con-contexto-aislado | hecho | 2026-10-15 (sdd-verificador) |
 | SPEC-024 — guarda-de-activacion-por-sdd-json-en-skills-agentes-roles-y-cli-del-nucleo | hecho | 2026-10-16 (sdd-verificador) |
+| SPEC-027 — los-hooks-no-apagan-los-gates-ante-un-sdd-json-ilegible | hecho | 2026-11-23 (sdd-verificador) |
+| SPEC-028 — trabajar-sobre-la-base-remota | hecho | 2026-11-23 (sdd-verificador) |
+| SPEC-029 — esquema-de-sdd-json-un-campo-mal-tipado-no-apaga-los-gates | hecho | 2026-11-23 (sdd-verificador) |
 
 ## ADRs
 
@@ -89,9 +92,12 @@ Actualizado: 2026-10-27
 | ADR-014 | aprobada | despacho-de-subagentes-en-google-antigravity-con-invoke-subagent-self | 2026-10-15 (Alberto Fojo) |
 | ADR-015 | aprobada | activacion-opt-in-por-repositorio-mediante-sdd-json-en-prosa-y-cli-del-nucleo | 2026-10-16 (Alberto Fojo) |
 | ADR-016 | aprobada | multi-idioma-del-metodo-resolucion-por-proyecto-catalogos-identificadores-fijos-y-paridad-sellada | 2026-10-27 (Alberto Fojo) |
+| ADR-017 | aprobada | un-sdd-json-ilegible-cierra-los-gates-en-lugar-de-apagarlos | 2026-10-27 (Alberto Fojo) |
+| ADR-018 | aprobada | ids-de-artefacto-frente-a-las-ramas-del-repositorio | 2026-10-27 (Alberto Fojo) |
+| ADR-019 | aprobada | esquema-minimo-de-sdd-json-y-su-sitio-en-el-lector-unico | 2026-10-27 (Alberto Fojo) |
 
 ## Resumen
 
-- hecho: 23
+- hecho: 26
 - bloqueada: 1
 - aprobada: 2

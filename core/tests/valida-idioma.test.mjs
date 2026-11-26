@@ -5,6 +5,8 @@ import path from 'node:path';
 import os from 'node:os';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { leerSddJson } from '../lib/sdd-json.mjs';
+import { mensajeSddJsonIlegible } from '../lib/sdd-json-mensaje.mjs';
 
 // SPEC-025 CA-6 — valida.mjs falla ante un `idioma` no soportado o un .sdd.json
 // ilegible (ADR-016 §2). Orden: barrera (ADR-015), .sdd.json, artefactos.
@@ -31,11 +33,13 @@ test('CA-6(a): idioma "eu" -> exit != 0, nombra el valor y los soportados', () =
   assert.match(r.stderr, /Idiomas soportados: es\./);
 });
 
-test('CA-6(b): idioma 5 (no es una cadena) -> exit != 0, nombra el valor', () => {
+// SPEC-029 CA-4(c) cambia este caso: un `idioma` que no es string es un error de
+// esquema de .sdd.json (ADR-019 §4), no el de idioma no soportado.
+test('CA-6(b) / SPEC-029 CA-4(c): idioma 5 (no es una cadena) -> exit != 0, nombra el valor como error de esquema', () => {
   const r = corre(proyecto({ idioma: 5 }));
   assert.notEqual(r.status, 0);
-  assert.match(r.stderr, /no soportado: 5\./);
-  assert.match(r.stderr, /Idiomas soportados: es\./);
+  assert.match(r.stderr, /`idioma`: se esperaba un string, se encontró 5/);
+  assert.doesNotMatch(r.stderr, /no soportado/);
 });
 
 test('CA-6(a): con errores de artefactos, se informan todos en la misma ejecución', () => {
@@ -62,16 +66,20 @@ test('CA-6(e): sin .sdd.json -> la barrera de ADR-015 (código 1, el mensaje del
   assert.doesNotMatch(r.stderr, /`idioma`|no soportado/);
 });
 
-test('CA-6(g): .sdd.json con JSON corrupto -> exit != 0, nombra el fichero y dice que los hooks lo tratan como ausente', () => {
-  const r = corre(proyecto(undefined, { crudo: '{ "idioma": "es", ' }));
+// SPEC-027 CA-7 cambia el texto de este error: deja de decir que los hooks lo
+// tratan como ausente y pasa a ser el bloque único de SPEC-027 CA-4 (ADR-017 §3).
+test('CA-6(g) / SPEC-027 CA-7: .sdd.json con JSON corrupto -> exit != 0 y el texto de SPEC-027 CA-4', () => {
+  const dir = proyecto(undefined, { crudo: '{ "idioma": "es", ' });
+  const r = corre(dir);
   assert.notEqual(r.status, 0);
-  assert.equal(r.stderr, '[valida] 1 error(es):\n - .sdd.json: no es un JSON legible. Los hooks lo tratan como ausente: el proyecto parece activo, pero todos los gates están apagados.\n');
+  assert.equal(r.stderr, `[valida] 1 error(es):\n - ${mensajeSddJsonIlegible(leerSddJson(dir))}\n`);
+  assert.doesNotMatch(r.stderr, /tratan como ausente|apagad/);
 });
 
 test('CA-6(g): con errores de artefactos, el .sdd.json ilegible va primero y se informan todos', () => {
   const r = corre(proyecto(undefined, { crudo: 'no-json', roto: true }));
   assert.notEqual(r.status, 0);
-  assert.match(r.stderr, /^\[valida\] 2 error\(es\):\n - \.sdd\.json: no es un JSON legible\.[^\n]*\n - epicas[\\/]EPIC-001-x[\\/]SPEC-001-x\.md: la última entrada de historial/);
+  assert.match(r.stderr, /^\[valida\] 2 error\(es\):\n - '[^\n]*\.sdd\.json' existe pero no se puede leer[^\n]*\n - epicas[\\/]EPIC-001-x[\\/]SPEC-001-x\.md: la última entrada de historial/);
 });
 
 test('CA-6(f): idioma "zz" con la fixture zz -> exit 0', () => {
@@ -88,4 +96,22 @@ test('CA-6: validateFile (hook calidad, pre-commit) no habla del idioma', async 
   const dir = proyecto({ idioma: 'eu' });
   const epica = path.join(dir, 'docs', 'epicas', 'EPIC-001-x', '_epica.md');
   assert.deepEqual(validateFile(epica, path.join(dir, 'docs')), []);
+});
+
+// SPEC-027 CA-7 — valida.mjs usa el mismo lector que los hooks (ADR-017 §1): el
+// BOM UTF-8 es válido y un valor que no es objeto es ilegible, en todas las capas.
+for (const [caso, crudo] of [['null', 'null'], ['[]', '[]'], ['vacío', '']]) {
+  test(`SPEC-027 CA-7: .sdd.json ${caso} -> exit != 0 con el texto de CA-4`, () => {
+    const dir = proyecto(undefined, { crudo });
+    const r = corre(dir);
+    assert.notEqual(r.status, 0);
+    assert.ok(r.stderr.includes(mensajeSddJsonIlegible(leerSddJson(dir))), r.stderr);
+    assert.doesNotMatch(r.stderr, /tratan como ausente|apagad/);
+  });
+}
+
+test('SPEC-027 CA-7: .sdd.json válido con BOM UTF-8 -> exit 0', () => {
+  const r = corre(proyecto(undefined, { crudo: '﻿' + JSON.stringify({ idioma: 'es' }) }));
+  assert.equal(r.status, 0, r.stderr);
+  assert.equal(r.stdout, '[valida] OK\n');
 });
