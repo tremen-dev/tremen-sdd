@@ -9,7 +9,7 @@ import { hoy } from '../lib/fecha.mjs';
 import { idiomaDesde, resolverIdioma } from '../lib/idioma.mjs';
 import { mensajesNucleo } from '../lib/mensajes.mjs';
 import { esPersona } from '../lib/persona.mjs';
-import { leerCAs, esSpecDelModelo, leerMatriz, bloqueosHecho, rutaLedger } from '../lib/ca-manual.mjs';
+import { leerCAs, esSpecDelModelo, leerLedger, bloqueosHecho, rutaLedger } from '../lib/ca-manual.mjs';
 
 export const TRANSITIONS = {
   borrador: ['aprobada', 'bloqueada'],
@@ -63,23 +63,32 @@ export function fueAprobadaPorHumano(data) {
 // que cada CA que bloquea el cierre esté cerrado en la matriz del ledger. Igual
 // que FIRMANTES: la prosa del rol no detiene a un agente; la máquina de estados
 // sí. Sin la marca no se aplica (ADR-020 §11). Lee con el lector único.
-function guardaHecho(ruta, body, t) {
+function guardaHecho(ruta, body, t, idioma) {
   const cas = leerCAs(body);
   if (!esSpecDelModelo(cas)) return;
   const ledger = rutaLedger(ruta);
   if (!fs.existsSync(ledger)) throw new Error(t('estado.hecho-sin-ledger', { ledger }));
-  const bloqueos = bloqueosHecho(cas, leerMatriz(fs.readFileSync(ledger, 'utf8')));
+  const bloqueos = bloqueosHecho(cas, leerLedger(fs.readFileSync(ledger, 'utf8'), idioma));
   if (!bloqueos.length) return;
-  const lista = bloqueos.map((b) => (b.celda === null
-    ? t('estado.hecho-bloqueo-sin-fila', { ca: b.ca })
-    : t('estado.hecho-bloqueo', { ca: b.ca, celda: b.celda }))).join('; ');
-  throw new Error(t('estado.hecho-bloqueado', { lista }));
+  // SPEC-032 CA-1: un ledger sin matriz, o con dos, no dice qué CA cierran.
+  const deLedger = bloqueos.filter((b) => !b.ca);
+  if (deLedger.length) {
+    throw new Error(deLedger.map((b) => t(`estado.hecho-${b.codigo}`, { ledger, ...b.vars })).join(' '));
+  }
+  const texto = {
+    'sin-fila': (b) => t('estado.hecho-bloqueo-sin-fila', { ca: b.ca }),
+    abierto: (b) => t('estado.hecho-bloqueo', { ca: b.ca, celda: b.celda }),
+    repetida: (b) => t('estado.hecho-bloqueo-repetida', { ca: b.ca, ...b.vars }),
+    'sin-evidencia': (b) => t('estado.hecho-bloqueo-sin-evidencia', { ca: b.ca, entorno: b.entorno }),
+  };
+  throw new Error(t('estado.hecho-bloqueado', { lista: bloqueos.map((b) => texto[b.codigo](b)).join('; ') }));
 }
 
 export function transition(ruta, nuevoEstado, por, fecha) {
   fecha ??= hoy();
   const { data, body } = parseFrontmatter(fs.readFileSync(ruta, 'utf8'));
-  const t = mensajesNucleo(idiomaDesde(path.dirname(path.resolve(ruta))));
+  const idioma = idiomaDesde(path.dirname(path.resolve(ruta)));
+  const t = mensajesNucleo(idioma);
   const actual = data.estado;
   if (!TRANSITIONS[actual]) throw new Error(t('estado.desconocido', { actual }));
   if (!TRANSITIONS[actual].includes(nuevoEstado)) {
@@ -94,7 +103,7 @@ export function transition(ruta, nuevoEstado, por, fecha) {
   if (REQUIEREN_APROBACION.includes(nuevoEstado) && !fueAprobadaPorHumano(data)) {
     throw new Error(t('estado.sin-aprobacion-humana', { nuevo: nuevoEstado }));
   }
-  if (nuevoEstado === 'hecho' && data.tipo === 'spec') guardaHecho(ruta, body, t);
+  if (nuevoEstado === 'hecho' && data.tipo === 'spec') guardaHecho(ruta, body, t, idioma);
   data.estado = nuevoEstado;
   // La plantilla de spec tiene el campo y nadie lo rellenaba: la aprobación
   // vivía solo en el historial, donde hay que ir a buscarla.

@@ -16,7 +16,16 @@ epica: EPIC-008
 <!-- Un CA está ✅ solo cuando Implementado + Test + Verif. aplicables están en verde. Una salvedad no aceptada por una persona nunca es ✅ (RN-12 de tremen-sdd): queda en ⚠️ hasta que una persona la acepta. -->
 | CA | Implementado (fichero) | Test (fichero/caso) | Verif. | Estado |
 |---|---|---|---|---|
-| CA-1 | | | | ❌ |
+| CA-1 | `core/lib/ca-manual.mjs` (`titulosLedger`, `leerLedger`: secciones de nivel 2 por título, títulos y cabecera de evidencia leídos de `core/templates/<idioma>/artefactos/SPEC.ledger.md`); `core/scripts/valida.mjs` y `core/scripts/estado.mjs` (`guardaHecho`) lo usan; textos `valida.ledger.*` y `estado.hecho-sin-matriz`/`-matriz-ambigua` | `core/tests/ca-manual-secciones.test.mjs`: (a) y (c) lector + valida + hecho; (b) impostora; (d) ambigua (valida nombra las dos líneas, hecho se niega); (e) sin sección; fin de sección en nivel 1/2; 1.6 títulos = plantilla por idioma y sin literales en el lector | | ❌ |
+| CA-2 |  |  | | ❌ |
+| CA-3 | `core/templates/es/artefactos/SPEC.ledger.md` (sección «Evidencia de CA manuales» tras la matriz, con comentario de ADR-020 §8); `tools/tests/golden/scaffold-es.json` (solo la entrada del ledger) | `tools/tests/ledger-evidencia-plantilla.test.mjs`: 3.1 cabecera y sin filas; 3.2 comentario; 3.3 lector sobre el ledger de scaffold; 3.4 valida (también con la spec pasada a modelo); 3.5 la entrada del golden es la plantilla sustituida. `tools/tests/golden-es.test.mjs` sin cambios | | ❌ |
+| CA-4 |  |  | | ❌ |
+| CA-5 |  |  | | ❌ |
+| CA-6 |  |  | | ❌ |
+| CA-7 |  |  | | ❌ |
+| CA-8 |  |  | | ❌ |
+| CA-9 |  |  | | ❌ |
+| CA-10 |  |  | | ❌ |
 
 ## Veredicto del verificador
 <!-- GREEN/RED + fecha + resumen. Lo escribe SOLO sdd-verificador. -->

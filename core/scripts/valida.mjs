@@ -9,7 +9,9 @@ import { idiomaDesde, idiomasSoportados, resolverIdioma } from '../lib/idioma.mj
 import { mensajesNucleo } from '../lib/mensajes.mjs';
 import { leerSddJson } from '../lib/sdd-json.mjs';
 import { mensajeSddJsonIlegible } from '../lib/sdd-json-mensaje.mjs';
-import { leerCAs, esSpecDelModelo, erroresFicha, erroresMarcas, leerMatriz, rutaLedger } from '../lib/ca-manual.mjs';
+import {
+  leerCAs, esSpecDelModelo, erroresFicha, erroresMarcas, erroresEvidencia, faltaEvidencia, leerLedger, rutaLedger,
+} from '../lib/ca-manual.mjs';
 
 const ID_RE = /^(EPIC|SPEC|TASK|ADR)-(\d{3}|FIX|INFRA|MANT|MEJORA)/;
 const ESTADOS = Object.keys(TRANSITIONS);
@@ -55,10 +57,17 @@ function erroresModeloCaManual(ruta, docsDir, t) {
   const errores = erroresFicha(cas).map((e) => t(`valida.ficha.${e.codigo}`, { rel, ca: e.ca, clave: e.clave, ...e.vars }));
   const ledger = rutaLedger(ruta);
   if (fs.existsSync(ledger)) {
+    // SPEC-032: secciones, filas repetidas y evidencia, también del lector.
+    const leido = leerLedger(fs.readFileSync(ledger, 'utf8'), idiomaDesde(docsDir ?? path.dirname(ruta)));
     const relLedger = relDe(ledger);
-    for (const e of erroresMarcas(cas, leerMatriz(fs.readFileSync(ledger, 'utf8')))) {
+    for (const e of leido.errores) errores.push(t(`valida.ledger.${e.codigo}`, { rel: relLedger, ...e.vars }));
+    for (const e of erroresMarcas(cas, leido)) {
       errores.push(t(`valida.marca.${e.codigo}`, { rel: relLedger, ca: e.ca, celda: e.celda, ...e.vars }));
     }
+    for (const e of erroresEvidencia(cas, leido)) {
+      errores.push(t(`valida.evidencia.${e.codigo}`, { rel: relLedger, linea: e.linea, ca: e.ca, columna: e.columna, ...e.vars }));
+    }
+    for (const f of faltaEvidencia(cas, leido)) errores.push(t('valida.evidencia.falta', { rel: relLedger, ca: f.ca, entorno: f.entorno }));
   }
   return errores;
 }
