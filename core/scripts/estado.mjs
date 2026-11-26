@@ -4,12 +4,16 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { parseFrontmatter, stringifyFrontmatter } from '../lib/frontmatter.mjs';
-import { esEntrypoint, exigirProyectoSdd } from '../lib/entrypoint.mjs';
+import { buscarRaizSdd, esEntrypoint, exigirProyectoSdd } from '../lib/entrypoint.mjs';
 import { hoy } from '../lib/fecha.mjs';
 import { idiomaDesde, resolverIdioma } from '../lib/idioma.mjs';
 import { mensajesNucleo } from '../lib/mensajes.mjs';
 import { esPersona } from '../lib/persona.mjs';
-import { leerCAs, esSpecDelModelo, leerLedger, bloqueosHecho, rutaLedger } from '../lib/ca-manual.mjs';
+import { leerSddJson } from '../lib/sdd-json.mjs';
+import { mensajeSddJsonIlegible } from '../lib/sdd-json-mensaje.mjs';
+import {
+  leerCAs, esSpecDelModelo, leerLedger, bloqueosHecho, manualesSinCerrar, enRegistro, rutaLedger,
+} from '../lib/ca-manual.mjs';
 
 export const TRANSITIONS = {
   borrador: ['aprobada', 'bloqueada'],
@@ -84,6 +88,33 @@ function guardaHecho(ruta, body, t, idioma) {
   throw new Error(t('estado.hecho-bloqueado', { lista: bloqueos.map((b) => texto[b.codigo](b)).join('; ') }));
 }
 
+// SPEC-032 CA-9 (ADR-021): con `registroManuales` declarado en .sdd.json, una
+// spec del modelo no pasa a 'en-revision' si algún CA manual bloqueante sin
+// cerrar (estadoCierra del lector) no tiene en el registro una línea con el id
+// de la spec y el del CA. Un registro declarado que no existe, o un .sdd.json
+// ilegible, niegan la transición: ante la duda el gate se cierra (ADR-017).
+function guardaRegistro(ruta, data, body, t, idioma) {
+  const cas = leerCAs(body);
+  if (!esSpecDelModelo(cas)) return;
+  const raiz = buscarRaizSdd(ruta);
+  if (!raiz) return;
+  const lectura = leerSddJson(raiz);
+  if (lectura.estado === 'ilegible') {
+    throw new Error(t('estado.revision-sdd-json-ilegible', { motivo: mensajeSddJsonIlegible(lectura) }));
+  }
+  if (lectura.estado !== 'valida' || !Object.hasOwn(lectura.config, 'registroManuales')) return;
+  const registro = path.resolve(raiz, lectura.config.registroManuales);
+  const ledger = rutaLedger(ruta);
+  const leido = leerLedger(fs.existsSync(ledger) ? fs.readFileSync(ledger, 'utf8') : '', idioma);
+  const pendientes = manualesSinCerrar(cas, leido);
+  if (!fs.existsSync(registro)) {
+    throw new Error(t('estado.revision-registro-inexistente', { registro, lista: pendientes.join(', ') || '-' }));
+  }
+  const texto = fs.readFileSync(registro, 'utf8');
+  const faltan = pendientes.filter((id) => !enRegistro(texto, data.id, id));
+  if (faltan.length) throw new Error(t('estado.revision-registro-faltan', { registro, spec: data.id, lista: faltan.join(', ') }));
+}
+
 export function transition(ruta, nuevoEstado, por, fecha) {
   fecha ??= hoy();
   const { data, body } = parseFrontmatter(fs.readFileSync(ruta, 'utf8'));
@@ -104,6 +135,7 @@ export function transition(ruta, nuevoEstado, por, fecha) {
     throw new Error(t('estado.sin-aprobacion-humana', { nuevo: nuevoEstado }));
   }
   if (nuevoEstado === 'hecho' && data.tipo === 'spec') guardaHecho(ruta, body, t, idioma);
+  if (nuevoEstado === 'en-revision' && data.tipo === 'spec') guardaRegistro(ruta, data, body, t, idioma);
   data.estado = nuevoEstado;
   // La plantilla de spec tiene el campo y nadie lo rellenaba: la aprobación
   // vivía solo en el historial, donde hay que ir a buscarla.
