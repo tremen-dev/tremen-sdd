@@ -29,16 +29,69 @@ export function parseFrontmatter(text) {
 
 function parseValue(v) {
   v = v.trim();
-  if (v.startsWith('{') && v.endsWith('}')) {
-    const obj = {};
-    for (const pair of v.slice(1, -1).split(',')) {
-      const i = pair.indexOf(':');
-      if (i === -1) continue;
-      obj[pair.slice(0, i).trim()] = pair.slice(i + 1).trim();
-    }
-    return obj;
-  }
+  if (v.startsWith('{') && v.endsWith('}')) return parseInline(v.slice(1, -1));
   return v;
+}
+
+// Pares `clave: valor` de un objeto inline, separados por comas fuera de comillas
+// (SPEC-031). Un valor puede ir entre comillas dobles (escapes \" y \\) o simples
+// ('' es un apóstrofo). Sin comillas, el valor llega hasta la siguiente coma,
+// como siempre. Unas comillas sin cerrar, o con texto detrás antes de la coma, se
+// leen como valor sin comillas: el mismo resultado que antes del fix.
+function parseInline(s) {
+  const obj = {};
+  let i = 0;
+  while (i < s.length) {
+    const colon = s.indexOf(':', i);
+    const comma = s.indexOf(',', i);
+    if (colon === -1 || (comma !== -1 && comma < colon)) {
+      if (comma === -1) break;
+      i = comma + 1; // par sin clave: se ignora, como antes
+      continue;
+    }
+    const key = s.slice(i, colon).trim();
+    let j = colon + 1;
+    while (j < s.length && s[j] === ' ') j++;
+    const quoted = readQuoted(s, j);
+    if (quoted) {
+      obj[key] = quoted.value;
+      i = quoted.end + 1;
+    } else {
+      const end = s.indexOf(',', j);
+      obj[key] = s.slice(j, end === -1 ? s.length : end).trim();
+      i = end === -1 ? s.length : end + 1;
+    }
+  }
+  return obj;
+}
+
+// Lee un valor entrecomillado que empieza en `start`. Devuelve { value, end }
+// (end: índice de la coma que lo cierra, o s.length) o null si no lo es.
+function readQuoted(s, start) {
+  const q = s[start];
+  if (q !== '"' && q !== "'") return null;
+  let value = '';
+  let k = start + 1;
+  for (;;) {
+    if (k >= s.length) return null;
+    const c = s[k];
+    if (q === '"' && c === '\\' && (s[k + 1] === '"' || s[k + 1] === '\\')) {
+      value += s[k + 1];
+      k += 2;
+    } else if (c === q && q === "'" && s[k + 1] === "'") {
+      value += "'";
+      k += 2;
+    } else if (c === q) {
+      k++;
+      break;
+    } else {
+      value += c;
+      k++;
+    }
+  }
+  while (k < s.length && s[k] === ' ') k++;
+  if (k < s.length && s[k] !== ',') return null;
+  return { value, end: k };
 }
 
 export function stringifyFrontmatter(data, body) {
@@ -58,5 +111,13 @@ export function stringifyFrontmatter(data, body) {
 }
 
 function inline(obj) {
-  return '{' + Object.entries(obj).map(([k, v]) => `${k}: ${v}`).join(', ') + '}';
+  return '{' + Object.entries(obj).map(([k, v]) => `${k}: ${inlineValue(v)}`).join(', ') + '}';
+}
+
+// Entrecomilla solo lo que no sobreviviría a parseInline sin comillas (SPEC-031
+// CA-2); el resto se escribe tal cual, como siempre.
+function inlineValue(v) {
+  if (typeof v !== 'string') return v;
+  if (!/[,:{}"]/.test(v) && !v.startsWith("'") && !/^\s|\s$/.test(v)) return v;
+  return '"' + v.replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"';
 }

@@ -87,7 +87,7 @@ Actualizado: 2026-11-26
 | SPEC-027 — los-hooks-no-apagan-los-gates-ante-un-sdd-json-ilegible | hecho | 2026-11-23 (sdd-verificador) |
 | SPEC-028 — trabajar-sobre-la-base-remota | hecho | 2026-11-23 (sdd-verificador) |
 | SPEC-029 — esquema-de-sdd-json-un-campo-mal-tipado-no-apaga-los-gates | hecho | 2026-11-23 (sdd-verificador) |
-| SPEC-031 — el-historial-del-frontmatter-conserva-las-notas-con-comas-y-comillas | aprobada | 2026-11-26 (Alberto Fojo) |
+| SPEC-031 — el-historial-del-frontmatter-conserva-las-notas-con-comas-y-comillas | hecho | 2026-11-26 (sdd-verificador) |
 
 ## ADRs
 
@@ -116,6 +116,6 @@ Actualizado: 2026-11-26
 
 ## Resumen
 
-- hecho: 27
+- hecho: 28
 - bloqueada: 1
-- aprobada: 3
+- aprobada: 2
