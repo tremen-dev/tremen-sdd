@@ -43,6 +43,41 @@ tipo: roadmap
   es. Lo que se traduzca antes de que cierre habrá que corregirlo tres veces.
   Conviene que la traducción de roles vaya detrás de las correcciones de
   EPIC-005 que toquen roles, aunque el mecanismo pueda empezar ya.
+- **EPIC-008 — Modelo de CA manual** (`borrador` 2026-11-23): que un CA manual
+  diga quién lo ejecuta, qué necesita del humano, cómo se comprueba su
+  resultado y si bloquea el cierre, y que su evidencia se pueda registrar sin
+  repetir la verificación completa.
+  - **Origen**: la triage de `docs/mejoras-propuestas.md` (68 entradas de
+    artica, xana-pensa y god-pain con 0.5.0; 1-60 triadas el 2026-11-23, 61-68
+    el 2026-11-26).
+  - **Por qué entra en «Ahora» aunque ya hay tres épicas abiertas**: es la fuente
+    de coste más repetida en los proyectos reales. Son 16 entradas, y cada una
+    cuesta rondas completas del verificador o un fallo en producción que no se
+    detectó (entrada 28).
+  - **Tensión con EPIC-007**: si la paridad bloqueante (SPEC-026) entra antes,
+    cada cambio de rol o de plantilla de esta épica se hace tres veces (es, gl y
+    ca).
+- **Arreglos sueltos de la triage (sin épica, a EPIC-FIX/EPIC-MANT)**: lo que
+  tiene alcance claro y no necesita épica va directo a sdd-arquitecto.
+  - **EPIC-FIX**:
+    - 11: `estado.mjs` corrompe las notas del historial que llevan comas; el bug
+      sigue vivo en `core/lib/frontmatter.mjs`.
+    - 19: las suites se corren sin credenciales de entornos reales. Ya provocó
+      un incidente en staging.
+  - **EPIC-MANT**:
+    - 10: `sdd-init` genera `.gitattributes`; se ha repetido 4 veces.
+    - 20: el `model` se fija en el frontmatter de cada agente; 3 veces (la
+      última, en 9 lanzamientos de una sesión, entrada 68).
+    - 41 y 52: `estado.mjs` acepta `SPEC-NNN` y tiene `--help`. La 41 volvió a
+      fallar el 2026-11-24 (entrada 68).
+    - **EPIC-MANT no existe todavía en el repo.** Hay que crearla o llevar
+      estas entradas a otra épica: lo decide el humano.
+  - **Publicar 0.5.1**: las entradas 47 y 49 (los roles se disparan en
+    proyectos sin `.sdd.json`) ya están resueltas en el fuente por SPEC-024,
+    pero el runtime 0.5.0 instalado sigue con el fallback a `es`.
+  - La entrada más repetida (13, numeración entre ramas, 6 veces) la cubrió
+    SPEC-028 (EPIC-FIX, ADR-018), en `hecho` y fusionada en `main` (PR #30),
+    junto a SPEC-027 y SPEC-029 de la misma ola (PR #29 y #31).
 
 ## Cerradas
 - **EPIC-003 — Adaptador opencode con paridad completa** — `hecho` 2026-07-27
@@ -89,6 +124,28 @@ tipo: roadmap
   EPIC-001): ejecutar **SPEC-013** (escrita y aprobada, hoy `bloqueada`) el día que
   haya una cuenta de Kimi Code disponible. Cierra el único residual con el que se
   cerró EPIC-001. Depende de: acceso a Kimi Code.
+- **EPIC-009 — Trabajo en paralelo e integración** (`borrador` 2026-11-23): que
+  trabajar varias specs a la vez no cueste integración manual.
+  - Qué cubre: el tablero en conflicto (5 de 5 integraciones), suites pesadas
+    que se tumban entre sí (3 veces), la integración tras el GREEN sin dueño,
+    renumerar a mano, fusionar dos specs (62, desde el 2026-11-24) y el orden
+    de fusión de una ola.
+  - **Dependía de SPEC-028** (scaffold consulta los refs, ADR-018), ya en
+    `hecho`. Antes de aprobarla hay que comprobar que su CE-4 encaja con el
+    contrato de `scaffold.mjs` que dejó SPEC-028.
+- **EPIC-010 — Dueños y artefactos sin drift** (`borrador` 2026-11-23): que cada
+  fichero y cada acción tengan un dueño escrito, y que los artefactos cerrados
+  no digan cosas falsas.
+  - Qué cubre: quién hace commit, quién mantiene `CLAUDE.md`, el traspaso y el
+    mandato del orquestador, el merge delegado, los trailers, «Cómo retomar»
+    viejo y los ADR sustituidos o enmendados. Desde el 2026-11-24 también:
+    enmendar una spec en curso sin firmas prestadas (61), dónde va una
+    decisión cuya spec ya está en `hecho` (63), ADR enmendados por una spec
+    (64) y no entregar a revisión con un CA pendiente del dueño (67).
+  - Casi todo es prosa y cuesta menos que EPIC-008, pero el impacto por
+    incidente es menor.
+  - **Va detrás de EPIC-008**, que fija quién ejecuta los CA manuales y quién
+    registra su evidencia.
 
 ## Más adelante (idea, sin compromiso)
 - **Aislamiento de la fuente para quien instala**: que quien recibe acceso para
@@ -106,6 +163,26 @@ tipo: roadmap
   heredada de un monorepo padre o en subdirectorio se trata como "sin config"
   (fail-safe silencioso, comportamiento deseado hoy). Sube a épica el día que un
   proyecto usuario lo necesite de verdad, no antes.
+- **Entradas aparcadas en la triage de `docs/mejoras-propuestas.md`**
+  (2026-11-23). Cada una sube con la condición que lleva al lado:
+  - **9**: crear en `.env` las claves nuevas. Es preferencia de un proyecto;
+    sube si lo pide un segundo proyecto.
+  - **12**: la escalera de implementación mínima tipo ponytail. Primero va el
+    experimento que propone la entrada.
+  - **26**: referencias de diseño en el frontmatter. Un solo caso.
+  - **48**: detectar un SDD propio. Sube si SPEC-024 publicada no basta.
+  - **51**: modo «convivencia» parcial. Sube cuando lo pida un segundo
+    proyecto.
+  - **50**: que un rol invocado a propósito fuera de un proyecto tremen-sdd
+    adopte las convenciones que encuentre. La guarda de SPEC-024 ya evita que
+    imponga su layout: el rol para si no hay `.sdd.json`. Lo que queda es
+    trabajar con las convenciones del proyecto en vez de parar, que es el modo
+    convivencia de la 51. Sube con ella.
+  - **65**: peso o `firmeza` en las decisiones (D-x) de la spec. Un solo caso
+    (xana-pensa); va con la 26 y sube con ella.
+  - **66**: sitio para el dictamen de un rol de dominio (p. ej.
+    `docs/dictamenes/`). Un solo caso, y los roles de dominio son de cada
+    proyecto. Sube si lo pide un segundo proyecto.
 - **Distribución pública / a terceros**: registro público, comercialización y
   soporte externo. La visión deja la puerta abierta explícitamente ("puerta
   abierta, no compromiso adquirido") y EPIC-004 la deja **fuera de alcance** a

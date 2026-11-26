@@ -1,7 +1,7 @@
 <!-- GENERADO por tremen-sdd (scripts/tablero.mjs). NO EDITAR A MANO. -->
 # Tablero
 
-Actualizado: 2026-11-23
+Actualizado: 2026-11-26
 
 ## EPIC-001 — tremen-sdd-multi-harness (hecho)
 
@@ -59,6 +59,21 @@ Actualizado: 2026-11-23
 |---|---|---|
 | SPEC-025 — mecanismo-de-idioma-catalogos-y-plantillas-por-idioma | hecho | 2026-10-27 (sdd-verificador) |
 | SPEC-026 — paridad-bloqueante-entre-idiomas-sellos-prosa-gates-y-gatillos | aprobada | 2026-10-27 (Alberto Fojo) |
+
+## EPIC-008 — modelo-de-ca-manual (borrador)
+
+| Spec | Estado | Último cambio |
+|---|---|---|
+
+## EPIC-009 — trabajo-en-paralelo-e-integracion (borrador)
+
+| Spec | Estado | Último cambio |
+|---|---|---|
+
+## EPIC-010 — duenos-y-artefactos-sin-drift (borrador)
+
+| Spec | Estado | Último cambio |
+|---|---|---|
 
 ## EPIC-FIX (aprobada)
 
