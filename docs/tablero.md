@@ -42,7 +42,7 @@ Actualizado: 2026-11-26
 
 | Spec | Estado | Último cambio |
 |---|---|---|
-| SPEC-018 — que-puede-afirmar-un-documento-de-verdad-y-como-se-verifica | aprobada | 2026-07-28 (Alberto Fojo) |
+| SPEC-018 — que-puede-afirmar-un-documento-de-verdad-y-como-se-verifica | hecho | 2026-07-28 (sdd-verificador) |
 
 ## EPIC-006 — adaptador-antigravity-con-paridad-completa (hecho)
 
@@ -113,6 +113,6 @@ Actualizado: 2026-11-26
 
 ## Resumen
 
-- hecho: 26
+- hecho: 27
 - bloqueada: 1
-- aprobada: 2
+- aprobada: 1

@@ -1,0 +1,15 @@
+### CHOCA M1-ruta-fragmento-verde [declara verde] -> sonda ROJO
+        M1 id colgado: ADR-012
+### CHOCA M2-cifra-marcada-adaptadores-verde [declara verde] -> sonda ROJO
+        M3 léxico «hoy»
+### CHOCA M2-enumeracion-tabla-verde [declara verde] -> sonda ROJO
+        M1 ruta anclada colgada: docs/fundacion/dominio.md
+### CHOCA M3-marca-volatil-verde [declara verde] -> sonda ROJO
+        M1 id colgado: SPEC-002
+### CHOCA M3-exencion-explicita-verde [declara verde] -> sonda ROJO
+        M1 id colgado: EPIC-003
+        M3 léxico «hoy» (hay exención con motivo en el doc)
+### CHOCA numero-en-identificador-verde [declara verde] -> sonda ROJO
+        M1 id colgado: RN-08
+        M1 id colgado: ADR-011
+        M1 id colgado: SPEC-017
