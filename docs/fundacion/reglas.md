@@ -89,3 +89,17 @@
   EPIC-001 para la description (no solo para el cuerpo) y la fija ADR-005. Verificable:
   `tools/checks/descripcion-fuente-unica.mjs` falla, nombrando rol y superficie, si
   alguna description de adaptador diverge de la canonica o falta.
+
+- **RN-12 — Una salvedad no aceptada por una persona nunca es ✅.** En la columna
+  Estado de la matriz del ledger, un CA cuyo resultado no cumple todo su texto queda en
+  `⚠️` mientras ninguna persona haya aceptado la diferencia. Con la aceptación, pasa a
+  `✅ [salvedad: <persona>, <AAAA-MM-DD>]`, con el nombre de quien la aceptó y la fecha.
+  El verificador no acepta una salvedad por su cuenta: transcribe la aceptación del
+  humano, igual que el orquestador transcribe una aprobación con `estado.mjs … aprobada
+  --por <humano>`. `<persona>` cumple el predicado de persona de `estado.mjs` (ADR-006).
+  Decidida en ADR-020 §4, que sustituye a la regla anterior («una salvedad nunca es ✅»)
+  de la plantilla del ledger y del rol del verificador; la decidió Alberto Fojo el
+  2026-11-26. Verificable: `valida.mjs` rechaza un calificador `salvedad` sin persona o
+  sin fecha, y `estado.mjs` niega `hecho` a una spec con un CA bloqueante en `⚠️`, en
+  las specs con algún CA `[manual]` (SPEC-030). La plantilla del ledger y el rol del
+  verificador dicen esta misma regla.
