@@ -24,11 +24,11 @@ sesión (`docs/mejoras-propuestas.md`, tremen-sdd 0.5.0):
 - Después del GREEN hubo que renumerar, fusionar y volver a pasar las guardas
   sin que nadie volviera a verificar (44).
 
-**Por qué en "Después" y no en "Ahora"**: depende de SPEC-028 (trabajar sobre
-la base remota; scaffold consulta los refs, ADR-018), que se está implementando
-en otra sesión. SPEC-028 resuelve la entrada más repetida de todas, la
-numeración entre ramas (13), con 6 apariciones. Esta épica cubre lo que queda
-después.
+**Por qué en "Después" y no en "Ahora"**: dependía de SPEC-028 (trabajar sobre
+la base remota; scaffold consulta los refs, ADR-018), que ya está en `hecho`
+(PR #30). SPEC-028 resolvió la entrada más repetida de todas, la numeración
+entre ramas (13), con 6 apariciones. Esta épica cubre lo que queda después.
+Sigue en "Después" porque EPIC-008 cuesta más por incidente.
 
 ## Criterios de éxito
 - **CE-1 — Fusionar no deja el tablero en conflicto.** Con tres PR en cola de
@@ -50,7 +50,11 @@ después.
   - lo deja anotado en el historial y en el ledger;
   - dice cómo renombrar la rama.
 
-  Renombrar el título de una épica o spec usa la misma herramienta.
+  Renombrar el título de una épica o spec usa la misma herramienta. Fusionar
+  dos specs en `borrador` también (62): la absorbida queda en un estado
+  terminal (p. ej. `absorbida`, con `absorbida-por:`) que `valida.mjs` y el
+  tablero entienden, en vez de un hueco sin explicación, y se listan las
+  referencias que hay que tocar.
 - **CE-5 — Las specs de una misma ola se planifican juntas.** Al planificar
   varias specs en paralelo, el orquestador declara el orden de fusión y la rama
   base de cada una, y detecta antes de lanzarlas los solapes con lo aprobado en
@@ -61,8 +65,9 @@ después.
   - 14: el tablero en conflicto.
   - 16, 38 y 24: recursos compartidos y procesos vivos.
   - 44: integración tras el GREEN.
-  - 40 y 8: renumerar y renombrar.
-  - 15: orden de fusión y rama base.
+  - 40, 8 y 62: renumerar, renombrar y fusionar specs.
+  - 15: orden de fusión y rama base (se repitió el 2026-11-24, entrada 68:
+    tres specs apiladas en ramas encadenadas que decían «rama desde `main`»).
   - 36: fijar el lugar de trabajo antes de lanzar al arquitecto.
   - 43: solapes con decisiones aprobadas en paralelo.
 - Fuera (aparcado a propósito, no por descuido):
@@ -89,5 +94,5 @@ Desglose orientativo (lo decide sdd-arquitecto):
 - **El cerrojo es sensible al harness.** Un fichero de cerrojo fuera del repo
   (en `~`) puede chocar con la frontera «el núcleo no se acopla al harness»
   (FOUNDATION).
-- **Depende de SPEC-028.** Si su implementación cambia el contrato de
-  `scaffold.mjs`, CE-4 se rehace.
+- **Contrato de SPEC-028.** SPEC-028 ya está en `hecho`. Antes de especificar
+  CE-4 hay que comprobar que encaja con el contrato de `scaffold.mjs` que dejó.

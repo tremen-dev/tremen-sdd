@@ -47,10 +47,11 @@ tipo: roadmap
   diga quién lo ejecuta, qué necesita del humano, cómo se comprueba su
   resultado y si bloquea el cierre, y que su evidencia se pueda registrar sin
   repetir la verificación completa.
-  - **Origen**: la triage de `docs/mejoras-propuestas.md` (60 entradas de
-    artica, xana-pensa y god-pain con 0.5.0).
+  - **Origen**: la triage de `docs/mejoras-propuestas.md` (68 entradas de
+    artica, xana-pensa y god-pain con 0.5.0; 1-60 triadas el 2026-11-23, 61-68
+    el 2026-11-26).
   - **Por qué entra en «Ahora» aunque ya hay tres épicas abiertas**: es la fuente
-    de coste más repetida en los proyectos reales. Son 12 entradas, y cada una
+    de coste más repetida en los proyectos reales. Son 16 entradas, y cada una
     cuesta rondas completas del verificador o un fallo en producción que no se
     detectó (entrada 28).
   - **Tensión con EPIC-007**: si la paridad bloqueante (SPEC-026) entra antes,
@@ -65,8 +66,12 @@ tipo: roadmap
       un incidente en staging.
   - **EPIC-MANT**:
     - 10: `sdd-init` genera `.gitattributes`; se ha repetido 4 veces.
-    - 20: el `model` se fija en el frontmatter de cada agente; 2 veces.
-    - 41 y 52: `estado.mjs` acepta `SPEC-NNN` y tiene `--help`.
+    - 20: el `model` se fija en el frontmatter de cada agente; 3 veces (la
+      última, en 9 lanzamientos de una sesión, entrada 68).
+    - 41 y 52: `estado.mjs` acepta `SPEC-NNN` y tiene `--help`. La 41 volvió a
+      fallar el 2026-11-24 (entrada 68).
+    - **EPIC-MANT no existe todavía en el repo.** Hay que crearla o llevar
+      estas entradas a otra épica: lo decide el humano.
   - **Publicar 0.5.1**: las entradas 47 y 49 (los roles se disparan en
     proyectos sin `.sdd.json`) ya están resueltas en el fuente por SPEC-024,
     pero el runtime 0.5.0 instalado sigue con el fallback a `es`.
@@ -123,7 +128,8 @@ tipo: roadmap
   trabajar varias specs a la vez no cueste integración manual.
   - Qué cubre: el tablero en conflicto (5 de 5 integraciones), suites pesadas
     que se tumban entre sí (3 veces), la integración tras el GREEN sin dueño,
-    renumerar a mano y el orden de fusión de una ola.
+    renumerar a mano, fusionar dos specs (62, desde el 2026-11-24) y el orden
+    de fusión de una ola.
   - **Dependía de SPEC-028** (scaffold consulta los refs, ADR-018), ya en
     `hecho`. Antes de aprobarla hay que comprobar que su CE-4 encaja con el
     contrato de `scaffold.mjs` que dejó SPEC-028.
@@ -132,7 +138,10 @@ tipo: roadmap
   no digan cosas falsas.
   - Qué cubre: quién hace commit, quién mantiene `CLAUDE.md`, el traspaso y el
     mandato del orquestador, el merge delegado, los trailers, «Cómo retomar»
-    viejo y los ADR sustituidos o enmendados.
+    viejo y los ADR sustituidos o enmendados. Desde el 2026-11-24 también:
+    enmendar una spec en curso sin firmas prestadas (61), dónde va una
+    decisión cuya spec ya está en `hecho` (63), ADR enmendados por una spec
+    (64) y no entregar a revisión con un CA pendiente del dueño (67).
   - Casi todo es prosa y cuesta menos que EPIC-008, pero el impacto por
     incidente es menor.
   - **Va detrás de EPIC-008**, que fija quién ejecuta los CA manuales y quién
@@ -164,6 +173,16 @@ tipo: roadmap
   - **48**: detectar un SDD propio. Sube si SPEC-024 publicada no basta.
   - **51**: modo «convivencia» parcial. Sube cuando lo pida un segundo
     proyecto.
+  - **50**: que un rol invocado a propósito fuera de un proyecto tremen-sdd
+    adopte las convenciones que encuentre. La guarda de SPEC-024 ya evita que
+    imponga su layout: el rol para si no hay `.sdd.json`. Lo que queda es
+    trabajar con las convenciones del proyecto en vez de parar, que es el modo
+    convivencia de la 51. Sube con ella.
+  - **65**: peso o `firmeza` en las decisiones (D-x) de la spec. Un solo caso
+    (xana-pensa); va con la 26 y sube con ella.
+  - **66**: sitio para el dictamen de un rol de dominio (p. ej.
+    `docs/dictamenes/`). Un solo caso, y los roles de dominio son de cada
+    proyecto. Sube si lo pide un segundo proyecto.
 - **Distribución pública / a terceros**: registro público, comercialización y
   soporte externo. La visión deja la puerta abierta explícitamente ("puerta
   abierta, no compromiso adquirido") y EPIC-004 la deja **fuera de alcance** a

@@ -14,8 +14,9 @@ su evidencia. Hoy es un CA automático con la palabra «manual» delante, y todo
 demás se decide sesión a sesión.
 
 **Por qué ahora**: es la fuente de coste más repetida en los proyectos reales
-(`docs/mejoras-propuestas.md`, 12 entradas, casi todas de xana-pensa, con
-tremen-sdd 0.5.0). Pasa esto:
+(`docs/mejoras-propuestas.md`, 16 entradas: 13 de xana-pensa y 3 de artica,
+con tremen-sdd 0.5.0; la 4 y la 27 se repitieron de nuevo el 2026-11-24, en
+la entrada 68). Pasa esto:
 - Se gastan rondas completas del verificador (unos 10 minutos de suite) solo
   para decir «faltan los manuales» (30), o para añadir una fila de evidencia
   (57).
@@ -27,7 +28,7 @@ tremen-sdd 0.5.0). Pasa esto:
 
 **Por qué es épica y no una tanda de correcciones**: casi todas las entradas
 tocan lo mismo, la matriz del ledger y la semántica del GREEN, y la RN-09 («una
-salvedad nunca es ✅»). Arreglarlas por separado daría doce parches
+salvedad nunca es ✅»). Arreglarlas por separado daría dieciséis parches
 incoherentes. El modelo lo decide un ADR de sdd-arquitecto; esta épica lo
 encarga, no lo decide.
 
@@ -113,8 +114,8 @@ Desglose orientativo (lo decide sdd-arquitecto):
 - **Sobrecarga de la plantilla.** Demasiados campos por CA harán que las specs
   pequeñas paguen el coste de las grandes. Hipótesis a validar: los campos nuevos
   son opcionales salvo en los CA manuales.
-- **Sesgo de muestra.** 10 de las 12 entradas vienen de un único proyecto
-  (xana-pensa, móvil y Firebase). Conviene contrastar el modelo con artica antes
-  de cerrarlo.
+- **Sesgo de muestra.** 13 de las 16 entradas vienen de un único proyecto
+  (xana-pensa, móvil y Firebase); las otras 3 (1, 2 y 4) son de artica.
+  Conviene contrastar el modelo con artica antes de cerrarlo.
 - **Colisión con EPIC-007.** Si la paridad bloqueante (SPEC-026) entra antes,
   cada cambio de rol o de plantilla se triplica (es, gl y ca).
