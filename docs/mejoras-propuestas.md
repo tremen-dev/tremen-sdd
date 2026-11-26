@@ -1,8 +1,9 @@
 # Mejoras propuestas desde proyectos
 
 > Observaciones recogidas al usar tremen-sdd en proyectos reales. Cada entrada
-> dice qué proyecto la aporta y cuándo. Son propuestas sin triar: pasan al
-> roadmap del estándar solo tras evaluarlas.
+> dice qué proyecto la aporta y cuándo. Son propuestas: pasan al roadmap del
+> estándar solo tras triarlas. El destino de cada entrada triada está en
+> `docs/roadmap.md` y en las épicas que la citan.
 
 ## artica — 2026-10-13
 
@@ -708,3 +709,101 @@ manuales ejecutados por el orquestador a petición del propietario.
     documentalista vio una discrepancia entre lo que decía su arnés y lo que
     decía el encargo. Propuesta: un campo en `.sdd.json` (o una convención
     documentada) para los trailers, que los roles lean de ahí.
+
+## xana-pensa — 2026-11-24
+
+Proyecto: Faladore / Pensa (`D:\src\xana\xana-pensa`), tremen-sdd 0.5.0. Una
+sesión del orquestador empezó en el diseño (siete rondas de maquetas con
+producto y un dictamen del rol de dominio `/sdd-afinacion`) y terminó en el
+merge. Por el camino escribió tres specs dependientes (SPEC-072, 074 y 075) con
+dos ADR y fusionó una cuarta (073) en la 072 antes de aprobarlas. Las llevó a
+GREEN en ramas encadenadas, con cuatro enmiendas tras aprobar, y las entregó en
+una sola PR.
+
+61. **Enmendar una spec en curso cuesta cuatro transiciones.** Cada enmienda
+    (tras hallazgos del implementador, o una decisión nueva del dueño) obligó a
+    recorrer `en-progreso → bloqueada → borrador → aprobada → en-progreso` con
+    `estado.mjs`. En la última transición el arquitecto firmó como
+    `sdd-implementador` para dejar la spec donde estaba. Pasó cuatro veces en
+    una sesión. Propuesta: una transición `enmendada` (o
+    `estado.mjs <spec> enmienda --por <humano> --nota …`) que deje constancia
+    de la enmienda y de quién la aprobó, y devuelva la spec a su estado
+    anterior sin pasos intermedios ni firmas prestadas.
+
+62. **Fusionar dos specs no tiene herramienta.** Para reducir el número de
+    specs, el dueño pidió meter SPEC-073 dentro de SPEC-072 cuando las dos
+    estaban en borrador. El arquitecto movió a mano las decisiones y los CA,
+    renumeró y borró la 073. El número quedó como un hueco sin explicación, y
+    las referencias a "SPEC-073" en otros documentos hubo que buscarlas a mano.
+    Propuesta: un estado terminal `absorbida` (con `absorbida-por: SPEC-072`)
+    que `valida.mjs` y el tablero entiendan, o un `scaffold fusiona <a> <b>`
+    que mueva el contenido, deje esa marca y liste las referencias que hay que
+    tocar. Va con la 40 (`renumera.mjs`).
+
+63. **¿Dónde va una decisión cuando su spec natural no admite cambios?** Un
+    hallazgo de la SPEC-074 (el "+N" no cabe en la pantalla más pequeña) pedía
+    cambiar el comportamiento de la SPEC-072, que ya estaba en `hecho`. La 074
+    estaba en implementación, así que la regla acabó como CA-14 de la SPEC-075,
+    una spec de otro tema que todavía no había empezado. Lo mismo pasó con el
+    cambio de nombre de "Resumo de taller". Funciona, pero las specs se
+    convierten en cajones de sastre, y quien lea la 075 no espera encontrar ahí
+    la regla de la línea de consejo. Propuesta: que el orquestador tenga una
+    regla para elegir dónde va (la siguiente spec sin empezar del mismo
+    ámbito; si no hay, una spec de remate mínima) y que la spec que recibe la
+    decisión la marque como «recogida de F-SPEC-074-1», para que el tablero y
+    `sdd-como-vamos` muestren de dónde viene. Va con la 35.
+
+64. **Una ADR enmendada por una spec.** La 53 propone `enmendada-por: [ADR-…]`.
+    Aquí fue una spec (SPEC-075 D-i) la que enmendó un punto de ADR-036 ya
+    aprobada, y el arquitecto dudó si podía hacerlo sin una ADR nueva, porque
+    todas las notas que ya había en el proyecto apuntaban a otra ADR. El campo
+    de la 53 debería aceptar specs, y el rol debería decir cuándo basta con
+    una spec (cuando cambia un detalle de la decisión, no la decisión).
+
+65. **Decisiones de diseño con peso.** Al cerrar el diseño, el dueño puso a
+    cada decisión un peso de 0 a 100 («siempre visible: 65/100»,
+    «titulares cortos: 80/100»). Esos pesos sirvieron después para resolver
+    choques sin volver a preguntar, por ejemplo al ver si la lista podía
+    desplazarse o no. Solo vivieron en la conversación y en una nota del
+    scratchpad. Propuesta: que las decisiones de la spec (D-x) admitan un campo
+    opcional `firmeza:` (o «peso»), y que el arquitecto y el implementador lo
+    usen para decidir qué cede primero cuando dos CA chocan. Va con la 26
+    (artefactos de diseño).
+
+66. **El dictamen del rol de dominio no tiene sitio.** `/sdd-afinacion` dio un
+    dictamen largo (titulares en 4 idiomas y la clasificación de las reglas de
+    presión) que el dueño corrigió en varias rondas. Quedó en un fichero del
+    scratchpad, y hubo que pedir de forma expresa que se pasase al repositorio
+    (anexo de la spec y `docs/tuning/`). Propuesta: que los roles de dominio
+    escriban su dictamen en `docs/dictamenes/AAAA-MM-DD-tema.md` (o como anexo
+    de la spec que lo pide), y que el arquitecto lo cite en vez de copiarlo.
+
+67. **El implementador entrega con una pregunta abierta al dueño.** En la
+    primera ronda, el implementador pasó la SPEC-072 a `en-revision` con un CA
+    sin cumplir: sus tests estaban en `skip` y la decisión correspondía al
+    dueño. Si el orquestador hubiera lanzado al verificador, habría salido RED.
+    Propuesta: que `estado.mjs … en-revision` falle si hay tests en `skip` que
+    citan un CA, o si el ledger tiene un hallazgo marcado «decide el
+    propietario» sin resolver, y que el implementador deje la spec en
+    `en-progreso` con `bloqueada-por:` (la 3). La SPEC-075 lo hizo bien: se
+    quedó en `en-progreso` hasta que el dueño decidió.
+
+68. **Recurrencias de esta sesión** (sin propuesta nueva):
+    - **32 (commits por ruta)**: no basta con `git add <rutas>`. El arquitecto
+      añadió solo sus ficheros, pero `git commit` se llevó también un borrado
+      que el implementador había dejado en el índice, en la misma rama. Lo
+      deshizo con `reset --soft`. La regla de los roles debería decir
+      `git commit -- <rutas>` (o `--only`), no solo «no uses `git add -A`».
+    - **15 (`base:`)**: las tres specs se apilaron en ramas encadenadas, porque
+      la 074 dependía de la 072 sin fusionar y la 075 de la 074. Las specs
+      decían «rama desde `main`» y los implementadores anotaron la
+      discrepancia. Al final fue una sola PR con las tres.
+    - **4 (salvedad aceptada)**: dos CA de la 075 en ⚠️ con GREEN. Uno era una
+      decisión expresa del dueño (no cambiar los textos de iOS, opción C).
+    - **27 (manos del humano)**: el CA con hardware real (el sensor BLE) solo
+      necesitó que el dueño lo encendiese. El implementador hizo el resto por
+      `adb` y dejó el protocolo en el registro de pruebas manuales.
+    - **20 y 60 (modelo y trailers)**: hubo que repetirlos en los 9
+      lanzamientos de subagentes.
+    - **41 (`estado.mjs` con id)**: volvió a fallar al pasar el id en vez de la
+      ruta.
