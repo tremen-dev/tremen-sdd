@@ -265,7 +265,7 @@ Convenciones de los tests:
   4. Ni `valida.mjs` ni `estado.mjs` comprueban que `recetaManuales` exista en disco
      (la leen los roles; ver Fuera de alcance).
 
-### CA-9 — Con `registroManuales`, `en-revision` exige el CA pendiente en el registro
+### CA-9 — Con `registroManuales`, `en-revision` exige en el registro cada CA manual bloqueante sin cerrar
 - **Given**: una spec del modelo en `en-progreso`, aprobada por una persona, con `CA-2`
   manual bloqueante y `CA-3` manual con `bloquea-hecho: no`, y su ledger, en estas
   variantes:
@@ -274,20 +274,32 @@ Convenciones de los tests:
   |---|---|---|---|---|
   | (a) | sin `registroManuales` | `CA-2` en `⏳` | — | pasa |
   | (b) | con `registroManuales` | `CA-2` en `⏳` | una línea con `SPEC-NNN` y `CA-2` | pasa |
-  | (c) | con `registroManuales` | `CA-2` en `⏳` | sin esa línea (o con `CA-2` de otra spec) | se niega |
+  | (c) | con `registroManuales` | `CA-2` en `⏳` | sin esa línea (o con `CA-2` de otra spec, o con `CA-20` de esta) | se niega |
   | (d) | con `registroManuales` | `CA-2` en `⏳` | el fichero no existe | se niega |
-  | (e) | con `registroManuales` | `CA-2` en `❌`; `CA-3` en `⏳` | vacío | pasa |
-  | (f) | con `registroManuales` | spec que no es del modelo | vacío | pasa |
+  | (e) | con `registroManuales` | `CA-2` en `❌` (el de la plantilla); `CA-3` en `⏳` | vacío | se niega: nombra `CA-2`, no `CA-3` |
+  | (f) | con `registroManuales` | `CA-2` en `⚠️`, en `🚧`, o con la celda Estado vacía | vacío | se niega |
+  | (g) | con `registroManuales` | sin fila de `CA-2` en la matriz | vacío | se niega |
+  | (h) | con `registroManuales` | `CA-2` en `❌` | una línea con `SPEC-NNN` y `CA-2` | pasa |
+  | (i) | con `registroManuales` | `CA-2` cerrado (`✅` con calificadores válidos, o `n-a`); `CA-3` en `❌` | vacío | pasa |
+  | (j) | con `registroManuales` | spec que no es del modelo | vacío | pasa |
 
-- **When**: se llama a `transition` y, en (c), también al CLI de `estado.mjs`.
+  Cada variante de (c) y (f) se prueba por separado.
+- **When**: se llama a `transition` y, en (c) y (e), también al CLI de `estado.mjs`.
 - **Then**:
-  1. En (c) y (d) lanza un error y el CLI sale con código distinto de 0; el mensaje nombra
-     cada CA que falta y la ruta del registro. La spec no cambia byte a byte.
+  1. En los casos que se niegan lanza un error y el CLI sale con código distinto de 0; el
+     mensaje nombra cada CA que falta y la ruta del registro. La spec no cambia byte a
+     byte.
   2. Un CA «aparece» en el registro cuando una misma línea contiene el id de la spec y el
-     id del CA como palabras completas (`CA-2` no casa con `CA-20`). Ver Notas para el
-     gate: esta forma no la fija ADR-020.
-  3. La guarda solo mira CA manuales bloqueantes en `⏳` (ADR-020 §9, literal): (e) pasa.
-  4. La comprobación de firmantes y de aprobación humana sigue igual y va antes.
+     id del CA como palabras completas (`CA-2` no casa con `CA-20`). Es la forma que
+     decidió el humano en el gate (ver Decisiones del gate, 1).
+  3. La guarda mira cada CA manual bloqueante **sin cerrar**: cualquier Estado que no
+     cierre según el lector (`estadoCierra`), incluida la falta de fila o de celda. Los CA
+     con `bloquea-hecho: no` no se miran, estén como estén: (e) nombra solo `CA-2` e (i)
+     pasa. Es la lectura de ADR-020 §9 que decidió el humano en el gate, no su letra («en
+     `⏳`») (ver Decisiones del gate, 3).
+  4. Un registro declarado que no existe niega `en-revision` (caso (d)), por el lado
+     seguro, como un `.sdd.json` ilegible en ADR-017 (Decisiones del gate, 2).
+  5. La comprobación de firmantes y de aprobación humana sigue igual y va antes.
 
 ### CA-10 — Un solo lector y sin regresión
 - **Given**: el árbol tras el cambio.
@@ -340,41 +352,37 @@ Fuera de la épica, o de este ADR:
 - Los ficheros sin seguimiento en la frontera de la ronda (CA-6.2).
 - Migrar ledgers existentes; la paridad gl/ca (SPEC-026).
 
-## Notas para el gate humano
+## Decisiones del gate
 
-Decisiones que ADR-020 no cierra del todo y que esta spec toma. Conviene mirarlas una a
-una:
+Decisiones que ADR-020 no cierra del todo. El humano las revisó en el gate de la spec
+(2026-11-26) y quedan cerradas así; no hay preguntas abiertas.
 
-1. **El localizador por sección (CA-1)** cambia cómo se lee la matriz: por el título de
-   su sección, no por ser la primera tabla con `CA`. Un ledger de una spec del modelo
-   sin la sección de la matriz pasa a dar error. Hoy no hay ninguno en el repo (ninguna
-   spec es del modelo), así que no rompe nada; pero es un formato que la plantilla de
-   cada idioma (gl/ca) tendrá que mantener.
-2. **Un CA manual en ✅ exige su evidencia (CA-5)**, también en la guarda de `hecho`. Sale
-   de la definición de `✅` de ADR-020 §4, pero §5 solo dice «✅ con o sin
-   calificadores». Si prefieres que la guarda no lo mire y quede solo en `valida.mjs`,
-   se quita el punto 2 de CA-5 en lo que toca a `transition`.
-3. **Forma de la entrada del registro externo (CA-9.2)**: ADR-020 §9 dice «su id no
-   aparece en ese fichero» sin decir qué id. Propongo «una misma línea con el id de la
-   spec y el del CA». Alternativas: solo el id del CA (choca entre specs) o un formato
-   fijo de línea. **Pregunta abierta.**
-4. **Registro declarado pero ausente (CA-9 (d))**: se niega `en-revision`, por el lado
-   seguro (como ADR-017). **Pregunta abierta** si prefieres que no bloquee.
-5. **CA-9 casi nunca dispara en la primera entrada a `en-revision`.** El Estado lo escribe
-   el verificador, así que cuando el implementador pasa la spec a `en-revision` por
-   primera vez los manuales aún no están en `⏳` (la plantilla los deja en `❌`). Leído al
-   pie de la letra (§9: «en `⏳`»), la guarda actúa sobre todo tras un RED →
-   `en-progreso` → `en-revision`. Si la intención era «todo CA manual bloqueante sin
-   cerrar», el cambio es de una palabra en CA-9, pero es interpretar el ADR. **Pregunta
-   abierta.**
-6. **La frontera también mira lo no commiteado (CA-6 (g))**: ADR-020 §7 la define con
-   `git diff --name-only <V>..HEAD`. Esta spec añade los ficheros seguidos con cambios sin
-   commitear, que es el lado seguro: sin eso, un cambio de código sin commitear pasaría
-   por la ronda. Los ficheros sin seguimiento no cuentan, para no tropezar con ruido
-   local (`.claude/`, temporales).
-7. **La ronda tampoco cambia las otras celdas** de una fila que no estaba en `⏳` (CA-7.1):
-   ADR-020 §7 habla del Estado; aquí se congela la fila entera, que es más estricto.
-8. **El script de la ronda no lo usa nadie hasta la spec de roles.** Es el mecanismo; el
-   rol del verificador lo invoca en la spec que introduce el PARCIAL. Si se prefiere que
-   la ronda acotada (CA-6 y CA-7) viaje con el PARCIAL, esta spec se parte limpia por ahí:
-   CA-1 a CA-5 y CA-8 a CA-10 se quedan, CA-6 y CA-7 se van con la spec de roles.
+1. **Forma de la entrada del registro externo (CA-9.2).** ADR-020 §9 dice «su id no
+   aparece en ese fichero» sin decir qué id. Decidido: un CA aparece cuando una misma
+   línea contiene el id de la spec y el del CA, como palabras completas. Descartados:
+   solo el id del CA (choca entre specs) y un formato fijo de línea.
+2. **Registro declarado pero inexistente (CA-9 (d)).** Decidido: `estado.mjs` niega
+   `en-revision`, por el lado seguro, como un `.sdd.json` ilegible en ADR-017.
+3. **Qué CA mira la guarda del registro (CA-9.3).** ADR-020 §9 dice «un CA manual
+   bloqueante en `⏳`». Leído al pie de la letra, la guarda casi nunca actuaría en la
+   primera entrada a `en-revision`: el Estado lo escribe el verificador y la plantilla
+   deja los manuales en `❌`. Decidido por el humano: se lee como «CA manual bloqueante
+   sin cerrar», es decir, cualquier Estado que no cierre según el lector (`estadoCierra`:
+   `✅` con calificadores válidos, o `n-a`), incluida la falta de fila o de celda. Es una
+   interpretación de §9, no su letra; ADR-020 no se enmienda en esta spec.
+4. **Un CA manual en ✅ exige su evidencia (CA-5), también en la guarda de `hecho`.** Sale
+   de la definición de `✅` de ADR-020 §4 aunque §5 solo diga «✅ con o sin
+   calificadores». Aceptado tal cual.
+5. **La frontera de la ronda también mira lo no commiteado (CA-6 (g)).** ADR-020 §7 la
+   define con `git diff --name-only <V>..HEAD`; esta spec añade los ficheros seguidos con
+   cambios sin commitear (sin eso, un cambio de código sin commitear pasaría por la
+   ronda). Los ficheros sin seguimiento no cuentan, para no tropezar con ruido local.
+   Aceptado tal cual.
+6. **La ronda congela la fila entera (CA-7.1)** de cada CA que no estaba en `⏳`, no solo
+   su Estado (ADR-020 §7 habla del Estado). Más estricto. Aceptado tal cual.
+7. **El localizador por sección (CA-1).** La matriz se lee por el título de su sección,
+   no por ser la primera tabla con `CA`, y un ledger de una spec del modelo sin esa
+   sección da error. Hoy ninguna spec del repo es del modelo, así que no rompe nada; la
+   plantilla de cada idioma (gl/ca) tendrá que mantener los títulos. Aceptado tal cual.
+8. **La spec no se parte.** La ronda acotada (CA-6 y CA-7) se queda aquí aunque ningún
+   rol invoque el script hasta la spec que introduce el PARCIAL.
