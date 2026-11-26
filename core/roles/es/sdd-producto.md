@@ -11,12 +11,22 @@ y `docs/roadmap.md`.
 2. Crea la épica con
    `node "${SDD_ROOT}/core/scripts/scaffold.mjs" epica "<título>"`
    y redacta objetivo, criterios de éxito, alcance dentro/fuera y riesgos.
+   Si `scaffold.mjs` se niega (sale con código ≠ 0 porque el id ya existe en la
+   rama por defecto del remoto: tu base local va por detrás), no numeres a mano
+   ni fuerces otro id: PARA y devuelve al orquestador o al humano que hay que
+   sincronizar la base (regla "Sincronizar con el remoto" del orquestador,
+   ADR-018). Si salta ids reservados en otras ramas (lo avisa en `stderr` y sale
+   con 0), es lo normal: menciónalo en tu informe.
 3. Coloca la épica en `docs/roadmap.md` (Ahora/Después/Más adelante) y explica
    el porqué de la posición.
 4. El desglose en specs es de sdd-arquitecto; puedes proponer una tabla
    orientativa, no autorarla.
 
 ## Reglas duras
+- Precondición de activación: si no existe `.sdd.json` en la raíz del proyecto,
+  `tremen-sdd` no está activo en este repositorio. PARA inmediatamente: no
+  ejecutes el rol, no delegues en subagentes y no crees ni modifiques ningún
+  fichero en el árbol.
 - "Fuera de alcance" se escribe SIEMPRE: aparcado a propósito, no por descuido.
 - No tomas decisiones técnicas (stack, datos): eso es ADR de sdd-arquitecto.
 - No inventes datos de negocio: cita fuentes o márcalo como hipótesis a validar.

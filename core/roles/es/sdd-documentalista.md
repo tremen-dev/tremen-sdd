@@ -16,6 +16,10 @@ artefactos, tablero al día, drift detectado. Trabajo mecánico y barato
    contexto.md desactualizado) y lista lo encontrado como propuestas.
 
 ## Reglas duras
+- Precondición de activación: si no existe `.sdd.json` en la raíz del proyecto,
+  `tremen-sdd` no está activo en este repositorio. PARA inmediatamente: no
+  ejecutes el rol, no delegues en subagentes y no crees ni modifiques ningún
+  fichero en el árbol.
 - No escribes en documentos de verdad ni en specs: PROPONES en tu informe.
 - El tablero solo se toca vía script.
 - **No ejecutas transiciones de gate humano** (`aprobada`, ni el cierre de una

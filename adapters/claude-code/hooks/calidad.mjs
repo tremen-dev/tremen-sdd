@@ -5,7 +5,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
-import { readPayload, readConfig } from './_comun.mjs';
+import { readPayload, readConfig, mensajes, mensajeSddJsonIlegible } from './_comun.mjs';
 import { validateFile } from '../core/scripts/valida.mjs';
 
 const ES_ARTEFACTO = /(^|[\\/])((SPEC|TASK|ADR)-[^\\/]+\.md|_epica\.md)$/;
@@ -13,8 +13,14 @@ const ES_ARTEFACTO = /(^|[\\/])((SPEC|TASK|ADR)-[^\\/]+\.md|_epica\.md)$/;
 try {
   const payload = readPayload();
   const cwd = payload.cwd || process.cwd();
-  const cfg = readConfig(cwd);
-  if (!cfg || cfg.gates?.calidad === false) process.exit(0);
+  const lectura = readConfig(cwd);
+  if (lectura.estado === 'ausente') process.exit(0); // proyecto sin tremen-sdd (ADR-015)
+  if (lectura.estado === 'ilegible') { // .sdd.json sigue ilegible (ADR-017 §2)
+    console.error(mensajeSddJsonIlegible(lectura));
+    process.exit(2);
+  }
+  const cfg = lectura.config;
+  if (cfg.gates?.calidad === false) process.exit(0);
   const fichero = payload.tool_input?.file_path ?? '';
   if (!fichero) process.exit(0);
   const ruta = path.resolve(cwd, fichero);
@@ -23,7 +29,7 @@ try {
   if (ES_ARTEFACTO.test(ruta) && !ruta.endsWith('.ledger.md')) {
     const errores = validateFile(ruta, path.join(cwd, 'docs'));
     if (errores.length) {
-      console.error(`[sdd-calidad] Artefacto inconsistente:\n` + errores.map((e) => ` - ${e}`).join('\n'));
+      console.error(mensajes(cwd)('calidad.artefacto-inconsistente') + '\n' + errores.map((e) => ` - ${e}`).join('\n'));
       process.exit(2);
     }
     process.exit(0);
@@ -43,7 +49,7 @@ try {
   const r = spawnSync(cmd[0], args, { cwd, encoding: 'utf8', shell: usaShell });
   if (r.error || r.status === null) process.exit(0); // linter no instalado: fail-open
   if (r.status !== 0) {
-    console.error(`[sdd-calidad] ${linter} encontró problemas:\n${r.stdout}${r.stderr}`);
+    console.error(`${mensajes(cwd)('calidad.linter-con-problemas', { linter })}\n${r.stdout}${r.stderr}`);
     process.exit(2);
   }
   process.exit(0);

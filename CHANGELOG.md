@@ -5,6 +5,44 @@ Todas las novedades relevantes de este proyecto se documentan aquí.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/)
 y el proyecto se adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 
+## [Sin publicar] — 0.5.1
+
+### Cambiado
+
+- **Un `.sdd.json` con un campo mal tipado cierra los gates** (SPEC-029, EPIC-FIX,
+  ADR-019). **A partir de 0.5.1**, el lector de `.sdd.json` aplica un esquema mínimo, y
+  un objeto que no lo cumple cuenta como ilegible (ADR-017): los hooks deniegan las
+  escrituras (salvo la del propio `.sdd.json`), el pre-commit bloquea y `valida.mjs`
+  falla. El mensaje nombra cada campo que falla, con lo esperado y lo encontrado.
+  **Pasan a cerrar los gates estos `.sdd.json` que antes se aceptaban**:
+  - `rutasVigiladas` que no es un array (`"src/"`) o con elementos que no son strings
+    no vacíos (`["src/", 3]`, `[""]`). Antes, require-spec dejaba pasar (fail-open).
+  - `linter` fuera de `auto`, `none`, `ruff`, `eslint` o `dart` (`"biome"`, `1`).
+    Antes, calidad no linteaba sin avisar.
+  - `gates` que no es un objeto, o `requireSpec`, `protegeVerdad` o `calidad` que no
+    son booleanos (`"false"`). Antes, el gate seguía activo en silencio.
+  - `idioma` que no es un string (`42`). Antes, se usaba `es` sin avisar.
+  - Cualquiera de esos campos a `null`.
+
+  **Cómo se arregla**: ejecuta `node core/scripts/valida.mjs` (o `/sdd-init` en modo
+  migración, que lo hace antes de tocar nada), corrige en `.sdd.json` los campos que
+  nombra tomando como referencia la plantilla `core/templates/sdd.json`, o borra el
+  campo para usar su valor por defecto. La escritura del propio `.sdd.json` sigue
+  permitida, y `SDD_SKIP_GATE=1` sigue siendo la válvula de emergencia. Las claves
+  desconocidas se siguen aceptando, y un `idioma` string no soportado sigue el
+  comportamiento de ADR-016.
+
+### Corregido
+
+- **Despacho real de subagentes en Google Antigravity con contexto aislado** (SPEC-023,
+  EPIC-FIX, ADR-014). Resuelve el defecto arquitectónico por el cual los roles pesados
+  (`sdd-arquitecto`, `sdd-implementador`, `sdd-verificador`, `sdd-documentalista`) se
+  autoejecutaban en el hilo principal de conversación en Antigravity. Se adopta el despacho
+  nativo con `invoke_subagent` (`TypeName: "self"`), se suprime el directorio fantasma
+  `adapters/antigravity/agents/`, se adaptan las skills de roles pesados para delegar
+  formalmente a subagentes aislados y se generaliza la prosa de delegación en
+  `core/roles/es/sdd-orquestador.md`.
+
 ## [Sin publicar] — 0.5.0
 
 ### Añadido

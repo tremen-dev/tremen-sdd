@@ -19,15 +19,16 @@ import { esEntrypoint } from '../../core/lib/entrypoint.mjs';
 
 const DIRS_METODO = ['lib', 'scripts', 'templates', 'roles', 'tests'];
 
-// Mínimo común exigido a TODO adaptador descubierto bajo adapters/ (ADR-011 §1 y §3).
-const MINIMO_COMUN = ['agents/', 'skills/', 'tests/'];
+// Mínimo común exigido a TODO adaptador descubierto bajo adapters/ (ADR-011 §1 y §3, ADR-014).
+const MINIMO_COMUN = ['skills/', 'tests/'];
 
-// Extras AS-BUILT por harness (ADR-011 §3). Un sufijo '/' marca directorio.
+// Extras AS-BUILT por harness (ADR-011 §3, ADR-014). Un sufijo '/' marca directorio.
 // Declarar un harness aquí implica dos cosas: debe existir, y debe tener esto.
 const EXTRAS_POR_HARNESS = {
-  'claude-code': ['.claude-plugin/plugin.json', 'commands/', 'hooks/'],
-  'kimi-code': ['hooks/'],
-  'opencode': ['opencode.json', 'commands/', 'plugins/'],
+  'claude-code': ['.claude-plugin/plugin.json', 'agents/', 'commands/', 'hooks/'],
+  'kimi-code': ['agents/', 'hooks/'],
+  'opencode': ['opencode.json', 'agents/', 'commands/', 'plugins/'],
+  'antigravity': ['plugin.json', 'commands/', 'hooks/'],
 };
 
 // Lista CERRADA de superficie de adaptador prohibida en la raíz del repo

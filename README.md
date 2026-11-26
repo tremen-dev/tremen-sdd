@@ -12,10 +12,7 @@ proyecto reimplementa a su manera.
 
 Está organizado como un **núcleo agnóstico** (`core/`: scripts, plantillas,
 máquina de estados, prosa de roles) y **adaptadores por harness** de agentes
-(`adapters/<harness>/`). Hoy existe el adaptador de **Claude Code**; el soporte
-multi-harness (Kimi Code y otros) está en curso — ver `EPIC-001` y
-[`docs/arquitectura.md`](docs/arquitectura.md) para el mapa del repo, el paso de
-build y cómo se ejerce el dogfooding.
+(`adapters/<harness>/`). Cuenta con adaptadores para **Claude Code**, **Kimi Code**, **opencode** y **Google Antigravity** — ver [`docs/arquitectura.md`](docs/arquitectura.md) para el mapa del repo, el paso de build y cómo se ejerce el dogfooding.
 
 **Documentación visual** (`site/`, con el design system de tremen.dev):
 
@@ -27,18 +24,33 @@ build y cómo se ejerce el dogfooding.
 
 ## Instalación
 
-El adaptador instalable se **construye** desde el núcleo (el artefacto vive en
-`dist/`, gitignored), así que hoy la instalación pasa por un build local:
+Los adaptadores instalables se **construyen** desde el núcleo (el artefacto vive en
+`dist/`, gitignored), requiriendo un paso de build previo a su uso:
 
 ```bash
 npm install
-npm run build          # ensambla dist/claude-code/ con el núcleo empaquetado dentro
+```
+
+### Claude Code
+```bash
+npm run build          # ensambla dist/claude-code/ con el núcleo dentro
 claude plugin marketplace add D:\ruta\a\tremen-sdd
 claude plugin install tremen-sdd@tremen-sdd
 ```
 
-El `marketplace.json` de la raíz apunta a `./dist/claude-code`, por eso el build
-es previo a instalar. La **distribución para usuarios finales** (publicar el
+### Google Antigravity
+```bash
+npm run build:antigravity  # ensambla dist/antigravity/ con el núcleo dentro
+
+# Opción A: a nivel de workspace (.agents/plugins/ en tu proyecto)
+mkdir -p <proyecto>/.agents/plugins/tremen-sdd
+cp -r dist/antigravity/. <proyecto>/.agents/plugins/tremen-sdd/
+
+# Opción B: instalación global
+cp -r dist/antigravity/. ~/.gemini/config/plugins/tremen-sdd/
+```
+
+Para Kimi Code y opencode, ver los procedimientos detallados en [`docs/arquitectura.md`](docs/arquitectura.md). La **distribución para usuarios finales** (publicar el
 artefacto construido o un registro remoto) aún no está resuelta: es trabajo de
 `EPIC-001`. Detalles del build y del dogfooding en
 [`docs/arquitectura.md`](docs/arquitectura.md).
@@ -52,8 +64,9 @@ artefacto construido o un registro remoto) aún no está resuelta: es trabajo de
 pipeline            → sdd-arquitecto (spec) → sdd-implementador (TDD) → sdd-verificador (GREEN/RED)
 ```
 
-Los hooks son fail-open: no bloquean nada hasta que exista `.sdd.json` en la
-raíz del proyecto (lo crea `/sdd-init`).
+Los hooks no bloquean nada hasta que exista `.sdd.json` en la raíz del proyecto
+(lo crea `/sdd-init`). Si existe pero es ilegible o no cumple el esquema mínimo,
+los gates se cierran en vez de apagarse (ver [Hooks](#hooks)).
 
 ## Skills
 
@@ -102,9 +115,19 @@ entrada del historial coincide con el `estado` declarado.
 | `protege-verdad.mjs` | `PreToolUse` (Edit\|Write\|MultiEdit) | Deniega escribir a mano documentos generados (`docs/tablero.md`) o documentos de verdad (`FOUNDATION.md`, `docs/fundacion/`) fuera de sus dueños (`sdd-arquitecto`, `sdd-producto`, `main`). |
 | `calidad.mjs` | `PostToolUse` (Edit\|Write\|MultiEdit) | Valida coherencia frontmatter/estado/historial de artefactos SDD, o lanza el linter del proyecto sobre código (con `linter:auto`, solo si el linter tiene config presente en el proyecto); `exit 2` devuelve el problema como feedback accionable. |
 
-Los tres son **fail-open**: ante cualquier duda (fichero no vigilado,
-`.sdd.json` ausente, linter no instalado o sin su config presente...) permiten la operación en vez de
-bloquear.
+Ante lo que no les toca (fichero no vigilado, `.sdd.json` ausente, linter no
+instalado o sin su config presente...) permiten la operación en vez de bloquear.
+Ante un **error interno** del propio hook (git ausente, payload raro) son
+**fail-open**: permiten.
+
+Un `.sdd.json` que existe pero es **ilegible** (JSON roto, no es un objeto) o
+tiene un campo con **tipo inválido** para el esquema mínimo no se trata como
+ausente: el proyecto se declara activo y su configuración no se puede aplicar,
+así que los gates se **cierran** (ADR-017, ADR-019). `require-spec` deniega toda
+escritura salvo la del propio `.sdd.json`, `protege-verdad` aplica sus reglas
+aunque la config diga apagarlo, `calidad` avisa de que sigue ilegible y el
+pre-commit L2 bloquea el commit. La salida es arreglar el fichero (o
+`/sdd-init` en modo migración); la válvula de abajo sigue funcionando.
 
 **Válvula de escape**: `SDD_SKIP_GATE=1` desactiva `require-spec.mjs` y
 `protege-verdad.mjs` (no `calidad.mjs`, que solo informa). Uso puntual —
@@ -113,7 +136,7 @@ detecta activa.
 
 ## Enforcement en capas (git + CI)
 
-Los hooks del harness (L1) son *feedback* fail-open. La **garantía** dura vive en
+Los hooks del harness (L1) son *feedback* (fail-open ante error interno). La **garantía** dura vive en
 dos capas fail-closed, independientes del harness (ADR-002):
 
 - **L2 — git pre-commit** (`tools/githooks/pre-commit`): bloquea el commit
@@ -146,7 +169,8 @@ npm run check             # build → 6 checks → valida (lo mismo que corre CI
 ```
 .sdd.json                  # config: idioma, rutasVigiladas, gates activos
 FOUNDATION.md              # documento de verdad de alto nivel
-CLAUDE.md                  # bloque tremen-sdd (no pisa un CLAUDE.md existente)
+CLAUDE.md                  # bloque tremen-sdd para Claude Code (no pisa el existente)
+AGENTS.md                  # bloque tremen-sdd para Antigravity y agentes compatibles
 docs/
   roadmap.md
   tablero.md                # GENERADO — solo por core/scripts/tablero.mjs
@@ -164,7 +188,7 @@ docs/
     ADR-NNN-slug.md
 ```
 
-Las plantillas de origen viven en `core/templates/` (`FOUNDATION.md`, `CLAUDE.md`,
+Las plantillas de origen viven en `core/templates/` (`FOUNDATION.md`, `CLAUDE.md`, `AGENTS.md`,
 `sdd.json`, `roadmap.md`, `fundacion/*`, `artefactos/{_epica,SPEC,SPEC.ledger,TASK,ADR}.md`)
 y `templates/rol-dominio.md` para generar roles de dominio a demanda.
 

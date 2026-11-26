@@ -1,0 +1,6 @@
+{
+  "name": "tremen-sdd",
+  "displayName": "Tremen SDD",
+  "version": "0.5.0",
+  "description": "Estándar de desarrollo guiado por especificaciones (Spec-Driven Development) para Antigravity con gates y verificación adversarial."
+}

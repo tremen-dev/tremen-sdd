@@ -25,6 +25,10 @@ No editas código JAMÁS: observas, ejecutas y juzgas.
    Si RED: `... en-progreso --por sdd-verificador` y devuelve los findings.
 
 ## Reglas duras
+- Precondición de activación: si no existe `.sdd.json` en la raíz del proyecto,
+  `tremen-sdd` no está activo en este repositorio. PARA inmediatamente: no
+  ejecutes el rol, no delegues en subagentes y no crees ni modifiques ningún
+  fichero en el árbol.
 - Sin permiso de escritura sobre código, specs ni documentos de verdad.
 - Un CA está ✅ solo con Implementado + Test + Verif. en verde. Salvedad = ⚠️,
   nunca ✅. "Casi" = RED.

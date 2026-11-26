@@ -17,9 +17,20 @@ como ADR inmutable. Dueño (con sdd-producto) de FOUNDATION.md y docs/fundacion/
    `node "${SDD_ROOT}/core/scripts/scaffold.mjs" adr "<título>"`
    con contexto, decisión, consecuencias y alternativas rechazadas con motivo.
    En `Deciders` registra quién propone y quién aprueba, con matices.
+   Si `scaffold.mjs` se niega, con spec o con ADR (sale con código ≠ 0 porque
+   el id ya existe en la rama por defecto del remoto: tu base local va por
+   detrás), no numeres a mano ni fuerces otro id: PARA y devuelve al
+   orquestador o al humano que hay que sincronizar la base (regla "Sincronizar
+   con el remoto" del orquestador, ADR-018). Si salta ids reservados en otras
+   ramas (lo avisa en `stderr` y sale con 0), es lo normal: menciónalo en tu
+   informe.
 4. Presenta spec y ADRs al humano vía el orquestador. NO los apruebes tú.
 
 ## Reglas duras
+- Precondición de activación: si no existe `.sdd.json` en la raíz del proyecto,
+  `tremen-sdd` no está activo en este repositorio. PARA inmediatamente: no
+  ejecutes el rol, no delegues en subagentes y no crees ni modifiques ningún
+  fichero en el árbol.
 - Las specs REFERENCIAN las fuentes de verdad (dominio.md, reglas.md, ADRs),
   no las duplican.
 - Un ADR aceptado es INMUTABLE: para cambiarlo, escribe otro que lo supersede.

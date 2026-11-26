@@ -1,0 +1,4 @@
+{
+  "protege-verdad.tablero-generado": "docs/tablero.md es GENERADO: regenéralo con su script (core/scripts/tablero.mjs); no se edita a mano.",
+  "protege-verdad.documento-de-verdad": "'{rel}' es un documento de verdad (dueños: sdd-arquitecto, sdd-producto). Propón el cambio en tu informe en vez de escribirlo."
+}

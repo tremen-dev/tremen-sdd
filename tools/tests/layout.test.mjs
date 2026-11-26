@@ -10,12 +10,14 @@ import { REPO_ROOT } from '../checks/_util.mjs';
 const FUENTE_CHECK = fs.readFileSync(
   path.join(path.dirname(path.dirname(fileURLToPath(import.meta.url))), 'checks', 'layout.mjs'), 'utf8');
 
-// Superficie AS-BUILT de los tres adaptadores (docs/arquitectura.md, ADR-007):
-// kimi-code no tiene commands/, opencode no tiene hooks/ ni .claude-plugin/.
+// Superficie AS-BUILT de los adaptadores (docs/arquitectura.md, ADR-007, ADR-014):
+// kimi-code no tiene commands/, opencode no tiene hooks/ ni .claude-plugin/,
+// antigravity no tiene agents/ (ADR-014).
 const SUPERFICIE = {
   'claude-code': ['agents', 'skills', 'tests', 'commands', 'hooks', '.claude-plugin'],
   'kimi-code': ['agents', 'skills', 'tests', 'hooks'],
   'opencode': ['agents', 'skills', 'tests', 'commands', 'plugins'],
+  'antigravity': ['skills', 'tests', 'commands', 'hooks'],
 };
 
 function buenLayout() {
@@ -28,6 +30,7 @@ function buenLayout() {
   }
   fs.writeFileSync(path.join(dir, 'adapters/claude-code/.claude-plugin/plugin.json'), '{}');
   fs.writeFileSync(path.join(dir, 'adapters/opencode/opencode.json'), '{}');
+  fs.writeFileSync(path.join(dir, 'adapters/antigravity/plugin.json'), '{}');
   fs.mkdirSync(path.join(dir, '.claude-plugin'), { recursive: true });
   fs.writeFileSync(path.join(dir, '.claude-plugin/marketplace.json'), '{}');
   fs.writeFileSync(path.join(dir, 'tools/build-adapter.mjs'), '// x');
@@ -108,7 +111,7 @@ test('SPEC-017 CA-1c: un adaptador desconocido sin skills/ falla sin que su nomb
 
 test('SPEC-017 CA-3a: un adaptador nuevo con solo el mínimo común pasa (sin falso positivo)', () => {
   const dir = buenLayout();
-  for (const d of ['agents', 'skills', 'tests']) {
+  for (const d of ['skills', 'tests']) {
     fs.mkdirSync(path.join(dir, 'adapters', 'harness-nuevo', d), { recursive: true });
   }
   const { ok, errores } = checkLayout(dir);
@@ -129,6 +132,14 @@ test('SPEC-017 CA-3c: a opencode no se le exige hooks/ (ADR-007)', () => {
   const { ok, errores } = checkLayout(dir);
   assert.equal(ok, true);
   assert.ok(!errores.some((e) => /opencode\/hooks/.test(e)));
+});
+
+test('SPEC-023 CA-4: a antigravity no se le exige agents/ (ADR-014)', () => {
+  const dir = buenLayout();
+  assert.equal(fs.existsSync(path.join(dir, 'adapters/antigravity/agents')), false);
+  const { ok, errores } = checkLayout(dir);
+  assert.equal(ok, true);
+  assert.ok(!errores.some((e) => /antigravity\/agents/.test(e)));
 });
 
 // --- SPEC-017 CA-4: los extras DECLARADOS se exigen de verdad. ---

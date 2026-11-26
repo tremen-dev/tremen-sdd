@@ -55,7 +55,8 @@ lógica compartida de `core/lib/require-spec.mjs` (RN-03).
   sin symlinks. Es OBLIGATORIO para instalar/dogfoodear (el núcleo se resuelve
   como ruta interna al plugin root; ver ADR-001 para el porqué).
 - **Enforcement (hoy)**: tres hooks del adaptador de Claude Code
-  (`require-spec`, `protege-verdad`, `calidad`), todos fail-open, con válvula
+  (`require-spec`, `protege-verdad`, `calidad`), fail-open ante error interno
+  (un `.sdd.json` ilegible o con esquema inválido cierra los gates, ADR-017/ADR-019), con válvula
   `SDD_SKIP_GATE=1`. Rutas vigiladas: `core/scripts/`, `core/lib/`,
   `adapters/claude-code/hooks/`. El destino (RN-03/CE-4) es git pre-commit + CI,
   aún no implementado.

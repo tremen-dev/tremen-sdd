@@ -29,6 +29,7 @@ export function checkManifiestos(repoRoot = REPO_ROOT, harness = 'claude-code') 
   // opencode: su manifiesto es opencode.json (bloque `agent` con mode + permisos
   // por agente + permission.task del orquestador). Ruta de validación propia.
   if (harness === 'opencode') return checkManifiestosOpencode(path.join(repoRoot, 'dist', harness));
+  if (harness === 'antigravity') return checkManifiestosAntigravity(path.join(repoRoot, 'dist', harness));
 
   const errores = [];
   const distDir = path.join(repoRoot, 'dist', harness);
@@ -220,6 +221,42 @@ export function checkManifiestosOpencode(distDir) {
   }
   for (const d of ['skills', 'commands', 'agents', 'plugins']) {
     if (!fs.existsSync(path.join(distDir, d))) errores.push(`falta ${d}/ en el artefacto (auto-discovery)`);
+  }
+
+  return { ok: errores.length === 0, errores };
+}
+
+
+const ROLES_ANTIGRAVITY = [
+  'sdd-producto', 'sdd-arquitecto', 'sdd-implementador',
+  'sdd-verificador', 'sdd-documentalista', 'sdd-como-vamos', 'sdd-orquestador'
+];
+
+export function checkManifiestosAntigravity(distDir) {
+  const errores = [];
+  if (!fs.existsSync(distDir)) { errores.push('falta dist/antigravity (¿falta el build?)'); return { ok: false, errores }; }
+
+  const manPath = path.join(distDir, 'plugin.json');
+  let man;
+  try { man = leeJson(manPath); } catch { errores.push('falta o es inválido plugin.json en el artefacto'); }
+  if (man) {
+    if (man.name !== 'tremen-sdd') errores.push(`plugin.json: name debe ser 'tremen-sdd' (es '${man.name}')`);
+    if (!man.description) errores.push('plugin.json: falta description');
+  }
+
+  const hooksPath = path.join(distDir, 'hooks', 'hooks.json');
+  let hooks;
+  try { hooks = leeJson(hooksPath); } catch { errores.push('falta o es inválido hooks/hooks.json en el artefacto'); }
+  if (hooks) {
+    if (!hooks['tremen-sdd-require-spec']) errores.push('hooks.json: falta tremen-sdd-require-spec');
+    if (!hooks['tremen-sdd-protege-verdad']) errores.push('hooks.json: falta tremen-sdd-protege-verdad');
+  }
+
+  for (const cmd of ['sdd-init', 'sdd-tablero']) {
+    if (!fs.existsSync(path.join(distDir, 'commands', `${cmd}.md`))) errores.push(`falta commands/${cmd}.md en el artefacto`);
+  }
+  for (const rol of ROLES_ANTIGRAVITY) {
+    if (!fs.existsSync(path.join(distDir, 'skills', rol, 'SKILL.md'))) errores.push(`falta skills/${rol}/SKILL.md en el artefacto`);
   }
 
   return { ok: errores.length === 0, errores };

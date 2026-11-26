@@ -1,0 +1,4 @@
+{
+  "protege-verdad.tablero-generado": "docs/tablero.md es GENERADO: regenéralo con /sdd-tablero (scripts/tablero.mjs); no se edita a mano.",
+  "calidad.artefacto-inconsistente": "[sdd-calidad] Artefacto inconsistente:"
+}
