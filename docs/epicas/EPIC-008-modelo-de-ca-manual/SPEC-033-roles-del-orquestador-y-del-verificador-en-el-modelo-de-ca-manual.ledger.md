@@ -1,0 +1,36 @@
+---
+id: SPEC-033
+tipo: ledger
+epica: EPIC-008
+---
+# Ledger — SPEC-033 Roles del orquestador y del verificador en el modelo de CA manual
+
+## Resumen
+- Fase: <!-- refleja el estado de la spec; la fuente de verdad es el frontmatter de la spec -->
+- Rama: `ft/SPEC-033-roles-del-orquestador-y-del-verificador-en-el-modelo-de-ca-manual`
+
+## Matriz de criterios de aceptación
+<!-- Escritores: sdd-implementador rellena Implementado y Test; sdd-verificador rellena Verif. y Estado. Nunca al revés. -->
+<!-- Estados por CA: ✅ cerrado · ⚠️ parcial/salvedad sin aceptar · 🚧 en curso · ❌ sin empezar · n-a · ⏳ CA manual pendiente (solo en un CA [manual]) -->
+<!-- Calificadores de ✅ (ADR-020 §4 de tremen-sdd), cada uno como mucho una vez: ✅ [desviación] (se cumplió la comprobación con otro medio) · ✅ [salvedad: <persona>, <AAAA-MM-DD>] (una persona aceptó la diferencia ese día) · ✅ [confirmado: <persona>, <AAAA-MM-DD>] (lo ejecutó un agente y la persona confirmó el resultado). -->
+<!-- Un CA está ✅ solo cuando Implementado + Test + Verif. aplicables están en verde. Una salvedad no aceptada por una persona nunca es ✅ (RN-12 de tremen-sdd): queda en ⚠️ hasta que una persona la acepta. -->
+| CA | Implementado (fichero) | Test (fichero/caso) | Verif. | Estado |
+|---|---|---|---|---|
+| CA-1 | | | | ❌ |
+
+## Evidencia de CA manuales
+<!-- ADR-020 §8 de tremen-sdd. Solo se añaden filas, una por CA [manual] y entorno (Entorno vacío o - si su comprobacion no tiene etiqueta). La escribe quien ejecutó: el orquestador si ejecutó el humano, con lo que el humano aportó. Observado es el resultado de la `comprobacion`, no la salida del comando. Commit es el SHA del código sobre el que se ejecutó (7 a 40 hex). Fecha en AAAA-MM-DD. Notas: desviación, consentimiento confirmado y por quién, precondiciones. Añadir filas no toca Verif., Estado ni el veredicto: el paso de ⏳ a ✅ lo da siempre el verificador. -->
+| CA | Entorno | Ejecutó | Observado | Commit | Fecha | Notas |
+|---|---|---|---|---|---|---|
+
+## Veredicto del verificador
+<!-- GREEN/RED + fecha + resumen. Lo escribe SOLO sdd-verificador. -->
+
+## Evidencia visual
+<!-- Tabla CA → captura en _qa/SPEC-033/. Informe HTML opcional: _qa/SPEC-033/informe.html -->
+
+## Salvedades / follow-ups
+<!-- IDs F-SPEC-033-1, F-SPEC-033-2… con destino (spec futura o EPIC-MEJORA). -->
+
+## Cómo retomar (handoff)
+<!-- Estado real del trabajo para la siguiente sesión: qué está hecho, qué falta, dónde seguir. -->
