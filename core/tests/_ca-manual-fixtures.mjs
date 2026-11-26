@@ -20,6 +20,10 @@ function frontmatterSpec(estado) {
 }
 
 // Matriz de ledger con la columna Estado indicada por CA: { 'CA-1': '✅', … }.
+// SPEC-032 CA-5 (ADR-020 §4): un CA manual en ✅ exige su fila de evidencia. En
+// las specs de estos tests el CA manual que puede ir en ✅ es CA-1, con una sola
+// comprobación sin etiqueta; la sección de evidencia trae su fila (cambio de
+// fixture justificado en el ledger de SPEC-032; las aserciones no cambian).
 export function ledger(estados) {
   const filas = Object.entries(estados).map(([ca, e]) => `| ${ca} | x.mjs | x.test.mjs | ok | ${e} |`);
   return [
@@ -28,6 +32,10 @@ export function ledger(estados) {
     '| CA | Implementado (fichero) | Test (fichero/caso) | Verif. | Estado |',
     '|---|---|---|---|---|',
     ...filas, '',
+    '## Evidencia de CA manuales',
+    '| CA | Entorno | Ejecutó | Observado | Commit | Fecha | Notas |',
+    '|---|---|---|---|---|---|---|',
+    '| CA-1 | | Alberto Fojo | el panel muestra el recurso | 1a2b3c4 | 2026-11-26 | |', '',
   ].join('\n');
 }
 

@@ -18,6 +18,11 @@ epica: {{EPICA}}
 |---|---|---|---|---|
 | CA-1 | | | | ❌ |
 
+## Evidencia de CA manuales
+<!-- ADR-020 §8 de tremen-sdd. Solo se añaden filas, una por CA [manual] y entorno (Entorno vacío o - si su comprobacion no tiene etiqueta). La escribe quien ejecutó: el orquestador si ejecutó el humano, con lo que el humano aportó. Observado es el resultado de la `comprobacion`, no la salida del comando. Commit es el SHA del código sobre el que se ejecutó (7 a 40 hex). Fecha en AAAA-MM-DD. Notas: desviación, consentimiento confirmado y por quién, precondiciones. Añadir filas no toca Verif., Estado ni el veredicto: el paso de ⏳ a ✅ lo da siempre el verificador. -->
+| CA | Entorno | Ejecutó | Observado | Commit | Fecha | Notas |
+|---|---|---|---|---|---|---|
+
 ## Veredicto del verificador
 <!-- GREEN/RED + fecha + resumen. Lo escribe SOLO sdd-verificador. -->
 

@@ -65,7 +65,7 @@ Actualizado: 2026-11-26
 | Spec | Estado | Último cambio |
 |---|---|---|
 | SPEC-030 — ficha-de-ca-manual-formato-validacion-y-cierre-que-la-respeta | hecho | 2026-11-26 (sdd-verificador) |
-| SPEC-032 — evidencia-de-ca-manuales-y-ronda-acotada | aprobada | 2026-11-26 (Alberto Fojo) |
+| SPEC-032 — evidencia-de-ca-manuales-y-ronda-acotada | hecho | 2026-11-26 (sdd-verificador) |
 
 ## EPIC-009 — trabajo-en-paralelo-e-integracion (borrador)
 
@@ -118,6 +118,6 @@ Actualizado: 2026-11-26
 
 ## Resumen
 
-- hecho: 29
+- hecho: 30
 - bloqueada: 1
-- aprobada: 2
+- aprobada: 1

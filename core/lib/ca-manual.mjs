@@ -5,6 +5,9 @@
 //
 // Devuelve datos y errores con CÓDIGO, no texto: el texto lo pone quien informa,
 // desde su catálogo de mensajes (ADR-016).
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { esPersona } from './persona.mjs';
 
 // --- Texto que no cuenta: comentarios HTML y bloques de código (ADR-020 §2) ---
@@ -212,22 +215,135 @@ function ciclos(cas) {
 export const rutaLedger = (rutaSpec) => rutaSpec.replace(/\.md$/, '.ledger.md');
 
 const celdas = (linea) => linea.trim().replace(/^\|/, '').replace(/\|$/, '').split('|').map((s) => s.trim());
+const ID_CA = /^CA-M?\d+$/;
+const idDeCelda = (celda) => (celda ?? '').replace(/\*/g, '').trim();
 
-// Filas de la matriz de CA del ledger: la primera tabla cuya cabecera empieza por
-// `CA`. El Estado es la última columna. Devuelve Map id -> { celda, linea }.
-export function leerMatriz(texto) {
-  const lineas = lineasVisibles(texto);
-  const filas = new Map();
-  for (let i = 0; i < lineas.length; i++) {
-    if (!/^\s*\|/.test(lineas[i]) || celdas(lineas[i])[0] !== 'CA') continue;
-    for (let j = i + 2; j < lineas.length && /^\s*\|/.test(lineas[j]); j++) {
-      const fila = celdas(lineas[j]);
-      const id = fila[0].replace(/\*/g, '').trim();
-      if (/^CA-M?\d+$/.test(id) && !filas.has(id)) filas.set(id, { celda: fila.at(-1), linea: j + 1 });
+// --- Secciones del ledger (SPEC-032 CA-1, F-SPEC-030-2) ---
+//
+// La matriz y la tabla de evidencia se localizan por el título de su sección de
+// nivel 2, no por el orden de las tablas. Una sección acaba en el siguiente
+// encabezado de nivel 1 o 2. Los títulos (y la cabecera de la evidencia) salen
+// de la plantilla del ledger de cada idioma: aquí no hay una segunda copia.
+
+const PLANTILLAS = path.join(path.dirname(path.dirname(fileURLToPath(import.meta.url))), 'templates');
+const IDIOMA_ORIGEN = 'es';
+const ENCABEZADO = /^\s{0,3}(#{1,6})\s+(.*?)(?:\s+#+)?\s*$/;
+const esLineaTabla = (l) => /^\s*\|/.test(l);
+
+// Secciones de nivel 2: [{ titulo, desde, hasta }] (índices de línea, hasta exclusivo).
+function secciones(lineas) {
+  const out = [];
+  let actual = null;
+  lineas.forEach((l, i) => {
+    const m = l.match(ENCABEZADO);
+    if (!m || m[1].length > 2) return;
+    if (actual) actual.hasta = i;
+    actual = m[1].length === 2 ? { titulo: m[2].trim(), desde: i + 1, hasta: lineas.length } : null;
+    if (actual) out.push(actual);
+  });
+  return out;
+}
+
+// Tablas de [desde, hasta): { linea (1-based, la cabecera), cabecera, filas: [{ celdas, linea }] }.
+// La segunda línea de cada tabla es el separador.
+function tablas(lineas, desde, hasta) {
+  const out = [];
+  for (let i = desde; i < hasta; i++) {
+    if (!esLineaTabla(lineas[i])) continue;
+    const t = { linea: i + 1, cabecera: celdas(lineas[i]), filas: [] };
+    let j = i + 1;
+    for (; j < hasta && esLineaTabla(lineas[j]); j++) {
+      if (j > i + 1) t.filas.push({ celdas: celdas(lineas[j]), linea: j + 1 });
     }
-    break;
+    out.push(t);
+    i = j;
   }
-  return filas;
+  return out;
+}
+
+const cacheTitulos = new Map();
+
+// { matriz, evidencia, cabeceraEvidencia } de la plantilla del ledger del idioma
+// (core/templates/<idioma>/artefactos/SPEC.ledger.md; si no existe, la de `es`).
+// La matriz es la primera sección de la plantilla que trae una tabla; la
+// evidencia, la segunda (CA-3: va detrás de la matriz).
+export function titulosLedger(idioma = IDIOMA_ORIGEN) {
+  if (cacheTitulos.has(idioma)) return cacheTitulos.get(idioma);
+  const ruta = (i) => path.join(PLANTILLAS, i, 'artefactos', 'SPEC.ledger.md');
+  const fichero = fs.existsSync(ruta(idioma)) ? ruta(idioma) : ruta(IDIOMA_ORIGEN);
+  const lineas = lineasVisibles(fs.readFileSync(fichero, 'utf8'));
+  const conTabla = secciones(lineas)
+    .map((s) => ({ titulo: s.titulo, tablas: tablas(lineas, s.desde, s.hasta) }))
+    .filter((s) => s.tablas.length);
+  const titulos = {
+    matriz: conTabla[0]?.titulo ?? null,
+    evidencia: conTabla[1]?.titulo ?? null,
+    cabeceraEvidencia: conTabla[1]?.tablas[0].cabecera ?? [],
+  };
+  cacheTitulos.set(idioma, titulos);
+  return titulos;
+}
+
+// Columnas de una fila de evidencia, en el orden de la cabecera (ADR-020 §8).
+const CAMPOS_EVIDENCIA = ['ca', 'entorno', 'ejecuto', 'observado', 'commit', 'fecha', 'notas'];
+
+// Lee un ledger: { matriz, evidencia, errores }.
+//   matriz:    { linea, filas: [{ id, celdas, celda, linea }] } o null si no hay
+//              una única tabla `CA` en la sección de la matriz. El Estado es la
+//              última columna.
+//   evidencia: { linea, filas: [{ ca, entorno, ejecuto, observado, commit,
+//              fecha, notas, celdas, linea }] } o null si no hay sección, hay
+//              más de una tabla o su cabecera no es la de la plantilla.
+//   errores:   [{ codigo, vars }] del ledger: sin-matriz, matriz-ambigua,
+//              fila-repetida, evidencia-ambigua, evidencia-cabecera.
+export function leerLedger(texto, idioma = IDIOMA_ORIGEN) {
+  const t = titulosLedger(idioma);
+  const lineas = lineasVisibles(texto);
+  const secs = secciones(lineas);
+  const tablasDe = (titulo) => secs.filter((s) => s.titulo === titulo).flatMap((s) => tablas(lineas, s.desde, s.hasta));
+  const errores = [];
+
+  let matriz = null;
+  const tablasMatriz = tablasDe(t.matriz).filter((x) => x.cabecera[0] === 'CA');
+  if (!tablasMatriz.length) errores.push({ codigo: 'sin-matriz', vars: { titulo: t.matriz } });
+  else if (tablasMatriz.length > 1) {
+    errores.push({ codigo: 'matriz-ambigua', vars: { titulo: t.matriz, lineas: tablasMatriz.map((x) => x.linea).join(', ') } });
+  } else {
+    const filas = tablasMatriz[0].filas
+      .map((f) => ({ id: idDeCelda(f.celdas[0]), celdas: f.celdas, celda: f.celdas.at(-1), linea: f.linea }))
+      .filter((f) => ID_CA.test(f.id));
+    matriz = { linea: tablasMatriz[0].linea, filas };
+    for (const [id, repetidas] of agrupar(filas, (f) => f.id)) {
+      if (repetidas.length > 1) errores.push({ codigo: 'fila-repetida', vars: { ca: id, lineas: repetidas.map((f) => f.linea).join(', ') } });
+    }
+  }
+
+  let evidencia = null;
+  const tablasEvidencia = tablasDe(t.evidencia);
+  const esperada = `| ${t.cabeceraEvidencia.join(' | ')} |`;
+  if (tablasEvidencia.length > 1) {
+    errores.push({ codigo: 'evidencia-ambigua', vars: { titulo: t.evidencia, lineas: tablasEvidencia.map((x) => x.linea).join(', ') } });
+  } else if (tablasEvidencia.length === 1) {
+    const tabla = tablasEvidencia[0];
+    if (tabla.cabecera.join('|') !== t.cabeceraEvidencia.join('|')) {
+      errores.push({ codigo: 'evidencia-cabecera', vars: { linea: tabla.linea, esperada, encontrada: `| ${tabla.cabecera.join(' | ')} |` } });
+    } else {
+      evidencia = {
+        linea: tabla.linea,
+        filas: tabla.filas.map((f) => ({
+          ...Object.fromEntries(CAMPOS_EVIDENCIA.map((c, i) => [c, f.celdas[i] ?? ''])),
+          ca: idDeCelda(f.celdas[0]), celdas: f.celdas, linea: f.linea,
+        })),
+      };
+    }
+  }
+  return { matriz, evidencia, errores, columnasEvidencia: t.cabeceraEvidencia };
+}
+
+function agrupar(lista, clave) {
+  const m = new Map();
+  for (const x of lista) m.set(clave(x), [...(m.get(clave(x)) ?? []), x]);
+  return m;
 }
 
 const BASES = ['✅', '⚠️', '🚧', '❌', 'n-a', '⏳'];
@@ -275,10 +391,11 @@ export function analizarEstado(celda) {
 }
 
 // Errores de marcas de un ledger de una spec del modelo: { ca, celda, codigo, vars }.
-export function erroresMarcas(cas, matriz) {
+// `ledger` es lo que devuelve leerLedger.
+export function erroresMarcas(cas, ledger) {
   const manuales = new Set(cas.filter((c) => c.manual).map((c) => c.id));
   const errores = [];
-  for (const [id, { celda }] of matriz) {
+  for (const { id, celda } of ledger.matriz?.filas ?? []) {
     const a = analizarEstado(celda);
     for (const e of a.errores) errores.push({ ca: id, celda, ...e });
     if (a.base === '⏳' && !manuales.has(id)) errores.push({ ca: id, celda, codigo: 'pendiente-no-manual', vars: {} });
@@ -292,9 +409,153 @@ export function estadoCierra(celda) {
   return a.errores.length === 0 && (a.base === '✅' || a.base === 'n-a');
 }
 
-// CA bloqueantes que impiden `hecho`: [{ ca, celda }] (celda null: falta la fila).
-export function bloqueosHecho(cas, matriz) {
-  return cas.filter((c) => c.bloqueaHecho)
-    .filter((c) => !matriz.has(c.id) || !estadoCierra(matriz.get(c.id).celda))
-    .map((c) => ({ ca: c.id, celda: matriz.get(c.id)?.celda ?? null }));
+// --- Evidencia de los CA manuales (ADR-020 §8, SPEC-032 CA-4, CA-5) ---
+
+const COMMIT = /^[0-9a-f]{7,40}$/i;
+// El entorno de una fila: vacío o `-` es la comprobación sin etiqueta (null).
+const entornoDeFila = (e) => (e === '' || e === '-' ? null : e);
+const etiquetaDe = (e) => (e === null ? '(vacío o -)' : e);
+
+// Errores de las filas de evidencia: { ca, linea, columna, codigo, vars }. No para
+// en el primero. `columna` es el nombre de la columna en la plantilla del idioma.
+export function erroresEvidencia(cas, ledger) {
+  const porId = new Map(cas.map((c) => [c.id, c]));
+  const col = (i) => ledger.columnasEvidencia?.[i] ?? CAMPOS_EVIDENCIA[i];
+  const errores = [];
+  for (const f of ledger.evidencia?.filas ?? []) {
+    const err = (i, codigo, vars = {}) => errores.push({ ca: f.ca, linea: f.linea, columna: col(i), codigo, vars });
+    const ca = porId.get(f.ca);
+    if (!ca) err(0, 'ca-inexistente');
+    else if (!ca.manual) err(0, 'ca-no-manual');
+    else {
+      const admitidos = ca.comprobaciones.map((c) => c.entorno);
+      if (!admitidos.includes(entornoDeFila(f.entorno))) {
+        err(1, 'entorno', { valor: f.entorno, admitidos: admitidos.map(etiquetaDe).join(', ') });
+      }
+    }
+    if (!f.ejecuto || f.ejecuto === 'desconocido') err(2, 'ejecuto', { valor: f.ejecuto });
+    if (!f.observado) err(3, 'observado');
+    if (!COMMIT.test(f.commit)) err(4, 'commit', { valor: f.commit });
+    if (!FECHA.test(f.fecha)) err(5, 'fecha', { valor: f.fecha });
+  }
+  return errores;
+}
+
+// CA manuales en ✅ sin su evidencia: [{ ca, entorno }], uno por comprobación sin
+// una fila de evidencia válida (ADR-020 §4: «se cumplió cada comprobación y su
+// evidencia está registrada»). Un CA en otro Estado no exige evidencia.
+export function faltaEvidencia(cas, ledger) {
+  const conError = new Set(erroresEvidencia(cas, ledger).map((e) => e.linea));
+  const validas = (ledger.evidencia?.filas ?? []).filter((f) => !conError.has(f.linea));
+  const faltan = [];
+  const vistos = new Set();
+  for (const ca of cas.filter((c) => c.manual)) {
+    const enCierre = (ledger.matriz?.filas ?? []).some((f) => f.id === ca.id && analizarEstado(f.celda).base === '✅');
+    if (!enCierre || vistos.has(ca.id)) continue;
+    vistos.add(ca.id);
+    for (const { entorno } of ca.comprobaciones) {
+      if (!validas.some((f) => f.ca === ca.id && entornoDeFila(f.entorno) === entorno)) faltan.push({ ca: ca.id, entorno: etiquetaDe(entorno) });
+    }
+  }
+  return faltan;
+}
+
+// Filas de la matriz de un CA (vacío si no hay matriz).
+const filasDe = (ledger, id) => (ledger.matriz?.filas ?? []).filter((f) => f.id === id);
+
+// ¿Está cerrado el CA en la matriz? Una sola fila y su celda cierra.
+export function caCerrado(ledger, id) {
+  const filas = filasDe(ledger, id);
+  return filas.length === 1 && estadoCierra(filas[0].celda);
+}
+
+// Lo que impide `hecho` a una spec del modelo (ADR-020 §5, SPEC-032 CA-1, CA-2,
+// CA-5): [{ codigo, ca?, celda?, entorno?, vars? }] con codigo
+//   sin-matriz | matriz-ambigua (del ledger) · repetida (un id con varias filas)
+//   sin-fila | abierto (un CA bloqueante sin cerrar) · sin-evidencia (un CA
+//   manual bloqueante en ✅ sin evidencia de una comprobación).
+export function bloqueosHecho(cas, ledger) {
+  const deLedger = ledger.errores.filter((e) => ['sin-matriz', 'matriz-ambigua'].includes(e.codigo));
+  if (deLedger.length) return deLedger.map((e) => ({ codigo: e.codigo, vars: e.vars }));
+  const bloqueos = ledger.errores.filter((e) => e.codigo === 'fila-repetida')
+    .map((e) => ({ codigo: 'repetida', ca: e.vars.ca, vars: e.vars }));
+  const repetidos = new Set(bloqueos.map((b) => b.ca));
+  const bloqueantes = cas.filter((c) => c.bloqueaHecho);
+  for (const c of bloqueantes) {
+    if (repetidos.has(c.id)) continue;
+    const filas = filasDe(ledger, c.id);
+    if (!filas.length) bloqueos.push({ codigo: 'sin-fila', ca: c.id, celda: null });
+    else if (!estadoCierra(filas[0].celda)) bloqueos.push({ codigo: 'abierto', ca: c.id, celda: filas[0].celda });
+  }
+  const ids = new Set(bloqueantes.map((c) => c.id));
+  for (const f of faltaEvidencia(cas, ledger)) {
+    if (ids.has(f.ca) && !repetidos.has(f.ca)) bloqueos.push({ codigo: 'sin-evidencia', ca: f.ca, entorno: f.entorno });
+  }
+  return bloqueos;
+}
+
+// CA manuales bloqueantes sin cerrar (ADR-021): cualquier Estado que no cierre
+// según estadoCierra, también sin fila o con la fila repetida. Ids, en orden.
+export function manualesSinCerrar(cas, ledger) {
+  return cas.filter((c) => c.manual && c.bloqueaHecho && !caCerrado(ledger, c.id)).map((c) => c.id);
+}
+
+// ¿Tiene el CA entrada en el registro externo? Una misma línea con el id de la
+// spec y el del CA, los dos como palabras completas (ADR-021 §2).
+export function enRegistro(texto, idSpec, idCa) {
+  // Los ids son letras, dígitos y guiones: no llevan metacaracteres de regex.
+  const palabra = (id) => new RegExp(`(?<![A-Za-z0-9_])${id}(?![A-Za-z0-9_])`);
+  const reSpec = palabra(idSpec);
+  const reCa = palabra(idCa);
+  return texto.split(/\r?\n/).some((l) => reSpec.test(l) && reCa.test(l));
+}
+
+// --- Ronda acotada (ADR-020 §6, §7; SPEC-032 CA-7) ---
+
+const esPendiente = (celda) => analizarEstado(celda).base === '⏳';
+const mismasCeldas = (a, b) => a.length === b.length && a.every((c, i) => c === b[i]);
+
+// Compara la matriz y la evidencia del ledger en el commit verificado V (`enV`)
+// con las del ledger de trabajo (`hoy`), los dos de leerLedger. Devuelve
+//   { motivos: [{ codigo, ...vars }], pendientes: [ids en ⏳ en V], nuevas: [filas de evidencia nuevas] }.
+// No mira git: qué commit es cada fila nueva lo comprueba quien llama.
+export function compararRonda(cas, enV, hoy) {
+  const motivos = [];
+  for (const [nombre, l] of [['V', enV], ['hoy', hoy]]) {
+    for (const e of l.errores) motivos.push({ codigo: 'ledger', donde: nombre, error: e.codigo, ...e.vars });
+  }
+  if (!enV.matriz || !hoy.matriz) return { motivos, pendientes: [], nuevas: [] };
+
+  // En V, la forma de un PARCIAL (ADR-020 §6): todo CA bloqueante cerrado salvo
+  // los manuales en ⏳, y al menos un CA en ⏳.
+  const pendientes = enV.matriz.filas.filter((f) => esPendiente(f.celda)).map((f) => f.id);
+  if (!pendientes.length) motivos.push({ codigo: 'nada-pendiente' });
+  for (const c of cas.filter((x) => x.bloqueaHecho)) {
+    const filas = filasDe(enV, c.id);
+    const celda = filas[0]?.celda ?? null;
+    if (filas.length === 1 && (estadoCierra(celda) || (c.manual && esPendiente(celda)))) continue;
+    motivos.push({ codigo: 'no-parcial', ca: c.id, celda: celda ?? '' });
+  }
+
+  // La matriz: mismas filas, y las que no estaban en ⏳, idénticas.
+  const idsV = enV.matriz.filas.map((f) => f.id);
+  const idsHoy = hoy.matriz.filas.map((f) => f.id);
+  for (const f of enV.matriz.filas) {
+    const ahora = filasDe(hoy, f.id);
+    if (!ahora.length) motivos.push({ codigo: 'fila-borrada', ca: f.id });
+    else if (!esPendiente(f.celda) && !mismasCeldas(f.celdas, ahora[0].celdas)) {
+      motivos.push({ codigo: 'fila-cambiada', ca: f.id, antes: f.celdas.join(' | '), ahora: ahora[0].celdas.join(' | ') });
+    }
+  }
+  for (const id of idsHoy.filter((x) => !idsV.includes(x))) motivos.push({ codigo: 'fila-nueva', ca: id });
+
+  // La evidencia: las filas de V, iguales y en el mismo orden, delante de las nuevas.
+  const filasV = enV.evidencia?.filas ?? [];
+  const filasHoy = hoy.evidencia?.filas ?? [];
+  filasV.forEach((f, i) => {
+    if (!filasHoy[i] || !mismasCeldas(f.celdas, filasHoy[i].celdas)) {
+      motivos.push({ codigo: 'evidencia-cambiada', ca: f.ca, fila: f.celdas.join(' | ') });
+    }
+  });
+  return { motivos, pendientes, nuevas: filasHoy.slice(filasV.length) };
 }

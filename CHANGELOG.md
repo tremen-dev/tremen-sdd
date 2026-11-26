@@ -7,6 +7,26 @@ y el proyecto se adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 
 ## [Sin publicar] — 0.5.1
 
+### Añadido
+
+- **Evidencia de CA manuales y ronda acotada** (SPEC-032, EPIC-008, ADR-020 §7–§9,
+  ADR-021). Solo afecta a las specs con algún CA `[manual]`; las demás no cambian.
+  - La plantilla del ledger trae la sección «Evidencia de CA manuales». `valida.mjs`
+    comprueba cada fila (CA manual existente, entorno, quién ejecutó, lo observado,
+    commit y fecha).
+  - Un CA manual en ✅ necesita su evidencia: sin ella, `valida.mjs` da error y, si el
+    CA bloquea, `estado.mjs … hecho` se niega.
+  - La matriz y la tabla de evidencia se localizan por el título de su sección: una
+    tabla con cabecera `CA` en otro sitio ya no se toma por la matriz. Un CA con dos
+    filas en la matriz es error de `valida.mjs` y niega `hecho`.
+  - Nuevo script de solo lectura `core/scripts/ronda-acotada.mjs <spec> --desde <V>`:
+    dice si cabe una ronda acotada desde el commit verificado `V` y qué CA juzgar.
+  - `.sdd.json` admite dos claves opcionales, `recetaManuales` y `registroManuales`
+    (strings no vacíos; entran en el esquema de ADR-019, así que otro tipo cierra los
+    gates). Con `registroManuales` declarado, `estado.mjs … en-revision` se niega si
+    un CA manual bloqueante sin cerrar no aparece en el registro, o si el fichero
+    declarado no existe (ADR-021).
+
 ### Cambiado
 
 - **Un `.sdd.json` con un campo mal tipado cierra los gates** (SPEC-029, EPIC-FIX,

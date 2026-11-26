@@ -34,6 +34,11 @@ export const ESQUEMA_SDD_JSON = Object.freeze({
       calidad: { tipo: 'booleano' },
     },
   },
+  // ADR-020 §9 (SPEC-032 CA-8): rutas, relativas a la raíz del proyecto, a la
+  // receta de los CA manuales (la leen los roles) y al registro externo de
+  // pruebas manuales (lo lee la guarda de en-revision de estado.mjs, ADR-021).
+  recetaManuales: { tipo: 'string-no-vacio' },
+  registroManuales: { tipo: 'string-no-vacio' },
 });
 
 const esObjeto = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
@@ -41,6 +46,7 @@ const esObjeto = (v) => v !== null && typeof v === 'object' && !Array.isArray(v)
 // Cómo se comprueba cada tipo del esquema y cómo se describe lo esperado.
 const TIPOS = {
   string: { esperado: () => 'un string', valido: (v) => typeof v === 'string' },
+  'string-no-vacio': { esperado: () => 'un string no vacío', valido: (v) => typeof v === 'string' && v !== '' },
   booleano: { esperado: () => 'un booleano', valido: (v) => typeof v === 'boolean' },
   objeto: { esperado: () => 'un objeto', valido: esObjeto },
   'lista-de-strings': {
