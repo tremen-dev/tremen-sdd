@@ -114,7 +114,7 @@ Actualizado: 2026-11-26
 | ADR-018 | aprobada | ids-de-artefacto-frente-a-las-ramas-del-repositorio | 2026-10-27 (Alberto Fojo) |
 | ADR-019 | aprobada | esquema-minimo-de-sdd-json-y-su-sitio-en-el-lector-unico | 2026-10-27 (Alberto Fojo) |
 | ADR-020 | aprobada | modelo-de-ca-manual-ficha-por-ca-marcas-de-la-matriz-y-veredicto-parcial | 2026-11-26 (Alberto Fojo) |
-| ADR-021 | borrador | guarda-del-registro-externo-de-manuales-ca-manual-bloqueante-sin-cerrar | 2026-11-26 (sdd-arquitecto) |
+| ADR-021 | aprobada | guarda-del-registro-externo-de-manuales-ca-manual-bloqueante-sin-cerrar | 2026-11-26 (Alberto Fojo) |
 
 ## Resumen
 

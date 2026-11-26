@@ -1,9 +1,11 @@
 ---
 id: ADR-021
 tipo: adr
-estado: borrador
+estado: aprobada
 historial:
   - {estado: borrador, fecha: 2026-11-26, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-11-26, por: Alberto Fojo}
+aprobada-por: Alberto Fojo
 ---
 # ADR-021: Guarda del registro externo de manuales: CA manual bloqueante sin cerrar
 
