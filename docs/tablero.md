@@ -60,7 +60,7 @@ Actualizado: 2026-11-26
 | SPEC-025 — mecanismo-de-idioma-catalogos-y-plantillas-por-idioma | hecho | 2026-10-27 (sdd-verificador) |
 | SPEC-026 — paridad-bloqueante-entre-idiomas-sellos-prosa-gates-y-gatillos | aprobada | 2026-10-27 (Alberto Fojo) |
 
-## EPIC-008 — modelo-de-ca-manual (borrador)
+## EPIC-008 — modelo-de-ca-manual (aprobada)
 
 | Spec | Estado | Último cambio |
 |---|---|---|

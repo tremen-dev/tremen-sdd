@@ -43,7 +43,7 @@ tipo: roadmap
   es. Lo que se traduzca antes de que cierre habrá que corregirlo tres veces.
   Conviene que la traducción de roles vaya detrás de las correcciones de
   EPIC-005 que toquen roles, aunque el mecanismo pueda empezar ya.
-- **EPIC-008 — Modelo de CA manual** (`borrador` 2026-11-23): que un CA manual
+- **EPIC-008 — Modelo de CA manual** (`aprobada` 2026-11-26): que un CA manual
   diga quién lo ejecuta, qué necesita del humano, cómo se comprueba su
   resultado y si bloquea el cierre, y que su evidencia se pueda registrar sin
   repetir la verificación completa.

@@ -1,9 +1,11 @@
 ---
 id: EPIC-008
 tipo: epica
-estado: borrador
+estado: aprobada
 historial:
   - {estado: borrador, fecha: 2026-11-23, por: sdd-producto}
+  - {estado: aprobada, fecha: 2026-11-26, por: Alberto Fojo}
+aprobada-por: Alberto Fojo
 ---
 # EPIC-008 — Modelo de CA manual
 
