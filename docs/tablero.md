@@ -64,6 +64,7 @@ Actualizado: 2026-11-26
 
 | Spec | Estado | Último cambio |
 |---|---|---|
+| SPEC-030 — ficha-de-ca-manual-formato-validacion-y-cierre-que-la-respeta | borrador | 2026-11-26 (sdd-arquitecto) |
 
 ## EPIC-009 — trabajo-en-paralelo-e-integracion (borrador)
 
@@ -86,6 +87,7 @@ Actualizado: 2026-11-26
 | SPEC-027 — los-hooks-no-apagan-los-gates-ante-un-sdd-json-ilegible | hecho | 2026-11-23 (sdd-verificador) |
 | SPEC-028 — trabajar-sobre-la-base-remota | hecho | 2026-11-23 (sdd-verificador) |
 | SPEC-029 — esquema-de-sdd-json-un-campo-mal-tipado-no-apaga-los-gates | hecho | 2026-11-23 (sdd-verificador) |
+| SPEC-031 — el-historial-del-frontmatter-conserva-las-notas-con-comas-y-comillas | borrador | 2026-11-26 (sdd-arquitecto) |
 
 ## ADRs
 
@@ -110,9 +112,11 @@ Actualizado: 2026-11-26
 | ADR-017 | aprobada | un-sdd-json-ilegible-cierra-los-gates-en-lugar-de-apagarlos | 2026-10-27 (Alberto Fojo) |
 | ADR-018 | aprobada | ids-de-artefacto-frente-a-las-ramas-del-repositorio | 2026-10-27 (Alberto Fojo) |
 | ADR-019 | aprobada | esquema-minimo-de-sdd-json-y-su-sitio-en-el-lector-unico | 2026-10-27 (Alberto Fojo) |
+| ADR-020 | borrador | modelo-de-ca-manual-ficha-por-ca-marcas-de-la-matriz-y-veredicto-parcial | 2026-11-26 (sdd-arquitecto) |
 
 ## Resumen
 
 - hecho: 26
 - bloqueada: 1
 - aprobada: 2
+- borrador: 2
