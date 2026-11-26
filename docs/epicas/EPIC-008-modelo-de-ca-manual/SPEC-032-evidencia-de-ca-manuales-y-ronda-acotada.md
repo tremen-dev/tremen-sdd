@@ -2,13 +2,14 @@
 id: SPEC-032
 tipo: spec
 epica: EPIC-008
-estado: en-revision
+estado: en-progreso
 aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-11-26, por: sdd-arquitecto}
   - {estado: aprobada, fecha: 2026-11-26, por: Alberto Fojo}
   - {estado: en-progreso, fecha: 2026-11-26, por: sdd-implementador}
   - {estado: en-revision, fecha: 2026-11-26, por: sdd-implementador}
+  - {estado: en-progreso, fecha: 2026-11-26, por: sdd-verificador}
 ---
 # SPEC-032 — Evidencia de CA manuales y ronda acotada
 
