@@ -42,7 +42,7 @@ Actualizado: 2026-11-26
 
 | Spec | Estado | Último cambio |
 |---|---|---|
-| SPEC-018 — que-puede-afirmar-un-documento-de-verdad-y-como-se-verifica | aprobada | 2026-07-28 (Alberto Fojo) |
+| SPEC-018 — que-puede-afirmar-un-documento-de-verdad-y-como-se-verifica | hecho | 2026-07-28 (sdd-verificador) |
 
 ## EPIC-006 — adaptador-antigravity-con-paridad-completa (hecho)
 
@@ -64,7 +64,7 @@ Actualizado: 2026-11-26
 
 | Spec | Estado | Último cambio |
 |---|---|---|
-| SPEC-030 — ficha-de-ca-manual-formato-validacion-y-cierre-que-la-respeta | borrador | 2026-11-26 (sdd-arquitecto) |
+| SPEC-030 — ficha-de-ca-manual-formato-validacion-y-cierre-que-la-respeta | aprobada | 2026-11-26 (Alberto Fojo) |
 
 ## EPIC-009 — trabajo-en-paralelo-e-integracion (borrador)
 
@@ -112,11 +112,10 @@ Actualizado: 2026-11-26
 | ADR-017 | aprobada | un-sdd-json-ilegible-cierra-los-gates-en-lugar-de-apagarlos | 2026-10-27 (Alberto Fojo) |
 | ADR-018 | aprobada | ids-de-artefacto-frente-a-las-ramas-del-repositorio | 2026-10-27 (Alberto Fojo) |
 | ADR-019 | aprobada | esquema-minimo-de-sdd-json-y-su-sitio-en-el-lector-unico | 2026-10-27 (Alberto Fojo) |
-| ADR-020 | borrador | modelo-de-ca-manual-ficha-por-ca-marcas-de-la-matriz-y-veredicto-parcial | 2026-11-26 (sdd-arquitecto) |
+| ADR-020 | aprobada | modelo-de-ca-manual-ficha-por-ca-marcas-de-la-matriz-y-veredicto-parcial | 2026-11-26 (Alberto Fojo) |
 
 ## Resumen
 
-- hecho: 27
+- hecho: 28
 - bloqueada: 1
 - aprobada: 2
-- borrador: 1

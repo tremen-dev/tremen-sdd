@@ -1,0 +1,75 @@
+{
+  "descripcion": "Árbol mínimo SIMULADO contra el que resuelven M1, M2 y M3 en el corpus de SPEC-018. Declarativo a propósito: se materializa en un directorio temporal (patrón de tools/tests/referencias.test.mjs) en vez de existir como ficheros del repo, para que el corpus sea hermético y para no plantar un 'core/' anidado que tools/checks/fuente-unica.mjs tendría razón en rechazar. Sus cardinalidades NO coinciden con las del árbol real (checks=3 y no 10, roles=4 y no 7, reglas=8 y no 11) precisamente para que nadie confunda el árbol simulado con el árbol de verdad: si un caso pasara por copiar la realidad, no estaría resolviendo nada.",
+  "cardinalidades": "NO se declaran aquí: se DERIVAN del árbol aplicando el resolutor de cada inventario (anexo D). Declararlas sería la segunda declaración capaz de divergir en silencio que ADR-012 §2 prohíbe para los marcadores, y vale igual para el corpus.",
+  "ficheros": [
+    "FOUNDATION.md",
+    "README.md",
+    "package.json",
+
+    "adapters/claude-code/agents/sdd-arquitecto.md",
+    "adapters/claude-code/skills/sdd-init/SKILL.md",
+    "adapters/claude-code/.claude-plugin/plugin.json",
+    "adapters/claude-code/hooks/hooks.json",
+    "adapters/claude-code/hooks/require-spec.mjs",
+    "adapters/claude-code/hooks/protege-verdad.mjs",
+    "adapters/claude-code/hooks/calidad.mjs",
+    "adapters/claude-code/hooks/_comun.mjs",
+
+    "adapters/kimi-code/agents/sdd-arquitecto.yaml",
+    "adapters/kimi-code/skills/sdd-init/SKILL.md",
+    "adapters/kimi-code/hooks/hooks.toml",
+    "adapters/kimi-code/hooks/require-spec.mjs",
+    "adapters/kimi-code/hooks/protege-verdad.mjs",
+    "adapters/kimi-code/hooks/_comun.mjs",
+
+    "adapters/opencode/agents/sdd-arquitecto.md",
+    "adapters/opencode/skills/sdd-init/SKILL.md",
+    "adapters/opencode/opencode.json",
+    "adapters/opencode/plugins/require-spec.mjs",
+
+    "core/lib/frontmatter.mjs",
+    "core/scripts/estado.mjs",
+    "core/scripts/valida.mjs",
+    "core/roles/es/sdd-producto.md",
+    "core/roles/es/sdd-arquitecto.md",
+    "core/roles/es/sdd-implementador.md",
+    "core/roles/es/sdd-verificador.md",
+    "core/roles/es/_descripciones.json",
+
+    "tools/check.mjs",
+    "tools/checks/layout.mjs",
+    "tools/checks/referencias.mjs",
+    "tools/checks/version-unica.mjs",
+
+    "docs/roadmap.md",
+    "docs/fundacion/vision.md",
+    "docs/fundacion/dominio.md",
+    "docs/fundacion/reglas.md",
+    "docs/fundacion/contexto.md",
+    "docs/adr/ADR-001-estructura-del-repo-para-multi-harness.md",
+    "docs/adr/ADR-010-mecanismo-de-publicacion-del-artefacto.md",
+    "docs/adr/ADR-011-generalizacion-de-los-checks-de-invariantes.md",
+    "docs/adr/ADR-012-verificabilidad-mecanica-de-la-prosa.md",
+    "docs/epicas/EPIC-001-multi-harness/_epica.md",
+    "docs/epicas/EPIC-001-multi-harness/SPEC-001-refactor-a-nucleo-mas-adaptadores.md",
+    "docs/epicas/EPIC-001-multi-harness/SPEC-002-enforcement-a-git-mas-ci.md",
+    "docs/epicas/EPIC-001-multi-harness/SPEC-003-adaptador-kimi-code.md",
+    "docs/epicas/EPIC-003-opencode/_epica.md",
+    "docs/epicas/EPIC-003-opencode/SPEC-014-piloto-opencode.md",
+    "docs/epicas/EPIC-004-publicacion/_epica.md",
+    "docs/epicas/EPIC-004-publicacion/SPEC-016-version-unica.md",
+    "docs/epicas/EPIC-005-fundacion/_epica.md",
+    "docs/epicas/EPIC-005-fundacion/SPEC-017-generalizacion-de-checks.md"
+  ],
+  "contenidos": {
+    "tools/check.mjs": "export const PASOS = [\n  { nombre: 'build', cmd: ['node', 'tools/build-adapter.mjs', 'claude-code'] },\n  { nombre: 'layout', cmd: ['node', 'tools/checks/layout.mjs'] },\n  { nombre: 'referencias', cmd: ['node', 'tools/checks/referencias.mjs'] },\n  { nombre: 'referencias-kimi', cmd: ['node', 'tools/checks/referencias.mjs', 'kimi-code'] },\n  { nombre: 'version-unica', cmd: ['node', 'tools/checks/version-unica.mjs'] },\n  { nombre: 'valida', cmd: ['node', 'core/scripts/valida.mjs', '--dir', 'docs'] },\n];\n",
+
+    "docs/fundacion/reglas.md": "# Reglas de negocio (árbol simulado)\n\n- **RN-01 — Nada se codea sin spec aprobada.**\n\n- **RN-02 — La dependencia va solo adaptador a núcleo.**\n\n- **RN-03 — El enforcement es independiente del harness.**\n\n- **RN-04 — Un ADR aceptado es inmutable.**\n\n- **RN-05 — El tablero y `dist/` son generados: no se editan a mano.**\n\n- **RN-06 — La prosa de cada rol tiene una única fuente.**\n\n- **RN-07 — El estado de un artefacto solo cambia por la máquina de estados.**\n\n- **RN-08 — Los documentos de verdad tienen dueño único.**\n",
+
+    "adapters/claude-code/hooks/hooks.json": "{\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Edit|Write|MultiEdit\",\n        \"hooks\": [\n          { \"type\": \"command\", \"command\": \"node \\\"${CLAUDE_PLUGIN_ROOT}/hooks/require-spec.mjs\\\"\" },\n          { \"type\": \"command\", \"command\": \"node \\\"${CLAUDE_PLUGIN_ROOT}/hooks/protege-verdad.mjs\\\"\" }\n        ]\n      }\n    ],\n    \"PostToolUse\": [\n      {\n        \"matcher\": \"Edit|Write|MultiEdit\",\n        \"hooks\": [\n          { \"type\": \"command\", \"command\": \"node \\\"${CLAUDE_PLUGIN_ROOT}/hooks/calidad.mjs\\\"\" }\n        ]\n      }\n    ]\n  }\n}\n",
+
+    "adapters/kimi-code/hooks/hooks.toml": "# Fragmento [[hooks]] para la config de Kimi.\n\n[[hooks]]\nevent = \"PreToolUse\"\nmatcher = \"Edit|Write|MultiEdit\"\ncommand = \"node \\\"<ARTIFACT_ROOT>/hooks/require-spec.mjs\\\"\"\ntimeout = 10\n\n[[hooks]]\nevent = \"PreToolUse\"\nmatcher = \"Edit|Write|MultiEdit\"\ncommand = \"node \\\"<ARTIFACT_ROOT>/hooks/protege-verdad.mjs\\\"\"\ntimeout = 10\n",
+
+    "adapters/opencode/opencode.json": "{\n  \"$schema\": \"https://opencode.ai/config.json\",\n  \"plugin\": [\"./plugins/require-spec.mjs\"],\n  \"permission\": { \"edit\": { \"docs/tablero.md\": \"deny\" } }\n}\n"
+  }
+}

@@ -1,14 +1,22 @@
 ---
 id: ADR-020
 tipo: adr
-estado: borrador
+estado: aprobada
 historial:
   - {estado: borrador, fecha: 2026-11-26, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-11-26, por: Alberto Fojo}
+aprobada-por: Alberto Fojo
 ---
 # ADR-020: Modelo de CA manual: ficha por CA, marcas de la matriz y veredicto parcial
 
 - Deciders: propone sdd-arquitecto el 2026-11-26, por encargo de EPIC-008 (aprobada
-  ese mismo día por Alberto Fojo). Lo aprueba el humano en el gate de SPEC-030.
+  ese mismo día por Alberto Fojo). Lo aprueba el humano en el gate de SPEC-030. En ese
+  gate, el 2026-11-26, Alberto Fojo respondió a las preguntas del arquitecto:
+  - la regla reformulada de la salvedad sube a `reglas.md` como RN-12;
+  - confirma el cambio de sentido de §4 y la guarda de `hecho` de §5;
+  - basta con que un agente escriba la aceptación con nombre;
+  - el dueño de la receta (§9) se fija en EPIC-010;
+  - el contraste con artica va al final de la épica.
 - Specs relacionadas:
   - **SPEC-030** (EPIC-008): la ficha, las marcas y el cierre que las respeta (§1, §2,
     §4, §5, §11).
@@ -37,11 +45,12 @@ recurrencias de la 68. Los costes que se repiten son estos:
   (4, 54, 56; otra vez en la 68).
 
 La regla «una salvedad nunca es ✅» vive en la plantilla del ledger
-(`core/templates/es/artefactos/SPEC.ledger.md`) y en el rol del verificador. La épica la
-llama RN-09, que es como se numera en xana-pensa. **En este repo RN-09 es otra regla**
-(«ningún rol aprueba su propio trabajo»). Este ADR reformula la regla de la salvedad
-(§4) y es coherente con RN-09: aceptar una salvedad pasa a ser un gate humano, que firma
-una persona.
+(`core/templates/es/artefactos/SPEC.ledger.md`) y en el rol del verificador, pero no en
+`docs/fundacion/reglas.md`. La épica la llamaba RN-09, que es como se numera en
+xana-pensa; en este repo RN-09 es otra regla («ningún rol aprueba su propio trabajo»).
+Este ADR reformula la regla de la salvedad (§4) y la sube a `reglas.md` como **RN-12**,
+por decisión del humano del 2026-11-26. Es coherente con RN-09: aceptar una salvedad
+pasa a ser un gate humano, que firma una persona.
 
 Lo que hay hoy y condiciona el diseño:
 - el parser de frontmatter es restringido: no tiene mapas anidados;
@@ -140,8 +149,8 @@ aparece como mucho una vez y se pueden combinar:
 `<persona>` cumple el predicado de persona de `estado.mjs` (ADR-006): no está vacía, no es
 `desconocido` y no es un rol `sdd-*`.
 
-**La regla de la salvedad se reformula así: una salvedad que no ha aceptado una persona
-nunca es ✅.** `⚠️` queda solo para la salvedad sin aceptar. Si la comprobación no se
+**La regla de la salvedad se reformula así, y queda escrita como RN-12: una salvedad no
+aceptada por una persona nunca es ✅.** `⚠️` queda solo para la salvedad sin aceptar. Si la comprobación no se
 cumplió tal como está escrita, no es una desviación: es una salvedad o un `❌`. El
 verificador no puede aceptar una salvedad por su cuenta.
 
@@ -260,14 +269,16 @@ EPIC-009.
 - **La aceptación de una salvedad la transcribe un agente.** El nombre tiene que ser de
   una persona, pero nada impide que un agente se la invente. Es el mismo nivel de
   confianza que `estado.mjs … aprobada --por <humano>`, que también ejecuta el
-  orquestador. Si se quiere más, tiene que ser un mecanismo de firma, fuera de esta
-  épica.
-- **Sesgo de muestra**: 13 de las 16 entradas vienen de xana-pensa. Conviene contrastar la
-  ficha con un CA manual real de artica (CA-1 con Meta) antes de cerrar la épica.
+  orquestador, y **el humano decidió el 2026-11-26 que basta**. Si algún día se quiere
+  más, tendrá que ser un mecanismo de firma, fuera de esta épica.
+- **Sesgo de muestra**: 13 de las 16 entradas vienen de xana-pensa. La ficha se contrasta
+  con un CA manual real de artica (CA-1 con Meta) **al final de EPIC-008, antes de
+  cerrarla**, no antes de empezar las specs. Lo decidió el humano el 2026-11-26.
 - **Paridad gl/ca**: hoy solo existe `es`. Si SPEC-026 entra antes que el resto de
   EPIC-008, cada cambio de plantilla o rol se triplica.
-- **RN nueva**: la regla reformulada de §4 podría subir a `docs/fundacion/reglas.md` como
-  RN-12, para que no viva solo en una plantilla y un rol. Lo decide el humano.
+- **RN-12**: la regla reformulada de §4 vive en `docs/fundacion/reglas.md`, y la
+  plantilla del ledger y el rol del verificador la repiten. SPEC-030 comprueba que los
+  tres digan lo mismo.
 - **Quién mantiene la receta (§9)**: queda abierto. La matriz de dueños de EPIC-010 lo
   fija. Mientras tanto, quien la encuentra desfasada lo dice en su informe.
 

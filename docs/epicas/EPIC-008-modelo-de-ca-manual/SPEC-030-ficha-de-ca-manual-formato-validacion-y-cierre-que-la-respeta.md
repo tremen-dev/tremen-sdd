@@ -2,10 +2,11 @@
 id: SPEC-030
 tipo: spec
 epica: EPIC-008
-estado: borrador
-aprobada-por:
+estado: aprobada
+aprobada-por: Alberto Fojo
 historial:
   - {estado: borrador, fecha: 2026-11-26, por: sdd-arquitecto}
+  - {estado: aprobada, fecha: 2026-11-26, por: Alberto Fojo}
 ---
 # SPEC-030 — Ficha de CA manual: formato, validación y cierre que la respeta
 
@@ -207,10 +208,12 @@ Convenciones de los tests:
   2. (a) pasa a `hecho`, como hoy: la guarda de CA-4 no se aplica.
   3. Ningún ledger ni spec del repo se modifica (CE-7: no se migra nada).
 
-### CA-6 — La plantilla y el rol del verificador dicen la misma regla
-- **Given**: `core/templates/es/artefactos/SPEC.md`,
+### CA-6 — RN-12, la plantilla y el rol del verificador dicen la misma regla
+- **Given**: `docs/fundacion/reglas.md` (RN-12),
+  `core/templates/es/artefactos/SPEC.md`,
   `core/templates/es/artefactos/SPEC.ledger.md` y `core/roles/es/sdd-verificador.md`
-  tras el cambio.
+  tras el cambio. RN-12 ya está escrita: la escribió sdd-arquitecto, su dueño (RN-08),
+  junto con esta spec. El implementador no la edita.
 - **When**: un test los inspecciona y ejecuta `scaffold.mjs spec` en un proyecto temporal.
 - **Then**:
   1. La plantilla de spec explica, dentro de un comentario HTML, la marca y la ficha con
@@ -219,14 +222,18 @@ Convenciones de los tests:
   2. La spec recién creada por `scaffold.mjs` **no** es una spec del modelo: el ejemplo
      del comentario no la activa. `valida.mjs` la da por buena.
   3. La leyenda de la plantilla del ledger lista `⏳` y los tres calificadores de ✅, y
-     dice la regla reformulada de ADR-020 §4: «una salvedad que no ha aceptado una
-     persona nunca es ✅».
-  4. El rol del verificador dice esa misma regla, y su definición de GREEN es la de
-     ADR-020 §5: cada CA que bloquea `hecho` en ✅, con o sin calificadores, o en `n-a`.
-  5. Ni la plantilla del ledger ni el rol conservan la frase antigua («una salvedad se
+     dice la regla reformulada de ADR-020 §4 citando RN-12: «una salvedad no aceptada
+     por una persona nunca es ✅».
+  4. El rol del verificador dice esa misma regla, también citando RN-12, y su
+     definición de GREEN es la de ADR-020 §5: cada CA que bloquea `hecho` en ✅, con o
+     sin calificadores, o en `n-a`.
+  5. `docs/fundacion/reglas.md` contiene RN-12 con esa frase, y RN-09 no cambia.
+  6. Ni la plantilla del ledger ni el rol conservan la frase antigua («una salvedad se
      marca ⚠️, nunca ✅» / «Salvedad = ⚠️, nunca ✅») ni «⚠️ justificada y aceptada»
-     como forma de GREEN. El test compara tras normalizar acentos, mayúsculas y marcas
-     de markdown, como `prosa-gates`.
+     como forma de GREEN.
+  7. Los puntos 3 a 6 los comprueba un test que compara tras normalizar acentos,
+     mayúsculas y marcas de markdown, como `prosa-gates`. Si alguno de los tres textos
+     pierde la frase, el test falla y nombra el fichero.
 
 ### CA-7 — Sin regresión
 - **Given**: el árbol tras el cambio.
@@ -247,8 +254,8 @@ Convenciones de los tests:
 - **ADR-009**: Verif. y Estado siguen siendo solo del verificador. Esta spec no toca
   quién escribe qué columna.
 - **RN-07**: la guarda de `hecho` vive en `estado.mjs`, la única vía de transición.
-- **RN-09**: aceptar una salvedad lo firma una persona (ADR-020, Contexto: no es la regla
-  que la épica llama RN-09).
+- **RN-12** (nueva, ADR-020 §4): una salvedad no aceptada por una persona nunca es ✅.
+  Es coherente con **RN-09**: aceptar una salvedad lo firma una persona.
 - **RN-06**: la prosa del verificador se cambia solo en `core/roles/es/`.
 - Términos de `docs/fundacion/dominio.md`: spec, CA, ledger, máquina de estados, gate.
 
