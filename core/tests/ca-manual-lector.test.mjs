@@ -1,51 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { leerCAs, esSpecDelModelo, erroresFicha } from '../lib/ca-manual.mjs';
+import { CUERPO_CA1 } from './_ca-manual-fixtures.mjs';
 
 // SPEC-030 CA-1 (ADR-020 §1, §2, §11): el lector único reconoce los CA, la marca
 // [manual] y la ficha; ignora comentarios HTML y bloques de código.
-export const CUERPO_CA1 = [
-  '# SPEC-001 — Fixture',
-  '',
-  '## Criterios de aceptación',
-  '',
-  '### CA-1 — Automático sin ficha',
-  '- **Given**: …',
-  '',
-  '### CA-2 [manual] — Recorrido en dispositivo',
-  '',
-  '- `ejecuta`: orquestador',
-  '- `bloquea-hecho`: sí',
-  '- `precondiciones`: app de la tienda desinstalada',
-  '- `precondiciones`: cuenta con el feature activo',
-  '- `consentimiento`: desinstalar la app del móvil de pruebas',
-  '- `manos`: cambio de IAM en producción',
-  '- `comprobacion` [staging]: GET /recurso con cuenta con el feature → 200; sin él → 403',
-  '- `comprobacion` [produccion]: la misma, contra producción',
-  '- `depende-de`: CA-1',
-  '- **Given**: …',
-  '  - `ejecuta`: esto ya no es ficha, es texto del CA',
-  '',
-  '- **CA-3** [manual]: Dado … cuando … entonces …',
-  '  - `ejecuta`: humano',
-  '  - `bloquea-hecho`: no',
-  '  - `cuando`: tras-merge',
-  '  - `comprobacion`: la limpieza programada aparece activa en el panel',
-  '',
-  '- **CA-4**: Dado … cuando … entonces …',
-  '  - `bloquea-hecho`: no',
-  '  - `depende-de`: CA-2, CA-3',
-  '',
-  '### CA-M5 [manual] — Revisión de idioma',
-  '- `ejecuta`: humano',
-  '- `bloquea-hecho`: si',
-  '- `comprobacion`: la persona revisora firma la lista de cadenas',
-  '',
-  '<!--',
-  '### CA-6 [manual] — Ejemplo dentro de un comentario',
-  '-->',
-  '',
-].join('\n');
 
 test('CA-1: el lector devuelve exactamente los cinco CA, en orden, con su ficha', () => {
   const cas = leerCAs(CUERPO_CA1);

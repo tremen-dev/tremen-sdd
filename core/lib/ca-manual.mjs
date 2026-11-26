@@ -208,6 +208,9 @@ function ciclos(cas) {
 
 // --- Matriz del ledger y marcas de Estado (ADR-020 §4) ---
 
+// El ledger de una spec vive a su lado: SPEC-NNN-slug.md -> SPEC-NNN-slug.ledger.md.
+export const rutaLedger = (rutaSpec) => rutaSpec.replace(/\.md$/, '.ledger.md');
+
 const celdas = (linea) => linea.trim().replace(/^\|/, '').replace(/\|$/, '').split('|').map((s) => s.trim());
 
 // Filas de la matriz de CA del ledger: la primera tabla cuya cabecera empieza por

@@ -9,6 +9,7 @@ import { idiomaDesde, idiomasSoportados, resolverIdioma } from '../lib/idioma.mj
 import { mensajesNucleo } from '../lib/mensajes.mjs';
 import { leerSddJson } from '../lib/sdd-json.mjs';
 import { mensajeSddJsonIlegible } from '../lib/sdd-json-mensaje.mjs';
+import { leerCAs, esSpecDelModelo, erroresFicha, erroresMarcas, leerMatriz, rutaLedger } from '../lib/ca-manual.mjs';
 
 const ID_RE = /^(EPIC|SPEC|TASK|ADR)-(\d{3}|FIX|INFRA|MANT|MEJORA)/;
 const ESTADOS = Object.keys(TRANSITIONS);
@@ -39,6 +40,25 @@ export function validateFile(ruta, docsDir) {
     const existe = fs.existsSync(base) && fs.readdirSync(base)
       .some((n) => n === data.epica || n.startsWith(data.epica + '-'));
     if (!existe) errores.push(t('valida.epica-inexistente', { rel, epica: data.epica }));
+  }
+  if (data.tipo === 'spec') errores.push(...erroresModeloCaManual(ruta, docsDir, t));
+  return errores;
+}
+
+// SPEC-030 CA-2/CA-3 (ADR-020 §11): solo una spec con algún CA [manual] (y su
+// ledger) se valida contra el modelo. El reconocimiento es del lector único.
+function erroresModeloCaManual(ruta, docsDir, t) {
+  const relDe = (p) => (docsDir ? path.relative(docsDir, p) : path.basename(p));
+  const cas = leerCAs(parseFrontmatter(fs.readFileSync(ruta, 'utf8')).body);
+  if (!esSpecDelModelo(cas)) return [];
+  const rel = relDe(ruta);
+  const errores = erroresFicha(cas).map((e) => t(`valida.ficha.${e.codigo}`, { rel, ca: e.ca, clave: e.clave, ...e.vars }));
+  const ledger = rutaLedger(ruta);
+  if (fs.existsSync(ledger)) {
+    const relLedger = relDe(ledger);
+    for (const e of erroresMarcas(cas, leerMatriz(fs.readFileSync(ledger, 'utf8')))) {
+      errores.push(t(`valida.marca.${e.codigo}`, { rel: relLedger, ca: e.ca, celda: e.celda, ...e.vars }));
+    }
   }
   return errores;
 }
