@@ -36,7 +36,8 @@ que dejó abiertos el verificador de SPEC-030:
   Esta spec añade justo otra tabla con `CA` delante (la de evidencia), así que el
   localizador tiene que dejar de depender del orden.
 
-Esta spec materializa ADR-020 §7, §8 y §9, y cierra esos dos follow-ups. Todo sigue
+Esta spec materializa ADR-020 §7, §8 y §9 (con la guarda del registro externo según
+ADR-021, que supersede esa frase de §9), y cierra esos dos follow-ups. Todo sigue
 aplicándose solo a las specs del modelo (§11, EPIC-008 CE-7). Es la misma idea que RN-07
 y SPEC-030: lo que impide un GREEN por la puerta de atrás lo hacen cumplir los scripts,
 no la prosa de un rol.
@@ -292,14 +293,14 @@ Convenciones de los tests:
      byte.
   2. Un CA «aparece» en el registro cuando una misma línea contiene el id de la spec y el
      id del CA como palabras completas (`CA-2` no casa con `CA-20`). Es la forma que
-     decidió el humano en el gate (ver Decisiones del gate, 1).
+     fija ADR-021 (ver Decisiones del gate, 1).
   3. La guarda mira cada CA manual bloqueante **sin cerrar**: cualquier Estado que no
      cierre según el lector (`estadoCierra`), incluida la falta de fila o de celda. Los CA
      con `bloquea-hecho: no` no se miran, estén como estén: (e) nombra solo `CA-2` e (i)
-     pasa. Es la lectura de ADR-020 §9 que decidió el humano en el gate, no su letra («en
-     `⏳`») (ver Decisiones del gate, 3).
+     pasa. Es la regla de ADR-021, que supersede la frase «en `⏳`» de ADR-020 §9 (ver
+     Decisiones del gate, 3).
   4. Un registro declarado que no existe niega `en-revision` (caso (d)), por el lado
-     seguro, como un `.sdd.json` ilegible en ADR-017 (Decisiones del gate, 2).
+     seguro, como un `.sdd.json` ilegible en ADR-017 (ADR-021; Decisiones del gate, 2).
   5. La comprobación de firmantes y de aprobación humana sigue igual y va antes.
 
 ### CA-10 — Un solo lector y sin regresión
@@ -322,6 +323,9 @@ Convenciones de los tests:
 - **ADR-020**: §7 (ronda acotada y su frontera), §8 (evidencia), §9 (`.sdd.json`), sobre
   la base de §2, §4, §5 y §11 que materializó SPEC-030. Esta spec lo aplica; no lo
   repite.
+- **ADR-021**: la guarda del registro externo (`registroManuales`) de CA-9: qué CA mira
+  (manual bloqueante sin cerrar), qué id debe aparecer y qué pasa si el registro no
+  existe. Supersede parcialmente ADR-020 §9, solo en esa frase.
 - **ADR-009**: Verif. y Estado siguen siendo solo del verificador; la tabla de evidencia
   la escribe quien ejecutó.
 - **ADR-006**: el predicado de persona, para la columna Ejecutó (CA-4).
@@ -369,8 +373,9 @@ Decisiones que ADR-020 no cierra del todo. El humano las revisó en el gate de l
    primera entrada a `en-revision`: el Estado lo escribe el verificador y la plantilla
    deja los manuales en `❌`. Decidido por el humano: se lee como «CA manual bloqueante
    sin cerrar», es decir, cualquier Estado que no cierre según el lector (`estadoCierra`:
-   `✅` con calificadores válidos, o `n-a`), incluida la falta de fila o de celda. Es una
-   interpretación de §9, no su letra; ADR-020 no se enmienda en esta spec.
+   `✅` con calificadores válidos, o `n-a`), incluida la falta de fila o de celda. La regla
+   vive ahora en ADR-021, que supersede esa frase de ADR-020 §9; también recoge las
+   decisiones 1 y 2.
 4. **Un CA manual en ✅ exige su evidencia (CA-5), también en la guarda de `hecho`.** Sale
    de la definición de `✅` de ADR-020 §4 aunque §5 solo diga «✅ con o sin
    calificadores». Aceptado tal cual.
