@@ -60,10 +60,11 @@ Actualizado: 2026-11-26
 | SPEC-025 — mecanismo-de-idioma-catalogos-y-plantillas-por-idioma | hecho | 2026-10-27 (sdd-verificador) |
 | SPEC-026 — paridad-bloqueante-entre-idiomas-sellos-prosa-gates-y-gatillos | aprobada | 2026-10-27 (Alberto Fojo) |
 
-## EPIC-008 — modelo-de-ca-manual (borrador)
+## EPIC-008 — modelo-de-ca-manual (aprobada)
 
 | Spec | Estado | Último cambio |
 |---|---|---|
+| SPEC-030 — ficha-de-ca-manual-formato-validacion-y-cierre-que-la-respeta | aprobada | 2026-11-26 (Alberto Fojo) |
 
 ## EPIC-009 — trabajo-en-paralelo-e-integracion (borrador)
 
@@ -86,6 +87,7 @@ Actualizado: 2026-11-26
 | SPEC-027 — los-hooks-no-apagan-los-gates-ante-un-sdd-json-ilegible | hecho | 2026-11-23 (sdd-verificador) |
 | SPEC-028 — trabajar-sobre-la-base-remota | hecho | 2026-11-23 (sdd-verificador) |
 | SPEC-029 — esquema-de-sdd-json-un-campo-mal-tipado-no-apaga-los-gates | hecho | 2026-11-23 (sdd-verificador) |
+| SPEC-031 — el-historial-del-frontmatter-conserva-las-notas-con-comas-y-comillas | aprobada | 2026-11-26 (Alberto Fojo) |
 
 ## ADRs
 
@@ -110,9 +112,10 @@ Actualizado: 2026-11-26
 | ADR-017 | aprobada | un-sdd-json-ilegible-cierra-los-gates-en-lugar-de-apagarlos | 2026-10-27 (Alberto Fojo) |
 | ADR-018 | aprobada | ids-de-artefacto-frente-a-las-ramas-del-repositorio | 2026-10-27 (Alberto Fojo) |
 | ADR-019 | aprobada | esquema-minimo-de-sdd-json-y-su-sitio-en-el-lector-unico | 2026-10-27 (Alberto Fojo) |
+| ADR-020 | aprobada | modelo-de-ca-manual-ficha-por-ca-marcas-de-la-matriz-y-veredicto-parcial | 2026-11-26 (Alberto Fojo) |
 
 ## Resumen
 
 - hecho: 27
 - bloqueada: 1
-- aprobada: 1
+- aprobada: 3

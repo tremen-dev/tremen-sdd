@@ -1,9 +1,11 @@
 ---
 id: EPIC-008
 tipo: epica
-estado: borrador
+estado: aprobada
 historial:
   - {estado: borrador, fecha: 2026-11-23, por: sdd-producto}
+  - {estado: aprobada, fecha: 2026-11-26, por: Alberto Fojo}
+aprobada-por: Alberto Fojo
 ---
 # EPIC-008 — Modelo de CA manual
 
@@ -27,8 +29,9 @@ la entrada 68). Pasa esto:
 - Pasos urgentes quedan repartidos en ledgers de specs ya cerradas (18).
 
 **Por qué es épica y no una tanda de correcciones**: casi todas las entradas
-tocan lo mismo, la matriz del ledger y la semántica del GREEN, y la RN-09 («una
-salvedad nunca es ✅»). Arreglarlas por separado daría dieciséis parches
+tocan lo mismo, la matriz del ledger y la semántica del GREEN, y la regla de la
+salvedad («una salvedad nunca es ✅»; la épica la citaba como RN-09, que en este
+repo es otra regla: ADR-020 la reformula y la sube a `reglas.md` como RN-12). Arreglarlas por separado daría dieciséis parches
 incoherentes. El modelo lo decide un ADR de sdd-arquitecto; esta épica lo
 encarga, no lo decide.
 
@@ -102,7 +105,7 @@ encarga, no lo decide.
 <!-- El estado por spec vive en el frontmatter de cada spec; el tablero agregado se regenera con /sdd-tablero (docs/tablero.md). No mantengas listas de specs a mano aquí. -->
 Desglose orientativo (lo decide sdd-arquitecto):
 1. ADR y spec del modelo: campos por CA, marcas de la matriz, semántica del
-   veredicto parcial y su relación con RN-09.
+   veredicto parcial y su relación con RN-09 y RN-12.
 2. Plantillas y `valida.mjs` (CE-3, CE-4, CE-5).
 3. Roles: orquestador y verificador (CE-1, CE-2, CE-3).
 4. Pasos tras el merge: `sdd-como-vamos` y el tablero (CE-6).
@@ -116,6 +119,7 @@ Desglose orientativo (lo decide sdd-arquitecto):
   son opcionales salvo en los CA manuales.
 - **Sesgo de muestra.** 13 de las 16 entradas vienen de un único proyecto
   (xana-pensa, móvil y Firebase); las otras 3 (1, 2 y 4) son de artica.
-  Conviene contrastar el modelo con artica antes de cerrarlo.
+  El modelo se contrasta con un CA manual real de artica (CA-1 con Meta) al
+  final de la épica, antes de cerrarla (decisión del humano, 2026-11-26).
 - **Colisión con EPIC-007.** Si la paridad bloqueante (SPEC-026) entra antes,
   cada cambio de rol o de plantilla se triplica (es, gl y ca).
