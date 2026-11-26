@@ -58,16 +58,16 @@ function erroresModeloCaManual(ruta, docsDir, t) {
   const ledger = rutaLedger(ruta);
   if (fs.existsSync(ledger)) {
     // SPEC-032: secciones, filas repetidas y evidencia, también del lector.
-    const leido = leerLedger(fs.readFileSync(ledger, 'utf8'), idiomaDesde(docsDir ?? path.dirname(ruta)));
+    const enLedger = leerLedger(fs.readFileSync(ledger, 'utf8'), idiomaDesde(docsDir ?? path.dirname(ruta)));
     const relLedger = relDe(ledger);
-    for (const e of leido.errores) errores.push(t(`valida.ledger.${e.codigo}`, { rel: relLedger, ...e.vars }));
-    for (const e of erroresMarcas(cas, leido)) {
+    for (const e of enLedger.errores) errores.push(t(`valida.ledger.${e.codigo}`, { rel: relLedger, ...e.vars }));
+    for (const e of erroresMarcas(cas, enLedger)) {
       errores.push(t(`valida.marca.${e.codigo}`, { rel: relLedger, ca: e.ca, celda: e.celda, ...e.vars }));
     }
-    for (const e of erroresEvidencia(cas, leido)) {
+    for (const e of erroresEvidencia(cas, enLedger)) {
       errores.push(t(`valida.evidencia.${e.codigo}`, { rel: relLedger, linea: e.linea, ca: e.ca, columna: e.columna, ...e.vars }));
     }
-    for (const f of faltaEvidencia(cas, leido)) errores.push(t('valida.evidencia.falta', { rel: relLedger, ca: f.ca, entorno: f.entorno }));
+    for (const f of faltaEvidencia(cas, enLedger)) errores.push(t('valida.evidencia.falta', { rel: relLedger, ca: f.ca, entorno: f.entorno }));
   }
   return errores;
 }
