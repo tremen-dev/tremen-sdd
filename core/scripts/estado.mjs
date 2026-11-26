@@ -9,7 +9,7 @@ import { hoy } from '../lib/fecha.mjs';
 import { idiomaDesde, resolverIdioma } from '../lib/idioma.mjs';
 import { mensajesNucleo } from '../lib/mensajes.mjs';
 import { esPersona } from '../lib/persona.mjs';
-import { leerCAs, esSpecDelModelo, leerMatriz, bloqueosHecho } from '../lib/ca-manual.mjs';
+import { leerCAs, esSpecDelModelo, leerMatriz, bloqueosHecho, rutaLedger } from '../lib/ca-manual.mjs';
 
 export const TRANSITIONS = {
   borrador: ['aprobada', 'bloqueada'],
@@ -59,6 +59,23 @@ export function fueAprobadaPorHumano(data) {
   );
 }
 
+// SPEC-030 CA-4 (ADR-020 §5): en una spec con algún CA [manual], 'hecho' exige
+// que cada CA que bloquea el cierre esté cerrado en la matriz del ledger. Igual
+// que FIRMANTES: la prosa del rol no detiene a un agente; la máquina de estados
+// sí. Sin la marca no se aplica (ADR-020 §11). Lee con el lector único.
+function guardaHecho(ruta, body, t) {
+  const cas = leerCAs(body);
+  if (!esSpecDelModelo(cas)) return;
+  const ledger = rutaLedger(ruta);
+  if (!fs.existsSync(ledger)) throw new Error(t('estado.hecho-sin-ledger', { ledger }));
+  const bloqueos = bloqueosHecho(cas, leerMatriz(fs.readFileSync(ledger, 'utf8')));
+  if (!bloqueos.length) return;
+  const lista = bloqueos.map((b) => (b.celda === null
+    ? t('estado.hecho-bloqueo-sin-fila', { ca: b.ca })
+    : t('estado.hecho-bloqueo', { ca: b.ca, celda: b.celda }))).join('; ');
+  throw new Error(t('estado.hecho-bloqueado', { lista }));
+}
+
 export function transition(ruta, nuevoEstado, por, fecha) {
   fecha ??= hoy();
   const { data, body } = parseFrontmatter(fs.readFileSync(ruta, 'utf8'));
@@ -77,6 +94,7 @@ export function transition(ruta, nuevoEstado, por, fecha) {
   if (REQUIEREN_APROBACION.includes(nuevoEstado) && !fueAprobadaPorHumano(data)) {
     throw new Error(t('estado.sin-aprobacion-humana', { nuevo: nuevoEstado }));
   }
+  if (nuevoEstado === 'hecho' && data.tipo === 'spec') guardaHecho(ruta, body, t);
   data.estado = nuevoEstado;
   // La plantilla de spec tiene el campo y nadie lo rellenaba: la aprobación
   // vivía solo en el historial, donde hay que ir a buscarla.
