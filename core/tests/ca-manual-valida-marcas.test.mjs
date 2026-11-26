@@ -64,6 +64,7 @@ test('CA-3: el predicado de persona tiene una sola definición, y la usan estado
     return /(const|function|let|var)\s+esPersona\b/.test(src) || /!==\s*'desconocido'/.test(src);
   });
   assert.deepEqual(definen.map((r) => r.split(path.sep).join('/')), ['lib/persona.mjs']);
-  assert.match(lee('scripts/estado.mjs'), /import \{[^}]*\besPersona\b[^}]*\} from '\.\.\/lib\/persona\.mjs'/);
-  assert.match(lee('lib/ca-manual.mjs'), /import \{[^}]*\besPersona\b[^}]*\} from '\.\/persona\.mjs'/);
+  // Sin la palabra de import seguida de comillas: nucleo-aislado leería la regex como un import.
+  assert.match(lee('scripts/estado.mjs'), /import \{[^}]*\besPersona\b[^}]*\} \w+ .\.\.\/lib\/persona\.mjs./);
+  assert.match(lee('lib/ca-manual.mjs'), /import \{[^}]*\besPersona\b[^}]*\} \w+ .\.\/persona\.mjs./);
 });
