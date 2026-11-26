@@ -34,6 +34,22 @@ y el proyecto se adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 
 ### Corregido
 
+- **Las notas del historial con comas o dos puntos ya no se corrompen** (SPEC-031,
+  EPIC-FIX). `estado.mjs` reescribe el frontmatter entero en cada transición, y el
+  parser de `core/lib/frontmatter.mjs` partía cada entrada del `historial` por las comas
+  sin mirar las comillas: una entrada como
+  `{…, nota: "refinación tras CA-1; CA-10, CA-11 y CA-12 nuevos"}` se cortaba en la
+  primera coma y quedaba con una comilla sin cerrar. Al serializar, un valor con `,`,
+  `:`, `{` o `}` tampoco sobrevivía a la vuelta. Pasaba **desde la primera versión del
+  núcleo** (SPEC-001), en cualquier transición sobre un artefacto cuyo historial tuviera
+  una entrada así. Ahora el parser respeta las comillas dobles (con `\"` y `\\`) y
+  simples (con `''`) dentro de un objeto inline, y la serialización entrecomilla solo
+  los valores que lo necesitan; el resto se escribe tal cual, como antes.
+  **No hace falta hacer nada para actualizar.** Las líneas que el defecto ya rompió no
+  se reparan solas: arréglalas a mano una vez. Una `nota` entrecomillada sin caracteres
+  especiales (`nota: "simple"`) se reescribirá sin comillas en la siguiente transición;
+  el valor es el mismo.
+
 - **Despacho real de subagentes en Google Antigravity con contexto aislado** (SPEC-023,
   EPIC-FIX, ADR-014). Resuelve el defecto arquitectónico por el cual los roles pesados
   (`sdd-arquitecto`, `sdd-implementador`, `sdd-verificador`, `sdd-documentalista`) se
